@@ -30,12 +30,12 @@ public class MainActivity extends AppCompatActivity {
         .go("http://www.jd.com");
 
 
-        AgentWeb.with(this,null)//
-        .configViewGroup(null,null)//
+        /*AgentWeb.with(this,null)//
+        .configRootView(null,null)//
         .setCustomIndicator(null)//
         .createAgentWeb()//
         .ready()//
-        .go("http://www.jd.com");
+        .go("http://www.jd.com");*/
 
 
     }

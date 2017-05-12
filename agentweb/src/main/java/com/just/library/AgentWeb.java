@@ -355,7 +355,7 @@ public class AgentWeb {
             mFragment = fragment;
         }
 
-        public IndicatorBuilderForFragment configViewGroup(ViewGroup v, ViewGroup.LayoutParams lp) {
+        public IndicatorBuilderForFragment configRootView(ViewGroup v, ViewGroup.LayoutParams lp) {
             this.mViewGroup = v;
             this.mLayoutParams = lp;
             return new IndicatorBuilderForFragment(this);
