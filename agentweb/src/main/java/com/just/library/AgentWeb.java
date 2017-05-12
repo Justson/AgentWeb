@@ -107,10 +107,10 @@ public class AgentWeb {
         return mWebCreator.create().getGroup();
     }
 
-    public AgentWeb createWebViewWithSettings() {
+    public AgentWeb ready() {
         WebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
-            mWebSettings = WebDefaultSettings.getInstance();
+            this.mWebSettings=mWebSettings = WebDefaultSettings.getInstance();
         }
         mWebSettings.toSetting(mWebCreator.create().get(), getClient(), getChromeClient());
         return this;
@@ -134,6 +134,7 @@ public class AgentWeb {
         }
     }
 
+
     public AgentWeb loadUrl(String url) {
         if (TextUtils.isEmpty(url) || (!url.startsWith("http")))
             throw new UrlCommonException("url is null or '' or not startsWith http , please check url format");
@@ -141,6 +142,10 @@ public class AgentWeb {
         return this;
     }
 
+    public AgentWeb go(String url) {
+
+        return loadUrl(url);
+    }
     public ViewGroup getViewGroup() {
         return mWebCreator.getGroup();
     }
@@ -171,16 +176,9 @@ public class AgentWeb {
 
 
 
-        public AgentBuilder setWebSettings(WebSettings webSettings) {
-            this.mWebSettings = webSettings;
-            return this;
-        }
 
-        public int getIndicatorColor() {
-            return mIndicatorColor;
-        }
 
-        public void setIndicatorColor(int indicatorColor) {
+        private void setIndicatorColor(int indicatorColor) {
             mIndicatorColor = indicatorColor;
         }
 
@@ -188,12 +186,12 @@ public class AgentWeb {
             this.mActivity = activity;
         }
 
-        public AgentBuilder enableProgress() {
+        private AgentBuilder enableProgress() {
             this.enableProgress = true;
             return this;
         }
 
-        public AgentBuilder closeProgress() {
+        private AgentBuilder closeProgress() {
             this.enableProgress = false;
             return this;
         }
@@ -203,65 +201,111 @@ public class AgentWeb {
             this.mWebCreator = webCreator;
         }
 
-        public AgentBuilder(ProgressController progressController) {
-            this.mProgressController = progressController;
-        }
 
 
-        public AgentBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp) {
+
+        public ConfigIndicatorBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp) {
             this.mViewGroup = viewGroup;
             mLayoutParams = lp;
-            return this;
+            return new ConfigIndicatorBuilder(this);
         }
 
-        public AgentBuilder setViewGroupDefault() {
+        public ConfigIndicatorBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp,int position) {
+            this.mViewGroup = viewGroup;
+            mLayoutParams = lp;
+            this.index=position;
+            return new ConfigIndicatorBuilder(this);
+        }
+        public ConfigIndicatorBuilder createContentViewTag(){
+
             this.mViewGroup = null;
             this.mLayoutParams = null;
-            return this;
+            return new ConfigIndicatorBuilder(this);
         }
 
-        public IndicatorBuilder useDefaultProgressBar() {
-            this.isNeedProgress = true;
-            enableProgress = true;
-            return new IndicatorBuilder(this);
-        }
+//
 
-        public AgentBuilder customProgress(BaseIndicatorView view) {
-            this.v = view;
 
-            isNeedProgress = false;
-            return this;
-        }
 
-        /*如果index==-1 默认为最后*/
+      /*  *//*如果index==-1 默认为最后*//*
         public AgentBuilder setViewIndex(int index) {
             this.index = index;
             return this;
-        }
+        }*/
 
 
-        public AgentBuilder setWebViewClient(WebViewClient webViewClient) {
-            this.mWebViewClient = webViewClient;
-            return this;
-        }
 
 
-        public AgentBuilder setWebChromeClient(WebChromeClient webChromeClient) {
-            this.mWebChromeClient = webChromeClient;
-            return this;
-        }
-
-        public AgentWeb buildAgentWeb() {
+        private AgentWeb buildAgentWeb() {
             return HookManager.hookAgentWeb(new AgentWeb(this), this);
         }
 
         private IEventHandler mIEventHandler;
 
-        public AgentBuilder setEventHandler(IEventHandler iEventHandler) {
-            this.mIEventHandler = iEventHandler;
+
+
+    }
+
+    public static class ConfigIndicatorBuilder{
+
+        private AgentBuilder mAgentBuilder;
+        private ConfigIndicatorBuilder(AgentBuilder agentBuilder){
+            this.mAgentBuilder=agentBuilder;
+        }
+
+        public IndicatorBuilder useDefaultIndicator() {
+            this.mAgentBuilder.isNeedProgress = true;
+            mAgentBuilder.enableProgress();
+            return new IndicatorBuilder(mAgentBuilder);
+        }
+
+        public CommonAgentBuilder customProgress(BaseIndicatorView view) {
+            this.mAgentBuilder.v = view;
+
+            mAgentBuilder.isNeedProgress = false;
+            return new CommonAgentBuilder(mAgentBuilder);
+        }
+        public CommonAgentBuilder closeProgressBar(){
+            mAgentBuilder.closeProgress();
+            return new CommonAgentBuilder(mAgentBuilder);
+        }
+
+    }
+
+    public  static class CommonAgentBuilder{
+        private AgentBuilder mAgentBuilder;
+        private CommonAgentBuilder(AgentBuilder agentBuilder){
+            this.mAgentBuilder=agentBuilder;
+
+        }
+        public CommonAgentBuilder setWebViewClient(WebViewClient webViewClient) {
+            this.mAgentBuilder.mWebViewClient = webViewClient;
             return this;
         }
 
+
+        public CommonAgentBuilder setWebChromeClient(WebChromeClient webChromeClient) {
+            this.mAgentBuilder.mWebChromeClient = webChromeClient;
+            return this;
+        }
+
+        public CommonAgentBuilder setEventHandler(IEventHandler iEventHandler) {
+            this.mAgentBuilder.mIEventHandler = iEventHandler;
+            return this;
+        }
+        public CommonAgentBuilder setWebSettings(WebSettings webSettings) {
+            this.mAgentBuilder.mWebSettings = webSettings;
+            return this;
+        }
+
+
+        public CommonAgentBuilder(ProgressController progressController) {
+            this.mAgentBuilder.mProgressController = progressController;
+        }
+
+        public AgentWeb createAgentWeb(){
+            return mAgentBuilder.buildAgentWeb();
+        }
     }
 
     public static class IndicatorBuilder {
@@ -272,9 +316,13 @@ public class AgentWeb {
             this.mAgentBuilder = builder;
         }
 
-        public AgentBuilder setIndicatorColor(int color) {
+        public CommonAgentBuilder setIndicatorColor(int color) {
             mAgentBuilder.setIndicatorColor(color);
-            return mAgentBuilder;
+            return new CommonAgentBuilder(mAgentBuilder);
+        }
+        public CommonAgentBuilder defaultProgressBarColor() {
+            mAgentBuilder.setIndicatorColor(-1);
+            return new CommonAgentBuilder(mAgentBuilder);
         }
     }
 
@@ -313,7 +361,7 @@ public class AgentWeb {
             return new IndicatorBuilderForFragment(this);
         }
 
-        public AgentWeb buildAgentWeb() {
+        private AgentWeb buildAgentWeb() {
             if (this.mViewGroup == null)
                 throw new NullPointerException("ViewGroup is null,please check you params");
             return HookManager.hookAgentWeb(new AgentWeb(this), this);
@@ -327,23 +375,23 @@ public class AgentWeb {
             this.agentBuilderFragment = agentBuilderFragment;
         }
 
-        public ChromeBuilderForFragment useDefaultIndicator(int color) {
+        public CommonBuilderForFragment useDefaultIndicator(int color) {
             this.agentBuilderFragment.enableProgress = true;
             this.agentBuilderFragment.mIndicatorColor = color;
-            return new ChromeBuilderForFragment(agentBuilderFragment);
+            return new CommonBuilderForFragment(agentBuilderFragment);
         }
 
-        public ChromeBuilderForFragment useDefaultIndicator() {
+        public CommonBuilderForFragment useDefaultIndicator() {
             this.agentBuilderFragment.enableProgress = true;
-            return new ChromeBuilderForFragment(agentBuilderFragment);
+            return new CommonBuilderForFragment(agentBuilderFragment);
         }
 
-        public ChromeBuilderForFragment closeDefaultIndicator() {
+        public CommonBuilderForFragment closeDefaultIndicator() {
             this.agentBuilderFragment.enableProgress = false;
-            return new ChromeBuilderForFragment(agentBuilderFragment);
+            return new CommonBuilderForFragment(agentBuilderFragment);
         }
 
-        public ChromeBuilderForFragment setCustomIndicator(BaseIndicatorView v) {
+        public CommonBuilderForFragment setCustomIndicator(BaseIndicatorView v) {
             if (v != null) {
                 this.agentBuilderFragment.enableProgress = true;
                 this.agentBuilderFragment.v = v;
@@ -353,83 +401,16 @@ public class AgentWeb {
                 this.agentBuilderFragment.isNeedDefaultProgress = true;
             }
 
-            return new ChromeBuilderForFragment(agentBuilderFragment);
-        }
-
-        public AgentWeb finishBuild() {
-            return this.agentBuilderFragment.buildAgentWeb();
-        }
-    }
-
-    public static class ChromeBuilderForFragment {
-
-        private AgentBuilderFragment mAgentBuilderFragment;
-
-        public ChromeBuilderForFragment(AgentBuilderFragment agentBuilderFragment) {
-            this.mAgentBuilderFragment = agentBuilderFragment;
-        }
-
-        public WebViewClientBuilderForFragment setChromeClient(WebChromeClient webChromeClient) {
-            this.mAgentBuilderFragment.mWebChromeClient = webChromeClient;
-            return new WebViewClientBuilderForFragment(mAgentBuilderFragment);
-        }
-
-        public WebViewClientBuilderForFragment setDefaultChromeClient() {
-            this.mAgentBuilderFragment.mWebChromeClient = null;
-            return new WebViewClientBuilderForFragment(mAgentBuilderFragment);
-
-        }
-
-        public AgentWeb buildAgentWeb() {
-            return this.mAgentBuilderFragment.buildAgentWeb();
-        }
-    }
-
-    public static class WebViewClientBuilderForFragment {
-
-        private AgentBuilderFragment mAgentBuilderFragment;
-
-        public WebViewClientBuilderForFragment(AgentBuilderFragment agentBuilderFragment) {
-            this.mAgentBuilderFragment = agentBuilderFragment;
-
-        }
-
-        public SettingBuilderForFragment setWebViewClient(WebViewClient webChromeClient) {
-            this.mAgentBuilderFragment.mWebViewClient = webChromeClient;
-            return new SettingBuilderForFragment(mAgentBuilderFragment);
-        }
-
-        public SettingBuilderForFragment setDefaultWebClient() {
-            this.mAgentBuilderFragment.mWebViewClient = null;
-            return new SettingBuilderForFragment(mAgentBuilderFragment);
-        }
-
-        public AgentWeb finishBuild() {
-            return this.mAgentBuilderFragment.buildAgentWeb();
-        }
-    }
-
-    public static class SettingBuilderForFragment {
-        private AgentBuilderFragment agentBuilderFragment;
-
-        public SettingBuilderForFragment(AgentBuilderFragment agentBuilderFragment) {
-            this.agentBuilderFragment = agentBuilderFragment;
-        }
-
-        public CommonBuilderForFragment setWebSettings(WebSettings webSettings) {
-            this.agentBuilderFragment.mWebSettings = webSettings;
             return new CommonBuilderForFragment(agentBuilderFragment);
         }
 
-        public CommonBuilderForFragment setDefaultWebSettings() {
-            this.agentBuilderFragment.mWebSettings = null;
-            return new CommonBuilderForFragment(agentBuilderFragment);
-        }
 
-        public AgentWeb finishBuild() {
-            return this.agentBuilderFragment.buildAgentWeb();
-        }
     }
+
+
+
+
+
 
     public static class CommonBuilderForFragment {
         private AgentBuilderFragment mAgentBuilderFragment;
@@ -447,8 +428,22 @@ public class AgentWeb {
             this.mAgentBuilderFragment.mWebCreator = webCreator;
             return this;
         }
+        public CommonBuilderForFragment setChromeClient() {
+            this.mAgentBuilderFragment.mWebChromeClient = null;
+            return this;
 
-        public AgentWeb create() {
+        }
+        public CommonBuilderForFragment setWebViewClient(WebViewClient webChromeClient) {
+            this.mAgentBuilderFragment.mWebViewClient = webChromeClient;
+            return this;
+        }
+
+        public CommonBuilderForFragment setWebSettings(WebSettings webSettings) {
+            this.mAgentBuilderFragment.mWebSettings = webSettings;
+            return this;
+        }
+
+        public AgentWeb createAgentWeb() {
             return this.mAgentBuilderFragment.buildAgentWeb();
         }
     }

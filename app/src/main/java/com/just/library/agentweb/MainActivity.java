@@ -1,9 +1,7 @@
 package com.just.library.agentweb;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.support.v7.app.AppCompatActivity;
 
 import com.just.library.AgentWeb;
 
@@ -15,12 +13,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        AgentWeb.with(this)//
+        /*AgentWeb.with(this)//
         .enableProgress()//
         .setViewGroup((ViewGroup) this.findViewById(R.id.container),new LinearLayout.LayoutParams(-1,-1))//
         .buildAgentWeb()//
-        .createWebViewWithSettings()//
-        .loadUrl("http://www.mi.com");
+        .ready()//
+        .loadUrl("http://www.mi.com");*/
+
+
+        AgentWeb.with(this)//
+        .createContentViewTag()//
+        .useDefaultIndicator()//
+        .setIndicatorColor(-1)
+        .createAgentWeb()//
+        .ready()
+        .go("http://www.jd.com");
+
+
+        AgentWeb.with(this,null)//
+        .configViewGroup(null,null)//
+        .setCustomIndicator(null)//
+        .createAgentWeb()//
+        .ready()//
+        .go("http://www.jd.com");
 
 
     }
