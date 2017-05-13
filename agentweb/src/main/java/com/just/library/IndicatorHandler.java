@@ -13,7 +13,7 @@ import android.webkit.WebView;
  * <b>@描述</b><br>
  */
 
-public class ProgressHandler implements ProgressController, ProgressLifeCyclic {
+public class IndicatorHandler implements IndicatorController, ProgressLifeCyclic {
     BaseProgressSpec baseProgressSpec;
 
     @Override
@@ -31,6 +31,11 @@ public class ProgressHandler implements ProgressController, ProgressLifeCyclic {
             finish();
         }
 
+    }
+
+    @Override
+    public BaseProgressSpec offerIndicator() {
+        return this.baseProgressSpec;
     }
 
     public void reset() {
@@ -58,12 +63,12 @@ public class ProgressHandler implements ProgressController, ProgressLifeCyclic {
         }
     }
 
-    public static ProgressHandler getInstance() {
-        return new ProgressHandler();
+    public static IndicatorHandler getInstance() {
+        return new IndicatorHandler();
     }
 
 
-    public ProgressHandler inJectProgressView(BaseProgressSpec baseProgressSpec) {
+    public IndicatorHandler inJectProgressView(BaseProgressSpec baseProgressSpec) {
         this.baseProgressSpec = baseProgressSpec;
         return this;
     }

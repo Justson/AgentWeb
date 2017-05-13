@@ -1,8 +1,6 @@
 package com.just.library;
 
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -14,7 +12,9 @@ import android.webkit.WebViewClient;
  * <b>@描述</b><br>
  */
 
-public interface WebSettings {
+public interface WebSettings <T extends android.webkit.WebSettings>{
 
-    void toSetting(WebView webView, WebViewClient webViewClient, WebChromeClient webChromeClient);
+    WebSettings toSetting(WebView webView);
+
+    T getWebSettings();
 }

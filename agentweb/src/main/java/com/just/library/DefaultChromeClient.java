@@ -14,7 +14,7 @@ public class DefaultChromeClient  extends ChromeClientProgress{
 
 
 
-    public DefaultChromeClient(ProgressController progressController) {
-        super(progressController);
+    public DefaultChromeClient(IndicatorController indicatorController) {
+        super(indicatorController);
     }
 }

@@ -30,13 +30,13 @@ import java.lang.reflect.Method;
 public class WebChromeClientProgressWrapper extends ChromeClientProgress {
     private WebChromeClient mWebChromeClient;
 
-    public WebChromeClientProgressWrapper(ProgressController progressController, WebChromeClient webChromeClient) {
-        this(progressController);
+    public WebChromeClientProgressWrapper(IndicatorController indicatorController, WebChromeClient webChromeClient) {
+        this(indicatorController);
         this.mWebChromeClient = webChromeClient;
     }
 
-    public WebChromeClientProgressWrapper(ProgressController progressController) {
-        super(progressController);
+    public WebChromeClientProgressWrapper(IndicatorController indicatorController) {
+        super(indicatorController);
 
     }
 

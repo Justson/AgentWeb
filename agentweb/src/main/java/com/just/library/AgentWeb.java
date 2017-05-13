@@ -1,10 +1,14 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
 
@@ -32,26 +36,31 @@ public class AgentWeb {
     private WebCreator mWebCreator;
     private WebSettings mWebSettings;
     private AgentWeb mAgentWeb = null;
-    private ProgressController mProgressController;
+    private IndicatorController mIndicatorController;
     private WebChromeClient mWebChromeClient;
     private WebViewClient mWebViewClient;
     private boolean enableProgress;
     private Fragment mFragment;
     private IEventHandler mIEventHandler;
+
+    private ArrayMap<String,Object> mJavaObjects;
     private int TAG = 0;
+    private WebListenerManager mWebListenerManager;
+    private DownloadListener mDownloadListener=null;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.enableProgress = agentBuilder.enableProgress;
         mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor) : agentBuilder.mWebCreator;
-        mProgressController = agentBuilder.mProgressController;
+        mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
         mAgentWeb = this;
         this.mWebSettings = agentBuilder.mWebSettings;
         this.mIEventHandler = agentBuilder.mIEventHandler;
         TAG = 0;
+        this.mJavaObjects=agentBuilder.mJavaObject;
     }
 
 
@@ -63,7 +72,7 @@ public class AgentWeb {
         this.mIEventHandler = agentBuilderFragment.mIEventHandler;
         this.enableProgress = agentBuilderFragment.enableProgress;
         mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor) : agentBuilderFragment.mWebCreator;
-        mProgressController = agentBuilderFragment.mProgressController;
+        mIndicatorController = agentBuilderFragment.mIndicatorController;
         this.mWebChromeClient = agentBuilderFragment.mWebChromeClient;
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
         mAgentWeb = this;
@@ -99,31 +108,68 @@ public class AgentWeb {
         return mIEventHandler.onKeyDown(keyCode, keyEvent);
     }
 
-    public static AgentWeb withCreatorWeb(WebCreator creatorWeb) {
+    /*public static AgentWeb withCreatorWeb(WebCreator creatorWeb) {
         return new AgentBuilder(creatorWeb).buildAgentWeb();
+    }*/
+
+    public WebCreator getWebCreator(){
+        return  this.mWebCreator;
+    }
+    public IEventHandler getIEventHandler(){
+        return this.mIEventHandler==null?(this.mIEventHandler=EventHandlerImpl.getInstantce(mWebCreator.get())):this.mIEventHandler;
     }
 
-    public ViewGroup defaultWeb() {
-        return mWebCreator.create().getGroup();
-    }
+    private JsInterfaceHolder mJsInterfaceHolder=null;
 
+    public WebSettings getWebSettings(){
+        return this.mWebSettings;
+    }
+    public IndicatorController getIndicatorController(){
+        return this.mIndicatorController;
+    }
     public AgentWeb ready() {
         WebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
-            this.mWebSettings=mWebSettings = WebDefaultSettings.getInstance();
+            this.mWebSettings=mWebSettings = WebDefaultSettingsManager.getInstance();
         }
-        mWebSettings.toSetting(mWebCreator.create().get(), getClient(), getChromeClient());
+        if(mWebListenerManager ==null&&mWebSettings instanceof WebDefaultSettingsManager){
+            mWebListenerManager = (WebListenerManager) mWebSettings;
+        }
+        mWebSettings.toSetting(mWebCreator.create().get());
+        mWebListenerManager.setDownLoader(mWebCreator.get(),getLoadListener());
+        mWebListenerManager.setWebChromeClient(mWebCreator.get(),getChromeClient());
+        mWebListenerManager.setWebViewClient(mWebCreator.get(),getClient());
+
+        if(mJsInterfaceHolder==null){
+            mJsInterfaceHolder=JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get());
+        }
+        if(mJavaObjects!=null&&!mJavaObjects.isEmpty()){
+            mJsInterfaceHolder.addJavaObjects(mJavaObjects);
+        }
         return this;
     }
 
+
+    private DownloadListener getLoadListener(){
+        DownloadListener mDownloadListener=this.mDownloadListener;
+        if(mDownloadListener==null){
+            this.mDownloadListener=mDownloadListener=new DefaultDownLoaderImpl(mActivity.getApplicationContext(),false,true);
+        }
+        return mDownloadListener;
+    }
     private WebChromeClient getChromeClient() {
-        ProgressController mProgressController = (this.mProgressController == null) ? ProgressHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mProgressController;
+        IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
         if (mWebChromeClient != null) {
-            return enableProgress ? new WebChromeClientProgressWrapper(mProgressController, mWebChromeClient) : mWebChromeClient;
+            return enableProgress ? new WebChromeClientProgressWrapper(mIndicatorController, mWebChromeClient) : mWebChromeClient;
         } else {
-            return new ChromeClientProgress(mProgressController);
+            return new ChromeClientProgress(mIndicatorController);
         }
 
+    }
+
+
+    public JsInterfaceHolder getJsInterfaceHolder(){
+        return this.mJsInterfaceHolder;
     }
 
     private WebViewClient getClient() {
@@ -134,10 +180,24 @@ public class AgentWeb {
         }
     }
 
+    private Handler mHandler=new Handler(Looper.getMainLooper());
+    private void safeLoadUrl(final String url){
 
-    public AgentWeb loadUrl(String url) {
-        if (TextUtils.isEmpty(url) || (!url.startsWith("http")))
-            throw new UrlCommonException("url is null or '' or not startsWith http , please check url format");
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                loadUrl(url);
+            }
+        });
+    }
+
+    public AgentWeb loadUrl(final String url) {
+        if (Looper.myLooper()!=Looper.getMainLooper()){
+            safeLoadUrl(url);
+            return this;
+        }
+        if (TextUtils.isEmpty(url) || ((!url.startsWith("http")&&(!url.startsWith("javascript:")))))
+            throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , please check url format");
         mWebCreator.get().loadUrl(url);
         return this;
     }
@@ -146,9 +206,7 @@ public class AgentWeb {
 
         return loadUrl(url);
     }
-    public ViewGroup getViewGroup() {
-        return mWebCreator.getGroup();
-    }
+
 
     public void destroy() {
         AgentWebUtils.clearWebView(mWebCreator.get());
@@ -164,7 +222,7 @@ public class AgentWeb {
         private boolean isNeedProgress;
         private int index = -1;
         private BaseIndicatorView v;
-        private ProgressController mProgressController = null;
+        private IndicatorController mIndicatorController = null;
         /*默认进度条是打开的*/
         private boolean enableProgress = true;
         private ViewGroup.LayoutParams mLayoutParams = null;
@@ -175,7 +233,13 @@ public class AgentWeb {
         private WebCreator mWebCreator;
 
 
+        private ArrayMap<String,Object> mJavaObject=null;
 
+        private void addJavaObject(String key,Object o){
+            if(mJavaObject==null)
+                mJavaObject=new ArrayMap<>();
+            mJavaObject.put(key,o);
+        }
 
 
         private void setIndicatorColor(int indicatorColor) {
@@ -270,10 +334,15 @@ public class AgentWeb {
             return new CommonAgentBuilder(mAgentBuilder);
         }
 
+
+
     }
 
     public  static class CommonAgentBuilder{
         private AgentBuilder mAgentBuilder;
+
+
+
         private CommonAgentBuilder(AgentBuilder agentBuilder){
             this.mAgentBuilder=agentBuilder;
 
@@ -299,12 +368,21 @@ public class AgentWeb {
         }
 
 
-        public CommonAgentBuilder(ProgressController progressController) {
-            this.mAgentBuilder.mProgressController = progressController;
+        public CommonAgentBuilder(IndicatorController indicatorController) {
+            this.mAgentBuilder.mIndicatorController = indicatorController;
         }
 
         public AgentWeb createAgentWeb(){
             return mAgentBuilder.buildAgentWeb();
+        }
+
+        public CommonAgentBuilder addJavascriptInterface(String name,Object o){
+            mAgentBuilder.addJavaObject(name,o);
+            return this;
+        }
+        public CommonAgentBuilder setWebCreator(WebCreator webCreator){
+            this.mAgentBuilder.mWebCreator=webCreator;
+            return this;
         }
     }
 
@@ -337,7 +415,7 @@ public class AgentWeb {
         private boolean isNeedDefaultProgress;
         private int index = -1;
         private BaseIndicatorView v;
-        private ProgressController mProgressController = null;
+        private IndicatorController mIndicatorController = null;
         /*默认进度条是打开的*/
         private boolean enableProgress = true;
         private ViewGroup.LayoutParams mLayoutParams = null;

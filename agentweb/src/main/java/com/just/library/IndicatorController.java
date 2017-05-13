@@ -12,8 +12,9 @@ import android.webkit.WebView;
  * <b>@描述</b><br>
  */
 
-public interface ProgressController {
+public interface IndicatorController {
 
     void progress(WebView v, int newProgress);
 
+    BaseProgressSpec offerIndicator();
 }

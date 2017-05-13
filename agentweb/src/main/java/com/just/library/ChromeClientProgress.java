@@ -15,17 +15,17 @@ import android.webkit.WebView;
 
 public class ChromeClientProgress extends WebChromeClient {
 
-    private ProgressController mProgressController = null;
+    private IndicatorController mIndicatorController = null;
 
-    public ChromeClientProgress(ProgressController progressController) {
-        this.mProgressController = progressController;
+    public ChromeClientProgress(IndicatorController indicatorController) {
+        this.mIndicatorController = indicatorController;
     }
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
 
-        if (mProgressController != null)
-            mProgressController.progress(view, newProgress);
+        if (mIndicatorController != null)
+            mIndicatorController.progress(view, newProgress);
     }
 
 }

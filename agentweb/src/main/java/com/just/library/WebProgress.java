@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -94,7 +93,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        Log.i("Info", "re:" + (currentProgress / 100 * Float.valueOf(this.getWidth())) + "  width:" + this.getWidth() + "  height:" + this.getHeight() + "  left:" + getLeft() + "  right:" + getRight() + "  b:" + this.getBottom() + " top:" + this.getTop());
+     /*   Log.i("Info", "re:" + (currentProgress / 100 * Float.valueOf(this.getWidth())) + "  width:" + this.getWidth() + "  height:" + this.getHeight() + "  left:" + getLeft() + "  right:" + getRight() + "  b:" + this.getBottom() + " top:" + this.getTop());*/
         canvas.drawRect(0, 0, currentProgress / 100 * Float.valueOf(this.getWidth()), this.getHeight(), mPaint);
     }
 
@@ -127,9 +126,9 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     private float weightDuration(float value, float current) {
 
         if (value > 70 && value < 85) {
-            return 1;
+            return 1.5f;
         } else if (value > 85) {
-            return 0.5f;
+            return 0.8f;
         }
         return small(value, current);
     }
@@ -137,11 +136,11 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     private float small(float value, float current) {
         float poor = Math.abs(value - current);
         if (poor < 25) {
-            return 3f;
+            return 4f;
         } else if (poor > 25 && poor < 50) {
-            return 2f;
+            return 3f;
         } else {
-            return 1f;
+            return 2f;
         }
     }
 
@@ -179,7 +178,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             float t = (float) animation.getAnimatedValue();
-            Log.i("Info", "t:" + t);
+//            Log.i("Info", "t:" + t);
             WebProgress.this.currentProgress = t;
             WebProgress.this.invalidate();
 
