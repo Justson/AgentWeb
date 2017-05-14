@@ -57,13 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .addJavascriptInterface("hello", new HelloJs())//
-                .setReceivedTitleCallback(new ChromeClientCallbackManager.ReceivedTitleCallback() {
-                    @Override
-                    public void onReceivedTitle(WebView view, String title) {
-                        if(mTitleTextView!=null)
-                            mTitleTextView.setText(title);
-                    }
-                })
+                .setReceivedTitleCallback(mCallback)
                 .createAgentWeb()//
                 .ready()
                 .go("http://www.jd.com");
@@ -89,6 +83,14 @@ public class MainActivity extends AppCompatActivity {
         },2000);*/
 
     }
+
+    private ChromeClientCallbackManager.ReceivedTitleCallback mCallback=new ChromeClientCallbackManager.ReceivedTitleCallback() {
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            if(mTitleTextView!=null)
+                mTitleTextView.setText(title);
+        }
+    };
 
     private void showDialog() {
 

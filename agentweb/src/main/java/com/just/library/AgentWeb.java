@@ -26,8 +26,8 @@ import android.webkit.WebViewClient;
 /**
  *
  * FrameLayout--嵌套WebView,ProgressBar
- *
- *author
+ *https://github.com/Justson/AgentWeb
+ *author just
  */
 public class AgentWeb {
 
@@ -213,6 +213,7 @@ public class AgentWeb {
 
 
     public AgentWeb go(String url) {
+
 
 
         return loadUrl(url);

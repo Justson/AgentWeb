@@ -4,6 +4,7 @@ import android.webkit.WebView;
 
 /**
  * Created by cenxiaozhong on 2017/5/14.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class ChromeClientCallbackManager {
