@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
  * Created by cenxiaozhong on 2017/5/12.
  */
 
-public class BaseIndicatorView extends View implements BaseProgressSpec ,LayoutParamsOffer{
+public abstract class BaseIndicatorView extends View implements BaseProgressSpec ,LayoutParamsOffer{
     public BaseIndicatorView(Context context) {
         super(context);
     }

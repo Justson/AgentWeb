@@ -2,6 +2,7 @@ package com.just.library;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -28,13 +29,16 @@ public class DefaultWebCreator implements WebCreator {
     ViewGroup.LayoutParams mLayoutParams = null;
     private int color = -1;
 
-    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color) {
+    private int height_dp;
+
+    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = true;
         this.index = index;
         this.color = color;
         this.mLayoutParams = lp;
+        this.height_dp = height_dp;
     }
 
     DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index) {
@@ -122,16 +126,20 @@ public class DefaultWebCreator implements WebCreator {
 
         if (isNeedDefaultProgress) {
 
-//            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, 2));
+            FrameLayout.LayoutParams lp = null;
             WebProgress mWebProgress = new WebProgress(mActivity);
+            if (height_dp > 0)
+                lp=new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, height_dp));
+            else
+                lp = mWebProgress.offerLayoutParams();
             if (color != -1)
                 mWebProgress.setColor(color);
-//            lp.gravity = Gravity.TOP;
-            mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgress), mWebProgress.offerLayoutParams());
+            lp.gravity = Gravity.TOP;
+            mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgress),lp );
         } else if (!isNeedDefaultProgress && progressView != null) {
 
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-2, -2);
-            mFrameLayout.addView((View) (this.mBaseProgressSpec = (BaseProgressSpec) progressView), lp);
+//            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-2, -2);
+            mFrameLayout.addView((View) (this.mBaseProgressSpec = (BaseProgressSpec) progressView), progressView.offerLayoutParams());
         }
         return mFrameLayout;
 

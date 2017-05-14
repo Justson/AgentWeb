@@ -1,6 +1,7 @@
 package com.just.library;
 
 
+import android.os.Build;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -30,15 +31,31 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
         mWebSettings.setJavaScriptEnabled(true);
         mWebSettings.setSupportZoom(true);
         mWebSettings.setBuiltInZoomControls(false);
-        mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        if (AgentWebUtils.checkNetwork(webView.getContext())) {
+            //根据cache-control获取数据。
+            mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT);
+        } else {
+            //没网，则从本地获取，即离线加载
+            mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        }
         mWebSettings.setTextZoom(100);
         mWebSettings.setLoadsImagesAutomatically(true);
         mWebSettings.setAllowFileAccess(true);
+        mWebSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         mWebSettings.setLayoutAlgorithm(android.webkit.WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         mWebSettings.setLoadWithOverviewMode(true);
+        mWebSettings.setUseWideViewPort(true);
         mWebSettings.setDomStorageEnabled(true);
+        mWebSettings.setNeedInitialFocus(true);
+        mWebSettings.setDefaultTextEncodingName("utf-8");//设置编码格式
+        mWebSettings.setLoadsImagesAutomatically(true);
+        mWebSettings.setDefaultFontSize(16);
+        mWebSettings.setMinimumFontSize(12);//设置 WebView 支持的最小字体大小，默认为 8
 
-
+        //适配5.0不允许http和https混合使用情况
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mWebSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
 
         return this;
     }
