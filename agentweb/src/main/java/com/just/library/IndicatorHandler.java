@@ -22,7 +22,7 @@ public class IndicatorHandler implements IndicatorController, ProgressLifeCyclic
         Log.i("Info", "newProgress:" + newProgress + "  v:" + v);
         if (newProgress == 0) {
             reset();
-        } else if (newProgress > 0 && newProgress < 10) {
+        } else if (newProgress > 0 && newProgress <= 10) {
             showProgressBar();
         } else if (newProgress > 10 && newProgress < 95) {
             setProgressBar(newProgress);
@@ -39,6 +39,7 @@ public class IndicatorHandler implements IndicatorController, ProgressLifeCyclic
     }
 
     public void reset() {
+
         if (baseProgressSpec != null) {
             baseProgressSpec.reset();
         }

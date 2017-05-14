@@ -1,5 +1,11 @@
 package com.just.library;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
+import android.webkit.JsResult;
+import android.webkit.WebView;
+
 /**
  * <b>@项目名：</b> agentweb<br>
  * <b>@包名：</b>com.just.library<br>
@@ -13,8 +19,27 @@ package com.just.library;
 public class DefaultChromeClient  extends ChromeClientProgress{
 
 
+    private Activity mActivity;
 
-    public DefaultChromeClient(IndicatorController indicatorController) {
+    public DefaultChromeClient(Activity activity,IndicatorController indicatorController) {
         super(indicatorController);
+        this.mActivity=activity;
+    }
+
+
+    @Override
+    public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+
+        AgentWebUtils.show(view,
+                message,
+                Snackbar.LENGTH_SHORT,
+                Color.WHITE,
+                mActivity.getResources().getColor(R.color.black),
+                null,
+                -1,
+                null);
+        result.confirm();
+
+        return true;
     }
 }

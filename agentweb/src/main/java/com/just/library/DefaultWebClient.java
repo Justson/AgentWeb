@@ -45,6 +45,7 @@ public class DefaultWebClient extends WebViewClient {
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
         Log.i("Info", "onReceivedError");
+
     }
 
     @Override
@@ -55,7 +56,7 @@ public class DefaultWebClient extends WebViewClient {
 
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-//        super.onReceivedSslError(view, handler, error);
+
         handler.proceed();
         Log.i("Info", "onReceivedSslError");
     }

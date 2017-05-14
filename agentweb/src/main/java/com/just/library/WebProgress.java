@@ -99,7 +99,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
     public void show() {
         this.setVisibility(View.VISIBLE);
-
+        currentProgress=0f;
         startAnim(-1, true);
     }
 
@@ -203,6 +203,8 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     @Override
     public void reset() {
         currentProgress = 0;
+        if(mValueAnimator!=null&&mValueAnimator.isStarted())
+            mValueAnimator.cancel();
     }
 
     @Override

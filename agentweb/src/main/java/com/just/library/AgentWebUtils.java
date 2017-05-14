@@ -1,7 +1,5 @@
 package com.just.library;
 
-import android.app.Notification;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -11,11 +9,18 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
+import android.support.annotation.ColorInt;
+import android.support.design.widget.Snackbar;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -141,4 +146,33 @@ public class AgentWebUtils {
     }
 
 
+    private static WeakReference<Snackbar> snackbarWeakReference;
+    public static void show(View parent,
+                             CharSequence text,
+                             int duration,
+                             @ColorInt int textColor,
+                             @ColorInt int bgColor,
+                             CharSequence actionText,
+                             @ColorInt int actionTextColor,
+                             View.OnClickListener listener) {
+        SpannableString spannableString = new SpannableString(text);
+        ForegroundColorSpan colorSpan = new ForegroundColorSpan(textColor);
+        spannableString.setSpan(colorSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        snackbarWeakReference = new WeakReference<>(Snackbar.make(parent, spannableString, duration));
+        Snackbar snackbar = snackbarWeakReference.get();
+        View view = snackbar.getView();
+        view.setBackgroundColor(bgColor);
+        if (actionText != null && actionText.length() > 0 && listener != null) {
+            snackbar.setActionTextColor(actionTextColor);
+            snackbar.setAction(actionText, listener);
+        }
+        snackbar.show();
+    }
+
+    public static void dismiss() {
+        if (snackbarWeakReference != null && snackbarWeakReference.get() != null) {
+            snackbarWeakReference.get().dismiss();
+            snackbarWeakReference = null;
+        }
+    }
 }

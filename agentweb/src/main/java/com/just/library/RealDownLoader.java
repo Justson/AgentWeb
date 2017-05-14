@@ -31,19 +31,20 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
     private long mTimeLast = 0;
     private long mSpeed = 0;
 
-    private static final int TIME_OUT=30000000;
+    private static final int TIME_OUT = 30000000;
     private Notity mNotity;
 
-    private static final int ERROR_LOAD=-5;
+    private static final int ERROR_LOAD = -5;
 
     RealDownLoader(DownLoadTask downLoadTask) {
 
 
         this.mDownLoadTask = downLoadTask;
-        this.totals=mDownLoadTask.getLength();
+        this.totals = mDownLoadTask.getLength();
         checkNullTask(downLoadTask);
     }
-    private void checkNullTask(DownLoadTask downLoadTask){
+
+    private void checkNullTask(DownLoadTask downLoadTask) {
 
     }
 
@@ -51,7 +52,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        buildNotify(new Intent(),mDownLoadTask.getId(),"正在下载中");
+        buildNotify(new Intent(), mDownLoadTask.getId(), "正在下载中");
     }
 
     private boolean checkDownLoaderCondition() {
@@ -70,7 +71,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
         if (!mDownLoadTask.isForce()) {
 
             return AgentWebUtils.checkWifi(mDownLoadTask.getContext());
-        }else{
+        } else {
             return AgentWebUtils.checkNetwork(mDownLoadTask.getContext());
         }
 
@@ -79,12 +80,12 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
 
     @Override
     protected Integer doInBackground(Void... params) {
-        int result=ERROR_LOAD;
+        int result = ERROR_LOAD;
         try {
-            begin=System.currentTimeMillis();
+            begin = System.currentTimeMillis();
             if (!checkDownLoaderCondition())
                 return ERROR_LOAD;
-           result = doDownLoad();
+            result = doDownLoad();
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -99,21 +100,24 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
         HttpURLConnection mHttpURLConnection = createUrlConnection(mDownLoadTask.getUrl());
 
 
-
-
         if (mDownLoadTask.getFile().length() > 0) {
 
             mHttpURLConnection.addRequestProperty("Range", "bytes=" + (tmp = mDownLoadTask.getFile().length()) + "-");
         }
 
         mHttpURLConnection.connect();
-        if (mHttpURLConnection.getResponseCode() != 200&&mHttpURLConnection.getResponseCode()!=206) {
+        if (mHttpURLConnection.getResponseCode() != 200 && mHttpURLConnection.getResponseCode() != 206) {
 
             return ERROR_LOAD;
         }
 
+        try {
 
-        return doDownLoad(mHttpURLConnection.getInputStream(),new LoadingRandomAccessFile(mDownLoadTask.getFile()));
+            return doDownLoad(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownLoadTask.getFile()));
+        } finally {
+            if (mHttpURLConnection != null)
+                mHttpURLConnection.disconnect();
+        }
 
 
     }
@@ -127,58 +131,59 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
         return mHttpURLConnection;
     }
 
-    private long time=0;
+    private long time = 0;
+
     @Override
     protected void onProgressUpdate(Integer... values) {
 
 
-       long current=System.currentTimeMillis();
-        used=current-begin;
+        long current = System.currentTimeMillis();
+        used = current - begin;
 
 
-        Log.i("Info","progress:"+((tmp+loaded)/Float.valueOf(totals)*100)+ "tmp:"+tmp+"  load=:"+loaded+"  total:"+totals);
+        Log.i("Info", "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
 
-        long c=System.currentTimeMillis();
-        if(mNotity!=null&&c-time>800){
-            time=c;
-            mNotity.setProgress(100, (int) ((tmp+loaded)/Float.valueOf(totals)*100),false);
+        long c = System.currentTimeMillis();
+        if (mNotity != null && c - time > 800) {
+            time = c;
+            mNotity.setProgress(100, (int) ((tmp + loaded) / Float.valueOf(totals) * 100), false);
         }
     }
 
     @Override
     protected void onPostExecute(Integer integer) {
 
-        if(integer==ERROR_LOAD){
-            Toast.makeText(mDownLoadTask.getContext(),"下载失败出错了",Toast.LENGTH_SHORT).show();
+        if (integer == ERROR_LOAD) {
+            Toast.makeText(mDownLoadTask.getContext(), "下载失败出错了", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(mDownLoadTask.isEnableIndicator()){
+        if (mDownLoadTask.isEnableIndicator()) {
 
-            if(mNotity!=null)
+            if (mNotity != null)
                 mNotity.cancel(mDownLoadTask.getId());
 
-            Intent intent=AgentWebUtils.getFileIntent(mDownLoadTask.getFile());
+            Intent intent = AgentWebUtils.getFileIntent(mDownLoadTask.getFile());
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
                     0x110, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mNotity.setProgressFinish("点击打开",rightPendIntent);
+            mNotity.setProgressFinish("点击打开", rightPendIntent);
 
 
         }
 
     }
 
-    private void buildNotify(Intent intent,int id,String progressHint) {
-        Log.i("Info","progress:"+progressHint);
-        if(mDownLoadTask.isEnableIndicator()){
+    private void buildNotify(Intent intent, int id, String progressHint) {
+
+        if (mDownLoadTask.isEnableIndicator()) {
 
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
                     0x33, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             int smallIcon = mDownLoadTask.getDrawableRes();
             String ticker = "您有一条新通知";
-            mNotity = new Notity(mDownLoadTask.getContext(),id);
+            mNotity = new Notity(mDownLoadTask.getContext(), id);
             mNotity.notify_progress(rightPendIntent, smallIcon, ticker, "文件下载", progressHint, false, false, false);
             mNotity.sent();
         }
@@ -203,8 +208,8 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
                 out.write(buffer, 0, n);
                 bytes += n;
 
-                if(!checknet()){
-                    Log.i("Info","network");
+                if (!checknet()) {
+                    Log.i("Info", "network");
                     return ERROR_LOAD;
                 }
 
@@ -213,8 +218,8 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
                 } else if (previousBlockTime == -1) {
                     previousBlockTime = System.currentTimeMillis();
                 } else if ((System.currentTimeMillis() - previousBlockTime) > TIME_OUT) {
-                    Log.i("Info","timeout");
-                  return ERROR_LOAD;
+                    Log.i("Info", "timeout");
+                    return ERROR_LOAD;
                 }
             }
             return bytes;

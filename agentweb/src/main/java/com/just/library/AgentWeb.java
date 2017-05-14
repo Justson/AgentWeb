@@ -196,7 +196,8 @@ public class AgentWeb {
             safeLoadUrl(url);
             return this;
         }
-        if (TextUtils.isEmpty(url) || ((!url.startsWith("http")&&(!url.startsWith("javascript:")))))
+        //|| ((!url.startsWith("http")&&(!url.startsWith("javascript:"))))
+        if (TextUtils.isEmpty(url) )
             throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , please check url format");
         mWebCreator.get().loadUrl(url);
         return this;

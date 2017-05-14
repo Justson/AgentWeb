@@ -30,10 +30,10 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
            Object v= mEntry.getValue();
            boolean t=checkObject(v);
             if(!t)
-                throw new JsInterfaceObjectException("this object  have not offer method javascript to call");
+                throw new JsInterfaceObjectException("this object has not offer method javascript to call");
 
             else
-                addJavaObject(mEntry.getKey(),v);
+                addJavaObjectDirect(mEntry.getKey(),v);
         }
 
         return null;
@@ -41,16 +41,16 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
     @Override
     public JsInterfaceHolder addJavaObject(String k, Object v) {
-        checkObject(v);
-        return this;
-    }
-    private JsInterfaceHolder addJavaObjectDirect(String k,Object v){
         boolean t=checkObject(v);
         if(!t)
-            throw new JsInterfaceObjectException("this object is not have javascriptInterface");
+            throw new JsInterfaceObjectException("this object has not javascriptInterface");
 
         else
             addJavaObjectDirect(k,v);
+        return this;
+    }
+    private JsInterfaceHolder addJavaObjectDirect(String k,Object v){
+            this.mWebView.addJavascriptInterface(v,k);
         return this;
     }
 

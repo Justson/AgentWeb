@@ -1,11 +1,11 @@
 package com.just.library;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.DownloadListener;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -19,7 +19,8 @@ public class DefaultDownLoaderImpl implements DownloadListener {
     private boolean isForce;
     private boolean enableIndicator;
 
-    private static   int NoticationID=1;
+    private static int NoticationID = 1;
+
     public DefaultDownLoaderImpl(Context context, boolean isforce, boolean enableIndicator) {
         this.mContext = context;
         this.isForce = isforce;
@@ -31,33 +32,39 @@ public class DefaultDownLoaderImpl implements DownloadListener {
 
         Log.i("Info", "url:" + url + " useraget:" + userAgent + " content:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength);
 
-        File mFile=getFile(contentDisposition, url);
-        if(mFile.exists()&&mFile.length()>=contentLength){
-            Toast.makeText(mContext,"该文件已经存在", Toast.LENGTH_SHORT).show();
+        File mFile = getFile(contentDisposition, url);
+        if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
+            /*Toast.makeText(mContext,"该文件已经存在", Toast.LENGTH_SHORT).show();
             mFile.delete();
-            mFile=getFile(contentDisposition,url);
-            /*Intent mIntent=AgentWebUtils.getFileIntent(mFile);
+            mFile=getFile(contentDisposition,url);*/
+            Intent mIntent = AgentWebUtils.getFileIntent(mFile);
             mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(mIntent);*/
-//            return;
+            mContext.startActivity(mIntent);
+            return;
         }
-        new RealDownLoader(new DownLoadTask(NoticationID++, url, isForce, enableIndicator, mContext, mFile, contentLength,R.drawable.download)).execute();
+        if (mFile != null)
+            new RealDownLoader(new DownLoadTask(NoticationID++, url, isForce, enableIndicator, mContext, mFile, contentLength, R.drawable.download)).execute();
     }
 
     private File getFile(String contentDisposition, String url) {
 
         try {
             String filename = "";
-            if (!TextUtils.isEmpty(contentDisposition) && contentDisposition.contains("filename")&&contentDisposition.endsWith("filename")) {
+            if (!TextUtils.isEmpty(contentDisposition) && contentDisposition.contains("filename") && contentDisposition.endsWith("filename")) {
 
                 int position = contentDisposition.indexOf("filename");
                 filename = contentDisposition.substring(position + 1);
             }
-            if (TextUtils.isEmpty(filename) && !TextUtils.isEmpty(url)&&!url.endsWith("/")) {
+            if (TextUtils.isEmpty(filename) && !TextUtils.isEmpty(url) && !url.endsWith("/")) {
 
                 int p = url.lastIndexOf("/");
                 if (p != -1)
                     filename = url.substring(p + 1);
+                if (filename.contains("?")) {
+                    int index = filename.indexOf("?");
+                    filename = filename.substring(0, index);
+
+                }
             }
 
             if (TextUtils.isEmpty(filename)) {

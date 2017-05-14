@@ -2,7 +2,9 @@ package com.just.library;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -164,12 +166,14 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onPermissionRequest(PermissionRequest request) {
 //        request.deny();
         if (this.mWebChromeClient != null)
             this.mWebChromeClient.onPermissionRequest(request);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onPermissionRequestCanceled(PermissionRequest request) {
 
         if (this.mWebChromeClient != null)
@@ -214,6 +218,7 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
             this.mWebChromeClient.getVisitedHistory(callback);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
                                      FileChooserParams fileChooserParams) {
         if (this.mWebChromeClient != null)
