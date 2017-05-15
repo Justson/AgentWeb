@@ -1,6 +1,6 @@
 package com.just.library;
 
-import android.support.annotation.RequiresApi;
+import android.webkit.ValueCallback;
 
 /**
  * Created by cenxiaozhong on 2017/5/14.
@@ -9,8 +9,7 @@ import android.support.annotation.RequiresApi;
 public interface JsEntraceAccess {
 
 
-    @RequiresApi(17)
-    String synCallJs();
+    void callJs(String str, ValueCallback<String> callback);
 
-
+    void loadJs(String str);
 }

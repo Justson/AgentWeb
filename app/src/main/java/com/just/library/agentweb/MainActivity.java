@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.ValueCallback;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        long p=System.currentTimeMillis();
+        long p = System.currentTimeMillis();
         mAgentWeb = AgentWeb.with(this)//
                 .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
@@ -60,34 +62,33 @@ public class MainActivity extends AppCompatActivity {
                 .setReceivedTitleCallback(mCallback)
                 .createAgentWeb()//
                 .ready()
-                .go("http://www.jd.com");
-        long n=System.currentTimeMillis();
-        Log.i("Info","init used time:"+(n-p));
+                .go("file:///android_asset/test.html");
+        long n = System.currentTimeMillis();
+        Log.i("Info", "init used time:" + (n - p));
 
 
-
-        /*Log.i("Info","out:"+(Looper.getMainLooper()==Looper.myLooper())) ;
+        Log.i("Info", "out:" + (Looper.getMainLooper() == Looper.myLooper()));
         mAgentWeb.getWebCreator().get()//
-        .postDelayed(new Runnable() {
-            @Override
-            public void run() {
-               Log.i("Info","Thread:"+(Looper.getMainLooper()==Looper.myLooper())) ;
-                mAgentWeb.getWebCreator().get().evaluateJavascript("javascript:callByAndroid()", new ValueCallback<String>() {
+                .postDelayed(new Runnable() {
                     @Override
-                    public void onReceiveValue(String value) {
-                        Log.i("Info","value:"+value);
-                    }
-                });
+                    public void run() {
+                        Log.i("Info", "Thread:" + (Looper.getMainLooper() == Looper.myLooper()));
+                        mAgentWeb.getWebCreator().get().evaluateJavascript("javascript:callByAndroid()", new ValueCallback<String>() {
+                            @Override
+                            public void onReceiveValue(String value) {
+                                Log.i("Info", "value:" + value + "   Thread:" + Thread.currentThread() + "    loo:" + ((Looper.getMainLooper() == Looper.myLooper())));
+                            }
+                        });
 
-            }
-        },2000);*/
+                    }
+                }, 2000);
 
     }
 
-    private ChromeClientCallbackManager.ReceivedTitleCallback mCallback=new ChromeClientCallbackManager.ReceivedTitleCallback() {
+    private ChromeClientCallbackManager.ReceivedTitleCallback mCallback = new ChromeClientCallbackManager.ReceivedTitleCallback() {
         @Override
         public void onReceivedTitle(WebView view, String title) {
-            if(mTitleTextView!=null)
+            if (mTitleTextView != null)
                 mTitleTextView.setText(title);
         }
     };

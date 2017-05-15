@@ -47,7 +47,7 @@ public class AgentWeb {
     private WebListenerManager mWebListenerManager;
     private DownloadListener mDownloadListener = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
-    private WebSecurityController mWebSecurityController;
+    private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
@@ -63,6 +63,9 @@ public class AgentWeb {
         TAG = 0;
         this.mJavaObjects = agentBuilder.mJavaObject;
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
+
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects);
+        doSafeCheck();
     }
 
 
@@ -82,7 +85,20 @@ public class AgentWeb {
         this.mJavaObjects = agentBuilderFragment.mJavaObject;
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
 
-        this.mWebSecurityController = null;
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects);
+        doSafeCheck();
+    }
+
+    private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
+
+    private void doSafeCheck() {
+
+        WebSecurityCheckLogic mWebSecurityCheckLogic = this.mWebSecurityCheckLogic;
+        if (mWebSecurityCheckLogic == null) {
+            this.mWebSecurityCheckLogic = mWebSecurityCheckLogic = WebSecurityLogicImpl.getInstance();
+        }
+        mWebSecurityController.check(mWebSecurityCheckLogic);
+
     }
 
     private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp) {
@@ -144,7 +160,7 @@ public class AgentWeb {
         if (mWebListenerManager == null && mWebSettings instanceof WebDefaultSettingsManager) {
             mWebListenerManager = (WebListenerManager) mWebSettings;
         }
-        mWebSettings.toSetting(mWebCreator.create().get());
+        mWebSettings.toSetting(mWebCreator.get());
         mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
         mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
         mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
@@ -216,8 +232,6 @@ public class AgentWeb {
 
 
     public AgentWeb go(String url) {
-
-
         return loadUrl(url);
     }
 

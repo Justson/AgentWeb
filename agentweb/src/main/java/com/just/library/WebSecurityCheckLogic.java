@@ -1,5 +1,8 @@
 package com.just.library;
 
+import android.support.v4.util.ArrayMap;
+import android.webkit.WebView;
+
 /**
  * <b>@项目名：</b> Helmet<br>
  * <b>@包名：</b>com.ucmap.helmet<br>
@@ -10,8 +13,9 @@ package com.just.library;
  * <b>@描述</b><br>
  */
 
-public interface WebSecurityController<T> {
+public interface WebSecurityCheckLogic {
+    void dealHoneyComb(WebView view);
 
-    void check(T t);
+    void dealJsInterface(ArrayMap<String, Object> objects);
 
 }
