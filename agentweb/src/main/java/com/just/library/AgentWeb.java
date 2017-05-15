@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
 
@@ -110,6 +112,42 @@ public class AgentWeb {
                     new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp)
                     : new DefaultWebCreator(mActivity, mViewGroup, lp, index);
         }
+    }
+
+    private void loadData(String data, String mimeType, String encoding) {
+        mWebCreator.get().loadData(data, mimeType, encoding);
+    }
+
+    private void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String history) {
+        mWebCreator.get().loadDataWithBaseURL(baseUrl, data, mimeType, encoding, history);
+    }
+
+    private JsEntraceAccess mJsEntraceAccess = null;
+
+    public void callJs(String js) {
+
+        if (mJsEntraceAccess == null) {
+            initJsEntraceAccess();
+        }
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            mJsEntraceAccess.callJs(js, null);
+        } else {
+            mJsEntraceAccess.loadJs(js);
+        }
+
+    }
+
+    private void initJsEntraceAccess() {
+
+        JsEntraceAccess mJsEntraceAccess = this.mJsEntraceAccess;
+        if (mJsEntraceAccess == null) {
+            this.mJsEntraceAccess = mJsEntraceAccess = JsEntraceAccessImpl.getInstance(mWebCreator.get());
+        }
+    }
+
+    public void callJs(String js, ValueCallback<String> callback) {
+        initJsEntraceAccess();
+        mJsEntraceAccess.callJs(js, callback);
     }
 
     public static AgentBuilder with(Activity activity) {
@@ -217,6 +255,7 @@ public class AgentWeb {
             }
         });
     }
+
 
     public AgentWeb loadUrl(final String url) {
         if (Looper.myLooper() != Looper.getMainLooper()) {

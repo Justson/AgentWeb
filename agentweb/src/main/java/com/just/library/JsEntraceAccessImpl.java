@@ -20,6 +20,10 @@ public class JsEntraceAccessImpl implements JsEntraceAccess {
 
     private WebView mWebView;
 
+    public static JsEntraceAccessImpl getInstance(WebView webView) {
+        return new JsEntraceAccessImpl(webView);
+    }
+
     private JsEntraceAccessImpl(WebView webView) {
         this.mWebView = webView;
     }
