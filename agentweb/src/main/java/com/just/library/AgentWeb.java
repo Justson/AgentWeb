@@ -24,10 +24,9 @@ import android.webkit.WebViewClient;
 
 
 /**
- *
  * FrameLayout--嵌套WebView,ProgressBar
- *https://github.com/Justson/AgentWeb
- *author just
+ * https://github.com/Justson/AgentWeb
+ * author just
  */
 public class AgentWeb {
 
@@ -43,17 +42,18 @@ public class AgentWeb {
     private Fragment mFragment;
     private IEventHandler mIEventHandler;
 
-    private ArrayMap<String,Object> mJavaObjects;
+    private ArrayMap<String, Object> mJavaObjects;
     private int TAG = 0;
     private WebListenerManager mWebListenerManager;
-    private DownloadListener mDownloadListener=null;
+    private DownloadListener mDownloadListener = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
+    private WebSecurityController mWebSecurityController;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.enableProgress = agentBuilder.enableProgress;
-        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor,agentBuilder.mIndicatorColorWithHeight) : agentBuilder.mWebCreator;
+        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
@@ -61,8 +61,8 @@ public class AgentWeb {
         this.mWebSettings = agentBuilder.mWebSettings;
         this.mIEventHandler = agentBuilder.mIEventHandler;
         TAG = 0;
-        this.mJavaObjects=agentBuilder.mJavaObject;
-        this.mChromeClientCallbackManager=agentBuilder.mChromeClientCallbackManager;
+        this.mJavaObjects = agentBuilder.mJavaObject;
+        this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
     }
 
 
@@ -73,19 +73,19 @@ public class AgentWeb {
         this.mViewGroup = agentBuilderFragment.mViewGroup;
         this.mIEventHandler = agentBuilderFragment.mIEventHandler;
         this.enableProgress = agentBuilderFragment.enableProgress;
-        mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor,agentBuilderFragment.height_dp) : agentBuilderFragment.mWebCreator;
+        mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp) : agentBuilderFragment.mWebCreator;
         mIndicatorController = agentBuilderFragment.mIndicatorController;
         this.mWebChromeClient = agentBuilderFragment.mWebChromeClient;
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
         mAgentWeb = this;
         this.mWebSettings = agentBuilderFragment.mWebSettings;
+        this.mJavaObjects = agentBuilderFragment.mJavaObject;
+        this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
 
-
-        this.mJavaObjects=agentBuilderFragment.mJavaObject;
-        this.mChromeClientCallbackManager=agentBuilderFragment.mChromeClientCallbackManager;
+        this.mWebSecurityController = null;
     }
 
-    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor,int height_dp) {
+    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp) {
 
         if (progressView != null && enableProgress) {
             return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView);
@@ -118,63 +118,67 @@ public class AgentWeb {
         return new AgentBuilder(creatorWeb).buildAgentWeb();
     }*/
 
-    public WebCreator getWebCreator(){
-        return  this.mWebCreator;
-    }
-    public IEventHandler getIEventHandler(){
-        return this.mIEventHandler==null?(this.mIEventHandler=EventHandlerImpl.getInstantce(mWebCreator.get())):this.mIEventHandler;
+    public WebCreator getWebCreator() {
+        return this.mWebCreator;
     }
 
-    private JsInterfaceHolder mJsInterfaceHolder=null;
+    public IEventHandler getIEventHandler() {
+        return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get())) : this.mIEventHandler;
+    }
 
-    public WebSettings getWebSettings(){
+    private JsInterfaceHolder mJsInterfaceHolder = null;
+
+    public WebSettings getWebSettings() {
         return this.mWebSettings;
     }
-    public IndicatorController getIndicatorController(){
+
+    public IndicatorController getIndicatorController() {
         return this.mIndicatorController;
     }
+
     public AgentWeb ready() {
         WebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
-            this.mWebSettings=mWebSettings = WebDefaultSettingsManager.getInstance();
+            this.mWebSettings = mWebSettings = WebDefaultSettingsManager.getInstance();
         }
-        if(mWebListenerManager ==null&&mWebSettings instanceof WebDefaultSettingsManager){
+        if (mWebListenerManager == null && mWebSettings instanceof WebDefaultSettingsManager) {
             mWebListenerManager = (WebListenerManager) mWebSettings;
         }
         mWebSettings.toSetting(mWebCreator.create().get());
-        mWebListenerManager.setDownLoader(mWebCreator.get(),getLoadListener());
-        mWebListenerManager.setWebChromeClient(mWebCreator.get(),getChromeClient());
-        mWebListenerManager.setWebViewClient(mWebCreator.get(),getClient());
+        mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
+        mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
+        mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
 
-        if(mJsInterfaceHolder==null){
-            mJsInterfaceHolder=JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get());
+        if (mJsInterfaceHolder == null) {
+            mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get());
         }
-        if(mJavaObjects!=null&&!mJavaObjects.isEmpty()){
+        if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
             mJsInterfaceHolder.addJavaObjects(mJavaObjects);
         }
         return this;
     }
 
 
-    private DownloadListener getLoadListener(){
-        DownloadListener mDownloadListener=this.mDownloadListener;
-        if(mDownloadListener==null){
-            this.mDownloadListener=mDownloadListener=new DefaultDownLoaderImpl(mActivity.getApplicationContext(),false,true);
+    private DownloadListener getLoadListener() {
+        DownloadListener mDownloadListener = this.mDownloadListener;
+        if (mDownloadListener == null) {
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity.getApplicationContext(), false, true);
         }
         return mDownloadListener;
     }
+
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
         if (mWebChromeClient != null) {
             return enableProgress ? new WebChromeClientProgressWrapper(mIndicatorController, mWebChromeClient) : mWebChromeClient;
         } else {
-            return new DefaultChromeClient(this.mActivity,mIndicatorController,this.mChromeClientCallbackManager);
+            return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
         }
 
     }
 
 
-    public JsInterfaceHolder getJsInterfaceHolder(){
+    public JsInterfaceHolder getJsInterfaceHolder() {
         return this.mJsInterfaceHolder;
     }
 
@@ -186,8 +190,9 @@ public class AgentWeb {
         }
     }
 
-    private Handler mHandler=new Handler(Looper.getMainLooper());
-    private void safeLoadUrl(final String url){
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private void safeLoadUrl(final String url) {
 
         mHandler.post(new Runnable() {
             @Override
@@ -198,22 +203,19 @@ public class AgentWeb {
     }
 
     public AgentWeb loadUrl(final String url) {
-        if (Looper.myLooper()!=Looper.getMainLooper()){
+        if (Looper.myLooper() != Looper.getMainLooper()) {
             safeLoadUrl(url);
             return this;
         }
         //|| ((!url.startsWith("http")&&(!url.startsWith("javascript:"))))
-        if (TextUtils.isEmpty(url) )
+        if (TextUtils.isEmpty(url))
             throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , please check url format");
         mWebCreator.get().loadUrl(url);
         return this;
     }
 
 
-
-
     public AgentWeb go(String url) {
-
 
 
         return loadUrl(url);
@@ -244,16 +246,16 @@ public class AgentWeb {
         private WebSettings mWebSettings;
         private WebCreator mWebCreator;
 
-        private ChromeClientCallbackManager mChromeClientCallbackManager=new ChromeClientCallbackManager();
+        private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
 
 
-        private ArrayMap<String,Object> mJavaObject=null;
-        private int mIndicatorColorWithHeight=-1;
+        private ArrayMap<String, Object> mJavaObject = null;
+        private int mIndicatorColorWithHeight = -1;
 
-        private void addJavaObject(String key,Object o){
-            if(mJavaObject==null)
-                mJavaObject=new ArrayMap<>();
-            mJavaObject.put(key,o);
+        private void addJavaObject(String key, Object o) {
+            if (mJavaObject == null)
+                mJavaObject = new ArrayMap<>();
+            mJavaObject.put(key, o);
         }
 
 
@@ -281,21 +283,20 @@ public class AgentWeb {
         }
 
 
-
-
         public ConfigIndicatorBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp) {
             this.mViewGroup = viewGroup;
             mLayoutParams = lp;
             return new ConfigIndicatorBuilder(this);
         }
 
-        public ConfigIndicatorBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp,int position) {
+        public ConfigIndicatorBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp, int position) {
             this.mViewGroup = viewGroup;
             mLayoutParams = lp;
-            this.index=position;
+            this.index = position;
             return new ConfigIndicatorBuilder(this);
         }
-        public ConfigIndicatorBuilder createContentViewTag(){
+
+        public ConfigIndicatorBuilder createContentViewTag() {
 
             this.mViewGroup = null;
             this.mLayoutParams = null;
@@ -313,8 +314,6 @@ public class AgentWeb {
         }*/
 
 
-
-
         private AgentWeb buildAgentWeb() {
             return HookManager.hookAgentWeb(new AgentWeb(this), this);
         }
@@ -327,11 +326,12 @@ public class AgentWeb {
         }
     }
 
-    public static class ConfigIndicatorBuilder{
+    public static class ConfigIndicatorBuilder {
 
         private AgentBuilder mAgentBuilder;
-        private ConfigIndicatorBuilder(AgentBuilder agentBuilder){
-            this.mAgentBuilder=agentBuilder;
+
+        private ConfigIndicatorBuilder(AgentBuilder agentBuilder) {
+            this.mAgentBuilder = agentBuilder;
         }
 
         public IndicatorBuilder useDefaultIndicator() {
@@ -346,24 +346,24 @@ public class AgentWeb {
             mAgentBuilder.isNeedProgress = false;
             return new CommonAgentBuilder(mAgentBuilder);
         }
-        public CommonAgentBuilder closeProgressBar(){
+
+        public CommonAgentBuilder closeProgressBar() {
             mAgentBuilder.closeProgress();
             return new CommonAgentBuilder(mAgentBuilder);
         }
 
 
-
     }
 
-    public  static class CommonAgentBuilder{
+    public static class CommonAgentBuilder {
         private AgentBuilder mAgentBuilder;
 
 
-
-        private CommonAgentBuilder(AgentBuilder agentBuilder){
-            this.mAgentBuilder=agentBuilder;
+        private CommonAgentBuilder(AgentBuilder agentBuilder) {
+            this.mAgentBuilder = agentBuilder;
 
         }
+
         public CommonAgentBuilder setWebViewClient(WebViewClient webViewClient) {
             this.mAgentBuilder.mWebViewClient = webViewClient;
             return this;
@@ -379,6 +379,7 @@ public class AgentWeb {
             this.mAgentBuilder.mIEventHandler = iEventHandler;
             return this;
         }
+
         public CommonAgentBuilder setWebSettings(WebSettings webSettings) {
             this.mAgentBuilder.mWebSettings = webSettings;
             return this;
@@ -390,20 +391,22 @@ public class AgentWeb {
         }
 
 
-        public CommonAgentBuilder addJavascriptInterface(String name,Object o){
-            mAgentBuilder.addJavaObject(name,o);
-            return this;
-        }
-        public CommonAgentBuilder setWebCreator(WebCreator webCreator){
-            this.mAgentBuilder.mWebCreator=webCreator;
+        public CommonAgentBuilder addJavascriptInterface(String name, Object o) {
+            mAgentBuilder.addJavaObject(name, o);
             return this;
         }
 
-        public CommonAgentBuilder setReceivedTitleCallback (ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback){
+        public CommonAgentBuilder setWebCreator(WebCreator webCreator) {
+            this.mAgentBuilder.mWebCreator = webCreator;
+            return this;
+        }
+
+        public CommonAgentBuilder setReceivedTitleCallback(ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback) {
             this.mAgentBuilder.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
             return this;
         }
-        public AgentWeb createAgentWeb(){
+
+        public AgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
 
@@ -421,6 +424,7 @@ public class AgentWeb {
             mAgentBuilder.setIndicatorColor(color);
             return new CommonAgentBuilder(mAgentBuilder);
         }
+
         public CommonAgentBuilder defaultProgressBarColor() {
             mAgentBuilder.setIndicatorColor(-1);
             return new CommonAgentBuilder(mAgentBuilder);
@@ -455,9 +459,9 @@ public class AgentWeb {
         private WebCreator mWebCreator;
 
         private IEventHandler mIEventHandler;
-        public int height_dp=-1;
+        public int height_dp = -1;
         public ArrayMap<String, Object> mJavaObject;
-        public ChromeClientCallbackManager mChromeClientCallbackManager=new ChromeClientCallbackManager();
+        public ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
 
 
         public AgentBuilderFragment(Activity activity, Fragment fragment) {
@@ -477,10 +481,10 @@ public class AgentWeb {
             return HookManager.hookAgentWeb(new AgentWeb(this), this);
         }
 
-        private void addJavaObject(String key,Object o){
-            if(mJavaObject==null)
-                mJavaObject=new ArrayMap<>();
-            mJavaObject.put(key,o);
+        private void addJavaObject(String key, Object o) {
+            if (mJavaObject == null)
+                mJavaObject = new ArrayMap<>();
+            mJavaObject.put(key, o);
         }
     }
 
@@ -504,8 +508,8 @@ public class AgentWeb {
 
         public CommonBuilderForFragment closeDefaultIndicator() {
             this.agentBuilderFragment.enableProgress = false;
-            this.agentBuilderFragment.mIndicatorColor=-1;
-            this.agentBuilderFragment.height_dp=-1;
+            this.agentBuilderFragment.mIndicatorColor = -1;
+            this.agentBuilderFragment.height_dp = -1;
             return new CommonBuilderForFragment(agentBuilderFragment);
         }
 
@@ -523,16 +527,12 @@ public class AgentWeb {
         }
 
         public CommonBuilderForFragment setIndicatorColorWithHeight(int color, int height_dp) {
-            this.agentBuilderFragment.mIndicatorColor=color;
-            this.agentBuilderFragment.height_dp=height_dp;
+            this.agentBuilderFragment.mIndicatorColor = color;
+            this.agentBuilderFragment.height_dp = height_dp;
             return new CommonBuilderForFragment(this.agentBuilderFragment);
         }
 
     }
-
-
-
-
 
 
     public static class CommonBuilderForFragment {
@@ -551,11 +551,13 @@ public class AgentWeb {
             this.mAgentBuilderFragment.mWebCreator = webCreator;
             return this;
         }
+
         public CommonBuilderForFragment setChromeClient() {
             this.mAgentBuilderFragment.mWebChromeClient = null;
             return this;
 
         }
+
         public CommonBuilderForFragment setWebViewClient(WebViewClient webChromeClient) {
             this.mAgentBuilderFragment.mWebViewClient = webChromeClient;
             return this;
@@ -570,13 +572,13 @@ public class AgentWeb {
             return this.mAgentBuilderFragment.buildAgentWeb();
         }
 
-        public CommonBuilderForFragment setReceivedTitleCallback (ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback){
+        public CommonBuilderForFragment setReceivedTitleCallback(ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback) {
             this.mAgentBuilderFragment.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
             return this;
         }
 
-        public CommonBuilderForFragment addJavascriptInterface(String name,Object o){
-            this.mAgentBuilderFragment.addJavaObject(name,o);
+        public CommonBuilderForFragment addJavascriptInterface(String name, Object o) {
+            this.mAgentBuilderFragment.addJavaObject(name, o);
             return this;
         }
 

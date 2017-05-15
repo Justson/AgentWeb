@@ -19,7 +19,7 @@ import android.widget.EditText;
  * <b>@公司：</b> 宝诺科技<br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
- *     source code  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class DefaultChromeClient extends ChromeClientProgress {
@@ -27,22 +27,23 @@ public class DefaultChromeClient extends ChromeClientProgress {
 
     private Activity mActivity;
     private AlertDialog promptDialog = null;
-    private AlertDialog confirmDialog=null;
-    private JsResult pJsResult=null;
-    private JsResult cJsResult=null;
+    private AlertDialog confirmDialog = null;
+    private JsPromptResult pJsResult = null;
+    private JsResult cJsResult = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
-    public DefaultChromeClient(Activity activity, IndicatorController indicatorController,ChromeClientCallbackManager chromeClientCallbackManager) {
+
+    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, ChromeClientCallbackManager chromeClientCallbackManager) {
         super(indicatorController);
         this.mActivity = activity;
-        this.mChromeClientCallbackManager=chromeClientCallbackManager;
+        this.mChromeClientCallbackManager = chromeClientCallbackManager;
     }
 
 
     @Override
     public void onReceivedTitle(WebView view, String title) {
-        ChromeClientCallbackManager.ReceivedTitleCallback mCallback=null;
-        if(mChromeClientCallbackManager!=null&&(mCallback=mChromeClientCallbackManager.getReceivedTitleCallback())!=null)
-            mCallback.onReceivedTitle(view,title);
+        ChromeClientCallbackManager.ReceivedTitleCallback mCallback = null;
+        if (mChromeClientCallbackManager != null && (mCallback = mChromeClientCallbackManager.getReceivedTitleCallback()) != null)
+            mCallback.onReceivedTitle(view, title);
 
     }
 
@@ -67,16 +68,15 @@ public class DefaultChromeClient extends ChromeClientProgress {
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
 
-            showJsPrompt(message,result,defaultValue);
+        showJsPrompt(message, result, defaultValue);
         return true;
     }
 
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
-        showJsConfirm(message,result);
+        showJsConfirm(message, result);
         return true;
     }
-
 
 
     private void toDismissDialog(Dialog dialog) {
@@ -86,37 +86,39 @@ public class DefaultChromeClient extends ChromeClientProgress {
     }
 
 
-    private void showJsConfirm(String message,final JsResult result){
+    private void showJsConfirm(String message, final JsResult result) {
 
-        if(confirmDialog==null)
+
+        if (confirmDialog == null)
             confirmDialog = new AlertDialog.Builder(mActivity)//
                     .setMessage(message)//
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(confirmDialog);
-                            toCancelOrConfirmJsresult(cJsResult);
+                            toCancelJsresult(cJsResult);
                         }
                     })//
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(confirmDialog);
-                            toCancelOrConfirmJsresult(cJsResult);
+                            if (DefaultChromeClient.this.cJsResult != null)
+                                DefaultChromeClient.this.cJsResult.confirm();
 
                         }
                     }).create();
-        this.cJsResult=result;
+        this.cJsResult = result;
         confirmDialog.show();
 
     }
 
-    private void toCancelOrConfirmJsresult(JsResult result) {
+    private void toCancelJsresult(JsResult result) {
         if (result != null)
-            result.confirm();
+            result.cancel();
     }
 
-    private void showJsPrompt(String message, final JsResult js,String defaultstr) {
+    private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
 
         if (promptDialog == null) {
 
@@ -129,7 +131,7 @@ public class DefaultChromeClient extends ChromeClientProgress {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(promptDialog);
-                            toCancelOrConfirmJsresult(pJsResult);
+                            toCancelJsresult(pJsResult);
                         }
                     })//
                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -137,12 +139,13 @@ public class DefaultChromeClient extends ChromeClientProgress {
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(promptDialog);
 
-                            toCancelOrConfirmJsresult(pJsResult);
+                            if (DefaultChromeClient.this.pJsResult != null)
+                                DefaultChromeClient.this.pJsResult.confirm(et.getText().toString());
 
                         }
                     }).create();
         }
-        this.pJsResult=js;
+        this.pJsResult = js;
         promptDialog.show();
 
 

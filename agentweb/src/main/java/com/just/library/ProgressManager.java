@@ -12,5 +12,6 @@ package com.just.library;
 
 public interface ProgressManager<T extends BaseProgressSpec> {
 
+
     T offer();
 }
