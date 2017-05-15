@@ -24,6 +24,9 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
     public static WebDefaultSettingsManager getInstance() {
         return new WebDefaultSettingsManager();
     }
+    private WebDefaultSettingsManager(){
+
+    }
 
     @Override
     public WebSettings toSetting(WebView webView) {
@@ -38,6 +41,8 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
             //没网，则从本地获取，即离线加载
             mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
+
+
         mWebSettings.setTextZoom(100);
         mWebSettings.setLoadsImagesAutomatically(true);
         mWebSettings.setAllowFileAccess(true);

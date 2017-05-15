@@ -3,9 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/container"
     android:orientation="vertical"
     tools:context="com.just.library.agentweb.MainActivity">
 
@@ -15,9 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
         android:background="?attr/colorPrimary"
+        android:titleTextColor="@android:color/white"
         app:theme="@style/toolBar"
-        app:titleTextColor="@android:color/white"
-        android:titleTextColor="@android:color/white">
+        app:titleTextColor="@android:color/white">
 
 
         <TextView
@@ -27,7 +27,25 @@
             android:layout_gravity="center"
             android:singleLine="true"
             android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"/>
     </android.support.v7.widget.Toolbar>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </WebView>
+
+        <com.just.library.BaseIndicatorView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            >
+
+        </com.just.library.BaseIndicatorView>
+    </FrameLayout>
 
 </LinearLayout>

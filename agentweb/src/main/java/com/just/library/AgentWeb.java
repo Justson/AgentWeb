@@ -605,8 +605,8 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setChromeClient() {
-            this.mAgentBuilderFragment.mWebChromeClient = null;
+        public CommonBuilderForFragment setChromeClient(WebChromeClient webChromeClient) {
+            this.mAgentBuilderFragment.mWebChromeClient = webChromeClient;
             return this;
 
         }

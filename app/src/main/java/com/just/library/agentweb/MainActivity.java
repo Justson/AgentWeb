@@ -63,9 +63,18 @@ public class MainActivity extends AppCompatActivity {
                 .createAgentWeb()//
                 .ready()
                 .go("file:///android_asset/test.html");
+
         long n = System.currentTimeMillis();
         Log.i("Info", "init used time:" + (n - p));
 
+
+        AgentWeb.with(this)//
+                .createContentViewTag()//
+                .useDefaultIndicator()//
+                .defaultProgressBarColor()//
+                .createAgentWeb()//
+                .ready()//
+                .go("http://www.taobao.com");
 
         Log.i("Info", "out:" + (Looper.getMainLooper() == Looper.myLooper()));
         mAgentWeb.getWebCreator().get()//
