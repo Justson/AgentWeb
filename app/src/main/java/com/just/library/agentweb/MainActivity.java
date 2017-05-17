@@ -62,35 +62,13 @@ public class MainActivity extends AppCompatActivity {
                 .setReceivedTitleCallback(mCallback)
                 .createAgentWeb()//
                 .ready()
-                .go("file:///android_asset/test.html");
+                .go("http://www.taobao.com");
 
         long n = System.currentTimeMillis();
         Log.i("Info", "init used time:" + (n - p));
+        
 
-
-        AgentWeb.with(this)//
-                .createContentViewTag()//
-                .useDefaultIndicator()//
-                .defaultProgressBarColor()//
-                .createAgentWeb()//
-                .ready()//
-                .go("http://www.taobao.com");
-
-        Log.i("Info", "out:" + (Looper.getMainLooper() == Looper.myLooper()));
-        mAgentWeb.getWebCreator().get()//
-                .postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i("Info", "Thread:" + (Looper.getMainLooper() == Looper.myLooper()));
-                        mAgentWeb.getWebCreator().get().evaluateJavascript("javascript:callByAndroid()", new ValueCallback<String>() {
-                            @Override
-                            public void onReceiveValue(String value) {
-                                Log.i("Info", "value:" + value + "   Thread:" + Thread.currentThread() + "    loo:" + ((Looper.getMainLooper() == Looper.myLooper())));
-                            }
-                        });
-
-                    }
-                }, 2000);
+      
 
     }
 
