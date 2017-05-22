@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -29,7 +31,7 @@ import android.widget.EditText;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultChromeClient extends WebChromeClientProgressWrapper {
+public class DefaultChromeClient extends WebChromeClientProgressWrapper implements Offer<IFileUploadChooser> {
 
 
     private Activity mActivity;
@@ -43,12 +45,16 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper {
     private WebChromeClient mWebChromeClient;
     private boolean isWrapper = false;
 
-    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager) {
+    private IFileUploadChooser mIFileUploadChooser;
+
+    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager, IFileUploadChooser fileUploadChooser) {
         super(indicatorController, chromeClient);
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
         this.mActivity = activity;
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
+        this.mIFileUploadChooser = fileUploadChooser;
+
     }
 
 
@@ -204,9 +210,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper {
     public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient,"onExceededDatabaseQuota",ChromePath,String.class,String.class,long.class,long.class,long.class,WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onExceededDatabaseQuota", ChromePath, String.class, String.class, long.class, long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
-             super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
+            super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             return;
         }
         quotaUpdater.updateQuota(totalQuota * 2);
@@ -216,7 +222,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper {
     public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient,"onReachedMaxAppCacheSize",ChromePath,long.class,long.class,WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onReachedMaxAppCacheSize", ChromePath, long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
             super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
             return;
@@ -225,24 +231,45 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+        Log.i("Infoss", "openFileChooser>=5.0");
+        openFileChooserAboveL(webView, filePathCallback, fileChooserParams);
+        return true;
+    }
+
+    private void openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+
+        IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
+        this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl(webView, mActivity, filePathCallback, fileChooserParams);
+        mIFileUploadChooser.openFileChooser();
+
+    }
 
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
-
+        Log.i("Infoss", "openFileChooser>=4.1");
 
     }
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
-        Log.i("Infoss", "openFileChooser");
+        Log.i("Infoss", "openFileChooser<3.0");
 
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
-        Log.i("Infoss", "openFileChooser.1");
+        Log.i("Infoss", "openFileChooser>3.0");
 
     }
 
+
+    @Override
+    public IFileUploadChooser get() {
+        Log.i("Info", "offer:" + mIFileUploadChooser);
+        return mIFileUploadChooser;
+    }
 }

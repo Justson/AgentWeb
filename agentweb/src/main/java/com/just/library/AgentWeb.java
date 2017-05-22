@@ -1,12 +1,14 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
@@ -50,6 +52,9 @@ public class AgentWeb {
     private DownloadListener mDownloadListener = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
+    private IFileUploadChooser mIFileUploadChooser;
+
+    private WebChromeClient mTargetChromeClient;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
@@ -190,6 +195,7 @@ public class AgentWeb {
         return this.mIndicatorController;
     }
 
+
     public AgentWeb ready() {
         WebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
@@ -229,7 +235,7 @@ public class AgentWeb {
             return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
         }*/
 
-        return new DefaultChromeClient(this.mActivity,mIndicatorController,mWebChromeClient,mChromeClientCallbackManager);
+        return this.mTargetChromeClient=new DefaultChromeClient(this.mActivity,mIndicatorController,mWebChromeClient,mChromeClientCallbackManager,null);
     }
 
 
@@ -278,6 +284,20 @@ public class AgentWeb {
 
     public void destroy() {
         AgentWebUtils.clearWebView(mWebCreator.get());
+    }
+
+    public void uploadFileResult(int requestCode, int resultCode, Intent data) {
+
+        IFileUploadChooser mIFileUploadChooser=this.mIFileUploadChooser;
+
+        if(mIFileUploadChooser==null&&mTargetChromeClient instanceof  DefaultChromeClient){
+            DefaultChromeClient mDefaultChromeClient= (DefaultChromeClient) mTargetChromeClient;
+            this.mIFileUploadChooser=mIFileUploadChooser = mDefaultChromeClient.get();
+        }
+
+        Log.i("Info","file upload:"+mIFileUploadChooser);
+        if(mIFileUploadChooser!=null)
+            mIFileUploadChooser.fetchFilePathFromIntent(requestCode,resultCode,data);
     }
 
     /*********************************************************为Activity构建AgentWeb***********************************************************************/

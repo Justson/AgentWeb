@@ -1,6 +1,7 @@
 package com.just.library.agentweb;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,8 +9,12 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        mAgentWeb = AgentWeb.with(this)//
+      /*  mAgentWeb = AgentWeb.with(this)//
                 .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
@@ -58,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
                 .setReceivedTitleCallback(mCallback)
                 .createAgentWeb()//
                 .ready()
-                .go("http://www.sam-v.com/mall/index.jhtml");
+                .go("http://www.sam-v.com/mall/index.jhtml");*/
 
-       /* long p = System.currentTimeMillis();
+        long p = System.currentTimeMillis();
         mAgentWeb = AgentWeb.with(this)//
                 .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
@@ -86,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 .go("file:///android_asset/test.html");
 
         long n = System.currentTimeMillis();
-        Log.i("Info", "init used time:" + (n - p));*/
+        Log.i("Info", "init used time:" + (n - p));
         
 
       
@@ -135,6 +140,19 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        Log.i("Info","call back");
+        Log.i("Info","result:"+requestCode +" result:"+resultCode);
+        mAgentWeb.uploadFileResult(requestCode,resultCode,data);
+
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
 
     @Override
     protected void onDestroy() {
