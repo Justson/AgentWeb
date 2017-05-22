@@ -235,7 +235,7 @@ public class AgentWeb {
             return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
         }*/
 
-        return this.mTargetChromeClient=new DefaultChromeClient(this.mActivity,mIndicatorController,mWebChromeClient,mChromeClientCallbackManager,null);
+        return this.mTargetChromeClient=new DefaultChromeClient(this.mActivity,mIndicatorController,mWebChromeClient,mChromeClientCallbackManager);
     }
 
 

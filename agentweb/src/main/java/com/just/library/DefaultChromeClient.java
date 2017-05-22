@@ -47,13 +47,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private IFileUploadChooser mIFileUploadChooser;
 
-    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager, IFileUploadChooser fileUploadChooser) {
+    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager) {
         super(indicatorController, chromeClient);
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
         this.mActivity = activity;
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
-        this.mIFileUploadChooser = fileUploadChooser;
+
 
     }
 
@@ -251,22 +251,28 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
         Log.i("Infoss", "openFileChooser>=4.1");
-
+        createAndOpenCommonFileLoader(uploadFile);
     }
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
         Log.i("Infoss", "openFileChooser<3.0");
-
+        createAndOpenCommonFileLoader(valueCallback);
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         Log.i("Infoss", "openFileChooser>3.0");
 
+        createAndOpenCommonFileLoader(valueCallback);
     }
 
 
+    private void createAndOpenCommonFileLoader(ValueCallback valueCallback){
+        this.mIFileUploadChooser=new FileUpLoadChooserImpl(mActivity,valueCallback);
+        this.mIFileUploadChooser.openFileChooser();
+
+    }
     @Override
     public IFileUploadChooser get() {
         Log.i("Info", "offer:" + mIFileUploadChooser);

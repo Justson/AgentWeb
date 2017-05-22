@@ -31,6 +31,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     public FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback) {
         this.mActivity = activity;
         this.mUriValueCallback = callback;
+        isL=false;
     }
 
     public FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams) {
