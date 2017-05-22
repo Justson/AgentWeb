@@ -105,6 +105,9 @@ public class WebActivity extends AppCompatActivity {
         }
     };
 
+
+
+
     private void showDialog() {
 
         if (mAlertDialog == null)

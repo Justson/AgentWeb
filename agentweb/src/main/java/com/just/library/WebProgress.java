@@ -150,6 +150,9 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         if (target == value)
             return;
 
+        if(value<currentProgress)
+            return;
+
         float v = (isAuto) ? 80f : value;
 
 
