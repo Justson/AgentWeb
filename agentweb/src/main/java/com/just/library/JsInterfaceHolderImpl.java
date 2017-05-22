@@ -36,7 +36,7 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
                 addJavaObjectDirect(mEntry.getKey(),v);
         }
 
-        return null;
+        return this;
     }
 
     @Override

@@ -1,47 +1,45 @@
 package com.just.library.agentweb;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.JsPromptResult;
-import android.webkit.JsResult;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
-
-import com.just.library.AgentWeb;
-import com.just.library.ChromeClientCallbackManager;
 
 public class MainActivity extends AppCompatActivity {
 
-    private AgentWeb mAgentWeb;
-    private LinearLayout mLinearLayout;
+
+    private ListView mListView;
+
     private Toolbar mToolbar;
     private TextView mTitleTextView;
-    private AlertDialog mAlertDialog;
+
+
+    public static final String[] datas=new String[]{"Activity 使用","Fragment 使用","文件下载","文件上传","Js 通信"};
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        
+
         setContentView(R.layout.activity_main);
 
 
-        mLinearLayout = (LinearLayout) this.findViewById(R.id.container);
         mToolbar = (Toolbar) this.findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setTitle("");
         mTitleTextView = (TextView) this.findViewById(R.id.toolbar_title);
+        mTitleTextView.setText("AgentWeb 使用指南");
         this.setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null)
             // Enable the Up button
@@ -50,113 +48,81 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                showDialog();
+                MainActivity.this.finish();
             }
         });
 
+        mListView = (ListView) this.findViewById(R.id.listView);
+        mListView.setAdapter(new MainAdapter());
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-      /*  mAgentWeb = AgentWeb.with(this)//
-                .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
-                .useDefaultIndicator()//
-                .defaultProgressBarColor()
-                .addJavascriptInterface("hello", new HelloJs())//
-                .setReceivedTitleCallback(mCallback)
-                .createAgentWeb()//
-                .ready()
-                .go("http://www.sam-v.com/mall/index.jhtml");*/
-
-        long p = System.currentTimeMillis();
-        mAgentWeb = AgentWeb.with(this)//
-                .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
-                .useDefaultIndicator()//
-                .defaultProgressBarColor()
-                .addJavascriptInterface("hello", new HelloJs())//
-                .setReceivedTitleCallback(mCallback)
-                .setWebChromeClient(new WebChromeClient(){
-
-
-                    @Override
-                    public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
-                        return super.onJsConfirm(view, url, message, result);
-                    }
-
-                    @Override
-                    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-                        Log.i("Info","jsPrompt");
-                        return super.onJsPrompt(view, url, message, defaultValue, result);
-                    }
-                })
-                .createAgentWeb()//
-                .ready()
-                .go("file:///android_asset/test.html");
-
-        long n = System.currentTimeMillis();
-        Log.i("Info", "init used time:" + (n - p));
-        
-
-      
+                doClick(position);
+            }
+        });
 
     }
 
-    private ChromeClientCallbackManager.ReceivedTitleCallback mCallback = new ChromeClientCallbackManager.ReceivedTitleCallback() {
+    private void doClick(int position){
+
+
+        switch (position){
+
+
+            case 0:
+                startActivity(new Intent(this,WebActivity.class));
+                break;
+
+        }
+
+
+    }
+
+
+    public class MainAdapter extends BaseAdapter{
+
         @Override
-        public void onReceivedTitle(WebView view, String title) {
-            if (mTitleTextView != null)
-                mTitleTextView.setText(title);
+        public int getCount() {
+            return datas.length;
         }
-    };
 
-    private void showDialog() {
-
-        if (mAlertDialog == null)
-            mAlertDialog = new AlertDialog.Builder(this)
-                    .setMessage("您确定要关闭该页面吗?")
-                    .setNegativeButton("再逛逛", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (mAlertDialog != null)
-                                mAlertDialog.dismiss();
-                        }
-                    })//
-                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                            if (mAlertDialog != null)
-                                mAlertDialog.dismiss();
-
-                            MainActivity.this.finish();
-                        }
-                    }).create();
-        mAlertDialog.show();
-
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (mAgentWeb.handleKeyEvent(keyCode, event)) {
-            return true;
+        @Override
+        public Object getItem(int position) {
+            return datas[position];
         }
-        return super.onKeyDown(keyCode, event);
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder mViewHolder;
+            if(convertView==null){
+                mViewHolder=new ViewHolder();
+               View mView= MainActivity.this.getLayoutInflater().inflate(R.layout.listview_main,parent,false);
+               mViewHolder.mTextView= (TextView) mView.findViewById(R.id.content);
+                mView.setTag(mViewHolder);
+                convertView=mView;
+            }else{
+                mViewHolder= (ViewHolder) convertView.getTag();
+            }
+
+            mViewHolder.mTextView.setText(datas[position]);
+            return convertView;
+        }
+
+
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        Log.i("Info","call back");
-        Log.i("Info","result:"+requestCode +" result:"+resultCode);
-        mAgentWeb.uploadFileResult(requestCode,resultCode,data);
-
-
-        super.onActivityResult(requestCode, resultCode, data);
+    class ViewHolder{
+        TextView mTextView;
     }
 
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mAgentWeb.destroy();
-    }
+
+
 }

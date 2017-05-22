@@ -21,7 +21,7 @@ import android.webkit.WebViewClient;
  * <b>@包名：</b>com.just.library<br>
  * <b>@创建者：</b> cxz --  just<br>
  * <b>@创建时间：</b> &{DATE}<br>
- * <b>@公司：</b> 宝诺科技<br>
+ * <b>@公司：</b> <br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
  */
@@ -56,6 +56,8 @@ public class AgentWeb {
 
     private WebChromeClient mTargetChromeClient;
 
+    private SecurityType mSecurityType;
+
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
@@ -71,7 +73,8 @@ public class AgentWeb {
         this.mJavaObjects = agentBuilder.mJavaObject;
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
 
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects);
+        this.mSecurityType=agentBuilder.mSecurityType;
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects,mSecurityType);
         doSafeCheck();
     }
 
@@ -91,8 +94,8 @@ public class AgentWeb {
         this.mWebSettings = agentBuilderFragment.mWebSettings;
         this.mJavaObjects = agentBuilderFragment.mJavaObject;
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
-
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects);
+        this.mSecurityType=agentBuilderFragment.mSecurityType;
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects,this.mSecurityType);
         doSafeCheck();
     }
 
@@ -320,6 +323,8 @@ public class AgentWeb {
         private WebSettings mWebSettings;
         private WebCreator mWebCreator;
 
+        private SecurityType mSecurityType=SecurityType.default_check;
+
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
 
 
@@ -479,11 +484,19 @@ public class AgentWeb {
             this.mAgentBuilder.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
             return this;
         }
+        public CommonAgentBuilder setSecutityType(SecurityType secutityType){
+            this.mAgentBuilder.mSecurityType=secutityType;
+            return this;
+        }
 
         public AgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
 
+    }
+
+    public static enum SecurityType{
+        default_check,strict;
     }
 
     public static class IndicatorBuilder {
@@ -533,9 +546,10 @@ public class AgentWeb {
         private WebCreator mWebCreator;
 
         private IEventHandler mIEventHandler;
-        public int height_dp = -1;
-        public ArrayMap<String, Object> mJavaObject;
-        public ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
+        private int height_dp = -1;
+        private ArrayMap<String, Object> mJavaObject;
+        private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
+        private SecurityType mSecurityType=SecurityType.default_check;
 
 
         public AgentBuilderFragment(Activity activity, Fragment fragment) {
@@ -653,6 +667,11 @@ public class AgentWeb {
 
         public CommonBuilderForFragment addJavascriptInterface(String name, Object o) {
             this.mAgentBuilderFragment.addJavaObject(name, o);
+            return this;
+        }
+
+        public CommonBuilderForFragment setSecurityType(SecurityType type){
+            this.mAgentBuilderFragment.mSecurityType=type;
             return this;
         }
 

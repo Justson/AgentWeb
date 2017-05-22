@@ -30,6 +30,12 @@ public class WebSecurityLogicImpl implements WebSecurityCheckLogic {
 
     @Override
     public void dealJsInterface(ArrayMap<String, Object> objects) {
-        //temp igore
+
+        if(Build.VERSION.SDK_INT<Build.VERSION_CODES.JELLY_BEAN_MR1){
+            objects.clear();
+            objects=null;
+            System.gc();
+        }
+
     }
 }
