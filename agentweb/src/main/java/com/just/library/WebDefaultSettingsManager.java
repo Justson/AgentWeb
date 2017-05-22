@@ -1,6 +1,7 @@
 package com.just.library;
 
 
+import android.content.Context;
 import android.os.Build;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
@@ -30,6 +31,7 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
 
     @Override
     public WebSettings toSetting(WebView webView) {
+
         mWebSettings = webView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
         mWebSettings.setSupportZoom(true);
@@ -56,11 +58,20 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
         mWebSettings.setLoadsImagesAutomatically(true);
         mWebSettings.setDefaultFontSize(16);
         mWebSettings.setMinimumFontSize(12);//设置 WebView 支持的最小字体大小，默认为 8
-
+        mWebSettings.setGeolocationEnabled(true);
+        //启动定位
+        String dir =webView.getContext().getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
+        //设置数据库路径
+        mWebSettings.setGeolocationDatabasePath(dir);
+        mWebSettings.setDatabasePath(dir);
         //适配5.0不允许http和https混合使用情况
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWebSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
+
+        //缓存文件最大值
+        mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
+
 
         return this;
     }

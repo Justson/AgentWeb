@@ -8,11 +8,8 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.JsResult;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,7 +50,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        long p = System.currentTimeMillis();
+        mAgentWeb = AgentWeb.with(this)//
+                .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
+                .useDefaultIndicator()//
+                .defaultProgressBarColor()
+                .addJavascriptInterface("hello", new HelloJs())//
+                .setReceivedTitleCallback(mCallback)
+                .createAgentWeb()//
+                .ready()
+                .go("http://www.sam-v.com/mall/index.jhtml");
+
+       /* long p = System.currentTimeMillis();
         mAgentWeb = AgentWeb.with(this)//
                 .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
@@ -67,13 +74,19 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
                         return super.onJsConfirm(view, url, message, result);
                     }
+
+                    @Override
+                    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+                        Log.i("Info","jsPrompt");
+                        return super.onJsPrompt(view, url, message, defaultValue, result);
+                    }
                 })
                 .createAgentWeb()//
                 .ready()
                 .go("file:///android_asset/test.html");
 
         long n = System.currentTimeMillis();
-        Log.i("Info", "init used time:" + (n - p));
+        Log.i("Info", "init used time:" + (n - p));*/
         
 
       

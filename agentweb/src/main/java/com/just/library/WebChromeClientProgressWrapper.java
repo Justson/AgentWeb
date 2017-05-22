@@ -229,19 +229,19 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
-        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, uploadFile.getClass(), acceptType.getClass(), capture.getClass());
+        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, ValueCallback.class, String.class, String.class);
     }
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
         Log.i("Infoss", "openFileChooser");
-        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback}, valueCallback.getClass());
+        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback}, ValueCallback.class);
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         Log.i("Infoss", "openFileChooser.1");
-        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback, acceptType}, valueCallback.getClass(), acceptType.getClass());
+        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback, acceptType}, ValueCallback.class, String.class);
     }
 
 

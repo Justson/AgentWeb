@@ -5,12 +5,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
+import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.widget.EditText;
 
@@ -195,4 +199,50 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper {
 
 
     }
+
+    @Override
+    public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {
+
+
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient,"onExceededDatabaseQuota",ChromePath,String.class,String.class,long.class,long.class,long.class,WebStorage.QuotaUpdater.class)) {
+
+             super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
+            return;
+        }
+        quotaUpdater.updateQuota(totalQuota * 2);
+    }
+
+    @Override
+    public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
+
+
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient,"onReachedMaxAppCacheSize",ChromePath,long.class,long.class,WebStorage.QuotaUpdater.class)) {
+
+            super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
+            return;
+        }
+        quotaUpdater.updateQuota(requiredStorage * 2);
+    }
+
+
+
+    // Android  >= 4.1
+    public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
+        /*believe me , i never want to do this */
+
+
+    }
+
+    //  Android < 3.0
+    public void openFileChooser(ValueCallback<Uri> valueCallback) {
+        Log.i("Infoss", "openFileChooser");
+
+    }
+
+    //  Android  >= 3.0
+    public void openFileChooser(ValueCallback valueCallback, String acceptType) {
+        Log.i("Infoss", "openFileChooser.1");
+
+    }
+
 }
