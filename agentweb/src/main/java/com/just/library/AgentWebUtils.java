@@ -21,6 +21,7 @@ import android.webkit.WebView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -176,4 +177,28 @@ public class AgentWebUtils {
             snackbarWeakReference = null;
         }
     }
+
+    public static boolean isOverriedMethod(Object currentObject,String methodName,String method,Class ...clazzs){
+//        Log.i("Info","currentObject:"+currentObject+"  methodName:"+methodName+"   method:"+method);
+        boolean tag=false;
+        if(currentObject==null)
+            return tag;
+
+        try{
+
+            Class clazz=currentObject.getClass();
+            Method mMethod=clazz.getMethod(methodName,clazzs);
+            String gStr=mMethod.toGenericString();
+
+//            Log.i("Info","gstr:"+gStr+"  method:"+method);
+            tag=!gStr.contains(method);
+        }catch (Exception igonre){
+//                igonre.printStackTrace();
+        }
+
+
+
+        return tag;
+    }
+
 }

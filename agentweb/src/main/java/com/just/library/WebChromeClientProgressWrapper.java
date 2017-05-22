@@ -30,11 +30,11 @@ import java.lang.reflect.Method;
  */
 
 public class WebChromeClientProgressWrapper extends ChromeClientProgress {
-    private WebChromeClient mWebChromeClient;
+    protected WebChromeClient mRealWebChromeClient;
 
-    public WebChromeClientProgressWrapper(IndicatorController indicatorController, WebChromeClient webChromeClient) {
+    public WebChromeClientProgressWrapper(IndicatorController indicatorController, WebChromeClient realWebChromeClient) {
         this(indicatorController);
-        this.mWebChromeClient = webChromeClient;
+        this.mRealWebChromeClient = realWebChromeClient;
     }
 
     public WebChromeClientProgressWrapper(IndicatorController indicatorController) {
@@ -44,85 +44,85 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
 
 
     public void onReceivedTitle(WebView view, String title) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onReceivedTitle(view, title);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onReceivedTitle(view, title);
     }
 
     public void onReceivedIcon(WebView view, Bitmap icon) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onReceivedIcon(view, icon);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onReceivedIcon(view, icon);
 
     }
 
     public void onReceivedTouchIconUrl(WebView view, String url,
                                        boolean precomposed) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onReceivedTouchIconUrl(view, url, precomposed);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onReceivedTouchIconUrl(view, url, precomposed);
     }
 
 
     public void onShowCustomView(View view, CustomViewCallback callback) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onShowCustomView(view, callback);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onShowCustomView(view, callback);
     }
 
     ;
 
     public void onShowCustomView(View view, int requestedOrientation,
                                  CustomViewCallback callback) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onShowCustomView(view, requestedOrientation, callback);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onShowCustomView(view, requestedOrientation, callback);
     }
 
     ;
 
     public void onHideCustomView() {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onHideCustomView();
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onHideCustomView();
     }
 
     public boolean onCreateWindow(WebView view, boolean isDialog,
                                   boolean isUserGesture, Message resultMsg) {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
         return false;
     }
 
     public void onRequestFocus(WebView view) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onRequestFocus(view);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onRequestFocus(view);
     }
 
     public void onCloseWindow(WebView window) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onCloseWindow(window);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onCloseWindow(window);
     }
 
     public boolean onJsAlert(WebView view, String url, String message,
                              JsResult result) {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onJsAlert(view, url, message, result);
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onJsAlert(view, url, message, result);
         return false;
     }
 
     public boolean onJsConfirm(WebView view, String url, String message,
                                JsResult result) {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onJsConfirm(view, url, message, result);
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onJsConfirm(view, url, message, result);
         return false;
     }
 
     public boolean onJsPrompt(WebView view, String url, String message,
                               String defaultValue, JsPromptResult result) {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onJsPrompt(view, url, message, defaultValue, result);
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onJsPrompt(view, url, message, defaultValue, result);
         return false;
     }
 
     public boolean onJsBeforeUnload(WebView view, String url, String message,
                                     JsResult result) {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onJsBeforeUnload(view, url, message, result);
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onJsBeforeUnload(view, url, message, result);
         return false;
     }
 
@@ -134,22 +134,22 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
         // WebCore will interpret this that new quota was declined.
         //注掉
 //        quotaUpdater.updateQuota(quota);
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
 
     }
 
     @Deprecated
     public void onReachedMaxAppCacheSize(long requiredStorage, long quota,
                                          WebStorage.QuotaUpdater quotaUpdater) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
     }
 
     public void onGeolocationPermissionsShowPrompt(String origin,
                                                    GeolocationPermissions.Callback callback) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onGeolocationPermissionsShowPrompt(origin, callback);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onGeolocationPermissionsShowPrompt(origin, callback);
 
     }
 
@@ -161,87 +161,87 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
      */
     public void onGeolocationPermissionsHidePrompt() {
 
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onGeolocationPermissionsHidePrompt();
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onGeolocationPermissionsHidePrompt();
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onPermissionRequest(PermissionRequest request) {
 //        request.deny();
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onPermissionRequest(request);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onPermissionRequest(request);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onPermissionRequestCanceled(PermissionRequest request) {
 
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onPermissionRequestCanceled(request);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onPermissionRequestCanceled(request);
     }
 
     public boolean onJsTimeout() {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onJsTimeout();
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onJsTimeout();
         return true;
     }
 
     @Deprecated
     public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.onConsoleMessage(message, lineNumber, sourceID);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onConsoleMessage(message, lineNumber, sourceID);
     }
 
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         /*onConsoleMessage(consoleMessage.message(), consoleMessage.lineNumber(),
                 consoleMessage.sourceId());*/
 
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onConsoleMessage(consoleMessage);
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onConsoleMessage(consoleMessage);
         return false;
     }
 
     public Bitmap getDefaultVideoPoster() {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.getDefaultVideoPoster();
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.getDefaultVideoPoster();
         return null;
     }
 
     public View getVideoLoadingProgressView() {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.getVideoLoadingProgressView();
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.getVideoLoadingProgressView();
         return null;
     }
 
     public void getVisitedHistory(ValueCallback<String[]> callback) {
-        if (this.mWebChromeClient != null)
-            this.mWebChromeClient.getVisitedHistory(callback);
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.getVisitedHistory(callback);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
                                      FileChooserParams fileChooserParams) {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.onShowFileChooser(webView, filePathCallback, fileChooserParams);
         return false;
     }
 
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
-        commonRefect(this.mWebChromeClient, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, uploadFile.getClass(), acceptType.getClass(), capture.getClass());
+        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, uploadFile.getClass(), acceptType.getClass(), capture.getClass());
     }
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
         Log.i("Infoss", "openFileChooser");
-        commonRefect(this.mWebChromeClient, "openFileChooser", new Object[]{valueCallback}, valueCallback.getClass());
+        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback}, valueCallback.getClass());
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         Log.i("Infoss", "openFileChooser.1");
-        commonRefect(this.mWebChromeClient, "openFileChooser", new Object[]{valueCallback, acceptType}, valueCallback.getClass(), acceptType.getClass());
+        commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback, acceptType}, valueCallback.getClass(), acceptType.getClass());
     }
 
 
@@ -260,8 +260,8 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
 
 
     /*public void setupAutoFill(Message msg) {
-        if (this.mWebChromeClient != null)
-            return this.mWebChromeClient.setupAutoFill();
+        if (this.mRealWebChromeClient != null)
+            return this.mRealWebChromeClient.setupAutoFill();
     }*/
 
 }

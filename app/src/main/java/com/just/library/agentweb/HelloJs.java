@@ -12,6 +12,7 @@ public class HelloJs {
     @JavascriptInterface
     public void hello(){
 
+
     }
 
 }

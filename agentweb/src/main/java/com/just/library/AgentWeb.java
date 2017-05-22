@@ -223,12 +223,13 @@ public class AgentWeb {
 
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
-        if (mWebChromeClient != null) {
+        /*if (mWebChromeClient != null) {
             return enableProgress ? new WebChromeClientProgressWrapper(mIndicatorController, mWebChromeClient) : mWebChromeClient;
         } else {
             return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
-        }
+        }*/
 
+        return new DefaultChromeClient(this.mActivity,mIndicatorController,mWebChromeClient,mChromeClientCallbackManager);
     }
 
 

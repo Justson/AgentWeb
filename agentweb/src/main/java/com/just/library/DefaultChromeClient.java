@@ -3,11 +3,14 @@ package com.just.library;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.EditText;
 
@@ -22,7 +25,7 @@ import android.widget.EditText;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultChromeClient extends ChromeClientProgress {
+public class DefaultChromeClient extends WebChromeClientProgressWrapper {
 
 
     private Activity mActivity;
@@ -32,8 +35,14 @@ public class DefaultChromeClient extends ChromeClientProgress {
     private JsResult cJsResult = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
 
-    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, ChromeClientCallbackManager chromeClientCallbackManager) {
-        super(indicatorController);
+    public static final String ChromePath = "android.webkit.WebChromeClient";
+    private WebChromeClient mWebChromeClient;
+    private boolean isWrapper = false;
+
+    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager) {
+        super(indicatorController, chromeClient);
+        isWrapper = chromeClient != null ? true : false;
+        this.mWebChromeClient = chromeClient;
         this.mActivity = activity;
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
     }
@@ -45,10 +54,18 @@ public class DefaultChromeClient extends ChromeClientProgress {
         if (mChromeClientCallbackManager != null && (mCallback = mChromeClientCallbackManager.getReceivedTitleCallback()) != null)
             mCallback.onReceivedTitle(view, title);
 
+        if (isWrapper)
+            super.onReceivedTitle(view, title);
     }
 
     @Override
     public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+
+
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsAlert", "public boolean " + ChromePath + ".onJsAlert", WebView.class, String.class, String.class, JsResult.class)) {
+
+            return super.onJsAlert(view, url, message, result);
+        }
 
         //
         AgentWebUtils.show(view,
@@ -66,14 +83,42 @@ public class DefaultChromeClient extends ChromeClientProgress {
 
 
     @Override
+    public void onReceivedIcon(WebView view, Bitmap icon) {
+        super.onReceivedIcon(view, icon);
+    }
+
+    @Override
+    public void onGeolocationPermissionsHidePrompt() {
+        super.onGeolocationPermissionsHidePrompt();
+    }
+
+    //location
+    @Override
+    public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ChromePath + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
+            super.onGeolocationPermissionsShowPrompt(origin, callback);
+            return;
+        }
+        callback.invoke(origin, true, false);
+    }
+
+    @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
 
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsPrompt", "public boolean " + ChromePath + ".onJsPrompt", WebView.class, String.class, String.class, String.class, JsPromptResult.class)) {
+
+            return super.onJsPrompt(view, url, message, defaultValue, result);
+        }
         showJsPrompt(message, result, defaultValue);
         return true;
     }
 
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ChromePath + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
+
+            return super.onJsConfirm(view, url, message, result);
+        }
         showJsConfirm(message, result);
         return true;
     }

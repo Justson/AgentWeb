@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.ValueCallback;
+import android.webkit.JsResult;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -60,9 +60,17 @@ public class MainActivity extends AppCompatActivity {
                 .defaultProgressBarColor()
                 .addJavascriptInterface("hello", new HelloJs())//
                 .setReceivedTitleCallback(mCallback)
+                .setWebChromeClient(new WebChromeClient(){
+
+
+                    @Override
+                    public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+                        return super.onJsConfirm(view, url, message, result);
+                    }
+                })
                 .createAgentWeb()//
                 .ready()
-                .go("http://www.taobao.com");
+                .go("file:///android_asset/test.html");
 
         long n = System.currentTimeMillis();
         Log.i("Info", "init used time:" + (n - p));
