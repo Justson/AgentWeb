@@ -1,11 +1,13 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 9
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -19,8 +21,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions{
+        abortOnError false
+    }
 }
 
+task javadoc(type: Javadoc) {
+    options.encoding = "utf-8"
+}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -29,4 +37,12 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:25.2.0'
+}
+publish {
+    userOrg = 'just'
+    groupId = 'com.just.agentweb'
+    artifactId = 'agentweb'
+    version = '1.0.0'
+    description = 'very easy to build you web page'
+    website = "https://github.com/Justson/AgentWeb"
 }
