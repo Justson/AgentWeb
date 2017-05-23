@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+
     }
 
     private void doClick(int position){
@@ -76,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this,WebActivity.class));
                 break;
             case 1:
-
                 startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,0));
                 break;
 

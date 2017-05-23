@@ -70,8 +70,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
                 .createAgentWeb()//
+                .clearWebCache()
                 .ready()//
                 .go(getUrl());
+
+
 
 
         initView(view);
@@ -104,6 +107,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
+            Log.i("Info","url:"+url);
             if(url.equals(getUrl())){
                 pageNavigator(View.GONE);
             }else{
@@ -140,7 +144,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
                 case R.id.iv_back:
 
-                    mAgentWeb.back();
+                    if(mAgentWeb.back())
+                        AgentWebFragment.this.getActivity().finish();
+
                     break;
                 case R.id.iv_finish:
                     AgentWebFragment.this.getActivity().finish();

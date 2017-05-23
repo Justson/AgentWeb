@@ -145,6 +145,11 @@ public class AgentWeb {
 
     }
 
+    public AgentWeb clearWebCache(){
+
+        AgentWebUtils.clearWebViewAllCache(mActivity);
+        return this;
+    }
     private void initJsEntraceAccess() {
 
         JsEntraceAccess mJsEntraceAccess = this.mJsEntraceAccess;
@@ -166,6 +171,8 @@ public class AgentWeb {
 
         return new AgentBuilderFragment(activity, fragment);
     }
+
+
 
 
     public boolean handleKeyEvent(int keyCode, KeyEvent keyEvent) {

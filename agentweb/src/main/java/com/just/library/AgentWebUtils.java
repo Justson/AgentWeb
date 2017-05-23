@@ -13,6 +13,7 @@ import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.format.DateUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +23,7 @@ import android.webkit.WebView;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.Date;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -31,7 +33,7 @@ import java.lang.reflect.Method;
  * <b>@公司：</b> 宝诺科技<br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
- *   source code  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class AgentWebUtils {
@@ -96,11 +98,11 @@ public class AgentWebUtils {
         }
     }
 
-    public static Intent getFileIntent(File file){
+    public static Intent getFileIntent(File file) {
 //       Uri uri = Uri.parse("http://m.ql18.com.cn/hpf10/1.pdf");
         Uri uri = Uri.fromFile(file);
         String type = getMIMEType(file);
-        Log.i("tag", "type="+type);
+        Log.i("tag", "type=" + type);
         Intent intent = new Intent("android.intent.action.VIEW");
         intent.addCategory("android.intent.category.DEFAULT");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -108,28 +110,24 @@ public class AgentWebUtils {
         return intent;
     }
 
-    private static String getMIMEType(File f){
-        String type="";
-        String fName=f.getName();
+    private static String getMIMEType(File f) {
+        String type = "";
+        String fName = f.getName();
       /* 取得扩展名 */
-        String end=fName.substring(fName.lastIndexOf(".")+1,fName.length()).toLowerCase();
+        String end = fName.substring(fName.lastIndexOf(".") + 1, fName.length()).toLowerCase();
 
       /* 依扩展名的类型决定MimeType */
-        if(end.equals("pdf")){
+        if (end.equals("pdf")) {
             type = "application/pdf";//
-        }
-        else if(end.equals("m4a")||end.equals("mp3")||end.equals("mid")||
-                end.equals("xmf")||end.equals("ogg")||end.equals("wav")){
+        } else if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
+                end.equals("xmf") || end.equals("ogg") || end.equals("wav")) {
             type = "audio/*";
-        }
-        else if(end.equals("3gp")||end.equals("mp4")){
+        } else if (end.equals("3gp") || end.equals("mp4")) {
             type = "video/*";
-        }
-        else if(end.equals("jpg")||end.equals("gif")||end.equals("png")||
-                end.equals("jpeg")||end.equals("bmp")){
+        } else if (end.equals("jpg") || end.equals("gif") || end.equals("png") ||
+                end.equals("jpeg") || end.equals("bmp")) {
             type = "image/*";
-        }
-        else if(end.equals("apk")){
+        } else if (end.equals("apk")) {
         /* android.permission.INSTALL_PACKAGES */
             type = "application/vnd.android.package-archive";
         }
@@ -140,23 +138,24 @@ public class AgentWebUtils {
 //      }else if(end.equals("xlsx")||end.equals("xls")){
 //        type = "application/vnd.ms-excel";
 //      }
-        else{
+        else {
 //        /*如果无法直接打开，就跳出软件列表给用户选择 */
-            type="*/*";
+            type = "*/*";
         }
         return type;
     }
 
 
     private static WeakReference<Snackbar> snackbarWeakReference;
+
     public static void show(View parent,
-                             CharSequence text,
-                             int duration,
-                             @ColorInt int textColor,
-                             @ColorInt int bgColor,
-                             CharSequence actionText,
-                             @ColorInt int actionTextColor,
-                             View.OnClickListener listener) {
+                            CharSequence text,
+                            int duration,
+                            @ColorInt int textColor,
+                            @ColorInt int bgColor,
+                            CharSequence actionText,
+                            @ColorInt int actionTextColor,
+                            View.OnClickListener listener) {
         SpannableString spannableString = new SpannableString(text);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(textColor);
         spannableString.setSpan(colorSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -178,27 +177,92 @@ public class AgentWebUtils {
         }
     }
 
-    public static boolean isOverriedMethod(Object currentObject,String methodName,String method,Class ...clazzs){
+    public static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
 //        Log.i("Info","currentObject:"+currentObject+"  methodName:"+methodName+"   method:"+method);
-        boolean tag=false;
-        if(currentObject==null)
+        boolean tag = false;
+        if (currentObject == null)
             return tag;
 
-        try{
+        try {
 
-            Class clazz=currentObject.getClass();
-            Method mMethod=clazz.getMethod(methodName,clazzs);
-            String gStr=mMethod.toGenericString();
+            Class clazz = currentObject.getClass();
+            Method mMethod = clazz.getMethod(methodName, clazzs);
+            String gStr = mMethod.toGenericString();
 
 //            Log.i("Info","gstr:"+gStr+"  method:"+method);
-            tag=!gStr.contains(method);
-        }catch (Exception igonre){
+            tag = !gStr.contains(method);
+        } catch (Exception igonre) {
 //                igonre.printStackTrace();
         }
 
 
-
         return tag;
     }
+
+
+    public static void clearWebViewAllCache(Context context, WebView webView) {
+
+        try {
+            webView.clearCache(true);
+            webView.clearHistory();
+            webView.clearFormData();
+            AgentWebConfig.removeAllCookies(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void clearWebViewAllCache(Context context) {
+
+        try {
+
+            clearWebViewAllCache(context,new WebView(context.getApplicationContext()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //// 来源stackflow
+    static int clearCacheFolder(final File dir, final int numDays) {
+
+        int deletedFiles = 0;
+        if (dir!= null && dir.isDirectory()) {
+            try {
+                for (File child:dir.listFiles()) {
+
+                    //first delete subdirectories recursively
+                    if (child.isDirectory()) {
+                        deletedFiles += clearCacheFolder(child, numDays);
+                    }
+
+                    //then delete the files and subdirectories in this dir
+                    //only empty directories can be deleted, so subdirs have been done first
+                    if (child.lastModified() < new Date().getTime() - numDays * DateUtils.DAY_IN_MILLIS) {
+                        if (child.delete()) {
+                            deletedFiles++;
+                        }
+                    }
+                }
+            }
+            catch(Exception e) {
+                Log.e("Info", String.format("Failed to clean the cache, error %s", e.getMessage()));
+            }
+        }
+        return deletedFiles;
+    }
+
+    /*
+     * Delete the files older than numDays days from the application cache
+     * 0 means all files.
+     *
+     * // 来源stackflow
+     */
+    public static void clearCache(final Context context, final int numDays) {
+        Log.i("Info", String.format("Starting cache prune, deleting files older than %d days", numDays));
+        int numDeletedFiles = clearCacheFolder(context.getCacheDir(), numDays);
+        Log.i("Info", String.format("Cache pruning completed, %d files deleted", numDeletedFiles));
+    }
+
+
+
 
 }
