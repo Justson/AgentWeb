@@ -38,12 +38,16 @@ public class CommonActivity extends AppCompatActivity {
     private void openFragment(int key){
 
         FragmentTransaction ft=mFragmentManager.beginTransaction();
-
+        Bundle mBundle=null;
+        ft.add(R.id.container_framelayout,mAgentWebFragment=AgentWebFragment.getInstance(mBundle=new Bundle()),AgentWebFragment.class.getName());
         switch (key){
 
             /*Fragment 使用AgenWebt*/
             case 0:
-                ft.add(R.id.container_framelayout,mAgentWebFragment=AgentWebFragment.getInstance(new Bundle()),AgentWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY,"http://www.jd.com");
+                break;
+            case 1:
+                mBundle.putString(AgentWebFragment.URL_KEY,"https://h5.m.jd.com/active/download/download.html?channel=jd-msy1");
                 break;
 
 

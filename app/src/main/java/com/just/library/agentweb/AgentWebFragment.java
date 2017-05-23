@@ -82,8 +82,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     }
 
+    public static final String URL_KEY="url_key";
     public String getUrl(){
-        return "http://www.jd.com";
+        String target="";
+
+        if(TextUtils.isEmpty(target=this.getArguments().getString(URL_KEY))){
+            target="http://www.jd.com";
+        }
+        return target;
     }
     private ChromeClientCallbackManager.ReceivedTitleCallback mCallback=new ChromeClientCallbackManager.ReceivedTitleCallback() {
         @Override

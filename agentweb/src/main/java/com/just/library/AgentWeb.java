@@ -52,7 +52,7 @@ public class AgentWeb {
     private DownloadListener mDownloadListener = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
-    private IFileUploadChooser mIFileUploadChooser;
+
 
     private WebChromeClient mTargetChromeClient;
 
@@ -306,11 +306,11 @@ public class AgentWeb {
 
     public void uploadFileResult(int requestCode, int resultCode, Intent data) {
 
-        IFileUploadChooser mIFileUploadChooser=this.mIFileUploadChooser;
+        IFileUploadChooser mIFileUploadChooser=null;
 
-        if(mIFileUploadChooser==null&&mTargetChromeClient instanceof  DefaultChromeClient){
+        if(mTargetChromeClient instanceof  DefaultChromeClient){
             DefaultChromeClient mDefaultChromeClient= (DefaultChromeClient) mTargetChromeClient;
-            this.mIFileUploadChooser=mIFileUploadChooser = mDefaultChromeClient.get();
+            mIFileUploadChooser = mDefaultChromeClient.get();
         }
 
         Log.i("Info","file upload:"+mIFileUploadChooser);

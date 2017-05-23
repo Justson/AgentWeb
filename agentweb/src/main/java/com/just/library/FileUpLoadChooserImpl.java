@@ -31,7 +31,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     public FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback) {
         this.mActivity = activity;
         this.mUriValueCallback = callback;
-        isL=false;
+        isL = false;
     }
 
     public FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams) {
@@ -56,20 +56,34 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     public void fetchFilePathFromIntent(int requestCode, int resultCode, Intent data) {
 
         Log.i("Info", "request:" + requestCode + "  result:" + resultCode + "  data:" + data);
-        if (REQUEST_CODE != requestCode || resultCode != mActivity.RESULT_OK)
+        if (REQUEST_CODE != requestCode )
             return;
+        if(resultCode==Activity.RESULT_CANCELED){
 
-        if (isL)
-            handleDataOverL(data);
-        else
-            handleDataBelow(data);
+
+            if(mUriValueCallback!=null)
+                mUriValueCallback.onReceiveValue(null);
+            if(mUriValueCallbacks!=null)
+                mUriValueCallbacks.onReceiveValue(null);
+            return;
+        }
+
+        if(resultCode==Activity.RESULT_OK){
+
+            if (isL)
+                handleDataOverL(data);
+            else
+                handleDataBelow(data);
+
+        }
+
 
     }
 
     private void handleDataBelow(Intent data) {
-        Uri mUri=data.getData();
+        Uri mUri = data == null ? null : data.getData();
 
-        if(mUriValueCallback!=null)
+        if (mUriValueCallback != null)
             mUriValueCallback.onReceiveValue(mUri);
 
     }
@@ -78,7 +92,20 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         Uri[] datas = null;
 
-        ClipData mClipData = data.getClipData();
+
+        if(mUriValueCallbacks==null)
+            return;
+
+        if(data==null){
+            mUriValueCallbacks.onReceiveValue(new Uri[]{});
+            return;
+        }
+        String target=data.getDataString();
+        if(!TextUtils.isEmpty(target)){
+            mUriValueCallbacks.onReceiveValue(new Uri[]{Uri.parse(target)});
+            return;
+        }
+        ClipData mClipData = null;
         if (mClipData != null && mClipData.getItemCount() > 0) {
             datas = new Uri[mClipData.getItemCount()];
             for (int i = 0; i < mClipData.getItemCount(); i++) {
@@ -88,15 +115,9 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
             }
         }
-        String str = data.getDataString();
-        if (!TextUtils.isEmpty(str))
-            datas = new Uri[]{Uri.parse(str)};
 
-        Log.i("Info", "str:" + datas.length + "   d:" + datas[0]);
-        if (mUriValueCallbacks!=null&&datas != null && datas.length > 0)
-            mUriValueCallbacks.onReceiveValue(datas);
+        mUriValueCallbacks.onReceiveValue(datas==null?new Uri[]{}:datas);
 
-        mUriValueCallbacks = null;
 
 
     }
@@ -106,7 +127,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("image/*");
+        i.setType("*/*");
         mActivity.startActivityForResult(Intent.createChooser(i,
                 "File Chooser"), REQUEST_CODE);
     }
