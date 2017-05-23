@@ -25,6 +25,7 @@
         <activity android:name=".WebActivity"
             android:launchMode="singleTop"
             ></activity>
+        <activity android:name=".CommonActivity" android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>

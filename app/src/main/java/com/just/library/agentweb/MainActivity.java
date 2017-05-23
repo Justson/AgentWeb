@@ -14,6 +14,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import static com.just.library.agentweb.CommonActivity.TYPE_KEY;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -23,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTitleTextView;
 
 
-    public static final String[] datas=new String[]{"Activity 使用","Fragment 使用","文件下载","文件上传","Js 通信"};
+    public static final String[] datas=new String[]{"Activity 使用 AgentWeb","Fragment 使用 AgentWeb ","文件下载","文件上传","Js 通信"};
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -69,9 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
         switch (position){
 
-
+            /*Activity agentWeb*/
             case 0:
                 startActivity(new Intent(this,WebActivity.class));
+                break;
+            case 1:
+
+                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,0));
                 break;
 
         }

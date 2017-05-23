@@ -33,4 +33,13 @@ public class EventHandlerImpl implements IEventHandler {
         }
         return false;
     }
+
+    @Override
+    public boolean back() {
+        if(mWebView!=null&&mWebView.canGoBack()){
+            mWebView.goBack();
+            return true;
+        }
+        return false;
+    }
 }

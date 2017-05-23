@@ -176,6 +176,14 @@ public class AgentWeb {
         return mIEventHandler.onKeyDown(keyCode, keyEvent);
     }
 
+    public boolean back() {
+
+        if (mIEventHandler == null) {
+            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get());
+        }
+        return mIEventHandler.back();
+    }
+
     /*public static AgentWeb withCreatorWeb(WebCreator creatorWeb) {
         return new AgentBuilder(creatorWeb).buildAgentWeb();
     }*/
