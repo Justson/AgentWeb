@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html style="width: 100%;height: 100%;margin: 0;padding: 0">
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Pragma" content="no-cache">
+    <link rel="stylesheet" type="text/css" href="./upload.css">
+    <title>上传身份证</title>
+
+    <script type="text/javascript" src="event.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<!--<script type="text/javascript" src="jquery.js"></script>-->
+    <script language="javascript">
+    
+    $(function(){
+  form.reset(); //清除浏览器记录的上次记录
+  var file;
+  $(form).on("change","#file_upload",function(){
+
+            // alert("call back")
+            var $file = $(this);
+            var fileObj = $file[0];
+            var windowURL = window.URL || window.webkitURL;
+            var dataURL;
+            var $img = $("#preview");
+ 
+            if(fileObj && fileObj.files && fileObj.files[0]){
+                dataURL = windowURL.createObjectURL(fileObj.files[0]);
+                $img.attr('src',dataURL);
+            }else{
+                dataURL = $file.val();
+ 
+                
+ 
+                var imgObj = document.getElementById("preview");
+                // 两个坑:
+                // 1、在设置filter属性时，元素必须已经存在在DOM树中，动态创建的Node，也需要在设置属性前加入到DOM中，先设置属性在加入，无效；
+                // 2、src属性需要像下面的方式添加，上面的两种方式添加，无效；
+                imgObj.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+                imgObj.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = dataURL;
+ 
+            }
+    //输出选中结果
+    console.log(this.value);
+    //每次选中都保存旧元素，并使用新的控件替换
+    $(this).clone().replaceAll(file=this);
+  }).submit(function(){
+    //提交时把之前保存的旧元素替换回去
+    $("#file_upload").replaceWith(file);
+  });
+});
+
+
+
+
+
+/*bindEvent(window, 'load', function() {
+    var ip = document.getElementById("file_upload");
+    
+    
+    bindEvent(ip, 'click', function(e){
+        alert("我是" + this + "元素, 你点击了我!");
+    });
+    
+    
+    bindEvent(ip, 'change', function(e) {
+        alert("我是" + this + "，你点击了我！");
+    });
+    
+});*/
+
+
+    </script>
+
+</head>
+<body style="width: 100%;height: 100%;margin: 0;padding: 0">
+        <div id="div_id" style="width: 100% ; height:100%;border: 1px ;background:#000000 ; margin: 0px;">
+            <!-- 头部nav -->
+            <div id="nav" style="width: 100%; height: 10%;background: #f9f9f9;padding-top: 0px ;position: absolute;padding: 0px">
+                
+                <div style="width: 200px;height: 100px; position:relative;left: 50%;top: 50%;margin-left: -100px;margin-top: -50px;overflow: hidden;">
+                    
+                     <font color="#000" ><h4 style="text-align:center;line-height: 50px;">请上传身份证</h4> </font>
+
+                </div>
+
+
+                <div style="width: 100%;height: 1px;background: #c6c6c6;position: relative;margin-top: -50px;top: 99%">
+                    
+                     
+                </div>
+               
+               
+            </div>
+
+            <!-- body -->
+            <div id="content" style="width: 100%; height: 90% ; background: #ebebeb ;position: absolute;top: 10%;">
+                 
+
+                 <div style="margin: 0 auto;width: 60%;height: 40%;border:3px solid #41a0f2;margin-top: 50px;overflow: hidden;">
+
+                     <img id="preview" src="./id.png" style="display: block;margin: 0 auto;height:90px;width: 153px;margin-top: 20px">
+                         
+                     </img>   
+                     <p class="fontBlue ta-c mt5" style="text-align: center;">上传身份证</p>
+            <!-- <input class="file-input abs-lt fullLayer" clstag="jr|keycount|jr_sczj|fmyd2"   name="" data-for="backImg" accept="image/png,image/jpeg,image/jpg" type="file" align="center" style="position: relative;
+    display: inline-block;
+    background: #D0EEFF;
+    border: 1px solid #99D3F5;
+    border-radius: 4px;
+    padding: 4px 12px;
+    overflow: hidden;
+    color: #1E88C7;
+    text-decoration: none;
+    text-indent: 0;
+    line-height: 20px;
+    background: #AADFFD;
+    border-color: #78C3F3;
+    color: #004974;
+    text-decoration: none;
+
+    "> -->
+
+                    <!-- <a href="javascript:;" class="a-upload">
+                        <input type="file" name="" id="">点击这里上传文件
+                    </a> -->
+
+                    <a  href="javascript:;" class="file" style="display: block;margin: 0 auto;width: 150px;height: 30px">选择文件
+                        <form id="form">
+                         <input id="file_upload" type="file" name="" id="">
+                         </form>
+                    </a>
+
+                 </div>
+                 <div>
+                     
+                 </div> 
+
+            </div>    
+
+
+        </div>
+
+        
+
+</body>
+</html>

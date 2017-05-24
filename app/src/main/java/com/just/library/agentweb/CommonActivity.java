@@ -1,10 +1,12 @@
 package com.just.library.agentweb;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
 
@@ -49,6 +51,9 @@ public class CommonActivity extends AppCompatActivity {
             case 1:
                 mBundle.putString(AgentWebFragment.URL_KEY,"https://h5.m.jd.com/active/download/download.html?channel=jd-msy1");
                 break;
+            case 2:
+                mBundle.putString(AgentWebFragment.URL_KEY,"file:///android_asset/upload file/uploadfile.html");
+                break;
 
 
         }
@@ -56,6 +61,13 @@ public class CommonActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        mAgentWebFragment.onActivityResult(requestCode,resultCode,data);
+        Log.i("Info","activity result");
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

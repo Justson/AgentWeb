@@ -53,6 +53,7 @@ public class AgentWeb {
     private ChromeClientCallbackManager mChromeClientCallbackManager;
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
 
+    private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
 
     private WebChromeClient mTargetChromeClient;
 
@@ -97,9 +98,19 @@ public class AgentWeb {
         this.mSecurityType=agentBuilderFragment.mSecurityType;
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects,this.mSecurityType);
         doSafeCheck();
+        doCompatKikat();
     }
 
-    private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
+    private void doCompatKikat() {
+
+        if(Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT){
+
+
+        }
+
+    }
+
+
 
     private void doSafeCheck() {
 

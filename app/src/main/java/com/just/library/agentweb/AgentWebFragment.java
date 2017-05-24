@@ -1,6 +1,7 @@
 package com.just.library.agentweb;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -110,6 +111,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             return false;
         }
 
+
+
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
@@ -122,6 +125,15 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
     };
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.i("Info","onActivityResult result");
+        mAgentWeb.uploadFileResult(requestCode,resultCode,data);
+    }
 
     private void initView(View view) {
         mBackImageView = (ImageView) view.findViewById(R.id.iv_back);
