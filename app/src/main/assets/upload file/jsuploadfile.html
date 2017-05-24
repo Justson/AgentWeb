@@ -16,48 +16,78 @@
 <!--<script type="text/javascript" src="jquery.js"></script>-->
     <script language="javascript">
     
-    $(function(){
-  form.reset(); //清除浏览器记录的上次记录
-  var file;
-  $(form).on("change","#file_upload",function(){
 
-            // alert("call back")
-            var $file = $(this);
-            var fileObj = $file[0];
-            var windowURL = window.URL || window.webkitURL;
-            var dataURL;
-            var $img = $("#preview");
- 
-            if(fileObj && fileObj.files && fileObj.files[0]){
-                dataURL = windowURL.createObjectURL(fileObj.files[0]);
-                $img.attr('src',dataURL);
+
+
+/**
+* 从 file 域获取 本地图片 url
+* 
+*/
+function getFileUrl(sourceId) {
+var url;
+console.log(navigator.userAgent);
+if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+url = document.getElementById(sourceId).value;
+} else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
+url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+} else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
+url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+}
+return url;
+}
+
+/**
+* 将本地图片 显示到浏览器上
+*
+*/
+function preImg(sourceId, targetId) {
+    document.getElementById("uploadFile")
+var url = getFileUrl(sourceId);
+console.log(url);
+var imgPre = document.getElementById(targetId);
+imgPre.src = url;
+}
+
+
+
+bindEvent(window, 'load', function() {
+    var ip = document.getElementById("file_upload");
+    
+    
+    bindEvent(ip, 'click', function(e){
+        // alert("我是" + this + "元素, 你点击了我!");
+    
+            alert("js 调android");
+            if(window.agentWeb!=null && typeof(window.agentWeb)!="undefined"){
+                window.agentWeb.uploadFile();
             }else{
-                dataURL = $file.val();
- 
-                
- 
-                var imgObj = document.getElementById("preview");
-                // 两个坑:
-                // 1、在设置filter属性时，元素必须已经存在在DOM树中，动态创建的Node，也需要在设置属性前加入到DOM中，先设置属性在加入，无效；
-                // 2、src属性需要像下面的方式添加，上面的两种方式添加，无效；
-                imgObj.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
-                imgObj.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = dataURL;
- 
+                alert(typeof(window.agentWeb));
             }
-    //输出选中结果
-    console.log(this.value);
-    //每次选中都保存旧元素，并使用新的控件替换
-    $(this).clone().replaceAll(file=this);
-  }).submit(function(){
-    //提交时把之前保存的旧元素替换回去
-    $("#file_upload").replaceWith(file);
-  });
+    });
+    
+    
+    bindEvent(ip, 'change', function(e) {
+        alert("我变化了");
+    });
+    
 });
 
+function uploadFileResult(objs){
 
+    // console.log(message);
+    //alert(objs);
 
-
-
+    
+    var img=document.getElementById("preview");
+    for(var i=0;i<objs.length;i++){
+        alert(objs[i].fileBase64)
+        img.src="data:image/png;base64," + objs[i].fileBase64
+    }
+    
+    /*img.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+    img.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = message;*/
+    
+}
 
 
     </script>
@@ -115,9 +145,10 @@
                         <input type="file" name="" id="">点击这里上传文件
                     </a> -->
 
-                    <a  href="javascript:;" class="file" style="display: block;margin: 0 auto;width: 150px;height: 30px">选择文件
+                    <a  id="file_upload" href="javascript:;" class="file" style="display: block;margin: 0 auto;width: 150px;height: 30px">选择文件
                         <form id="form">
-                         <input id="file_upload" type="file" name="" id="">
+                         <!-- <input id="file_upload" type="file" name="" id=""> -->
+                         <!-- <button ></button> -->
                          </form>
                     </a>
 

@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 import android.webkit.WebView;
 
 import java.util.Map;
@@ -12,28 +13,31 @@ import java.util.Set;
 
 public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
-    static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView){
+    static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView) {
 
         return new JsInterfaceHolderImpl(webView);
     }
+
     private WebView mWebView;
-    JsInterfaceHolderImpl(WebView webView){
-        this.mWebView=webView;
+
+    JsInterfaceHolderImpl(WebView webView) {
+        this.mWebView = webView;
     }
+
     @Override
     public JsInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps) {
 
-        Set<Map.Entry<String,Object>> sets= maps.entrySet();
-        for(Map.Entry<String,Object> mEntry:sets){
+        Set<Map.Entry<String, Object>> sets = maps.entrySet();
+        for (Map.Entry<String, Object> mEntry : sets) {
 
 
-           Object v= mEntry.getValue();
-           boolean t=checkObject(v);
-            if(!t)
+            Object v = mEntry.getValue();
+            boolean t = checkObject(v);
+            if (!t)
                 throw new JsInterfaceObjectException("this object has not offer method javascript to call");
 
             else
-                addJavaObjectDirect(mEntry.getKey(),v);
+                addJavaObjectDirect(mEntry.getKey(), v);
         }
 
         return this;
@@ -41,16 +45,18 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
     @Override
     public JsInterfaceHolder addJavaObject(String k, Object v) {
-        boolean t=checkObject(v);
-        if(!t)
+        boolean t = checkObject(v);
+        if (!t)
             throw new JsInterfaceObjectException("this object has not javascriptInterface");
 
         else
-            addJavaObjectDirect(k,v);
+            addJavaObjectDirect(k, v);
         return this;
     }
-    private JsInterfaceHolder addJavaObjectDirect(String k,Object v){
-            this.mWebView.addJavascriptInterface(v,k);
+
+    private JsInterfaceHolder addJavaObjectDirect(String k, Object v) {
+        Log.i("Info", "k" + k + "  v:" + v);
+        this.mWebView.addJavascriptInterface(v, k);
         return this;
     }
 

@@ -3,6 +3,7 @@ package com.just.library;
 
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -44,6 +45,14 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
             mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
 
+        if(Build.VERSION.SDK_INT >= 21){
+            mWebSettings.setMixedContentMode(0);
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }else if(Build.VERSION.SDK_INT >= 19){
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }else if(Build.VERSION.SDK_INT < 19){
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
 //        mWebSettings.setRenderPriority(android.webkit.WebSettings.RenderPriority.HIGH);
         mWebSettings.setTextZoom(100);

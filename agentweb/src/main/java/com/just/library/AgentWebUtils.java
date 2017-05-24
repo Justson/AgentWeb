@@ -1,7 +1,9 @@
 package com.just.library;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -9,21 +11,38 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
+import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Queue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -211,11 +230,12 @@ public class AgentWebUtils {
             e.printStackTrace();
         }
     }
+
     public static void clearWebViewAllCache(Context context) {
 
         try {
 
-            clearWebViewAllCache(context,new WebView(context.getApplicationContext()));
+            clearWebViewAllCache(context, new WebView(context.getApplicationContext()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -225,9 +245,9 @@ public class AgentWebUtils {
     static int clearCacheFolder(final File dir, final int numDays) {
 
         int deletedFiles = 0;
-        if (dir!= null && dir.isDirectory()) {
+        if (dir != null && dir.isDirectory()) {
             try {
-                for (File child:dir.listFiles()) {
+                for (File child : dir.listFiles()) {
 
                     //first delete subdirectories recursively
                     if (child.isDirectory()) {
@@ -242,12 +262,53 @@ public class AgentWebUtils {
                         }
                     }
                 }
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 Log.e("Info", String.format("Failed to clean the cache, error %s", e.getMessage()));
             }
         }
         return deletedFiles;
+    }
+
+    public static String FileParcetoJson(FileParcel[] fileParcels){
+
+        if(fileParcels==null||fileParcels.length==0)
+            return null;
+
+        Log.i("Info","json:"+new JSONArray(Arrays.asList(fileParcels)).toString());
+        return new JSONArray(Arrays.asList(fileParcels)).toString();
+
+
+    }
+
+    public static String FileParcetoJson(Collection<FileParcel> collection){
+
+        if(collection==null||collection.size()==0)
+            return null;
+
+
+
+        Iterator<FileParcel> mFileParcels=collection.iterator();
+        JSONArray mJSONArray=new JSONArray();
+        try{
+            while(mFileParcels.hasNext()){
+                JSONObject jo=new JSONObject();
+                FileParcel mFileParcel=mFileParcels.next();
+
+                jo.put("contentPath",mFileParcel.getContentPath());
+                jo.put("fileBase64",mFileParcel.getFileBase64());
+                jo.put("id",mFileParcel.getId());
+                mJSONArray.put(jo);
+            }
+
+        }catch (Exception e){
+
+        }
+
+
+//        Log.i("Info","json:"+mJSONArray);
+        return mJSONArray+"";
+
+
     }
 
     /*
@@ -263,6 +324,103 @@ public class AgentWebUtils {
     }
 
 
+    //必须执行在子线程, 会阻塞 直到完成;
+    public static Queue<FileParcel> convertFile(Context context, Uri[] uris) throws Exception {
 
+        if (uris == null || uris.length == 0)
+            return null;
+        Executor mExecutor = Executors.newCachedThreadPool();
+        final Queue<FileParcel> mQueue = new LinkedBlockingQueue<>();
+        CountDownLatch mCountDownLatch = new CountDownLatch(uris.length);
+
+        int i=1;
+        for (Uri mUri : uris) {
+
+            String path = getRealFilePath(context, mUri);
+//            Log.i("Info","path:"+path+"  uri:"+mUri);
+            if (TextUtils.isEmpty(path)){
+                mCountDownLatch.countDown();
+                continue;
+            }
+
+            mExecutor.execute(new EncodeFileRunnable(path, mQueue, mCountDownLatch,i++));
+
+        }
+        mCountDownLatch.await();
+
+        return mQueue;
+    }
+
+
+    static class EncodeFileRunnable implements Runnable {
+
+        private String filePath;
+        private Queue<FileParcel> mQueue;
+        private CountDownLatch mCountDownLatch;
+        private int id;
+
+        public EncodeFileRunnable(String filePath, Queue<FileParcel> queue, CountDownLatch countDownLatch,int id) {
+            this.filePath = filePath;
+            this.mQueue = queue;
+            this.mCountDownLatch = countDownLatch;
+            this.id=id;
+        }
+
+
+        @Override
+        public void run() {
+            InputStream is = null;
+            ByteArrayOutputStream os=null;
+            try {
+                File mFile = new File(filePath);
+                if (mFile.exists()) {
+
+                    is = new FileInputStream(mFile);
+                    if (is == null)
+                        return;
+
+                    os= new ByteArrayOutputStream();
+                    byte[] b = new byte[1024];
+                    int len;
+                    while ((len = is.read(b, 0, 1024)) != -1) {
+                        os.write(b, 0, len);
+                    }
+                    mQueue.offer(new FileParcel(id,mFile.getAbsolutePath(),Base64.encodeToString(os.toByteArray(), Base64.DEFAULT)));
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                CloseUtils.closeIO(is);
+                CloseUtils.closeIO(os);
+                mCountDownLatch.countDown();
+            }
+
+
+        }
+    }
+
+    public static String getRealFilePath(final Context context, final Uri uri) {
+        if (null == uri) return null;
+        final String scheme = uri.getScheme();
+        String data = null;
+        if (scheme == null)
+            data = uri.getPath();
+        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+            data = uri.getPath();
+        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
+            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                    if (index > -1) {
+                        data = cursor.getString(index);
+                    }
+                }
+                cursor.close();
+            }
+        }
+        return data;
+    }
 
 }

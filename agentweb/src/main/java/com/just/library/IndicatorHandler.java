@@ -1,6 +1,5 @@
 package com.just.library;
 
-import android.util.Log;
 import android.webkit.WebView;
 
 /**
@@ -19,7 +18,7 @@ public class IndicatorHandler implements IndicatorController, ProgressLifeCyclic
     @Override
     public void progress(WebView v, int newProgress) {
 
-        Log.i("Info", "newProgress:" + newProgress + "  v:" + v);
+//        Log.i("Info", "newProgress:" + newProgress + "  v:" + v);
         if (newProgress == 0) {
             reset();
         } else if (newProgress > 0 && newProgress <= 10) {

@@ -11,6 +11,7 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -31,7 +32,7 @@ import android.widget.EditText;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultChromeClient extends WebChromeClientProgressWrapper implements Offer<IFileUploadChooser> {
+public class DefaultChromeClient extends WebChromeClientProgressWrapper implements FileUploadPop<IFileUploadChooser> {
 
 
     private Activity mActivity;
@@ -274,8 +275,16 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     }
     @Override
-    public IFileUploadChooser get() {
+    public IFileUploadChooser pop() {
         Log.i("Info", "offer:" + mIFileUploadChooser);
+        IFileUploadChooser mIFileUploadChooser=this.mIFileUploadChooser;
+        this.mIFileUploadChooser=null;
         return mIFileUploadChooser;
+    }
+
+    @Override
+    public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+        Log.i("Info","coleMessage:"+consoleMessage.message()+"  lineNumber:"+consoleMessage.lineNumber());
+        return true;
     }
 }

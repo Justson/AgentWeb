@@ -16,6 +16,8 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
 
+import java.util.Map;
+
 /**
  * <b>@项目名：</b> agentweb<br>
  * <b>@包名：</b>com.just.library<br>
@@ -46,7 +48,7 @@ public class AgentWeb {
     private Fragment mFragment;
     private IEventHandler mIEventHandler;
 
-    private ArrayMap<String, Object> mJavaObjects;
+    private ArrayMap<String, Object> mJavaObjects = new ArrayMap<>();
     private int TAG = 0;
     private WebListenerManager mWebListenerManager;
     private DownloadListener mDownloadListener = null;
@@ -71,11 +73,12 @@ public class AgentWeb {
         this.mWebSettings = agentBuilder.mWebSettings;
         this.mIEventHandler = agentBuilder.mIEventHandler;
         TAG = 0;
-        this.mJavaObjects = agentBuilder.mJavaObject;
+        if (agentBuilder.mJavaObject != null && agentBuilder.mJavaObject.isEmpty())
+            this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilder.mJavaObject);
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
 
-        this.mSecurityType=agentBuilder.mSecurityType;
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects,mSecurityType);
+        this.mSecurityType = agentBuilder.mSecurityType;
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         doSafeCheck();
     }
 
@@ -93,23 +96,26 @@ public class AgentWeb {
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
         mAgentWeb = this;
         this.mWebSettings = agentBuilderFragment.mWebSettings;
-        this.mJavaObjects = agentBuilderFragment.mJavaObject;
+        if (agentBuilderFragment.mJavaObject != null && agentBuilderFragment.mJavaObject.isEmpty())
+            this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilderFragment.mJavaObject);
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
-        this.mSecurityType=agentBuilderFragment.mSecurityType;
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects,this.mSecurityType);
-        doSafeCheck();
+        this.mSecurityType = agentBuilderFragment.mSecurityType;
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         doCompatKikat();
+        doSafeCheck();
     }
 
+    private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat=null;
     private void doCompatKikat() {
 
-        if(Build.VERSION.SDK_INT==Build.VERSION_CODES.KITKAT){
+
+        mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat=new AgentWebJsInterfaceCompat(this,mActivity));
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
 
 
         }
 
     }
-
 
 
     private void doSafeCheck() {
@@ -156,11 +162,12 @@ public class AgentWeb {
 
     }
 
-    public AgentWeb clearWebCache(){
+    public AgentWeb clearWebCache() {
 
         AgentWebUtils.clearWebViewAllCache(mActivity);
         return this;
     }
+
     private void initJsEntraceAccess() {
 
         JsEntraceAccess mJsEntraceAccess = this.mJsEntraceAccess;
@@ -182,8 +189,6 @@ public class AgentWeb {
 
         return new AgentBuilderFragment(activity, fragment);
     }
-
-
 
 
     public boolean handleKeyEvent(int keyCode, KeyEvent keyEvent) {
@@ -264,7 +269,7 @@ public class AgentWeb {
             return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
         }*/
 
-        return this.mTargetChromeClient=new DefaultChromeClient(this.mActivity,mIndicatorController,mWebChromeClient,mChromeClientCallbackManager);
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, mChromeClientCallbackManager);
     }
 
 
@@ -317,16 +322,21 @@ public class AgentWeb {
 
     public void uploadFileResult(int requestCode, int resultCode, Intent data) {
 
-        IFileUploadChooser mIFileUploadChooser=null;
+        IFileUploadChooser mIFileUploadChooser = null;
 
-        if(mTargetChromeClient instanceof  DefaultChromeClient){
-            DefaultChromeClient mDefaultChromeClient= (DefaultChromeClient) mTargetChromeClient;
-            mIFileUploadChooser = mDefaultChromeClient.get();
+        if (mTargetChromeClient instanceof DefaultChromeClient) {
+            DefaultChromeClient mDefaultChromeClient = (DefaultChromeClient) mTargetChromeClient;
+            mIFileUploadChooser = mDefaultChromeClient.pop();
         }
 
-        Log.i("Info","file upload:"+mIFileUploadChooser);
+        if(mIFileUploadChooser==null)
+            mIFileUploadChooser=mAgentWebJsInterfaceCompat.pop();
+        Log.i("Info", "file upload:" + mIFileUploadChooser);
+        if (mIFileUploadChooser != null)
+            mIFileUploadChooser.fetchFilePathFromIntent(requestCode, resultCode, data);
+
         if(mIFileUploadChooser!=null)
-            mIFileUploadChooser.fetchFilePathFromIntent(requestCode,resultCode,data);
+            mIFileUploadChooser=null;
     }
 
     /*********************************************************为Activity构建AgentWeb***********************************************************************/
@@ -349,7 +359,7 @@ public class AgentWeb {
         private WebSettings mWebSettings;
         private WebCreator mWebCreator;
 
-        private SecurityType mSecurityType=SecurityType.default_check;
+        private SecurityType mSecurityType = SecurityType.default_check;
 
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
 
@@ -510,8 +520,9 @@ public class AgentWeb {
             this.mAgentBuilder.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
             return this;
         }
-        public CommonAgentBuilder setSecutityType(SecurityType secutityType){
-            this.mAgentBuilder.mSecurityType=secutityType;
+
+        public CommonAgentBuilder setSecutityType(SecurityType secutityType) {
+            this.mAgentBuilder.mSecurityType = secutityType;
             return this;
         }
 
@@ -521,8 +532,8 @@ public class AgentWeb {
 
     }
 
-    public static enum SecurityType{
-        default_check,strict;
+    public static enum SecurityType {
+        default_check, strict;
     }
 
     public static class IndicatorBuilder {
@@ -575,7 +586,7 @@ public class AgentWeb {
         private int height_dp = -1;
         private ArrayMap<String, Object> mJavaObject;
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
-        private SecurityType mSecurityType=SecurityType.default_check;
+        private SecurityType mSecurityType = SecurityType.default_check;
 
 
         public AgentBuilderFragment(Activity activity, Fragment fragment) {
@@ -696,8 +707,8 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setSecurityType(SecurityType type){
-            this.mAgentBuilderFragment.mSecurityType=type;
+        public CommonBuilderForFragment setSecurityType(SecurityType type) {
+            this.mAgentBuilderFragment.mSecurityType = type;
             return this;
         }
 

@@ -11,6 +11,8 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import java.util.Queue;
+
 /**
  * Created by cenxiaozhong on 2017/5/22.
  */
@@ -27,19 +29,32 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private boolean isL = false;
 
     private WebChromeClient.FileChooserParams mFileChooserParams;
+    private JsChannelCallback mJsChannelCallback;
+    private boolean jsChannel = false;
 
     public FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback) {
         this.mActivity = activity;
         this.mUriValueCallback = callback;
         isL = false;
+        jsChannel = false;
     }
 
     public FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams) {
 
+        jsChannel = false;
         this.mActivity = activity;
         this.mUriValueCallbacks = valueCallback;
         this.mFileChooserParams = fileChooserParams;
         isL = true;
+    }
+
+    public FileUpLoadChooserImpl(Activity activity, JsChannelCallback jsChannelCallback) {
+        if (jsChannelCallback == null)
+            throw new NullPointerException("jsChannelCallback can not null");
+        jsChannel = true;
+        this.mJsChannelCallback = jsChannelCallback;
+        this.mActivity = activity;
+
     }
 
     @Override
@@ -56,22 +71,29 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     public void fetchFilePathFromIntent(int requestCode, int resultCode, Intent data) {
 
         Log.i("Info", "request:" + requestCode + "  result:" + resultCode + "  data:" + data);
-        if (REQUEST_CODE != requestCode )
+        if (REQUEST_CODE != requestCode)
             return;
-        if(resultCode==Activity.RESULT_CANCELED){
+
+        if (resultCode == Activity.RESULT_CANCELED) {
 
 
-            if(mUriValueCallback!=null)
+            if (jsChannel) {
+                mJsChannelCallback.call(null);
+                return;
+            }
+            if (mUriValueCallback != null)
                 mUriValueCallback.onReceiveValue(null);
-            if(mUriValueCallbacks!=null)
+            if (mUriValueCallbacks != null)
                 mUriValueCallbacks.onReceiveValue(null);
             return;
         }
 
-        if(resultCode==Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
 
             if (isL)
-                handleDataOverL(data);
+                handleAboveL(handleData(data));
+            else if (jsChannel)
+                convertFileAndCallBack(handleData(data));
             else
                 handleDataBelow(data);
 
@@ -79,6 +101,58 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
 
     }
+
+    private void convertFileAndCallBack(final Uri[] uris) {
+
+        if (uris == null && uris.length == 0) {
+
+            mJsChannelCallback.call(null);
+            return;
+        }
+
+        Log.i("Info","length:"+uris.length);
+       new Thread(new Runnable() {
+           @Override
+           public void run() {
+
+               try {
+                   Queue<FileParcel> mQueue=AgentWebUtils.convertFile(mActivity.getApplicationContext(),uris);
+
+
+
+                   String result=AgentWebUtils.FileParcetoJson(mQueue);
+
+//                   Log.i("Info","result:"+result);
+                   if(mJsChannelCallback!=null)
+                       mJsChannelCallback.call(result);
+
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+
+           }
+       }).start();
+
+
+
+
+
+
+    }
+
+    /*private String joining (Uri[] uris){
+
+
+        if(uris==null||uris.length==0)
+            return null;
+        StringBuilder sb=new StringBuilder();
+        for(Uri mUri:uris){
+            sb.append(mUri.toString());
+        }
+
+        return sb.toString();
+
+    }*/
 
     private void handleDataBelow(Intent data) {
         Uri mUri = data == null ? null : data.getData();
@@ -88,22 +162,15 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     }
 
-    private void handleDataOverL(Intent data) {
+    private Uri[] handleData(Intent data) {
 
         Uri[] datas = null;
-
-
-        if(mUriValueCallbacks==null)
-            return;
-
-        if(data==null){
-            mUriValueCallbacks.onReceiveValue(new Uri[]{});
-            return;
+        if (data == null) {
+            return datas;
         }
-        String target=data.getDataString();
-        if(!TextUtils.isEmpty(target)){
-            mUriValueCallbacks.onReceiveValue(new Uri[]{Uri.parse(target)});
-            return;
+        String target = data.getDataString();
+        if (!TextUtils.isEmpty(target)) {
+            return datas = new Uri[]{Uri.parse(target)};
         }
         ClipData mClipData = null;
         if (mClipData != null && mClipData.getItemCount() > 0) {
@@ -115,20 +182,29 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
             }
         }
-
-        mUriValueCallbacks.onReceiveValue(datas==null?new Uri[]{}:datas);
-
+        return datas;
 
 
     }
 
+    private void handleAboveL(Uri[] datas) {
+        if (mUriValueCallbacks == null)
+            return;
+        mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
+    }
 
-    public void openRealFileChooser() {
+
+    private void openRealFileChooser() {
 
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType("*/*");
         mActivity.startActivityForResult(Intent.createChooser(i,
                 "File Chooser"), REQUEST_CODE);
+    }
+
+    interface JsChannelCallback {
+
+        void call(String value);
     }
 }

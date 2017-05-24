@@ -2,6 +2,7 @@ package com.just.library;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
@@ -46,6 +47,7 @@ public class JsEntraceAccessImpl implements JsEntraceAccess {
             callSafeCallJs(str, callback);
             return;
         }
+        Log.i("Info"," isEnd"+str.endsWith(")")+"   callback:"+callback+"  str:"+str);
         mWebView.evaluateJavascript(str, new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {

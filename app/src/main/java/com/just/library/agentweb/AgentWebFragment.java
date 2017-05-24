@@ -71,7 +71,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
                 .createAgentWeb()//
-                .clearWebCache()
                 .ready()//
                 .go(getUrl());
 
