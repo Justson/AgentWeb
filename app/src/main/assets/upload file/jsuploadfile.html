@@ -57,7 +57,7 @@ bindEvent(window, 'load', function() {
     bindEvent(ip, 'click', function(e){
         // alert("我是" + this + "元素, 你点击了我!");
     
-            alert("js 调android");
+            alert("js 调 android 成功");
             if(window.agentWeb!=null && typeof(window.agentWeb)!="undefined"){
                 window.agentWeb.uploadFile();
             }else{
@@ -66,26 +66,31 @@ bindEvent(window, 'load', function() {
     });
     
     
-    bindEvent(ip, 'change', function(e) {
-        alert("我变化了");
-    });
+    
     
 });
 
+//这里返回来的是一个 Json 数组 //
 function uploadFileResult(objs){
 
     // console.log(message);
     //alert(objs);
+    alert("Android call js success");
 
-    
-    var img=document.getElementById("preview");
-    for(var i=0;i<objs.length;i++){
-        alert(objs[i].fileBase64)
-        img.src="data:image/png;base64," + objs[i].fileBase64
+    if(objs==null||typeof(objs)=="undefined"||objs.length==0){
+
+        alert("");
+        return;
+    }else{
+
+       var img=document.getElementById("preview");
+        /*for(var i=0;i<objs.length;i++){  //
+        img.src="data:image/png;base64," + objs[i].fileBase64*/   
+        img.src="data:image/png;base64," + objs[0].fileBase64; 
     }
     
-    /*img.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
-    img.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src = message;*/
+    
+    
     
 }
 

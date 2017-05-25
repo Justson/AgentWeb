@@ -104,55 +104,17 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void convertFileAndCallBack(final Uri[] uris) {
 
-        if (uris == null && uris.length == 0) {
-
+        String[] paths = null;
+        if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
             mJsChannelCallback.call(null);
             return;
         }
 
-        Log.i("Info","length:"+uris.length);
-       new Thread(new Runnable() {
-           @Override
-           public void run() {
-
-               try {
-                   Queue<FileParcel> mQueue=AgentWebUtils.convertFile(mActivity.getApplicationContext(),uris);
-
-
-
-                   String result=AgentWebUtils.FileParcetoJson(mQueue);
-
-//                   Log.i("Info","result:"+result);
-                   if(mJsChannelCallback!=null)
-                       mJsChannelCallback.call(result);
-
-               } catch (Exception e) {
-                   e.printStackTrace();
-               }
-
-           }
-       }).start();
-
-
-
-
-
+//        Log.i("Info", "length:" + paths.length);
+        new CovertFileThread(this.mJsChannelCallback, paths).start();
 
     }
 
-    /*private String joining (Uri[] uris){
-
-
-        if(uris==null||uris.length==0)
-            return null;
-        StringBuilder sb=new StringBuilder();
-        for(Uri mUri:uris){
-            sb.append(mUri.toString());
-        }
-
-        return sb.toString();
-
-    }*/
 
     private void handleDataBelow(Intent data) {
         Uri mUri = data == null ? null : data.getData();
@@ -201,6 +163,33 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         i.setType("*/*");
         mActivity.startActivityForResult(Intent.createChooser(i,
                 "File Chooser"), REQUEST_CODE);
+    }
+
+    static class CovertFileThread extends Thread {
+
+        private JsChannelCallback mJsChannelCallback;
+        private String[] paths;
+
+        public CovertFileThread(JsChannelCallback jsChannelCallback, String[] paths) {
+            this.mJsChannelCallback = jsChannelCallback;
+            this.paths = paths;
+        }
+
+        @Override
+        public void run() {
+
+
+            try {
+                Queue<FileParcel> mQueue = AgentWebUtils.convertFile(paths);
+                String result = AgentWebUtils.FileParcetoJson(mQueue);
+                Log.i("Info", "result:" + result);
+                if (mJsChannelCallback != null)
+                    mJsChannelCallback.call(result);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     interface JsChannelCallback {

@@ -1,6 +1,8 @@
 package com.just.library;
 
-import android.content.ContentResolver;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -11,9 +13,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.CursorLoader;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -34,7 +38,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -43,6 +46,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -269,44 +273,33 @@ public class AgentWebUtils {
         return deletedFiles;
     }
 
-    public static String FileParcetoJson(FileParcel[] fileParcels){
 
-        if(fileParcels==null||fileParcels.length==0)
-            return null;
+    public static String FileParcetoJson(Collection<FileParcel> collection) {
 
-        Log.i("Info","json:"+new JSONArray(Arrays.asList(fileParcels)).toString());
-        return new JSONArray(Arrays.asList(fileParcels)).toString();
-
-
-    }
-
-    public static String FileParcetoJson(Collection<FileParcel> collection){
-
-        if(collection==null||collection.size()==0)
+        if (collection == null || collection.size() == 0)
             return null;
 
 
+        Iterator<FileParcel> mFileParcels = collection.iterator();
+        JSONArray mJSONArray = new JSONArray();
+        try {
+            while (mFileParcels.hasNext()) {
+                JSONObject jo = new JSONObject();
+                FileParcel mFileParcel = mFileParcels.next();
 
-        Iterator<FileParcel> mFileParcels=collection.iterator();
-        JSONArray mJSONArray=new JSONArray();
-        try{
-            while(mFileParcels.hasNext()){
-                JSONObject jo=new JSONObject();
-                FileParcel mFileParcel=mFileParcels.next();
-
-                jo.put("contentPath",mFileParcel.getContentPath());
-                jo.put("fileBase64",mFileParcel.getFileBase64());
-                jo.put("id",mFileParcel.getId());
+                jo.put("contentPath", mFileParcel.getContentPath());
+                jo.put("fileBase64", mFileParcel.getFileBase64());
+                jo.put("id", mFileParcel.getId());
                 mJSONArray.put(jo);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
 
 //        Log.i("Info","json:"+mJSONArray);
-        return mJSONArray+"";
+        return mJSONArray + "";
 
 
     }
@@ -324,29 +317,61 @@ public class AgentWebUtils {
     }
 
 
-    //必须执行在子线程, 会阻塞 直到完成;
-    public static Queue<FileParcel> convertFile(Context context, Uri[] uris) throws Exception {
+    public static String[] uriToPath(Activity activity, Uri[] uris){
 
-        if (uris == null || uris.length == 0)
+        if(activity==null||uris==null||uris.length==0){
+            return null;
+        }
+        String[]paths=new String[uris.length];
+        int i=0;
+        for(Uri mUri:uris){
+            paths[i++] = Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN_MR2?getFileAbsolutePath(activity, mUri):getRealPathBelowVersion(activity,mUri);
+//            Log.i("Info", "path:" + paths[i-1] + "  uri:" + mUri);
+
+        }
+        return paths;
+    }
+    private static String getRealPathBelowVersion(Context context, Uri uri) {
+        String filePath = null;
+        String[] projection = { MediaStore.Images.Media.DATA };
+
+        CursorLoader loader = new CursorLoader(context, uri, projection, null,
+                null, null);
+        Cursor cursor = loader.loadInBackground();
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            filePath = cursor.getString(cursor.getColumnIndex(projection[0]));
+            cursor.close();
+        }
+        return filePath;
+    }
+    //必须执行在子线程, 会阻塞 直到完成;
+    public static Queue<FileParcel> convertFile(String[] paths) throws Exception {
+
+        if (paths == null || paths.length == 0)
             return null;
         Executor mExecutor = Executors.newCachedThreadPool();
         final Queue<FileParcel> mQueue = new LinkedBlockingQueue<>();
-        CountDownLatch mCountDownLatch = new CountDownLatch(uris.length);
+        CountDownLatch mCountDownLatch = new CountDownLatch(paths.length);
 
-        int i=1;
-        for (Uri mUri : uris) {
+        int i = 1;
+        for (String path : paths) {
 
-            String path = getRealFilePath(context, mUri);
-//            Log.i("Info","path:"+path+"  uri:"+mUri);
-            if (TextUtils.isEmpty(path)){
+
+            Log.i("Info","path   :  :"+path);
+            if (TextUtils.isEmpty(path)) {
                 mCountDownLatch.countDown();
                 continue;
             }
 
-            mExecutor.execute(new EncodeFileRunnable(path, mQueue, mCountDownLatch,i++));
+            mExecutor.execute(new EncodeFileRunnable(path, mQueue, mCountDownLatch, i++));
 
         }
         mCountDownLatch.await();
+
+        if (((ThreadPoolExecutor) mExecutor).isShutdown())
+            ((ThreadPoolExecutor) mExecutor).shutdownNow();
 
         return mQueue;
     }
@@ -359,18 +384,18 @@ public class AgentWebUtils {
         private CountDownLatch mCountDownLatch;
         private int id;
 
-        public EncodeFileRunnable(String filePath, Queue<FileParcel> queue, CountDownLatch countDownLatch,int id) {
+        public EncodeFileRunnable(String filePath, Queue<FileParcel> queue, CountDownLatch countDownLatch, int id) {
             this.filePath = filePath;
             this.mQueue = queue;
             this.mCountDownLatch = countDownLatch;
-            this.id=id;
+            this.id = id;
         }
 
 
         @Override
         public void run() {
             InputStream is = null;
-            ByteArrayOutputStream os=null;
+            ByteArrayOutputStream os = null;
             try {
                 File mFile = new File(filePath);
                 if (mFile.exists()) {
@@ -379,13 +404,13 @@ public class AgentWebUtils {
                     if (is == null)
                         return;
 
-                    os= new ByteArrayOutputStream();
+                    os = new ByteArrayOutputStream();
                     byte[] b = new byte[1024];
                     int len;
                     while ((len = is.read(b, 0, 1024)) != -1) {
                         os.write(b, 0, len);
                     }
-                    mQueue.offer(new FileParcel(id,mFile.getAbsolutePath(),Base64.encodeToString(os.toByteArray(), Base64.DEFAULT)));
+                    mQueue.offer(new FileParcel(id, mFile.getAbsolutePath(), Base64.encodeToString(os.toByteArray(), Base64.DEFAULT)));
 
                 }
             } catch (Exception e) {
@@ -400,27 +425,99 @@ public class AgentWebUtils {
         }
     }
 
-    public static String getRealFilePath(final Context context, final Uri uri) {
-        if (null == uri) return null;
-        final String scheme = uri.getScheme();
-        String data = null;
-        if (scheme == null)
-            data = uri.getPath();
-        else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Cursor cursor = context.getContentResolver().query(uri, new String[]{MediaStore.Images.ImageColumns.DATA}, null, null, null);
-            if (null != cursor) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
-                    }
+
+    @TargetApi(19)
+    public static String getFileAbsolutePath(Activity context, Uri fileUri) {
+        if (context == null || fileUri == null)
+            return null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
+            if (isExternalStorageDocument(fileUri)) {
+                String docId = DocumentsContract.getDocumentId(fileUri);
+                String[] split = docId.split(":");
+                String type = split[0];
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
-                cursor.close();
+            } else if (isDownloadsDocument(fileUri)) {
+                String id = DocumentsContract.getDocumentId(fileUri);
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+                return getDataColumn(context, contentUri, null, null);
+            } else if (isMediaDocument(fileUri)) {
+                String docId = DocumentsContract.getDocumentId(fileUri);
+                String[] split = docId.split(":");
+                String type = split[0];
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                String selection = MediaStore.Images.Media._ID + "=?";
+                String[] selectionArgs = new String[]{split[1]};
+                return getDataColumn(context, contentUri, selection, selectionArgs);
             }
+        } // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(fileUri.getScheme())) {
+            // Return the remote address
+            if (isGooglePhotosUri(fileUri))
+                return fileUri.getLastPathSegment();
+            return getDataColumn(context, fileUri, null, null);
         }
-        return data;
+        // File
+        else if ("file".equalsIgnoreCase(fileUri.getScheme())) {
+            return fileUri.getPath();
+        }
+        return null;
+    }
+
+    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+        Cursor cursor = null;
+        String[] projection = {MediaStore.Images.Media.DATA};
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                return cursor.getString(index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is ExternalStorageProvider.
+     */
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is DownloadsProvider.
+     */
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is MediaProvider.
+     */
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri The Uri to check.
+     * @return Whether the Uri authority is Google Photos.
+     */
+    public static boolean isGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
 }
