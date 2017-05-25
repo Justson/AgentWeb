@@ -1,10 +1,8 @@
 package com.just.library;
 
 import android.graphics.Bitmap;
-import android.net.http.SslError;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -55,12 +53,12 @@ public class DefaultWebClient extends WebViewClient {
         Log.i("Info", "onPageFinished");
     }
 
-    @Override
+    /*@Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 
         handler.proceed();
         Log.i("Info", "onReceivedSslError");
-    }
+    }*/
 
     @Override
     public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {

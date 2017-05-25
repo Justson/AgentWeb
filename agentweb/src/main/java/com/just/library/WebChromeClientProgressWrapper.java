@@ -226,6 +226,7 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
         return false;
     }
 
+
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
