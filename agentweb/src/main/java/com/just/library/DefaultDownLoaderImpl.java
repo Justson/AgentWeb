@@ -2,9 +2,7 @@ package com.just.library;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.DownloadListener;
@@ -38,16 +36,7 @@ public class DefaultDownLoaderImpl implements DownloadListener {
         File mFile = getFile(contentDisposition, url);
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
 
-            Intent mIntent = null;
-            if (mContext.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.N) {
-
-                mIntent=new Intent(Intent.ACTION_VIEW);
-                mIntent.setDataAndType(FileProvider.getUriForFile(mContext,mContext.getPackageName(),mFile), "application/vnd.android.package-archive");
-                mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else {
-                mIntent = AgentWebUtils.getFileIntent(mFile);
-            }
-//            mIntent=AgentWebUtils.getFileIntent(mFile);
+            Intent mIntent=AgentWebUtils.getIntentCompat(mContext,mFile);
             if (mIntent != null)
                 mContext.startActivity(mIntent);
             return;

@@ -27,17 +27,7 @@
             android:launchMode="singleTop"
             ></activity>
         <activity android:name=".CommonActivity" android:launchMode="singleTop"></activity>
-        <provider
-            android:authorities="com.just.library.agentweb"
-            android:name="android.support.v4.content.FileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true"
-            >
 
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
     </application>
 
 </manifest>

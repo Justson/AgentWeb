@@ -164,7 +164,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
             if (mNotity != null)
                 mNotity.cancel(mDownLoadTask.getId());
 
-            Intent intent = AgentWebUtils.getFileIntent(mDownLoadTask.getFile());
+            Intent intent = AgentWebUtils.getIntentCompat(mDownLoadTask.getContext(),mDownLoadTask.getFile());
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
                     0x110, intent, PendingIntent.FLAG_UPDATE_CURRENT);
