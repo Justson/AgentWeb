@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/agentWeb.iml" filepath="$PROJECT_DIR$/agentWeb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/agentweb.iml" filepath="$PROJECT_DIR$/library/agentweb.iml" />
       <module fileurl="file://$PROJECT_DIR$/agentweb/agentweb.iml" filepath="$PROJECT_DIR$/agentweb/agentweb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
