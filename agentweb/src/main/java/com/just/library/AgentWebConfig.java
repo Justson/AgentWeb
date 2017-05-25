@@ -16,6 +16,8 @@ public class AgentWebConfig {
 
      static final String AGENTWEB_CACHE_PATCH="/agentweb_cache";
 
+    static final String DOWNLOAD_PATH="download";
+
     /**
      * cookie同步
      */

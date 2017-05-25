@@ -111,7 +111,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-            Log.i("Info","url:"+url);
+            Log.i("Info","url:"+url+"   target:"+getUrl());
             if(url.equals(getUrl())){
                 pageNavigator(View.GONE);
             }else{

@@ -35,12 +35,19 @@ public class DefaultDownLoaderImpl implements DownloadListener {
 
         File mFile = getFile(contentDisposition, url);
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
-            /*Toast.makeText(mContext,"该文件已经存在", Toast.LENGTH_SHORT).show();
-            mFile.delete();
-            mFile=getFile(contentDisposition,url);*/
-            Intent mIntent = AgentWebUtils.getFileIntent(mFile);
-            mIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(mIntent);
+
+            Intent mIntent = null;
+            /*if (mContext.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.N) {
+
+                mIntent=new Intent(Intent.ACTION_VIEW);
+                mIntent.setDataAndType(FileProvider.getUriForFile(mContext,mContext.getPackageName(),mFile), "application/vnd.android.package-archive");
+                mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                mIntent = AgentWebUtils.getFileIntent(mFile);
+            }*/
+            mIntent=AgentWebUtils.getFileIntent(mFile);
+            if (mIntent != null)
+                mContext.startActivity(mIntent);
             return;
         }
         if (mFile != null)
@@ -74,7 +81,7 @@ public class DefaultDownLoaderImpl implements DownloadListener {
             }
 
             Log.i("Info", "file:" + filename);
-            File mFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), filename);
+            File mFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + AgentWebConfig.DOWNLOAD_PATH, filename);
             if (!mFile.exists())
                 mFile.createNewFile();
             return mFile;
