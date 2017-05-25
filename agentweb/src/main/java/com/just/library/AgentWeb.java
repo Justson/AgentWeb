@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
@@ -32,7 +33,7 @@ import java.util.Map;
 /**
  * FrameLayout--嵌套WebView,ProgressBar
  * https://github.com/Justson/AgentWeb
- * author just
+ * author just --cxz
  */
 public class AgentWeb {
 
@@ -61,6 +62,11 @@ public class AgentWeb {
 
     private SecurityType mSecurityType;
 
+    private static final int ACTIVITY_TAG=0;
+    private static final int FRAGMENT_TAG=1;
+
+    private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat=null;
+
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
@@ -72,7 +78,7 @@ public class AgentWeb {
         mAgentWeb = this;
         this.mWebSettings = agentBuilder.mWebSettings;
         this.mIEventHandler = agentBuilder.mIEventHandler;
-        TAG = 0;
+        TAG = ACTIVITY_TAG;
         if (agentBuilder.mJavaObject != null && agentBuilder.mJavaObject.isEmpty())
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilder.mJavaObject);
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
@@ -84,7 +90,7 @@ public class AgentWeb {
 
 
     public AgentWeb(AgentBuilderFragment agentBuilderFragment) {
-        TAG = 1;
+        TAG = FRAGMENT_TAG;
         this.mActivity = agentBuilderFragment.mActivity;
         this.mFragment = agentBuilderFragment.mFragment;
         this.mViewGroup = agentBuilderFragment.mViewGroup;
@@ -101,19 +107,18 @@ public class AgentWeb {
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
         this.mSecurityType = agentBuilderFragment.mSecurityType;
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
-        doCompatKikat();
+        doCompat();
         doSafeCheck();
     }
 
-    private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat=null;
-    private void doCompatKikat() {
+    private void doCompat() {
 
 
         mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat=new AgentWebJsInterfaceCompat(this,mActivity));
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+        /*if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
 
 
-        }
+        }*/
 
     }
 
@@ -181,7 +186,7 @@ public class AgentWeb {
         mJsEntraceAccess.callJs(js, callback);
     }
 
-    public static AgentBuilder with(Activity activity) {
+    public static AgentBuilder with(@NonNull Activity activity) {
         return new AgentBuilder(activity);
     }
 
@@ -230,7 +235,7 @@ public class AgentWeb {
     }
 
 
-    public AgentWeb ready() {
+    private AgentWeb ready() {
         WebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
             this.mWebSettings = mWebSettings = WebDefaultSettingsManager.getInstance();
@@ -311,7 +316,7 @@ public class AgentWeb {
     }
 
 
-    public AgentWeb go(String url) {
+    private AgentWeb go(String url) {
         return loadUrl(url);
     }
 
@@ -398,13 +403,13 @@ public class AgentWeb {
         }
 
 
-        public ConfigIndicatorBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp) {
+        public ConfigIndicatorBuilder setAgentWebParent(ViewGroup viewGroup, ViewGroup.LayoutParams lp) {
             this.mViewGroup = viewGroup;
             mLayoutParams = lp;
             return new ConfigIndicatorBuilder(this);
         }
 
-        public ConfigIndicatorBuilder setViewGroup(ViewGroup viewGroup, ViewGroup.LayoutParams lp, int position) {
+        public ConfigIndicatorBuilder setAgentWebParent(ViewGroup viewGroup, ViewGroup.LayoutParams lp, int position) {
             this.mViewGroup = viewGroup;
             mLayoutParams = lp;
             this.index = position;
@@ -429,8 +434,8 @@ public class AgentWeb {
         }*/
 
 
-        private AgentWeb buildAgentWeb() {
-            return HookManager.hookAgentWeb(new AgentWeb(this), this);
+        private PreAgentWeb buildAgentWeb() {
+            return new PreAgentWeb(HookManager.hookAgentWeb(new AgentWeb(this), this));
         }
 
         private IEventHandler mIEventHandler;
@@ -438,6 +443,29 @@ public class AgentWeb {
 
         public void setIndicatorColorWithHeight(int indicatorColorWithHeight) {
             mIndicatorColorWithHeight = indicatorColorWithHeight;
+        }
+    }
+
+    public static class PreAgentWeb {
+        private AgentWeb mAgentWeb;
+        private boolean isReady=false;
+        PreAgentWeb(AgentWeb agentWeb){
+           this.mAgentWeb=agentWeb;
+        }
+
+
+        public PreAgentWeb ready(){
+            mAgentWeb.ready();
+            isReady=true;
+            return this;
+        }
+        public AgentWeb go(String url){
+            if(!isReady){
+//                throw new IllegalStateException(" please call ready before go  to finish all webview settings");  //i want to do this , but i cannot;
+                ready();
+            }
+            mAgentWeb.go(url);
+            return mAgentWeb;
         }
     }
 
@@ -526,7 +554,7 @@ public class AgentWeb {
             return this;
         }
 
-        public AgentWeb createAgentWeb() {
+        public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
 
@@ -589,21 +617,21 @@ public class AgentWeb {
         private SecurityType mSecurityType = SecurityType.default_check;
 
 
-        public AgentBuilderFragment(Activity activity, Fragment fragment) {
+        public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
             mActivity = activity;
             mFragment = fragment;
         }
 
-        public IndicatorBuilderForFragment configRootView(ViewGroup v, ViewGroup.LayoutParams lp) {
+        public IndicatorBuilderForFragment setAgentWebParent(ViewGroup v, ViewGroup.LayoutParams lp) {
             this.mViewGroup = v;
             this.mLayoutParams = lp;
             return new IndicatorBuilderForFragment(this);
         }
 
-        private AgentWeb buildAgentWeb() {
+        private PreAgentWeb buildAgentWeb() {
             if (this.mViewGroup == null)
                 throw new NullPointerException("ViewGroup is null,please check you params");
-            return HookManager.hookAgentWeb(new AgentWeb(this), this);
+            return new PreAgentWeb(HookManager.hookAgentWeb(new AgentWeb(this), this));
         }
 
         private void addJavaObject(String key, Object o) {
@@ -677,7 +705,7 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setChromeClient(WebChromeClient webChromeClient) {
+        public CommonBuilderForFragment setWebChromeClient(WebChromeClient webChromeClient) {
             this.mAgentBuilderFragment.mWebChromeClient = webChromeClient;
             return this;
 
@@ -693,7 +721,7 @@ public class AgentWeb {
             return this;
         }
 
-        public AgentWeb createAgentWeb() {
+        public PreAgentWeb createAgentWeb() {
             return this.mAgentBuilderFragment.buildAgentWeb();
         }
 

@@ -61,7 +61,7 @@ public class WebActivity extends AppCompatActivity {
 
         long p = System.currentTimeMillis();
         /*mAgentWeb = AgentWeb.with(this)//
-                .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
+                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .addJavascriptInterface("hello", new HelloJs())//
@@ -86,13 +86,14 @@ public class WebActivity extends AppCompatActivity {
 */
 
           mAgentWeb = AgentWeb.with(this)//
-                .setViewGroup(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
+                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .setReceivedTitleCallback(mCallback)
                 .createAgentWeb()//
                 .ready()
                 .go("http://www.jd.com");
+
         long n = System.currentTimeMillis();
         Log.i("Info", "init used time:" + (n - p));
     }

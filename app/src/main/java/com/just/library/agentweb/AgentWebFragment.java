@@ -60,7 +60,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         mAgentWeb = AgentWeb.with(this.getActivity(), this)//
-                .configRootView((ViewGroup) view, new LinearLayout.LayoutParams(-1, -1))//
+                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .setWebSettings(WebDefaultSettingsManager.getInstance())//
                 .setWebViewClient(mWebViewClient)
