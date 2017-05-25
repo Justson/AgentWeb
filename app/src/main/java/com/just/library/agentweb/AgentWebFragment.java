@@ -58,18 +58,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         Log.i("Info", "to view createed");
 
-        //
-//
-//
-//
-//
-//
+
         mAgentWeb = AgentWeb.with(this.getActivity(), this)//
                 .configRootView((ViewGroup) view, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .setWebSettings(WebDefaultSettingsManager.getInstance())//
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
+                .setSecurityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());
@@ -161,7 +157,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
                 case R.id.iv_back:
 
-                    if(mAgentWeb.back())
+                    if(!mAgentWeb.back())
                         AgentWebFragment.this.getActivity().finish();
 
                     break;

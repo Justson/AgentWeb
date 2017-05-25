@@ -23,12 +23,13 @@
 
             <ImageView
                 android:id="@+id/iv_back"
-                android:layout_width="45dp"
+                android:layout_width="55dp"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
                 android:src="@mipmap/back"
                 android:background="@drawable/iv_back_selector"
                 android:scaleType="center"
+                android:clickable="true"
                 />
             <View
                 android:id="@+id/view_line"
@@ -38,12 +39,11 @@
                 android:layout_height="match_parent"
                 android:background="@color/black"
                 android:layout_toRightOf="@+id/iv_back"
-                android:layout_marginLeft="5dp"
                 ></View>
             <ImageView
                 android:id="@+id/iv_finish"
                 android:layout_toRightOf="@+id/view_line"
-                android:layout_width="45dp"
+                android:layout_width="55dp"
                 android:layout_height="match_parent"
                 android:src="@mipmap/cha"
                 android:scaleType="center"

@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity {
             case 3:
                 startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,2));
                 break;
+            case 4:
+                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,3));
+                break;
 
         }
 
