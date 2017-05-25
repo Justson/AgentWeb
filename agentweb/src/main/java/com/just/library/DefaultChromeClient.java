@@ -211,7 +211,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onExceededDatabaseQuota", ChromePath, String.class, String.class, long.class, long.class, long.class, WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onExceededDatabaseQuota", ChromePath+".onExceededDatabaseQuota", String.class, String.class, long.class, long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
             super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             return;
@@ -223,7 +223,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onReachedMaxAppCacheSize", ChromePath, long.class, long.class, WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onReachedMaxAppCacheSize", ChromePath+".onReachedMaxAppCacheSize", long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
             super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
             return;
@@ -236,6 +236,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
         Log.i("Infoss", "openFileChooser>=5.0");
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowFileChooser", ChromePath+".onShowFileChooser", WebView.class, ValueCallback.class, FileChooserParams.class)) {
+
+            return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+        }
         openFileChooserAboveL(webView, filePathCallback, fileChooserParams);
         return true;
     }
@@ -252,11 +256,19 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
         Log.i("Infoss", "openFileChooser>=4.1");
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath+".openFileChooser", ValueCallback.class, String.class,String.class)) {
+            super.openFileChooser( uploadFile, acceptType,capture);
+            return;
+        }
         createAndOpenCommonFileLoader(uploadFile);
     }
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath+".openFileChooser", ValueCallback.class)) {
+            super.openFileChooser(valueCallback);
+            return;
+        }
         Log.i("Infoss", "openFileChooser<3.0");
         createAndOpenCommonFileLoader(valueCallback);
     }
@@ -265,6 +277,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         Log.i("Infoss", "openFileChooser>3.0");
 
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath+".openFileChooser", ValueCallback.class,String.class)) {
+            super.openFileChooser(valueCallback,acceptType);
+            return;
+        }
         createAndOpenCommonFileLoader(valueCallback);
     }
 

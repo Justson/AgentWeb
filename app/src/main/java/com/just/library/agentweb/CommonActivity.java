@@ -52,10 +52,10 @@ public class CommonActivity extends AppCompatActivity {
                 mBundle.putString(AgentWebFragment.URL_KEY,"https://h5.m.jd.com/active/download/download.html?channel=jd-msy1");
                 break;
             case 2:
-                mBundle.putString(AgentWebFragment.URL_KEY,"file:///android_asset/upload file/uploadfile.html");
+                mBundle.putString(AgentWebFragment.URL_KEY,"file:///android_asset/upload_file/uploadfile.html");
                 break;
             case 3:
-                mBundle.putString(AgentWebFragment.URL_KEY,"file:///android_asset/upload file/jsuploadfile.html");
+                mBundle.putString(AgentWebFragment.URL_KEY,"file:///android_asset/upload_file/jsuploadfile.html");
                 break;
 
 

@@ -2,7 +2,9 @@ package com.just.library;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.DownloadListener;
@@ -31,21 +33,21 @@ public class DefaultDownLoaderImpl implements DownloadListener {
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
-        Log.i("Info", "url:" + url + " useraget:" + userAgent + " content:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength);
+        Log.i("Info", "url:" + url + "  package:"+mContext.getPackageName()+"  useraget:" + userAgent + " content:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength);
 
         File mFile = getFile(contentDisposition, url);
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
 
             Intent mIntent = null;
-            /*if (mContext.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.N) {
+            if (mContext.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.N) {
 
                 mIntent=new Intent(Intent.ACTION_VIEW);
                 mIntent.setDataAndType(FileProvider.getUriForFile(mContext,mContext.getPackageName(),mFile), "application/vnd.android.package-archive");
                 mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
                 mIntent = AgentWebUtils.getFileIntent(mFile);
-            }*/
-            mIntent=AgentWebUtils.getFileIntent(mFile);
+            }
+//            mIntent=AgentWebUtils.getFileIntent(mFile);
             if (mIntent != null)
                 mContext.startActivity(mIntent);
             return;

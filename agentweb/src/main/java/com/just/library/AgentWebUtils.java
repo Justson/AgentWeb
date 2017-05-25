@@ -201,7 +201,7 @@ public class AgentWebUtils {
     }
 
     public static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
-//        Log.i("Info","currentObject:"+currentObject+"  methodName:"+methodName+"   method:"+method);
+        Log.i("Info","currentObject:"+currentObject+"  methodName:"+methodName+"   method:"+method);
         boolean tag = false;
         if (currentObject == null)
             return tag;
@@ -212,10 +212,10 @@ public class AgentWebUtils {
             Method mMethod = clazz.getMethod(methodName, clazzs);
             String gStr = mMethod.toGenericString();
 
-//            Log.i("Info","gstr:"+gStr+"  method:"+method);
+            Log.i("Info","gstr:"+gStr+"  method:"+method);
             tag = !gStr.contains(method);
         } catch (Exception igonre) {
-//                igonre.printStackTrace();
+                igonre.printStackTrace();
         }
 
 

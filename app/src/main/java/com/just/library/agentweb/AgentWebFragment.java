@@ -126,7 +126,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.i("Info","onActivityResult result");
+//        Log.i("Info","onActivityResult result");
         mAgentWeb.uploadFileResult(requestCode,resultCode,data);
     }
 
@@ -144,6 +144,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
     private void pageNavigator(int tag) {
+
+        Log.i("Info","TAG:"+tag);
         mBackImageView.setVisibility(tag);
         mLineView.setVisibility(tag);
     }
