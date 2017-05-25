@@ -1,1 +1,1 @@
-include ':app', ':agentweb'
+include ':app', ':library'

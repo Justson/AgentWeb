@@ -26,4 +26,4 @@ tasks.withType(Javadoc) {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-tasks.getByPath(":agentweb:mavenAndroidJavadocs").enabled = false
+tasks.getByPath(":library:mavenAndroidJavadocs").enabled = false

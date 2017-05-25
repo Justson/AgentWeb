@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+
         mToolbar = (Toolbar) this.findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         mToolbar.setTitle("");
