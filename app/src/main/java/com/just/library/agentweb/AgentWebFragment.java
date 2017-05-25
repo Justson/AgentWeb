@@ -55,27 +55,20 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Log.i("Info", "to view createed");
-
-
         mAgentWeb = AgentWeb.with(this.getActivity(), this)//
-                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(-1, -1))//
+                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .useDefaultIndicator()//
                 .setWebSettings(WebDefaultSettingsManager.getInstance())//
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
+                .addJavascriptInterface("HelloJs",new HelloJs())
                 .setSecurityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());
 
 
-
-
         initView(view);
-
-
     }
 
     public static final String URL_KEY="url_key";
