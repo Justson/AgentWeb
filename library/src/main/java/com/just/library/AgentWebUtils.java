@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -202,7 +203,7 @@ public class AgentWebUtils {
     }
 
     public static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
-        Log.i("Info","currentObject:"+currentObject+"  methodName:"+methodName+"   method:"+method);
+        Log.i("Info", "currentObject:" + currentObject + "  methodName:" + methodName + "   method:" + method);
         boolean tag = false;
         if (currentObject == null)
             return tag;
@@ -213,10 +214,10 @@ public class AgentWebUtils {
             Method mMethod = clazz.getMethod(methodName, clazzs);
             String gStr = mMethod.toGenericString();
 
-            Log.i("Info","gstr:"+gStr+"  method:"+method);
+            Log.i("Info", "gstr:" + gStr + "  method:" + method);
             tag = !gStr.contains(method);
         } catch (Exception igonre) {
-                igonre.printStackTrace();
+            igonre.printStackTrace();
         }
 
 
@@ -275,36 +276,6 @@ public class AgentWebUtils {
     }
 
 
-    public static String FileParcetoJson(Collection<FileParcel> collection) {
-
-        if (collection == null || collection.size() == 0)
-            return null;
-
-
-        Iterator<FileParcel> mFileParcels = collection.iterator();
-        JSONArray mJSONArray = new JSONArray();
-        try {
-            while (mFileParcels.hasNext()) {
-                JSONObject jo = new JSONObject();
-                FileParcel mFileParcel = mFileParcels.next();
-
-                jo.put("contentPath", mFileParcel.getContentPath());
-                jo.put("fileBase64", mFileParcel.getFileBase64());
-                jo.put("id", mFileParcel.getId());
-                mJSONArray.put(jo);
-            }
-
-        } catch (Exception e) {
-
-        }
-
-
-//        Log.i("Info","json:"+mJSONArray);
-        return mJSONArray + "";
-
-
-    }
-
     /*
      * Delete the files older than numDays days from the application cache
      * 0 means all files.
@@ -318,23 +289,24 @@ public class AgentWebUtils {
     }
 
 
-    public static String[] uriToPath(Activity activity, Uri[] uris){
+    public static String[] uriToPath(Activity activity, Uri[] uris) {
 
-        if(activity==null||uris==null||uris.length==0){
+        if (activity == null || uris == null || uris.length == 0) {
             return null;
         }
-        String[]paths=new String[uris.length];
-        int i=0;
-        for(Uri mUri:uris){
-            paths[i++] = Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN_MR2?getFileAbsolutePath(activity, mUri):getRealPathBelowVersion(activity,mUri);
+        String[] paths = new String[uris.length];
+        int i = 0;
+        for (Uri mUri : uris) {
+            paths[i++] = Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ? getFileAbsolutePath(activity, mUri) : getRealPathBelowVersion(activity, mUri);
 //            Log.i("Info", "path:" + paths[i-1] + "  uri:" + mUri);
 
         }
         return paths;
     }
+
     private static String getRealPathBelowVersion(Context context, Uri uri) {
         String filePath = null;
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
 
         CursorLoader loader = new CursorLoader(context, uri, projection, null,
                 null, null);
@@ -347,6 +319,7 @@ public class AgentWebUtils {
         }
         return filePath;
     }
+
     //必须执行在子线程, 会阻塞 直到完成;
     public static Queue<FileParcel> convertFile(String[] paths) throws Exception {
 
@@ -360,7 +333,7 @@ public class AgentWebUtils {
         for (String path : paths) {
 
 
-            Log.i("Info","path   :  :"+path);
+            Log.i("Info", "path   :  :" + path);
             if (TextUtils.isEmpty(path)) {
                 mCountDownLatch.countDown();
                 continue;
@@ -522,12 +495,12 @@ public class AgentWebUtils {
     }
 
 
-    public static Intent getIntentCompat(Context context ,File file){
+    public static Intent getIntentCompat(Context context, File file) {
         Intent mIntent = null;
         if (context.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.N) {
 
-            mIntent=new Intent(Intent.ACTION_VIEW);
-            mIntent.setDataAndType(FileProvider.getUriForFile(context,context.getPackageName()+".AgentWebFileProvider",file), "application/vnd.android.package-archive");
+            mIntent = new Intent(Intent.ACTION_VIEW);
+            mIntent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file), "application/vnd.android.package-archive");
             mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
             mIntent = AgentWebUtils.getFileIntent(file);
@@ -535,4 +508,55 @@ public class AgentWebUtils {
         return mIntent;
     }
 
+
+    public static boolean isJson(String target) {
+        if(TextUtils.isEmpty(target))
+            return false;
+
+        boolean tag = false;
+        try {
+            if (target.startsWith("["))
+                new JSONArray(target);
+            else
+                new JSONObject(target);
+
+            tag = true;
+        } catch (JSONException igonre) {
+//            igonre.printStackTrace();
+            tag = false;
+        }
+
+        return tag;
+
+    }
+
+    public static String FileParcetoJson(Collection<FileParcel> collection) {
+
+        if (collection == null || collection.size() == 0)
+            return null;
+
+
+        Iterator<FileParcel> mFileParcels = collection.iterator();
+        JSONArray mJSONArray = new JSONArray();
+        try {
+            while (mFileParcels.hasNext()) {
+                JSONObject jo = new JSONObject();
+                FileParcel mFileParcel = mFileParcels.next();
+
+                jo.put("contentPath", mFileParcel.getContentPath());
+                jo.put("fileBase64", mFileParcel.getFileBase64());
+                jo.put("id", mFileParcel.getId());
+                mJSONArray.put(jo);
+            }
+
+        } catch (Exception e) {
+
+        }
+
+
+//        Log.i("Info","json:"+mJSONArray);
+        return mJSONArray + "";
+
+
+    }
 }

@@ -60,30 +60,7 @@ public class WebActivity extends AppCompatActivity {
 
 
         long p = System.currentTimeMillis();
-        /*mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
-                .useDefaultIndicator()//
-                .defaultProgressBarColor()
-                .addJavascriptInterface("hello", new HelloJs())//
-                .setReceivedTitleCallback(mCallback)
-                .setWebChromeClient(new WebChromeClient(){
 
-
-                    @Override
-                    public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
-                        return super.onJsConfirm(view, url, message, result);
-                    }
-
-                    @Override
-                    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-                        Log.i("Info","jsPrompt");
-                        return super.onJsPrompt(view, url, message, defaultValue, result);
-                    }
-                })
-                .createAgentWeb()//
-                .ready()
-                .go("file:///android_asset/test.html");
-*/
 
           mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//

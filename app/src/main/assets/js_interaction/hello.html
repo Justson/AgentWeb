@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1504.76">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+  </style>
+  <link rel="stylesheet" type="text/css" href="./button.css">
+  <script type="text/javascript">
+
+  function sendHelloToAndroid() {
+      // body...
+      //console.log("call android")
+      if(window.android!=null&&typeof(window.android)!="undefined"){
+        window.android.callAndroid("你好，Android! ");
+      }else{
+         alert(typeof(window.android));
+      }
+     
+  }
+
+  function callByAndroid(){
+      console.log("callByAndroid")
+      alert("Js收到消息");
+      showElement("Js收到消息-->无参方法callByAndroid被调用");
+  }
+
+  function callByAndroidParam(msg1){
+     console.log("callByAndroid_param")
+    alert("Js收到消息："+msg1);
+    showElement("Js收到消息-->方法callByAndroidParam被调用,参数:"+msg1);
+
+  }
+  function callByAndroidMoreParams(objs,msg2,msg3){
+     
+     alert("Js收到消息："+"id:"+objs.id.toString()+" name:"+objs.name+" age:"+objs.age.toString()+msg2+msg3);
+    showElement("Js收到消息-->方法callByAndroidMoreParam被调用 , 参数1:"+objs+"  参数2:"+msg2+"  参数3:"+msg3);
+     return "ok";
+  }
+
+  function callByAndroidInteraction(msg){
+
+    showElement(msg)
+
+    window.setTimeout(sendHelloToAndroid,3000);
+
+  }
+
+
+  function showElement(msg){
+      var div   =document.getElementById("div_box");  //获取div
+      var ele=document.createElement('h2');    //创建P元素节点
+      ele.innerHTML=msg;                //设置p节点的内容   
+      div.appendChild(ele);                    //添加子节点ele
+
+
+}
+
+</script>
+</head>
+<body style="width: 100%;height: 100%;padding: 0px">
+
+<div  id="div_box" style="width: 100%;height: 100%;position: absolute;background: #0ff;margin-top: -50px;overflow: hidden;margin: 0px">
+
+
+</div>
+</body>
+</html>

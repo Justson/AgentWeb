@@ -2,7 +2,6 @@ package com.just.library;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -13,7 +12,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
 
@@ -153,8 +151,16 @@ public class AgentWeb {
     }
 
     private JsEntraceAccess mJsEntraceAccess = null;
+    public JsEntraceAccess getJsEntraceAccess(){
 
-    public void callJs(String js) {
+       JsEntraceAccess mJsEntraceAccess=this.mJsEntraceAccess;
+        if(mJsEntraceAccess==null){
+            this.mJsEntraceAccess=mJsEntraceAccess=JsEntraceAccessImpl.getInstance(mWebCreator.get());
+        }
+        return mJsEntraceAccess;
+    }
+
+    /*public void callJs(String js) {
 
         if (mJsEntraceAccess == null) {
             initJsEntraceAccess();
@@ -165,7 +171,15 @@ public class AgentWeb {
             mJsEntraceAccess.loadJs(js);
         }
 
-    }
+    }*/
+    /*public void callJs(String json , String jsMethod){
+        callJs(json,null,jsMethod);
+    }*/
+    /*public void callJs(String json,ValueCallback<String>callback,String jsMethod){
+        if(mJsEntraceAccess==null)
+            initJsEntraceAccess();
+        mJsEntraceAccess.callJs(json,callback,jsMethod);
+    }*/
 
     public AgentWeb clearWebCache() {
 
@@ -173,7 +187,7 @@ public class AgentWeb {
         return this;
     }
 
-    private void initJsEntraceAccess() {
+    /*private void initJsEntraceAccess() {
 
         JsEntraceAccess mJsEntraceAccess = this.mJsEntraceAccess;
         if (mJsEntraceAccess == null) {
@@ -184,7 +198,7 @@ public class AgentWeb {
     public void callJs(String js, ValueCallback<String> callback) {
         initJsEntraceAccess();
         mJsEntraceAccess.callJs(js, callback);
-    }
+    }*/
 
     public static AgentBuilder with(@NonNull Activity activity) {
         return new AgentBuilder(activity);

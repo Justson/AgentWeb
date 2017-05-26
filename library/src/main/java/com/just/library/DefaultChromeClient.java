@@ -300,7 +300,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        Log.i("Info","coleMessage:"+consoleMessage.message()+"  lineNumber:"+consoleMessage.lineNumber());
+        Log.i("Info","consoleMessage:"+consoleMessage.message()+"  lineNumber:"+consoleMessage.lineNumber());
         return true;
     }
 }

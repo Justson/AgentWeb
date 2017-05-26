@@ -34,9 +34,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private View mLineView;
     private ImageView mFinishImageView;
     private TextView mTitleTextView;
-    private AgentWeb mAgentWeb;
+    protected AgentWeb mAgentWeb;
 
-    public static final AgentWebFragment getInstance(Bundle bundle) {
+    public static AgentWebFragment getInstance(Bundle bundle) {
 
         AgentWebFragment mAgentWebFragment = new AgentWebFragment();
         if (bundle != null)
@@ -61,7 +61,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setWebSettings(WebDefaultSettingsManager.getInstance())//
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
-                .addJavascriptInterface("HelloJs",new HelloJs())
                 .setSecurityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()//

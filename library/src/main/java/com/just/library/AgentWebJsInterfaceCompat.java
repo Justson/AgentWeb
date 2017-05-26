@@ -28,7 +28,8 @@ public class AgentWebJsInterfaceCompat implements AgentWebCompat ,FileUploadPop<
 //                Log.i("Info","call:"+value);
 //                StringBuilder sb=new StringBuilder().append("javascript:uploadFileResult ( \"").append(value).append("\" ) ");
                 if(mAgentWeb!=null)
-                    mAgentWeb.callJs("javascript:uploadFileResult(" + value + ")");
+//                    mAgentWeb.getJsEntraceAccess().callJs("javascript:uploadFileResult(" + value + ")");
+                    mAgentWeb.getJsEntraceAccess().quickCallJs("uploadFileResult",value);
             }
         });
         mIFileUploadChooser.openFileChooser();

@@ -62,6 +62,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
             return false;
 
         if (mDownLoadTask.getLength() - mDownLoadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
+            Log.i("Info"," 空间不足");
             return false;
         }
 
@@ -155,7 +156,10 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> {
     protected void onPostExecute(Integer integer) {
 
         if (integer == ERROR_LOAD) {
+
             Toast.makeText(mDownLoadTask.getContext(), "下载失败出错了", Toast.LENGTH_SHORT).show();
+            if(mNotity!=null)
+                mNotity.cancel(mDownLoadTask.getId());
             return;
         }
 

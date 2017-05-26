@@ -2,7 +2,6 @@ package com.just.library;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
@@ -17,20 +16,22 @@ import android.webkit.WebView;
  * <b>@描述</b><br>
  */
 
-public class JsEntraceAccessImpl implements JsEntraceAccess {
+public class JsEntraceAccessImpl extends BaseJsEntraceAccess {
 
     private WebView mWebView;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+
 
     public static JsEntraceAccessImpl getInstance(WebView webView) {
         return new JsEntraceAccessImpl(webView);
     }
 
     private JsEntraceAccessImpl(WebView webView) {
+        super(webView);
         this.mWebView = webView;
     }
 
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
 
     private void callSafeCallJs(final String s, final ValueCallback valueCallback) {
         mHandler.post(new Runnable() {
@@ -42,36 +43,37 @@ public class JsEntraceAccessImpl implements JsEntraceAccess {
     }
 
     @Override
-    public void callJs(String str, final ValueCallback<String> callback) {
+    public void callJs(String params, final ValueCallback<String> callback) {
         if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
-            callSafeCallJs(str, callback);
+            callSafeCallJs(params, callback);
             return;
         }
-        Log.i("Info"," isEnd"+str.endsWith(")")+"   callback:"+callback+"  str:"+str);
-        mWebView.evaluateJavascript(str, new ValueCallback<String>() {
-            @Override
-            public void onReceiveValue(String value) {
-                if (callback != null)
-                    callback.onReceiveValue(value);
-            }
-        });
+
+        super.callJs(params,callback);
+
     }
 
-    private void callSalfeLoadJs(final String str) {
+
+
+
+
+
+   /* private void safeCallJs(final String method, final ValueCallback<String>valueCallback, final String... params){
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                loadJs(str);
+                quickCallJs(method,valueCallback,params);
             }
         });
     }
-
     @Override
-    public void loadJs(String str) {
-        if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
-            callSalfeLoadJs(str);
-            return;
-        }
-        mWebView.loadUrl(str);
+    public void quickCallJs(String method, ValueCallback<String> callback, String... params) {
+       if(Thread.currentThread()!=Looper.getMainLooper().getThread()){
+           safeCallJs(method,callback,params);
+           return;
+       }
+        super.quickCallJs(method, callback, params);
     }
+*/
+
 }

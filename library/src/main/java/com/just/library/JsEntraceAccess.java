@@ -9,7 +9,14 @@ import android.webkit.ValueCallback;
 public interface JsEntraceAccess {
 
 
-    void callJs(String str, ValueCallback<String> callback);
+    void callJs(String js, ValueCallback<String> callback);
 
-    void loadJs(String str);
+    void callJs(String js);
+
+
+
+    void quickCallJs(String method,ValueCallback<String> callback,String... params);
+
+    void quickCallJs(String method,String... params);
+    void quickCallJs(String method);
 }

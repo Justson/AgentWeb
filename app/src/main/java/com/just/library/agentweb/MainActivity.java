@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTitleTextView;
 
 
-    public static final String[] datas=new String[]{"Activity 使用 AgentWeb","Fragment 使用 AgentWeb ","文件下载","input标签文件上传","Js 通信文件上传","Js 带参通信"};
+    public static final String[] datas=new String[]{"Activity 使用 AgentWeb","Fragment 使用 AgentWeb ","文件下载","input标签文件上传","Js 通信文件上传","Js 通信"};
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
             /*Activity agentWeb*/
             case 0:
+
                 startActivity(new Intent(this,WebActivity.class));
                 break;
             case 1:
@@ -90,6 +91,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 4:
                 startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,3));
+                break;
+            case 5:
+                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,4));
                 break;
 
         }

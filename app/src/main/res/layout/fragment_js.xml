@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <Button
+        android:textColor="@color/white"
+        android:layout_marginTop="30dp"
+        android:text="调用Js，无参数方法"
+        android:textSize="14sp"
+        android:id="@+id/one"
+        android:background="@drawable/selector_drawable_for_btn"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_drawable_for_btn"
+        android:layout_marginLeft="20dp"
+        android:text="调用Js，一个参数方法"
+        android:textSize="14sp"
+        android:id="@+id/two"
+        android:textColor="@color/white"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:text="调用Js，多个参数方法"
+        android:textSize="14sp"
+        android:id="@+id/three"
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_drawable_for_btn"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <Button
+        android:text="Android-Js-Android"
+        android:textSize="14sp"
+        android:id="@+id/four"
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/selector_drawable_for_btn"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:textAllCaps="false"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"/>
+
+</LinearLayout>
