@@ -3,7 +3,6 @@ package com.just.library;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.FrameLayout;
 
 /**
@@ -11,7 +10,7 @@ import android.widget.FrameLayout;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public abstract class BaseIndicatorView extends View implements BaseProgressSpec ,LayoutParamsOffer{
+public abstract class BaseIndicatorView extends FrameLayout implements BaseProgressSpec ,LayoutParamsOffer{
     public BaseIndicatorView(Context context) {
         super(context);
     }
@@ -43,6 +42,8 @@ public abstract class BaseIndicatorView extends View implements BaseProgressSpec
     public void hide() {
 
     }
+
+
 
     @Override
     public FrameLayout.LayoutParams offerLayoutParams() {

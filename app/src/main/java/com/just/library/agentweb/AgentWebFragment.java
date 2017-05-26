@@ -35,6 +35,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private ImageView mFinishImageView;
     private TextView mTitleTextView;
     protected AgentWeb mAgentWeb;
+    public static final String URL_KEY="url_key";
 
     public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -70,7 +71,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         initView(view);
     }
 
-    public static final String URL_KEY="url_key";
+
     public String getUrl(){
         String target="";
 

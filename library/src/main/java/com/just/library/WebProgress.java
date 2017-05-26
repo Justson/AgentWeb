@@ -94,6 +94,12 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     protected void onDraw(Canvas canvas) {
 
      /*   Log.i("Info", "re:" + (currentProgress / 100 * Float.valueOf(this.getWidth())) + "  width:" + this.getWidth() + "  height:" + this.getHeight() + "  left:" + getLeft() + "  right:" + getRight() + "  b:" + this.getBottom() + " top:" + this.getTop());*/
+
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+//        super.dispatchDraw(canvas);
         canvas.drawRect(0, 0, currentProgress / 100 * Float.valueOf(this.getWidth()), this.getHeight(), mPaint);
     }
 
