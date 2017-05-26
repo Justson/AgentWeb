@@ -42,21 +42,25 @@ public class CommonActivity extends AppCompatActivity {
 
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         Bundle mBundle = null;
-        if (key != 4)
-            ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+
+
         switch (key) {
 
             /*Fragment 使用AgenWebt*/
             case 0:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://www.jd.com");
                 break;
             case 1:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "https://h5.m.jd.com/active/download/download.html?channel=jd-msy1");
                 break;
             case 2:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/upload_file/uploadfile.html");
                 break;
             case 3:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/upload_file/jsuploadfile.html");
                 break;
             case 4:
@@ -64,6 +68,14 @@ public class CommonActivity extends AppCompatActivity {
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/js_interaction/hello.html");
                 break;
 
+            case 5:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomIndicatorFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.taobao.com");
+                break;
+            case 6:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.taobao.com");
+                break;
 
         }
         ft.commit();
@@ -91,5 +103,11 @@ public class CommonActivity extends AppCompatActivity {
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 }

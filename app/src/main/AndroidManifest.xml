@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
     <uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"></uses-permission>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -23,10 +24,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".WebActivity"
+        <activity
+            android:name=".WebActivity"
             android:launchMode="singleTop"
+            android:process=":web"
             ></activity>
-        <activity android:name=".CommonActivity" android:launchMode="singleTop"></activity>
+        <activity
+            android:process=":web"
+            android:name=".CommonActivity"
+            android:launchMode="singleTop"></activity>
 
     </application>
 

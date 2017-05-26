@@ -60,10 +60,10 @@ public class AgentWeb {
 
     private SecurityType mSecurityType;
 
-    private static final int ACTIVITY_TAG=0;
-    private static final int FRAGMENT_TAG=1;
+    private static final int ACTIVITY_TAG = 0;
+    private static final int FRAGMENT_TAG = 1;
 
-    private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat=null;
+    private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
@@ -112,7 +112,7 @@ public class AgentWeb {
     private void doCompat() {
 
 
-        mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat=new AgentWebJsInterfaceCompat(this,mActivity));
+        mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat = new AgentWebJsInterfaceCompat(this, mActivity));
         /*if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
 
 
@@ -151,11 +151,12 @@ public class AgentWeb {
     }
 
     private JsEntraceAccess mJsEntraceAccess = null;
-    public JsEntraceAccess getJsEntraceAccess(){
 
-       JsEntraceAccess mJsEntraceAccess=this.mJsEntraceAccess;
-        if(mJsEntraceAccess==null){
-            this.mJsEntraceAccess=mJsEntraceAccess=JsEntraceAccessImpl.getInstance(mWebCreator.get());
+    public JsEntraceAccess getJsEntraceAccess() {
+
+        JsEntraceAccess mJsEntraceAccess = this.mJsEntraceAccess;
+        if (mJsEntraceAccess == null) {
+            this.mJsEntraceAccess = mJsEntraceAccess = JsEntraceAccessImpl.getInstance(mWebCreator.get());
         }
         return mJsEntraceAccess;
     }
@@ -334,9 +335,19 @@ public class AgentWeb {
         return loadUrl(url);
     }
 
+    private boolean isKillProcess = false;
 
     public void destroy() {
         AgentWebUtils.clearWebView(mWebCreator.get());
+
+    }
+
+    public void destroyAndKill() {
+        destroy();
+        if (AgentWebUtils.isMainProcess(mActivity)) {
+            Log.i("Info", "退出进程");
+            System.exit(0);
+        }
     }
 
     public void uploadFileResult(int requestCode, int resultCode, Intent data) {
@@ -348,14 +359,14 @@ public class AgentWeb {
             mIFileUploadChooser = mDefaultChromeClient.pop();
         }
 
-        if(mIFileUploadChooser==null)
-            mIFileUploadChooser=mAgentWebJsInterfaceCompat.pop();
+        if (mIFileUploadChooser == null)
+            mIFileUploadChooser = mAgentWebJsInterfaceCompat.pop();
         Log.i("Info", "file upload:" + mIFileUploadChooser);
         if (mIFileUploadChooser != null)
             mIFileUploadChooser.fetchFilePathFromIntent(requestCode, resultCode, data);
 
-        if(mIFileUploadChooser!=null)
-            mIFileUploadChooser=null;
+        if (mIFileUploadChooser != null)
+            mIFileUploadChooser = null;
     }
 
     /*********************************************************为Activity构建AgentWeb***********************************************************************/
@@ -462,19 +473,21 @@ public class AgentWeb {
 
     public static class PreAgentWeb {
         private AgentWeb mAgentWeb;
-        private boolean isReady=false;
-        PreAgentWeb(AgentWeb agentWeb){
-           this.mAgentWeb=agentWeb;
+        private boolean isReady = false;
+
+        PreAgentWeb(AgentWeb agentWeb) {
+            this.mAgentWeb = agentWeb;
         }
 
 
-        public PreAgentWeb ready(){
+        public PreAgentWeb ready() {
             mAgentWeb.ready();
-            isReady=true;
+            isReady = true;
             return this;
         }
-        public AgentWeb go(String url){
-            if(!isReady){
+
+        public AgentWeb go(String url) {
+            if (!isReady) {
 //                throw new IllegalStateException(" please call ready before go  to finish all webview settings");  //i want to do this , but i cannot;
                 ready();
             }

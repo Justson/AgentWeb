@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.just.library.AgentWeb;
 import com.just.library.ChromeClientCallbackManager;
 import com.just.library.WebDefaultSettingsManager;
+import com.just.library.WebSettings;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
@@ -59,7 +60,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mAgentWeb = AgentWeb.with(this.getActivity(), this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .useDefaultIndicator()//
-                .setWebSettings(WebDefaultSettingsManager.getInstance())//
+                .setWebSettings(getSettings())//
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
                 .setSecurityType(AgentWeb.SecurityType.strict)
@@ -72,6 +73,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
 
+    public WebSettings getSettings(){
+        return WebDefaultSettingsManager.getInstance();
+    }
     public String getUrl(){
         String target="";
 
@@ -80,7 +84,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
         return target;
     }
-    private ChromeClientCallbackManager.ReceivedTitleCallback mCallback=new ChromeClientCallbackManager.ReceivedTitleCallback() {
+    protected ChromeClientCallbackManager.ReceivedTitleCallback mCallback=new ChromeClientCallbackManager.ReceivedTitleCallback() {
         @Override
         public void onReceivedTitle(WebView view, String title) {
             if(mTitleTextView!=null&&!TextUtils.isEmpty(title))
@@ -90,7 +94,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
     };
-    private WebViewClient mWebViewClient = new WebViewClient() {
+    protected WebViewClient mWebViewClient = new WebViewClient() {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -123,7 +127,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mAgentWeb.uploadFileResult(requestCode,resultCode,data);
     }
 
-    private void initView(View view) {
+    protected void initView(View view) {
         mBackImageView = (ImageView) view.findViewById(R.id.iv_back);
         mLineView = view.findViewById(R.id.view_line);
 

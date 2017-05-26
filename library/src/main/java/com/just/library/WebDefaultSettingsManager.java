@@ -26,7 +26,7 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
     public static WebDefaultSettingsManager getInstance() {
         return new WebDefaultSettingsManager();
     }
-    private WebDefaultSettingsManager(){
+    protected WebDefaultSettingsManager(){
 
     }
 

@@ -2,6 +2,7 @@ package com.just.library;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -43,6 +44,7 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -89,6 +91,7 @@ public class AgentWebUtils {
         m.clearHistory();
         m.destroy();
         m = null;
+
 
     }
 
@@ -557,6 +560,32 @@ public class AgentWebUtils {
 //        Log.i("Info","json:"+mJSONArray);
         return mJSONArray + "";
 
+
+    }
+
+    public static boolean isMainProcess(Context context){
+
+        ActivityManager mActivityManager= (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        boolean tag=false;
+        int id=android.os.Process.myPid();
+        String processName="";
+
+        String packgeName=context.getPackageName();
+       List<ActivityManager.RunningAppProcessInfo>mInfos= mActivityManager.getRunningAppProcesses();
+
+        for(ActivityManager.RunningAppProcessInfo mRunningAppProcessInfo:mInfos){
+
+            if(mRunningAppProcessInfo.pid==id){
+                processName=mRunningAppProcessInfo.processName;
+                break;
+            }
+        }
+
+        if(packgeName.equals(processName))
+            tag=true;
+
+        return tag;
 
     }
 }

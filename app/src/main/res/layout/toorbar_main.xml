@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?android:actionBarSize"
+    android:background="?attr/colorPrimary"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    android:titleTextColor="@android:color/white"
+    app:titleTextColor="@android:color/white"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/back"
+            android:background="@drawable/iv_back_selector"
+            android:scaleType="center"
+            android:clickable="true"
+            />
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="1px"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:layout_toRightOf="@+id/iv_back"
+            ></View>
+        <ImageView
+            android:id="@+id/iv_finish"
+            android:layout_toRightOf="@+id/view_line"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/cha"
+            android:scaleType="center"
+            android:background="@drawable/iv_back_selector"
+            />
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"/>
+    </RelativeLayout>
+
+
+</android.support.v7.widget.Toolbar>
+
