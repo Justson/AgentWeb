@@ -8,7 +8,35 @@ AgentWeb 是一个简洁易用的 Android Web 库 。 [App 下载体验](./agent
 * 问题2 ， 文件上传 ！ 这是 WebView 一大坑 。首先 WebView 本身也是不支持文件上传的 ，需要自己实现 ，好吧！ 自己实现 ，结果在Android 4.4机子上点击 input 标签不反应 ， 心里一万只曹尼玛在崩腾 。 其实啊! Android 由于历史原因对 WebView 内核进行过几次大的迭代 ，兼容性遗留下了很大问题 。 
 * 问题3 ，使用 WebView 一不小心就存在各种安全隐患 ，比如说 WebView 任意代码执行漏洞、WebView 域控制不严格漏洞 等等很多 。
 * 问题4 ， WebView 内存泄露 ，低版本泄露挺严重 ， 可以新建进程，退出时候使用 System.exit(0) 杀死进程释放内存 ， 但是在高版本内存泄露似乎没有了 ， 我用 leakcanary 测不到 。
-* 等等 ...
+* Context 应该怎么传?  Application ？ Activity ？ onJsAlert 失效 等等问题 ...
+
+## 浅谈进度条
+为什么要谈一下进度条这个东西呢 ?  因为没有进度条的 WebView 页面体验实在太差了 ，AgentWeb 默认的进度条是一般浏览器的进度条 ，为什么采用这种进度条呢 ? 因为体验好 ，微信和QQ ，支付宝 、 UC 以及 Safari 都采用这种进度条是有他们道理的 , 我还见过应用加载 Web 页面的时候直接弹 Dialog 不可取消 ，这种恶心的做法 ，没有非常必要让用户确定情况都别弹 Dialog ，特别在用户网络不好的情况下 ，加载速度变得突奇的慢 ，那么 Dialog 就一直存在 ，用户耐性不好 ，只能把你进程杀死 。
+
+## Agentweb 视图结构
+
+```
+	<FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <WebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </WebView>
+		 <!--进度条-->
+        <com.just.library.BaseIndicatorView
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            >
+
+        </com.just.library.BaseIndicatorView>
+    </FrameLayout>
+
+```
+
+ 很清晰 AgentWeb 最外层是 FrameLayout ， 所以在使用 AgentWeb 的时候还需要给 FrameLayout 指定父控件（下面有使用方式） 。
 
 ## AgentWeb 功能
 1. 支持进度条以及自定义进度条
@@ -30,7 +58,7 @@ AgentWeb 是一个简洁易用的 Android Web 库 。 [App 下载体验](./agent
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.0.2'
+   compile 'com.just.agentweb:agentweb:1.0.3'
    ```
 * Maven
 	
@@ -38,7 +66,7 @@ AgentWeb 是一个简洁易用的 Android Web 库 。 [App 下载体验](./agent
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.0.2</version>
+	  <version>1.0.3</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -78,6 +106,27 @@ Fragment 使用如下
     }
 
 ```
+
+Javascript 通信吗 ? 请看 。
+
+```
+//Javascript 方法
+function callByAndroid(){
+      console.log("callByAndroid")
+      alert("Js收到消息");
+      showElement("Js收到消息-->无参方法callByAndroid被调用");
+  }
+
+
+```
+Android 端
+
+`mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");`
+
+结果
+`05-27 08:27:04.945 469-469/com.just.library.agentweb:web I/Info: consoleMessage:callByAndroid  lineNumber:27`
+
+
 ## 效果图
 ![京东](jd.png)
 
