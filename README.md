@@ -15,19 +15,51 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 8. WebView 安全
 
 ## 为什么要使用 AgentWeb ？
-七个字 ，简洁易用体验好 。 最重要的是 WebView 很多东西不支持呀 ！ 坑太多 。
+七个字 ，简洁易用体验好 。 最重要的是 WebView 很多东西不支持呀 ， 坑太多！
 
-|     Web     |  文件下载  |  文件上传 |   Js通信  |  断点续传  |   使用简易度 |  进度条      |
-|:-----------:|:---------:|:---------|:---------|:---------|:----------- |:----------- |
-| WebView     |  不支持    | 不支持		|  支持    |     不支持 |    麻烦      | 没有      |
-| AgentWeb	 |  支持		| 支持		|  更简洁   |   支持    |    简洁      | 有         |	
+|     Web     |  文件下载  |  文件上传 |   Js通信  |  断点续传  |   使用简易度 |  进度条      | 线程安全    |
+|:-----------:|:---------:|:---------|:---------|:---------|:----------- |:-----------|:-----------|
+| WebView     |  不支持    | 不支持		|  支持    |     不支持 |    麻烦      | 没有        | 不安全      |
+| AgentWeb	 |  支持		| 支持		|  更简洁   |   支持    |    简洁      | 有         |  安全       |	
 
 
 
 ## 简洁易用
+为什么说它简洁易用吗 ？ 下面京东效果图 ， 只需一句话 ！
+
+```
+mAgentWeb = AgentWeb.with(this)//传入Activity
+                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
+                .useDefaultIndicator()// 使用默认进度条
+                .defaultProgressBarColor() // 使用默认进度条颜色
+                .setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调
+                .createAgentWeb()//
+                .ready()
+                .go("http://www.jd.com");
+
+```
+你没看错 ，里面没有一句 Setting ， 甚至连 WebChromeClient 都不配置就有进度条 。 
+
+Javascript 通信拼接太麻烦 ？ 请看 。
+
+```
+//Javascript 方法
+function callByAndroid(){
+      console.log("callByAndroid")
+  }
 
 
-## 效果图
+```
+Android 端
+
+`mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");`
+
+结果
+```
+05-27 08:27:04.945 469-469/com.just.library.agentweb:web I/Info: consoleMessage:callByAndroid  lineNumber:27
+```
+
+## 效果图 
 ![京东](jd.png)
 
 ## 浅谈进度条
@@ -123,24 +155,7 @@ Fragment 使用如下
 
 ```
 
-Javascript 通信吗 ? 请看 。
 
-```
-//Javascript 方法
-function callByAndroid(){
-      console.log("callByAndroid")
-      alert("Js收到消息");
-      showElement("Js收到消息-->无参方法callByAndroid被调用");
-  }
-
-
-```
-Android 端
-
-`mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");`
-
-结果
-`05-27 08:27:04.945 469-469/com.just.library.agentweb:web I/Info: consoleMessage:callByAndroid  lineNumber:27`
 
 
 
