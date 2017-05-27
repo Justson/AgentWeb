@@ -58,7 +58,7 @@ public class AgentWeb {
 
     private WebChromeClient mTargetChromeClient;
 
-    private SecurityType mSecurityType;
+    private SecurityType mSecurityType=SecurityType.default_check;
 
     private static final int ACTIVITY_TAG = 0;
     private static final int FRAGMENT_TAG = 1;
@@ -264,7 +264,7 @@ public class AgentWeb {
         mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
 
         if (mJsInterfaceHolder == null) {
-            mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get());
+            mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get(),this.mSecurityType);
         }
         if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
             mJsInterfaceHolder.addJavaObjects(mJavaObjects);
