@@ -13,20 +13,25 @@ import java.util.Set;
 
 public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
-    static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView) {
+    static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
 
-        return new JsInterfaceHolderImpl(webView);
+        return new JsInterfaceHolderImpl(webView,securityType);
     }
 
     private WebView mWebView;
-
-    JsInterfaceHolderImpl(WebView webView) {
+    private AgentWeb.SecurityType mSecurityType;
+    JsInterfaceHolderImpl(WebView webView, AgentWeb.SecurityType securityType) {
+        super(securityType);
         this.mWebView = webView;
+        this.mSecurityType=securityType;
     }
 
     @Override
     public JsInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps) {
 
+        if(!checkSecurity()){
+            return this;
+        }
         Set<Map.Entry<String, Object>> sets = maps.entrySet();
         for (Map.Entry<String, Object> mEntry : sets) {
 
@@ -45,6 +50,9 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
     @Override
     public JsInterfaceHolder addJavaObject(String k, Object v) {
+        if(!checkSecurity()){
+            return this;
+        }
         boolean t = checkObject(v);
         if (!t)
             throw new JsInterfaceObjectException("this object has not javascriptInterface");

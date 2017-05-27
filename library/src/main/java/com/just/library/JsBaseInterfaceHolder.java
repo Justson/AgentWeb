@@ -12,6 +12,10 @@ import java.lang.reflect.Method;
 
 public abstract class JsBaseInterfaceHolder implements JsInterfaceHolder{
 
+    private AgentWeb.SecurityType mSecurityType;
+    protected JsBaseInterfaceHolder(AgentWeb.SecurityType securityType){
+      this.mSecurityType =securityType;
+    }
     @Override
     public boolean checkObject(Object v) {
 
@@ -40,4 +44,10 @@ public abstract class JsBaseInterfaceHolder implements JsInterfaceHolder{
 
         return tag;
     }
+
+    protected boolean checkSecurity(){
+        return mSecurityType!= AgentWeb.SecurityType.strict ?true:Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN_MR1;
+    }
+
+
 }
