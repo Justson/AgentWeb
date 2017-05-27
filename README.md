@@ -1,3 +1,4 @@
+![](./logo.png)
 ## AgentWeb 介绍
 AgentWeb 是一个简洁易用的 Android Web 库 。 [App 下载体验](./agentweb.apk)
 
@@ -59,8 +60,13 @@ Android 端
 05-27 08:27:04.945 469-469/com.just.library.agentweb:web I/Info: consoleMessage:callByAndroid  lineNumber:27
 ```
 
+
+
 ## 效果图 
 ![京东](jd.png)
+
+#### 到了这里 ， 弱弱问一句 ， 你还有什么理由不使用 AgentWeb ？
+
 
 ## 浅谈进度条
 为什么要谈一下进度条这个东西呢 ?  因为没有进度条的 WebView 页面体验实在太差了 ，AgentWeb 默认的进度条是一般浏览器的进度条 ，为什么采用这种进度条呢 ? 因为体验好 ，微信和QQ ，支付宝 、 UC 以及 Safari 都采用这种进度条是有他们道理的 , 我还见过应用加载 Web 页面的时候直接弹 Dialog 不可取消 ，这种恶心的做法 ，没有非常必要让用户确定情况都别弹 Dialog ，特别在用户网络不好的情况下 ，加载速度变得突奇的慢 ，那么 Dialog 就一直存在 ，用户耐性不好 ，只能把你进程杀死 。
@@ -155,6 +161,12 @@ Fragment 使用如下
 
 ```
 
+## 混淆
+
+```
+
+-keep public class * extends android.webkit.WebChromeClient
+```
 
 
 
