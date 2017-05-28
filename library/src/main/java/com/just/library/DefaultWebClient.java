@@ -19,7 +19,13 @@ import android.webkit.WebViewClient;
  *     source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultWebClient extends WebViewClient {
+public class DefaultWebClient extends WrapperWebViewClient {
+
+    private WebViewClientCallbackManager mWebViewClientCallbackManager;
+    DefaultWebClient(WebViewClient client,WebViewClientCallbackManager manager) {
+        super(client);
+        this.mWebViewClientCallbackManager=manager;
+    }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -30,6 +36,9 @@ public class DefaultWebClient extends WebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         Log.i("Info", "onPageStarted");
+        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE&&mWebViewClientCallbackManager.getPageLifeCycleCallback()!=null){
+            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view,url,favicon);
+        }
         super.onPageStarted(view, url, favicon);
 
     }
@@ -51,20 +60,21 @@ public class DefaultWebClient extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView view, String url) {
+        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE&&mWebViewClientCallbackManager.getPageLifeCycleCallback()!=null){
+            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view,url);
+        }
         super.onPageFinished(view, url);
+
         Log.i("Info", "onPageFinished");
     }
 
-    /*@Override
-    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
 
-        handler.proceed();
-        Log.i("Info", "onReceivedSslError");
-    }*/
 
     @Override
     public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
         Log.i("Info", "shouldOverrideKeyEvent");
         return super.shouldOverrideKeyEvent(view, event);
     }
+
+
 }

@@ -12,9 +12,10 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/app_logo"
+        android:logo="@mipmap/app_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/app_logo"
         android:supportsRtl="true"
         android:theme="@style/BaseAppTheme">
         <activity android:name=".MainActivity">
@@ -27,10 +28,11 @@
         <activity
             android:name=".WebActivity"
             android:launchMode="singleTop"
-            android:process=":web"
+
             ></activity>
+        <!--android:process=":web"-->
         <activity
-            android:process=":web"
+
             android:name=".CommonActivity"
             android:launchMode="singleTop"></activity>
 

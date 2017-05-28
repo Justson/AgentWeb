@@ -2,6 +2,7 @@ package com.just.library;
 
 import android.app.Activity;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,8 @@ public class DefaultWebCreator implements WebCreator {
 
     private int height_dp;
 
-    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp) {
+
+    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp,WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = true;
@@ -39,23 +41,26 @@ public class DefaultWebCreator implements WebCreator {
         this.color = color;
         this.mLayoutParams = lp;
         this.height_dp = height_dp;
+        this.mWebView=webView;
     }
 
-    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index) {
+    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index,WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = false;
         this.index = index;
         this.mLayoutParams = lp;
+        this.mWebView=webView;
     }
 
-    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView) {
+    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView,WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = false;
         this.index = index;
         this.mLayoutParams = lp;
         this.progressView = progressView;
+        this.mWebView=webView;
     }
 
     private WebView mWebView = null;
@@ -118,12 +123,27 @@ public class DefaultWebCreator implements WebCreator {
         Activity mActivity = this.mActivity;
 
         FrameLayout mFrameLayout = new FrameLayout(mActivity);
-        WebView mWebView = new WebView(mActivity.getApplicationContext());
+        WebView mWebView = null;
+        if(this.mWebView!=null){
+            mWebView=this.mWebView;
+            AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
+        }else if(AgentWebConfig.isKikatOrBelowKikat){
+
+            mWebView=new AgentWebView(mActivity.getApplicationContext());
+            AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
+        }else{
+            mWebView=new WebView(mActivity.getApplicationContext());
+            AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
+        }
+
+
 
         FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
         mFrameLayout.addView(this.mWebView = mWebView, mLayoutParams);
 
 
+
+        Log.i("Info","    webView:"+(this.mWebView instanceof AgentWebView));
         if (isNeedDefaultProgress) {
 
             FrameLayout.LayoutParams lp = null;

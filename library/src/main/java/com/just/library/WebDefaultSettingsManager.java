@@ -62,8 +62,8 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
         mWebSettings.setSupportMultipleWindows(false);
         mWebSettings.setBlockNetworkImage(false);//是否阻塞加载网络图片  协议http or https
         mWebSettings.setAllowFileAccess(true); //允许加载本地文件html  file协议, 这可能会造成不安全 , 建议重写关闭
-        mWebSettings.setAllowFileAccessFromFileURLs(true); //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
-        mWebSettings.setAllowUniversalAccessFromFileURLs(true);//允许通过 file url 加载的 Javascript 可以访问其他的源，包括其他的文件和 http，https 等其他的源
+        mWebSettings.setAllowFileAccessFromFileURLs(false); //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
+        mWebSettings.setAllowUniversalAccessFromFileURLs(false);//允许通过 file url 加载的 Javascript 可以访问其他的源，包括其他的文件和 http，https 等其他的源
         mWebSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         mWebSettings.setLayoutAlgorithm(android.webkit.WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         mWebSettings.setLoadWithOverviewMode(true);

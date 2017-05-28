@@ -85,8 +85,13 @@ function uploadFileResult(objs){
 
        var img=document.getElementById("preview");
         /*for(var i=0;i<objs.length;i++){  //
-        img.src="data:image/png;base64," + objs[i].fileBase64*/   
-        img.src="data:image/png;base64," + objs[0].fileBase64; 
+        img.src="data:image/png;base64," + objs[i].fileBase64*/  
+         if(objs[0]==null||objs[0]=='undefined'||objs[0]==''||objs[0].fileBase64==null||objs[0].fileBase64=='undefined'){
+
+         }else{
+           img.src="data:image/png;base64," + objs[0].fileBase64;  
+         }
+        
     }
     
     

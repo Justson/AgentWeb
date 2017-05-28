@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
+import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.util.Map;
@@ -65,11 +66,13 @@ public class AgentWeb {
 
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
 
+
+
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.enableProgress = agentBuilder.enableProgress;
-        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight) : agentBuilder.mWebCreator;
+        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight,agentBuilder.mWebView) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
@@ -80,9 +83,11 @@ public class AgentWeb {
         if (agentBuilder.mJavaObject != null && agentBuilder.mJavaObject.isEmpty())
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilder.mJavaObject);
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
+        this.mWebViewClientCallbackManager=agentBuilder.mWebViewClientCallbackManager;
 
         this.mSecurityType = agentBuilder.mSecurityType;
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects, mSecurityType);
+        doCompat();
         doSafeCheck();
     }
 
@@ -94,7 +99,7 @@ public class AgentWeb {
         this.mViewGroup = agentBuilderFragment.mViewGroup;
         this.mIEventHandler = agentBuilderFragment.mIEventHandler;
         this.enableProgress = agentBuilderFragment.enableProgress;
-        mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp) : agentBuilderFragment.mWebCreator;
+        mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp,agentBuilderFragment.mWebView) : agentBuilderFragment.mWebCreator;
         mIndicatorController = agentBuilderFragment.mIndicatorController;
         this.mWebChromeClient = agentBuilderFragment.mWebChromeClient;
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
@@ -103,6 +108,7 @@ public class AgentWeb {
         if (agentBuilderFragment.mJavaObject != null && agentBuilderFragment.mJavaObject.isEmpty())
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilderFragment.mJavaObject);
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
+        this.mWebViewClientCallbackManager=agentBuilderFragment.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilderFragment.mSecurityType;
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         doCompat();
@@ -113,10 +119,12 @@ public class AgentWeb {
 
 
         mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat = new AgentWebJsInterfaceCompat(this, mActivity));
-        /*if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
 
-
-        }*/
+        LogUtils.i("Info","AgentWebConfig.isUseAgentWebView:"+AgentWebConfig.WEBVIEW_TYPE+"  mChromeClientCallbackManager:"+mChromeClientCallbackManager);
+        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE){
+            this.mChromeClientCallbackManager.setAgentWebCompatInterface((ChromeClientCallbackManager.AgentWebCompatInterface) mWebCreator.get());
+            this.mWebViewClientCallbackManager.setPageLifeCycleCallback((WebViewClientCallbackManager.PageLifeCycleCallback) mWebCreator.get());
+        }
 
     }
 
@@ -131,14 +139,14 @@ public class AgentWeb {
 
     }
 
-    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp) {
+    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp,WebView webView) {
 
         if (progressView != null && enableProgress) {
-            return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView);
+            return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView,webView);
         } else {
             return enableProgress ?
-                    new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp)
-                    : new DefaultWebCreator(mActivity, mViewGroup, lp, index);
+                    new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp,webView)
+                    : new DefaultWebCreator(mActivity, mViewGroup, lp, index,webView);
         }
     }
 
@@ -161,26 +169,7 @@ public class AgentWeb {
         return mJsEntraceAccess;
     }
 
-    /*public void callJs(String js) {
 
-        if (mJsEntraceAccess == null) {
-            initJsEntraceAccess();
-        }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            mJsEntraceAccess.callJs(js, null);
-        } else {
-            mJsEntraceAccess.loadJs(js);
-        }
-
-    }*/
-    /*public void callJs(String json , String jsMethod){
-        callJs(json,null,jsMethod);
-    }*/
-    /*public void callJs(String json,ValueCallback<String>callback,String jsMethod){
-        if(mJsEntraceAccess==null)
-            initJsEntraceAccess();
-        mJsEntraceAccess.callJs(json,callback,jsMethod);
-    }*/
 
     public AgentWeb clearWebCache() {
 
@@ -188,18 +177,6 @@ public class AgentWeb {
         return this;
     }
 
-    /*private void initJsEntraceAccess() {
-
-        JsEntraceAccess mJsEntraceAccess = this.mJsEntraceAccess;
-        if (mJsEntraceAccess == null) {
-            this.mJsEntraceAccess = mJsEntraceAccess = JsEntraceAccessImpl.getInstance(mWebCreator.get());
-        }
-    }
-
-    public void callJs(String js, ValueCallback<String> callback) {
-        initJsEntraceAccess();
-        mJsEntraceAccess.callJs(js, callback);
-    }*/
 
     public static AgentBuilder with(@NonNull Activity activity) {
         return new AgentBuilder(activity);
@@ -251,6 +228,7 @@ public class AgentWeb {
 
 
     private AgentWeb ready() {
+
         WebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
             this.mWebSettings = mWebSettings = WebDefaultSettingsManager.getInstance();
@@ -259,16 +237,17 @@ public class AgentWeb {
             mWebListenerManager = (WebListenerManager) mWebSettings;
         }
         mWebSettings.toSetting(mWebCreator.get());
-        mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
-        mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
-        mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
-
         if (mJsInterfaceHolder == null) {
             mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get(),this.mSecurityType);
         }
         if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
             mJsInterfaceHolder.addJavaObjects(mJavaObjects);
         }
+        mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
+        mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
+        mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
+
+
         return this;
     }
 
@@ -281,6 +260,7 @@ public class AgentWeb {
         return mDownloadListener;
     }
 
+    private WebViewClientCallbackManager mWebViewClientCallbackManager=null;
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
         /*if (mWebChromeClient != null) {
@@ -289,7 +269,7 @@ public class AgentWeb {
             return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
         }*/
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, mChromeClientCallbackManager);
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager);
     }
 
 
@@ -298,10 +278,10 @@ public class AgentWeb {
     }
 
     private WebViewClient getClient() {
-        if (mWebViewClient != null) {
+        if (AgentWebConfig.WEBVIEW_TYPE !=AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE &&mWebViewClient != null) {
             return mWebViewClient;
         } else {
-            return new DefaultWebClient();
+            return new DefaultWebClient(this.mWebViewClient,this.mWebViewClientCallbackManager);
         }
     }
 
@@ -388,7 +368,7 @@ public class AgentWeb {
         private int mIndicatorColor = -1;
         private WebSettings mWebSettings;
         private WebCreator mWebCreator;
-
+        private WebViewClientCallbackManager mWebViewClientCallbackManager=new WebViewClientCallbackManager();
         private SecurityType mSecurityType = SecurityType.default_check;
 
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
@@ -396,6 +376,7 @@ public class AgentWeb {
 
         private ArrayMap<String, Object> mJavaObject = null;
         private int mIndicatorColorWithHeight = -1;
+        public WebView mWebView;
 
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
@@ -581,6 +562,10 @@ public class AgentWeb {
             return this;
         }
 
+        public CommonAgentBuilder setWebView(WebView webView){
+            this.mAgentBuilder.mWebView=webView;
+            return this;
+        }
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -642,6 +627,8 @@ public class AgentWeb {
         private ArrayMap<String, Object> mJavaObject;
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
         private SecurityType mSecurityType = SecurityType.default_check;
+        public WebView mWebView;
+        private WebViewClientCallbackManager mWebViewClientCallbackManager=new WebViewClientCallbackManager();
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -764,6 +751,10 @@ public class AgentWeb {
 
         public CommonBuilderForFragment setSecurityType(SecurityType type) {
             this.mAgentBuilderFragment.mSecurityType = type;
+            return this;
+        }
+        public CommonBuilderForFragment setWebView(WebView webView){
+            this.mAgentBuilderFragment.mWebView=webView;
             return this;
         }
 

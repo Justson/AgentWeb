@@ -21,6 +21,8 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.widget.EditText;
 
+import java.lang.ref.WeakReference;
+
 /**
  * <b>@项目名：</b> agentweb<br>
  * <b>@包名：</b>com.just.library<br>
@@ -35,7 +37,8 @@ import android.widget.EditText;
 public class DefaultChromeClient extends WebChromeClientProgressWrapper implements FileUploadPop<IFileUploadChooser> {
 
 
-    private Activity mActivity;
+//    private Activity mActivity;
+    private WeakReference<Activity>mActivityWeakReference=null;
     private AlertDialog promptDialog = null;
     private AlertDialog confirmDialog = null;
     private JsPromptResult pJsResult = null;
@@ -52,7 +55,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         super(indicatorController, chromeClient);
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
-        this.mActivity = activity;
+//        this.mActivity = activity;
+        mActivityWeakReference=new WeakReference<Activity>(activity);
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
 
 
@@ -60,11 +64,24 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
     @Override
+    public void onProgressChanged(WebView view, int newProgress) {
+        super.onProgressChanged(view, newProgress);
+
+        ChromeClientCallbackManager.AgentWebCompatInterface mAgentWebCompatInterface=null;
+        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE &&mChromeClientCallbackManager!=null&&(mAgentWebCompatInterface=mChromeClientCallbackManager.getAgentWebCompatInterface())!=null){
+            mAgentWebCompatInterface.onProgressChanged(view,newProgress);
+        }
+
+    }
+
+    @Override
     public void onReceivedTitle(WebView view, String title) {
         ChromeClientCallbackManager.ReceivedTitleCallback mCallback = null;
         if (mChromeClientCallbackManager != null && (mCallback = mChromeClientCallbackManager.getReceivedTitleCallback()) != null)
             mCallback.onReceivedTitle(view, title);
 
+        if (AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && (mChromeClientCallbackManager.getAgentWebCompatInterface()) != null)
+            mChromeClientCallbackManager.getAgentWebCompatInterface().onReceivedTitle(view, title);
         if (isWrapper)
             super.onReceivedTitle(view, title);
     }
@@ -78,6 +95,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             return super.onJsAlert(view, url, message, result);
         }
 
+        Activity mActivity=this.mActivityWeakReference.get();
+        if(mActivity==null)
+            return true;
         //
         AgentWebUtils.show(view,
                 message,
@@ -106,6 +126,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     //location
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ChromePath + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             return;
@@ -116,11 +137,23 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsPrompt", "public boolean " + ChromePath + ".onJsPrompt", WebView.class, String.class, String.class, String.class, JsPromptResult.class)) {
 
-            return super.onJsPrompt(view, url, message, defaultValue, result);
+        try {
+            if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsPrompt", "public boolean " + ChromePath + ".onJsPrompt", WebView.class, String.class, String.class, String.class, JsPromptResult.class)) {
+
+                return super.onJsPrompt(view, url, message, defaultValue, result);
+            }
+            if (AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && mChromeClientCallbackManager.getAgentWebCompatInterface() != null) {
+
+                LogUtils.i("Info", "mChromeClientCallbackManager.getAgentWebCompatInterface():" + mChromeClientCallbackManager.getAgentWebCompatInterface());
+                if (mChromeClientCallbackManager.getAgentWebCompatInterface().onJsPrompt(view, url, message, defaultValue, result))
+                    return true;
+            }
+            showJsPrompt(message, result, defaultValue);
+        } catch (Exception e) {
+//            e.printStackTrace();
         }
-        showJsPrompt(message, result, defaultValue);
+
         return true;
     }
 
@@ -144,6 +177,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private void showJsConfirm(String message, final JsResult result) {
 
+        Activity mActivity=this.mActivityWeakReference.get();
+        if(mActivity!=null)
+            return;
 
         if (confirmDialog == null)
             confirmDialog = new AlertDialog.Builder(mActivity)//
@@ -176,6 +212,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
 
+        Activity mActivity=this.mActivityWeakReference.get();
+        if(mActivity==null)
+            return;
         if (promptDialog == null) {
 
             final EditText et = new EditText(mActivity);
@@ -211,7 +250,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onExceededDatabaseQuota", ChromePath+".onExceededDatabaseQuota", String.class, String.class, long.class, long.class, long.class, WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onExceededDatabaseQuota", ChromePath + ".onExceededDatabaseQuota", String.class, String.class, long.class, long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
             super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             return;
@@ -223,7 +262,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onReachedMaxAppCacheSize", ChromePath+".onReachedMaxAppCacheSize", long.class, long.class, WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onReachedMaxAppCacheSize", ChromePath + ".onReachedMaxAppCacheSize", long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
             super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
             return;
@@ -235,8 +274,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-        Log.i("Infoss", "openFileChooser>=5.0");
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowFileChooser", ChromePath+".onShowFileChooser", WebView.class, ValueCallback.class, FileChooserParams.class)) {
+        LogUtils.i("Infoss", "openFileChooser>=5.0");
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowFileChooser", ChromePath + ".onShowFileChooser", WebView.class, ValueCallback.class, FileChooserParams.class)) {
 
             return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
         }
@@ -246,6 +285,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private void openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
+
+        Activity mActivity=this.mActivityWeakReference.get();
+        if(mActivity==null)
+            return;
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
         this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl(webView, mActivity, filePathCallback, fileChooserParams);
         mIFileUploadChooser.openFileChooser();
@@ -255,9 +298,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
-        Log.i("Infoss", "openFileChooser>=4.1");
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath+".openFileChooser", ValueCallback.class, String.class,String.class)) {
-            super.openFileChooser( uploadFile, acceptType,capture);
+        LogUtils.i("Infoss", "openFileChooser>=4.1");
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class, String.class)) {
+            super.openFileChooser(uploadFile, acceptType, capture);
             return;
         }
         createAndOpenCommonFileLoader(uploadFile);
@@ -265,7 +308,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath+".openFileChooser", ValueCallback.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class)) {
             super.openFileChooser(valueCallback);
             return;
         }
@@ -277,30 +320,36 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         Log.i("Infoss", "openFileChooser>3.0");
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath+".openFileChooser", ValueCallback.class,String.class)) {
-            super.openFileChooser(valueCallback,acceptType);
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class)) {
+            super.openFileChooser(valueCallback, acceptType);
             return;
         }
         createAndOpenCommonFileLoader(valueCallback);
     }
 
 
-    private void createAndOpenCommonFileLoader(ValueCallback valueCallback){
-        this.mIFileUploadChooser=new FileUpLoadChooserImpl(mActivity,valueCallback);
+    private void createAndOpenCommonFileLoader(ValueCallback valueCallback) {
+        Activity mActivity=this.mActivityWeakReference.get();
+        if(mActivity==null)
+            return;;
+        this.mIFileUploadChooser = new FileUpLoadChooserImpl(mActivity, valueCallback);
         this.mIFileUploadChooser.openFileChooser();
 
     }
+
     @Override
     public IFileUploadChooser pop() {
         Log.i("Info", "offer:" + mIFileUploadChooser);
-        IFileUploadChooser mIFileUploadChooser=this.mIFileUploadChooser;
-        this.mIFileUploadChooser=null;
+        IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
+        this.mIFileUploadChooser = null;
         return mIFileUploadChooser;
     }
 
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        Log.i("Info","consoleMessage:"+consoleMessage.message()+"  lineNumber:"+consoleMessage.lineNumber());
+        Log.i("Info", "consoleMessage:" + consoleMessage.message() + "  lineNumber:" + consoleMessage.lineNumber());
         return true;
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.content.Context;
+import android.os.Build;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
@@ -14,9 +15,22 @@ import java.util.List;
 public class AgentWebConfig {
 
 
-     static final String AGENTWEB_CACHE_PATCH="/agentweb_cache";
+    static final String AGENTWEB_CACHE_PATCH="/agentweb_cache";
 
     static final String DOWNLOAD_PATH="download";
+
+
+
+    static final boolean isKikatOrBelowKikat= Build.VERSION.SDK_INT<=Build.VERSION_CODES.KITKAT;
+
+
+
+    public static final int WEBVIEW_DEFAULT_TYPE=1;
+    public static final int WEBVIEW_AGENTWEB_SAFE_TYPE =2;
+    public static final int WEBVIEW_CUSTOM_TYPE=3;
+
+    static  int WEBVIEW_TYPE =WEBVIEW_DEFAULT_TYPE;
+
 
     /**
      * cookie同步

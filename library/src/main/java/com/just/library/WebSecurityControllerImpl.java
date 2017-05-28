@@ -34,7 +34,7 @@ public class WebSecurityControllerImpl implements WebSecurityController<WebSecur
         }
 
         if (mMap != null &&mSecurityType== AgentWeb.SecurityType.strict&& !mMap.isEmpty()) {
-            webSecurityCheckLogic.dealJsInterface(mMap);
+            webSecurityCheckLogic.dealJsInterface(mMap,mSecurityType);
         }
 
     }
