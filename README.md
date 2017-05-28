@@ -112,7 +112,7 @@ Android 端
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.0.3'
+   compile 'com.just.agentweb:agentweb:1.1.0'
    ```
 * Maven
 	
@@ -120,7 +120,7 @@ Android 端
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.0.3</version>
+	  <version>1.1.0</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -165,16 +165,26 @@ Fragment 使用如下
 
 ```
 
--keep public class * extends android.webkit.WebChromeClient
+-keep public class * extends android.webkit.WebChromeClient{
+*;
+}
+
+```
+Java 注入类不要混淆 ， 例如 App 里面的 HelloJs 对象 ， 需要 Keep 。
+
+```
+-keepclassmembers class com.just.library.agentweb.HelloJs{ *; }
 ```
 
 
 
+## 致谢
+* [360 大牛 SafeWebView](https://github.com/seven456/SafeWebView)
 
-
+* [WebView 参考文献](https://juejin.im/post/58a037df86b599006b3fade4)
 
 ## 总结
-AgentWeb 是一个把 WebView 完全代理出来 ， 脱离 Activity 、 Fragment xml 布局 ， Android Web 库 。
+AgentWeb 是一个把 WebView 完全代理出来 ， 脱离 Activity 、 Fragment xml 布局 ， 独立的 Android Web 库 。
 
 
 ### 最后如果该库对你有帮助不妨对右上角点点 Star 对我支持 ， 感谢万分 ! 当然我更喜欢你 Fork PR 成为项目贡献者 . [AgentWeb](https://github.com/Justson/AgentWeb)
