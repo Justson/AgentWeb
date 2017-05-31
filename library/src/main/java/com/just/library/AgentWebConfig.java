@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.content.Context;
+import android.os.Build;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
@@ -20,8 +21,8 @@ public class AgentWebConfig {
 
 
 
-//    static final boolean isKikatOrBelowKikat= Build.VERSION.SDK_INT<=Build.VERSION_CODES.KITKAT;
-    static final boolean isKikatOrBelowKikat= true;
+    static final boolean isKikatOrBelowKikat= Build.VERSION.SDK_INT<=Build.VERSION_CODES.KITKAT;
+//    static final boolean isKikatOrBelowKikat= true;
 
 
 

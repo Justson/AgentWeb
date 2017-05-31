@@ -3,7 +3,6 @@ package com.just.library;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,7 +143,7 @@ public class DefaultWebCreator implements WebCreator {
 
 
 
-        Log.i("Info","    webView:"+(this.mWebView instanceof AgentWebView));
+        LogUtils.i("Info","    webView:"+(this.mWebView instanceof AgentWebView));
         if (isNeedDefaultProgress) {
 
             FrameLayout.LayoutParams lp = null;
