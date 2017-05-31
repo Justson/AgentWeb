@@ -46,6 +46,8 @@ public class JsAgentWebFragment extends AgentWebFragment {
             mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new HelloJs(mAgentWeb,this.getActivity()));
 
         }
+//        String p="\"hello\""+","+"\" js\"";
+//        mAgentWeb.getWebCreator().get().loadUrl("javascript:callByAndroid("+"\"hello\""+","+"\" js\""+")");
 
         view.findViewById(R.id.one).setOnClickListener(mOnClickListener);
         view.findViewById(R.id.two).setOnClickListener(mOnClickListener);

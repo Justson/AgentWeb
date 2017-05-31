@@ -34,7 +34,7 @@ public class CustomIndicatorFragment extends AgentWebFragment {
         mProgressBar.setBackground(this.getResources().getDrawable(R.drawable.indicator_shape));
         mCommonIndicator.addView(mProgressBar,lp);
 
-        this.mAgentWeb = AgentWeb.with(this.getActivity(), this)//
+        this.mAgentWeb = AgentWeb.with( this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .setCustomIndicator(mCommonIndicator)
                 .setWebSettings(WebDefaultSettingsManager.getInstance())//

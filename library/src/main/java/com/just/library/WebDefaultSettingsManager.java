@@ -37,6 +37,7 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
         mWebSettings.setJavaScriptEnabled(true);
         mWebSettings.setSupportZoom(true);
         mWebSettings.setBuiltInZoomControls(false);
+        mWebSettings.setSavePassword(false);
         if (AgentWebUtils.checkNetwork(webView.getContext())) {
             //根据cache-control获取数据。
             mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT);

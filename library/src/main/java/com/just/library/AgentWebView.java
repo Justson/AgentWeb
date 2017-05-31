@@ -7,6 +7,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityManager;
@@ -90,6 +91,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
 
     @Override
     public void destroy() {
+        setVisibility(View.GONE);
         if (mJsCallJavas != null) {
             mJsCallJavas.clear();
         }

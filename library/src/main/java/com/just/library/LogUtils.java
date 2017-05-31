@@ -18,6 +18,13 @@ public class LogUtils {
             Log.i(tag,message);
     }
 
+    public static void v(String tag,String message){
+
+        if(BuildConfig.DEBUG)
+            Log.v(tag,message);
+
+    }
+
     public static void safeCheckCrash(String tag, String msg, Throwable tr) {
         if (isDebug()) {
             throw new RuntimeException(tag + " " + msg, tr);
@@ -28,5 +35,10 @@ public class LogUtils {
 
     public static void e(String tag, String msg, Throwable tr) {
         Log.e(tag, msg, tr);
+    }
+    public static void e(String tag,String message){
+
+        if(BuildConfig.DEBUG)
+            Log.e(tag,message);
     }
 }

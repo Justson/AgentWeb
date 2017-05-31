@@ -57,7 +57,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAgentWeb = AgentWeb.with(this.getActivity(), this)//
+        mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .useDefaultIndicator()//
                 .setWebSettings(getSettings())//

@@ -1,6 +1,6 @@
 ![](./logo.png)
 ## AgentWeb 介绍
-AgentWeb 是一个简洁易用的 Android Web 库 。 [App 下载体验](./agentweb.apk)
+AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 ，加强 Web 安全的库 。让你几行代码集成一个小型浏览器在你的应用 。 [App 下载体验](./agentweb.apk)
 
 ## 前言 
 WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使用 ，让很多人都不是那么喜欢它 ，比如说每个 Web 页面都需要各种一大推的 setting ，好一点的可能封装成一个 BaseWebActivity 和 BaseWebFragment ，但是重复的代码总是让有洁癖的程序员不舒服 ，而且 WebView 本身功能也不是很完善 ， AgentWeb 就泥补了这些空缺 。
@@ -148,7 +148,7 @@ Fragment 使用如下
 @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mAgentWeb = AgentWeb.with(this.getActivity(), this)//这里需要把 Activity 、 和 Fragment  同时传入
+        mAgentWeb = AgentWeb.with(this)//这里需要把 Fragment  传入
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(-1, -1))// 设置 AgentWeb 的父控件 ， 这里的view 是 LinearLayout ， 那么需要传入 LinearLayout.LayoutParams
                 .useDefaultIndicator()// 使用默认进度条
                 .setReceivedTitleCallback(mCallback) //标题回调
@@ -163,8 +163,9 @@ Fragment 使用如下
 
 ## 混淆
 
-```
+保持 WebChromeClient 子类不被混淆
 
+```
 -keep public class * extends android.webkit.WebChromeClient{
 *;
 }

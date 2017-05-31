@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * FrameLayout--嵌套WebView,ProgressBar
  * https://github.com/Justson/AgentWeb
- * author just --cxz
+ * author just -- cxz
  */
 public class AgentWeb {
 
@@ -65,6 +65,7 @@ public class AgentWeb {
     private static final int FRAGMENT_TAG = 1;
 
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
+    private Handler mHandler = new Handler(Looper.getMainLooper());
 
 
 
@@ -114,6 +115,26 @@ public class AgentWeb {
         doCompat();
         doSafeCheck();
     }
+
+    /*@Override
+    public void onCreate() {
+
+    }
+
+    @Override
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onStop() {
+
+    }
+
+    @Override
+    public void onDestroy() {
+
+    }*/
 
     private void doCompat() {
 
@@ -182,9 +203,12 @@ public class AgentWeb {
         return new AgentBuilder(activity);
     }
 
-    public static AgentBuilderFragment with(Activity activity, Fragment fragment) {
+    public static AgentBuilderFragment with(@NonNull Fragment fragment) {
 
-        return new AgentBuilderFragment(activity, fragment);
+        Activity mActivity=null;
+        if((mActivity=fragment.getActivity())==null)
+            new NullPointerException("activity can not null");
+        return new AgentBuilderFragment(mActivity, fragment);
     }
 
 
@@ -285,7 +309,7 @@ public class AgentWeb {
         }
     }
 
-    private Handler mHandler = new Handler(Looper.getMainLooper());
+
 
     private void safeLoadUrl(final String url) {
 
@@ -305,7 +329,7 @@ public class AgentWeb {
         }
         //|| ((!url.startsWith("http")&&(!url.startsWith("javascript:"))))
         if (TextUtils.isEmpty(url))
-            throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , please check url format");
+            throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , file , please check url format");
         mWebCreator.get().loadUrl(url);
         return this;
     }
@@ -325,7 +349,7 @@ public class AgentWeb {
     public void destroyAndKill() {
         destroy();
         if (AgentWebUtils.isMainProcess(mActivity)) {
-            Log.i("Info", "退出进程");
+            LogUtils.i("Info", "退出进程");
             System.exit(0);
         }
     }
@@ -348,6 +372,8 @@ public class AgentWeb {
         if (mIFileUploadChooser != null)
             mIFileUploadChooser = null;
     }
+
+
 
     /*********************************************************为Activity构建AgentWeb***********************************************************************/
 
@@ -602,7 +628,7 @@ public class AgentWeb {
     }
 
 
-    /*********************************为Fragment构建AgentWeb**************************************************************/
+    /*********************为Fragment构建AgentWeb***********************/
 
     public static final class AgentBuilderFragment {
         private Activity mActivity;

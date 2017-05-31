@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.just.library.AgentWeb;
 import com.just.library.ChromeClientCallbackManager;
+import com.just.library.LogUtils;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
@@ -126,8 +127,7 @@ public class BaseWebActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.i("Info", "call back");
-        Log.i("Info", "result:" + requestCode + " result:" + resultCode);
+        LogUtils.i("Info", "result:" + requestCode + " result:" + resultCode);
         mAgentWeb.uploadFileResult(requestCode, resultCode, data);
 
 

@@ -49,7 +49,7 @@ public class DefaultDownLoaderImpl implements DownloadListener {
 
         try {
             String filename = "";
-            if (!TextUtils.isEmpty(contentDisposition) && contentDisposition.contains("filename") && contentDisposition.endsWith("filename")) {
+            if (!TextUtils.isEmpty(contentDisposition) && contentDisposition.contains("filename") && !contentDisposition.endsWith("filename")) {
 
                 int position = contentDisposition.indexOf("filename");
                 filename = contentDisposition.substring(position + 1);
@@ -71,7 +71,7 @@ public class DefaultDownLoaderImpl implements DownloadListener {
                 filename = System.currentTimeMillis() + "";
             }
 
-            Log.i("Info", "file:" + filename);
+            LogUtils.i("Info", "file:" + filename);
             File mFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + AgentWebConfig.DOWNLOAD_PATH, filename);
             if (!mFile.exists())
                 mFile.createNewFile();

@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
@@ -14,7 +15,7 @@ import android.widget.FrameLayout;
  * <b>@包名：</b>com.just.library<br>
  * <b>@创建者：</b> cxz --  just<br>
  * <b>@创建时间：</b> &{DATE}<br>
- * <b>@公司：</b> 宝诺科技<br>
+ * <b>@公司：</b> <br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
  */
@@ -33,7 +34,7 @@ public class DefaultWebCreator implements WebCreator {
     private int height_dp;
 
 
-    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp,WebView webView) {
+    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp,WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = true;
@@ -44,7 +45,7 @@ public class DefaultWebCreator implements WebCreator {
         this.mWebView=webView;
     }
 
-    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index,WebView webView) {
+    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, @Nullable WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = false;
@@ -53,7 +54,7 @@ public class DefaultWebCreator implements WebCreator {
         this.mWebView=webView;
     }
 
-    DefaultWebCreator(Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView,WebView webView) {
+    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView,WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = false;

@@ -57,7 +57,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * <b>@包名：</b>com.just.library<br>
  * <b>@创建者：</b> cxz --  just<br>
  * <b>@创建时间：</b> &{DATE}<br>
- * <b>@公司：</b> 宝诺科技<br>
+ * <b>@公司：</b><br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
  * source code  https://github.com/Justson/AgentWeb
@@ -500,7 +500,7 @@ public class AgentWebUtils {
 
     public static Intent getIntentCompat(Context context, File file) {
         Intent mIntent = null;
-        if (context.getApplicationInfo().targetSdkVersion > Build.VERSION_CODES.N) {
+        if (context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.N) {
 
             mIntent = new Intent(Intent.ACTION_VIEW);
             mIntent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file), "application/vnd.android.package-archive");

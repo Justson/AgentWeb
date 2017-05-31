@@ -49,7 +49,7 @@ public class CommonActivity extends AppCompatActivity {
             /*Fragment 使用AgenWebt*/
             case 0:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.jd.com");
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.vip.com");
                 break;
             case 1:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
@@ -74,7 +74,7 @@ public class CommonActivity extends AppCompatActivity {
                 break;
             case 6:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.taobao.com");
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://sj.qq.com/myapp/");
                 break;
 
         }
