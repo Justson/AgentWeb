@@ -1,6 +1,6 @@
-![](./logo.png)
+![](./img/logo.png)
 ## AgentWeb 介绍
-AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 ，加强 Web 安全的库 。让你几行代码集成一个小型浏览器在你的应用 。 [App 下载体验](./agentweb.apk)
+AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、 加强 Web 安全的库 。让你几行代码集成一个小型浏览器在你的应用 。 [App 下载体验](./agentweb.apk)
 
 ## 前言 
 WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使用 ，让很多人都不是那么喜欢它 ，比如说每个 Web 页面都需要各种一大推的 setting ，好一点的可能封装成一个 BaseWebActivity 和 BaseWebFragment ，但是重复的代码总是让有洁癖的程序员不舒服 ，而且 WebView 本身功能也不是很完善 ， AgentWeb 就泥补了这些空缺 。
@@ -8,17 +8,17 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 ## AgentWeb 功能
 1. 支持进度条以及自定义进度条
 2. 支持文件下载
-3. 支持文件断点续传
+3. 支持文件下载断点续传
 4. 支持下载通知形式提示进度
 5. 简化 Javascript 通信 
-6. 支持返回事件处理
+6. 支持 Android 4.4 Kitkat 以及其他版本文件上传
 7. 支持注入 Cookies
-8. WebView 安全
+8. 加强 Web 安全
+9. 兼容低版本安全 Js 通信
 
 ## 为什么要使用 AgentWeb ？
-七个字 ，简洁易用体验好 。 最重要的是 WebView 很多东西不支持呀 ， 坑太多！
 
-|     Web     |  文件下载  |  文件上传 |   Js通信  |  断点续传  |   使用简易度 |  进度条      | 线程安全    |
+|     Web     |  文件下载  |  文件上传 |   Js 通信  |  断点续传  |   使用简易度 |  进度条      | 线程安全    |
 |:-----------:|:---------:|:---------|:---------|:---------|:----------- |:-----------|:-----------|
 | WebView     |  不支持    | 不支持		|  支持    |     不支持 |    麻烦      | 没有        | 不安全      |
 | AgentWeb	 |  支持		| 支持		|  更简洁   |   支持    |    简洁      | 有         |  安全       |	
@@ -57,19 +57,19 @@ Android 端
 
 结果
 ```
-05-27 08:27:04.945 469-469/com.just.library.agentweb:web I/Info: consoleMessage:callByAndroid  lineNumber:27
+consoleMessage:callByAndroid  lineNumber:27
 ```
 
 
 
 ## 效果图 
-![京东](jd.png)
+![京东](./img/jd.png)
 
 #### 到了这里 ， 弱弱问一句 ， 你还有什么理由不使用 AgentWeb ？
 
 
 ## 浅谈进度条
-为什么要谈一下进度条这个东西呢 ?  因为没有进度条的 WebView 页面体验实在太差了 ，AgentWeb 默认的进度条是一般浏览器的进度条 ，为什么采用这种进度条呢 ? 因为体验好 ，微信和QQ ，支付宝 、 UC 以及 Safari 都采用这种进度条是有他们道理的 , 我还见过应用加载 Web 页面的时候直接弹 Dialog 不可取消 ，这种恶心的做法 ，没有非常必要让用户确定情况都别弹 Dialog ，特别在用户网络不好的情况下 ，加载速度变得突奇的慢 ，那么 Dialog 就一直存在 ，用户耐性不好 ，只能把你进程杀死 。
+为什么要谈一下进度条这个东西呢 ?  因为没有进度条的 WebView 页面体验实在太差了 ，AgentWeb 默认的进度条是一般浏览器的进度条 ，为什么采用这种进度条呢 ? 因为体验好 ，微信和QQ ，支付宝 、 UC 以及 Safari 都采用这种进度条是有他们道理的 , 我还见过应用加载 Web 页面的时候直接弹 Dialog 不可取消 ，没有非常必要让用户确定情况都别弹 Dialog ，特别在用户网络不好的情况下 ，加载速度变得突奇的慢 ，那么 Dialog 就一直存在 ，用户耐性不好 ，只能把你进程杀死 。
 
 
 
@@ -98,9 +98,18 @@ Android 端
 
 ```
 
- 很清晰 AgentWeb 最外层是 FrameLayout ， 所以在使用 AgentWeb 的时候还需要给 FrameLayout 指定父控件（下面有使用方式） 。
+AgentWeb 最外层是 FrameLayout ， 所以在使用 AgentWeb 的时候还需要给 FrameLayout 指定父控件（下面有使用方式） 。
 
 
+## AgentWeb 内部结构
+
+![](./img/agentweb结构.png)
+
+* IndicatorController 进度条控制器
+* WebCreator 创建 WebView 。
+* WebSettings 统一设置 WebView 的 settings
+* WebSecurityController 安全控制器
+* JsEntraceAccess  Js 方法入口
 
 
 
@@ -145,7 +154,7 @@ mAgentWeb = AgentWeb.with(this)//传入Activity
 Fragment 使用如下
 
 ```
-@Override
+	@Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAgentWeb = AgentWeb.with(this)//这里需要把 Fragment  传入
