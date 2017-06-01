@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
@@ -620,7 +621,7 @@ public class AgentWeb {
             return new CommonAgentBuilder(mAgentBuilder);
         }
 
-        public CommonAgentBuilder setIndicatorColorWithHeight(int color, int height_dp) {
+        public CommonAgentBuilder setIndicatorColorWithHeight(@ColorInt int color, int height_dp) {
             mAgentBuilder.setIndicatorColor(color);
             mAgentBuilder.setIndicatorColorWithHeight(height_dp);
             return new CommonAgentBuilder(mAgentBuilder);
@@ -719,7 +720,7 @@ public class AgentWeb {
             return new CommonBuilderForFragment(agentBuilderFragment);
         }
 
-        public CommonBuilderForFragment setIndicatorColorWithHeight(int color, int height_dp) {
+        public CommonBuilderForFragment setIndicatorColorWithHeight(@ColorInt int color, int height_dp) {
             this.agentBuilderFragment.mIndicatorColor = color;
             this.agentBuilderFragment.height_dp = height_dp;
             return new CommonBuilderForFragment(this.agentBuilderFragment);

@@ -508,6 +508,7 @@ public class AgentWebUtils {
         } else {
             mIntent = AgentWebUtils.getFileIntent(file);
         }
+
         return mIntent;
     }
 

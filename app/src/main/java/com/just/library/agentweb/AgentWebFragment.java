@@ -59,7 +59,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         super.onViewCreated(view, savedInstanceState);
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
-                .useDefaultIndicator()//
+                .setIndicatorColorWithHeight(-1,2)//
                 .setWebSettings(getSettings())//
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)

@@ -33,7 +33,7 @@ public class DefaultWebCreator implements WebCreator {
     private int height_dp;
 
 
-    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp,WebView webView) {
+    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp, WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = true;
@@ -41,7 +41,7 @@ public class DefaultWebCreator implements WebCreator {
         this.color = color;
         this.mLayoutParams = lp;
         this.height_dp = height_dp;
-        this.mWebView=webView;
+        this.mWebView = webView;
     }
 
     DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, @Nullable WebView webView) {
@@ -50,17 +50,17 @@ public class DefaultWebCreator implements WebCreator {
         this.isNeedDefaultProgress = false;
         this.index = index;
         this.mLayoutParams = lp;
-        this.mWebView=webView;
+        this.mWebView = webView;
     }
 
-    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView,WebView webView) {
+    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView, WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = false;
         this.index = index;
         this.mLayoutParams = lp;
         this.progressView = progressView;
-        this.mWebView=webView;
+        this.mWebView = webView;
     }
 
     private WebView mWebView = null;
@@ -124,38 +124,36 @@ public class DefaultWebCreator implements WebCreator {
 
         FrameLayout mFrameLayout = new FrameLayout(mActivity);
         WebView mWebView = null;
-        if(this.mWebView!=null){
-            mWebView=this.mWebView;
-            AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
-        }else if(AgentWebConfig.isKikatOrBelowKikat){
+        if (this.mWebView != null) {
+            mWebView = this.mWebView;
+            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
+        } else if (AgentWebConfig.isKikatOrBelowKikat) {
 
-            mWebView=new AgentWebView(mActivity.getApplicationContext());
-            AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
-        }else{
-            mWebView=new WebView(mActivity.getApplicationContext());
-            AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
+            mWebView = new AgentWebView(mActivity.getApplicationContext());
+            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
+        } else {
+            mWebView = new WebView(mActivity.getApplicationContext());
+            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
         }
-
 
 
         FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
         mFrameLayout.addView(this.mWebView = mWebView, mLayoutParams);
 
 
-
-        LogUtils.i("Info","    webView:"+(this.mWebView instanceof AgentWebView));
+        LogUtils.i("Info", "    webView:" + (this.mWebView instanceof AgentWebView));
         if (isNeedDefaultProgress) {
 
             FrameLayout.LayoutParams lp = null;
             WebProgress mWebProgress = new WebProgress(mActivity);
             if (height_dp > 0)
-                lp=new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, height_dp));
+                lp = new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, height_dp));
             else
                 lp = mWebProgress.offerLayoutParams();
             if (color != -1)
                 mWebProgress.setColor(color);
             lp.gravity = Gravity.TOP;
-            mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgress),lp );
+            mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgress), lp);
         } else if (!isNeedDefaultProgress && progressView != null) {
 
 //            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-2, -2);

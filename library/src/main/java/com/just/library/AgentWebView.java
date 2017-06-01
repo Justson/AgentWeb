@@ -69,7 +69,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR1){
             super.addJavascriptInterface(interfaceObj,interfaceName);
-            Log.i("Info","注入");
+            LogUtils.i("Info","注入");
             return;
         }
 

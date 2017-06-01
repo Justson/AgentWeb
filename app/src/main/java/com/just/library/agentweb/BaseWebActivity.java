@@ -62,8 +62,9 @@ public class BaseWebActivity extends AppCompatActivity {
         long p = System.currentTimeMillis();
 
 
+
         mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
+                .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )//
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .setReceivedTitleCallback(mCallback)
