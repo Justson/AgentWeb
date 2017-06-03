@@ -1,4 +1,7 @@
 ![](./img/logo.png)
+
+### [README of English](./README_ENGLISH.md)
+
 ## AgentWeb 介绍
 AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、 加强 Web 安全的库 。让你几行代码集成一个小型浏览器在你的应用 。 [App 下载体验](./agentweb.apk)
 
@@ -154,14 +157,14 @@ mAgentWeb = AgentWeb.with(this)//传入Activity
 Fragment 使用如下
 
 ```
-	@Override
+  @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mAgentWeb = AgentWeb.with(this)//这里需要把 Fragment  传入
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(-1, -1))// 设置 AgentWeb 的父控件 ， 这里的view 是 LinearLayout ， 那么需要传入 LinearLayout.LayoutParams
                 .useDefaultIndicator()// 使用默认进度条
                 .setReceivedTitleCallback(mCallback) //标题回调
-                .setSecurityType(AgentWeb.SecurityType.strict) //注意这里开启 strict 模式 ， 设备低于 4.2 情况下回把注入的 Js 全部清空掉 ， 这里推荐使用 onJsPrompt 通信
+                .setSecurityType(AgentWeb.SecurityType.strict) 
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());
@@ -171,13 +174,13 @@ Fragment 使用如下
 ```
 
 ## 混淆
-
-保持 WebChromeClient 子类不被混淆
+如果你的项目需要加入混淆 ， 请加入如下配置
 
 ```
--keep public class * extends android.webkit.WebChromeClient{
-*;
+-keep class com.just.library.** {
+    *;
 }
+-dontwarn com.just.library.**
 
 ```
 Java 注入类不要混淆 ， 例如 App 里面的 HelloJs 对象 ， 需要 Keep 。

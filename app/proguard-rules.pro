@@ -29,5 +29,5 @@
 -keep class com.just.library.** {
     *;
 }
--dontwarn class com.just.library.**
 -keepclassmembers class com.just.library.agentweb.HelloJs{ *; }
+-dontwarn com.just.library.**

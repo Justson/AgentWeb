@@ -27,7 +27,7 @@ public class DefaultWebCreator implements WebCreator {
     private int index;
 
     private BaseIndicatorView progressView;
-    ViewGroup.LayoutParams mLayoutParams = null;
+    private ViewGroup.LayoutParams mLayoutParams = null;
     private int color = -1;
 
     private int height_dp;

@@ -328,7 +328,7 @@ public class AgentWebUtils {
 
         if (paths == null || paths.length == 0)
             return null;
-        Executor mExecutor = Executors.newCachedThreadPool();
+        Executor mExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()+1);
         final Queue<FileParcel> mQueue = new LinkedBlockingQueue<>();
         CountDownLatch mCountDownLatch = new CountDownLatch(paths.length);
 
@@ -587,6 +587,13 @@ public class AgentWebUtils {
             tag=true;
 
         return tag;
+
+    }
+
+
+    public static boolean isUIThread(){
+
+        return Looper.myLooper()==Looper.getMainLooper();
 
     }
 }

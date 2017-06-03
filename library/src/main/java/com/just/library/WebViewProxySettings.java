@@ -12,9 +12,7 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -23,12 +21,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 /**
- * WebView设置代理
- * 适用场景：{@link WebViewClient#shouldInterceptRequest(WebView, WebResourceRequest)}
- * <p/>
- * 参考：https://github.com/li520666/WebViewProxy，20150123
- * <p/>
- * Created by zhangguojun on 2016/6/7.
  */
 public class WebViewProxySettings {
     private static final boolean DEBUG = false;
