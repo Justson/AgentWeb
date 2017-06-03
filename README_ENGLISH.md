@@ -2,10 +2,9 @@
 ### [README of Chinese](./README.md)
 
 ## AgentWeb Introduce
-AgentWeb is an open souce library for Android web , extremely easy to be used ，has progress bar 、 upload or download file 、 simplify Javascript communication 、  chain call 、 strengthen the Web security library 。
-A little bit of code can integration this framework into your application 。 [download app](./agentweb.apk)
+AgentWeb is an open souce library for Android web , extremely easy to be used ，has progress bar 、 upload or download file 、 simplify Javascript communication 、  chain call 、 strengthen the Web security library 。A little bit of code can integration this framework into your application 。 [download app](./agentweb.apk)
 
-## foreword 
+## Preface 
 WebView can be described as a necessary control for each application but may be not many people like it，couse too many settings ，Maybe you will encapsulation into your BaseWebActivity or BaseWebFragment ， but it reusability is too low ,And WebView itself is not very perfect function， AgentWeb makes up for these vacancies 。
 
 ## AgentWeb function
@@ -19,7 +18,7 @@ WebView can be described as a necessary control for each application but may be 
 8. strengthen the Web security 
 9. Compatible with low version Js secure communication
 
-## why you need AgentWeb ？
+## Why you need AgentWeb ？
 
 |     Web     |  download files  |  upload files |   Js comnunication  |  breakpoint  |   Ease of use |  indicator      | Thread safe  |
 |:-----------:|:---------:|:---------|:---------|:---------|:----------- |:-----------|:-----------|
@@ -28,7 +27,7 @@ WebView can be described as a necessary control for each application but may be 
 
 
 
-## easy to be used
+## Use is very simple
 why？ The following Jingdong renderings, just a word ！
 
 ```
@@ -71,14 +70,14 @@ consoleMessage:callByAndroid  lineNumber:27
 #### To here  ， Weak and weak one sentence ， Do you have any reason not to use  AgentWeb ？
 
 
-## Talking about the progress bar
+## Progress bar
 Why do you have to talk about the progress of this thing? Because there is no progress of the WebView page experience is really bad, AgentWeb default progress bar is the general browser progress bar, why use this progress bar? Because of good experience, WeChat and QQ, Alipay, UC and Safari are using this progress bar is their reason, I have seen the application to load the Web page when the direct play Dialog can not be canceled, there is no need for users to determine the situation are not playing Dialog, especially in the user Network is not the case, the loading speed becomes surprisingly slow, then Dialog has been there, the user patience is not good, can only kill your process.
 
 
 
 
 
-## Agentweb View structure
+## Agentweb view structure
 
 ```
 	<FrameLayout
@@ -137,7 +136,7 @@ The outermost layer of AgentWeb is FrameLayout, so when you use AgentWeb, you ne
 	
 	```
 
-## Useage
+## Usage
 
 Activity , How to use ? as follows
 
@@ -192,7 +191,7 @@ If you are using ProGuard you might need to add the following option:
 
 
 ## Thanks
-* [360  SafeWebView](https://github.com/seven456/SafeWebView)
+* [seven456  SafeWebView](https://github.com/seven456/SafeWebView)
 
 * [WebView References](https://juejin.im/post/58a037df86b599006b3fade4)
 
