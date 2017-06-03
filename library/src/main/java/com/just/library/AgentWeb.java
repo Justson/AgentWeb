@@ -54,22 +54,18 @@ public class AgentWeb {
     private DownloadListener mDownloadListener = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
-
     private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
-
     private WebChromeClient mTargetChromeClient;
-
     private SecurityType mSecurityType=SecurityType.default_check;
-
     private static final int ACTIVITY_TAG = 0;
     private static final int FRAGMENT_TAG = 1;
-
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
     private Handler mHandler = new Handler(Looper.getMainLooper());
-
     private JsEntraceAccess mJsEntraceAccess = null;
-
     private ILoader mILoader=null;
+    private WebLifeCycle mWebLifeCycle;
+
+
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
@@ -89,6 +85,7 @@ public class AgentWeb {
 
         this.mSecurityType = agentBuilder.mSecurityType;
         this.mILoader=new LoaderImpl(mWebCreator.create().get());
+        this.mWebLifeCycle=new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
 
         doCompat();
@@ -115,30 +112,13 @@ public class AgentWeb {
         this.mWebViewClientCallbackManager=agentBuilderFragment.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilderFragment.mSecurityType;
         this.mILoader=new LoaderImpl(mWebCreator.create().get());
+        this.mWebLifeCycle=new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         doCompat();
         doSafeCheck();
     }
 
-    /*@Override
-    public void onCreate() {
 
-    }
-
-    @Override
-    public void onStart() {
-
-    }
-
-    @Override
-    public void onStop() {
-
-    }
-
-    @Override
-    public void onDestroy() {
-
-    }*/
 
     private void doCompat() {
 
@@ -153,6 +133,9 @@ public class AgentWeb {
 
     }
 
+    public WebLifeCycle getWebLifeCycle(){
+        return this.mWebLifeCycle;
+    }
 
     private void doSafeCheck() {
 
@@ -330,8 +313,7 @@ public class AgentWeb {
     private boolean isKillProcess = false;
 
     public void destroy() {
-        AgentWebUtils.clearWebView(mWebCreator.get());
-
+      this.mWebLifeCycle.onDestroy();
     }
 
     public void destroyAndKill() {

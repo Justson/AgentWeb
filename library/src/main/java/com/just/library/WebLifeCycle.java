@@ -7,9 +7,8 @@ package com.just.library;
 public interface WebLifeCycle {
 
 
-    void onCreate();
-    void onStart();
-    void onStop();
+    void onResume();
+    void onPause();
     void onDestroy();
 
 

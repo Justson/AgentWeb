@@ -168,13 +168,26 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     };
 
     @Override
+    public void onResume() {
+        mAgentWeb.getWebLifeCycle().onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mAgentWeb.getWebLifeCycle().onPause();
+        super.onPause();
+    }
+
+    @Override
     public boolean onFragmentKeyDown(int keyCode, KeyEvent event) {
         return mAgentWeb.handleKeyEvent(keyCode,event);
     }
 
     @Override
     public void onDestroyView() {
+        mAgentWeb.getWebLifeCycle().onDestroy();
         super.onDestroyView();
-        mAgentWeb.destroy();
+        //  mAgentWeb.destroy();
     }
 }

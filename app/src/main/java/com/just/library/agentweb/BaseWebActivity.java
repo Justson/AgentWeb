@@ -128,6 +128,19 @@ public class BaseWebActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        mAgentWeb.getWebLifeCycle().onPause();
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        mAgentWeb.getWebLifeCycle().onResume();
+        super.onResume();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         LogUtils.i("Info", "result:" + requestCode + " result:" + resultCode);
@@ -141,6 +154,7 @@ public class BaseWebActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAgentWeb.destroy();
+        //mAgentWeb.destroy();
+        mAgentWeb.getWebLifeCycle().onDestroy();
     }
 }
