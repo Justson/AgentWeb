@@ -8,7 +8,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -68,8 +67,9 @@ public class AgentWeb {
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
+    private JsEntraceAccess mJsEntraceAccess = null;
 
-
+    private ILoader mILoader=null;
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
@@ -88,7 +88,9 @@ public class AgentWeb {
         this.mWebViewClientCallbackManager=agentBuilder.mWebViewClientCallbackManager;
 
         this.mSecurityType = agentBuilder.mSecurityType;
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects, mSecurityType);
+        this.mILoader=new LoaderImpl(mWebCreator.create().get());
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
+
         doCompat();
         doSafeCheck();
     }
@@ -112,7 +114,8 @@ public class AgentWeb {
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
         this.mWebViewClientCallbackManager=agentBuilderFragment.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilderFragment.mSecurityType;
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.create().get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
+        this.mILoader=new LoaderImpl(mWebCreator.create().get());
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         doCompat();
         doSafeCheck();
     }
@@ -180,7 +183,7 @@ public class AgentWeb {
         mWebCreator.get().loadDataWithBaseURL(baseUrl, data, mimeType, encoding, history);
     }
 
-    private JsEntraceAccess mJsEntraceAccess = null;
+
 
     public JsEntraceAccess getJsEntraceAccess() {
 
@@ -312,32 +315,16 @@ public class AgentWeb {
 
 
 
-    private void safeLoadUrl(final String url) {
-
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                loadUrl(url);
-            }
-        });
+    public ILoader getLoader(){
+        return this.mILoader;
     }
 
 
-    public AgentWeb loadUrl(final String url) {
-        if (Looper.myLooper() != Looper.getMainLooper()) {
-            safeLoadUrl(url);
-            return this;
-        }
-        //|| ((!url.startsWith("http")&&(!url.startsWith("javascript:"))))
-        if (TextUtils.isEmpty(url))
-            throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , file , please check url format");
-        mWebCreator.get().loadUrl(url);
-        return this;
-    }
 
 
     private AgentWeb go(String url) {
-        return loadUrl(url);
+        this.getLoader().loadUrl(url);
+        return this;
     }
 
     private boolean isKillProcess = false;
