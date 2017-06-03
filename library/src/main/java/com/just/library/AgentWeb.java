@@ -84,7 +84,7 @@ public class AgentWeb {
         this.mWebViewClientCallbackManager=agentBuilder.mWebViewClientCallbackManager;
 
         this.mSecurityType = agentBuilder.mSecurityType;
-        this.mILoader=new LoaderImpl(mWebCreator.create().get());
+        this.mILoader=new LoaderImpl(mWebCreator.create().get(),agentBuilder.headers);
         this.mWebLifeCycle=new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
 
@@ -111,7 +111,7 @@ public class AgentWeb {
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
         this.mWebViewClientCallbackManager=agentBuilderFragment.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilderFragment.mSecurityType;
-        this.mILoader=new LoaderImpl(mWebCreator.create().get());
+        this.mILoader=new LoaderImpl(mWebCreator.create().get(),agentBuilderFragment.additionalHttpHeaders);
         this.mWebLifeCycle=new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         doCompat();
@@ -369,6 +369,8 @@ public class AgentWeb {
 
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
 
+        private Map<String,String>headers=null;
+
 
         private ArrayMap<String, Object> mJavaObject = null;
         private int mIndicatorColorWithHeight = -1;
@@ -425,6 +427,14 @@ public class AgentWeb {
             return new ConfigIndicatorBuilder(this);
         }
 
+
+        private void addHeader(String k,String v){
+            if(headers==null)
+                headers=new ArrayMap<>();
+
+            headers.put(k,v);
+
+        }
 //
 
 
@@ -562,6 +572,11 @@ public class AgentWeb {
             this.mAgentBuilder.mWebView=webView;
             return this;
         }
+
+        public  CommonAgentBuilder additionalHttpHeader(String k ,String v){
+            this.mAgentBuilder.addHeader(k,v);
+            return this;
+        }
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -617,7 +632,7 @@ public class AgentWeb {
         private int mIndicatorColor = -1;
         private WebSettings mWebSettings;
         private WebCreator mWebCreator;
-
+        private Map<String ,String>additionalHttpHeaders=null;
         private IEventHandler mIEventHandler;
         private int height_dp = -1;
         private ArrayMap<String, Object> mJavaObject;
@@ -648,6 +663,14 @@ public class AgentWeb {
             if (mJavaObject == null)
                 mJavaObject = new ArrayMap<>();
             mJavaObject.put(key, o);
+        }
+
+        private void addHeader(String k,String v){
+
+            if(additionalHttpHeaders==null)
+                additionalHttpHeaders=new ArrayMap<>();
+            additionalHttpHeaders.put(k,v);
+
         }
     }
 
@@ -751,6 +774,12 @@ public class AgentWeb {
         }
         public CommonBuilderForFragment setWebView(WebView webView){
             this.mAgentBuilderFragment.mWebView=webView;
+            return this;
+        }
+
+        public CommonBuilderForFragment additionalHttpHeaders(String k ,String v){
+            this.mAgentBuilderFragment.addHeader(k,v);
+
             return this;
         }
 

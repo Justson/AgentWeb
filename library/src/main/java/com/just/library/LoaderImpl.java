@@ -5,6 +5,8 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
+import java.util.Map;
+
 /**
  * Created by cenxiaozhong on 2017/6/3.
  */
@@ -15,10 +17,14 @@ public class LoaderImpl implements ILoader {
     private Handler mHandler = null;
     private WebView mWebView;
 
-    LoaderImpl(WebView webView) {
+    private Map<String, String> headers = null;
+
+    LoaderImpl(WebView webView, Map<String, String> map) {
         this.mWebView = webView;
-        if(this.mWebView==null)
+        if (this.mWebView == null)
             new NullPointerException("webview is null");
+
+        this.headers = map;
         mHandler = new Handler(Looper.getMainLooper());
     }
 
@@ -41,18 +47,23 @@ public class LoaderImpl implements ILoader {
             }
         });
     }
+
     @Override
     public void loadUrl(String url) {
 
 
         if (!AgentWebUtils.isUIThread()) {
             safeLoadUrl(url);
-            return ;
+            return;
         }
         //|| ((!url.startsWith("http")&&(!url.startsWith("javascript:"))))
         if (TextUtils.isEmpty(url))
             throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , file , please check url format");
-        this.mWebView.loadUrl(url);
+
+        if (!AgentWebUtils.isEmptyMap(this.headers))
+            this.mWebView.loadUrl(url, headers);
+        else
+            this.mWebView.loadUrl(url);
     }
 
     @Override
@@ -64,7 +75,7 @@ public class LoaderImpl implements ILoader {
                     reload();
                 }
             });
-            return ;
+            return;
         }
         this.mWebView.reload();
 
@@ -78,12 +89,12 @@ public class LoaderImpl implements ILoader {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    loadData(data,mimeType,encoding);
+                    loadData(data, mimeType, encoding);
                 }
             });
-            return ;
+            return;
         }
-        this.mWebView.loadData(data,mimeType,encoding);
+        this.mWebView.loadData(data, mimeType, encoding);
 
     }
 
@@ -97,7 +108,7 @@ public class LoaderImpl implements ILoader {
                     stopLoading();
                 }
             });
-            return ;
+            return;
         }
         this.mWebView.stopLoading();
 
@@ -110,12 +121,12 @@ public class LoaderImpl implements ILoader {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    loadDataWithBaseURL(baseUrl,data,mimeType,encoding,historyUrl);
+                    loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
                 }
             });
-            return ;
+            return;
         }
-        this.mWebView.loadDataWithBaseURL(baseUrl,data,mimeType,encoding,historyUrl);
+        this.mWebView.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
 
     }
 }

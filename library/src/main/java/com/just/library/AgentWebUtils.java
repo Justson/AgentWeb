@@ -45,6 +45,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
@@ -328,7 +329,7 @@ public class AgentWebUtils {
 
         if (paths == null || paths.length == 0)
             return null;
-        Executor mExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()+1);
+        Executor mExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
         final Queue<FileParcel> mQueue = new LinkedBlockingQueue<>();
         CountDownLatch mCountDownLatch = new CountDownLatch(paths.length);
 
@@ -514,7 +515,7 @@ public class AgentWebUtils {
 
 
     public static boolean isJson(String target) {
-        if(TextUtils.isEmpty(target))
+        if (TextUtils.isEmpty(target))
             return false;
 
         boolean tag = false;
@@ -564,36 +565,46 @@ public class AgentWebUtils {
 
     }
 
-    public static boolean isMainProcess(Context context){
+    public static boolean isMainProcess(Context context) {
 
-        ActivityManager mActivityManager= (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
-        boolean tag=false;
-        int id=android.os.Process.myPid();
-        String processName="";
+        boolean tag = false;
+        int id = android.os.Process.myPid();
+        String processName = "";
 
-        String packgeName=context.getPackageName();
-       List<ActivityManager.RunningAppProcessInfo>mInfos= mActivityManager.getRunningAppProcesses();
+        String packgeName = context.getPackageName();
+        List<ActivityManager.RunningAppProcessInfo> mInfos = mActivityManager.getRunningAppProcesses();
 
-        for(ActivityManager.RunningAppProcessInfo mRunningAppProcessInfo:mInfos){
+        for (ActivityManager.RunningAppProcessInfo mRunningAppProcessInfo : mInfos) {
 
-            if(mRunningAppProcessInfo.pid==id){
-                processName=mRunningAppProcessInfo.processName;
+            if (mRunningAppProcessInfo.pid == id) {
+                processName = mRunningAppProcessInfo.processName;
                 break;
             }
         }
 
-        if(packgeName.equals(processName))
-            tag=true;
+        if (packgeName.equals(processName))
+            tag = true;
 
         return tag;
 
     }
 
 
-    public static boolean isUIThread(){
+    public static boolean isUIThread() {
 
-        return Looper.myLooper()==Looper.getMainLooper();
+        return Looper.myLooper() == Looper.getMainLooper();
 
+    }
+
+    public static boolean isEmptyCollection(Collection collection) {
+
+        return collection == null || collection.isEmpty();
+    }
+
+    public static boolean isEmptyMap(Map map) {
+
+        return map == null || map.isEmpty();
     }
 }
