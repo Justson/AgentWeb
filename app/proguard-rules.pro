@@ -23,7 +23,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
--keep public class * extends android.webkit.WebChromeClient{
-*;
+#-keep public class * extends android.webkit.WebChromeClient{
+#*;
+#}
+-keep class com.just.library.** {
+    *;
 }
+-dontwarn class com.just.library.**
 -keepclassmembers class com.just.library.agentweb.HelloJs{ *; }
