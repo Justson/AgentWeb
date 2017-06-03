@@ -74,7 +74,7 @@ public class CommonActivity extends AppCompatActivity {
                 break;
             case 6:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "http://sj.qq.com/myapp/");
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.wandoujia.com/apps");
                 break;
 
         }
