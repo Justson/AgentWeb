@@ -122,7 +122,7 @@ The outermost layer of AgentWeb is FrameLayout, so when you use AgentWeb, you ne
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.1.0'
+   compile 'com.just.agentweb:agentweb:1.1.1'
    ```
 * Maven
 	
@@ -130,7 +130,7 @@ The outermost layer of AgentWeb is FrameLayout, so when you use AgentWeb, you ne
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.1.0</version>
+	  <version>1.1.1</version>
 	  <type>pom</type>
 	</dependency>
 	

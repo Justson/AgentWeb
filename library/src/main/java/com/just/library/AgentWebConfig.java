@@ -36,7 +36,7 @@ public class AgentWebConfig {
     /**
      * cookie同步
      */
-    private void syncCookieToWebView(Context context, List<String> cookies, String url) {
+    public static void syncCookieToWebView(Context context, List<String> cookies, String url) {
 
         if (CookieSyncManager.getInstance() == null)
             CookieSyncManager.createInstance(context);
@@ -66,12 +66,7 @@ public class AgentWebConfig {
         cm.removeAllCookie();
     }
 
-    /**
-     *
-     * okhttp
-     *
-     *
-     */
+
 
     public static void syncCookieToWebView(String url, String cookies) {
 

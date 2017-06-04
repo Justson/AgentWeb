@@ -30,7 +30,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 
 
 ## 简洁易用
-为什么说它简洁易用吗 ？ 下面京东效果图 ， 只需一句话 ！
+#### 为什么说它简洁易用吗 ？ 下面京东效果图 ， 只需一句话 ！
 
 ```
 mAgentWeb = AgentWeb.with(this)//传入Activity
@@ -171,7 +171,7 @@ AgentWeb 最外层是 FrameLayout ， 所以在使用 AgentWeb 的时候还需�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.1.0'
+   compile 'com.just.agentweb:agentweb:1.1.1'
    ```
 * Maven
 	
@@ -179,7 +179,7 @@ AgentWeb 最外层是 FrameLayout ， 所以在使用 AgentWeb 的时候还需�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.1.0</version>
+	  <version>1.1.1</version>
 	  <type>pom</type>
 	</dependency>
 	
