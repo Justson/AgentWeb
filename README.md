@@ -17,7 +17,8 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 6. 支持 Android 4.4 Kitkat 以及其他版本文件上传
 7. 支持注入 Cookies
 8. 加强 Web 安全
-9. 兼容低版本安全 Js 通信
+9. 兼容低版本 Js 安全通信
+10. 更省电 。
 
 ## 为什么要使用 AgentWeb ？
 
@@ -42,9 +43,17 @@ mAgentWeb = AgentWeb.with(this)//传入Activity
                 .go("http://www.jd.com");
 
 ```
-你没看错 ，里面没有一句 Setting ， 甚至连 WebChromeClient 都不配置就有进度条 。 
+里面没有一句 Setting ， 甚至连 WebChromeClient 都不用配置就有进度条 。 
 
-Javascript 通信拼接太麻烦 ？ 请看 。
+
+
+
+## 效果图 
+![京东](./img/jd.png)
+
+
+
+#### Javascript 通信拼接太麻烦 ？ 请看 。
 
 ```
 //Javascript 方法
@@ -63,10 +72,48 @@ Android 端
 consoleMessage:callByAndroid  lineNumber:27
 ```
 
+#### 事件处理
 
+```
+@Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
 
-## 效果图 
-![京东](./img/jd.png)
+        if (mAgentWeb.handleKeyEvent(keyCode, event)) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+```
+
+#### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
+
+```
+	@Override
+    protected void onPause() {
+        mAgentWeb.getWebLifeCycle().onPause();
+        super.onPause();
+
+    }
+
+    @Override
+    protected void onResume() {
+        mAgentWeb.getWebLifeCycle().onResume();
+        super.onResume();
+    }
+
+```
+
+#### 文件上传处理
+
+```
+@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mAgentWeb.uploadFileResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+```
 
 #### 到了这里 ， 弱弱问一句 ， 你还有什么理由不使用 AgentWeb ？
 
