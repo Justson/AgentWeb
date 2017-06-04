@@ -39,7 +39,7 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
             Object v = mEntry.getValue();
             boolean t = checkObject(v);
             if (!t)
-                throw new JsInterfaceObjectException("this object has not offer method javascript to call");
+                throw new JsInterfaceObjectException("this object has not offer method javascript to call ,please check addJavascriptInterface annotation was be added");
 
             else
                 addJavaObjectDirect(mEntry.getKey(), v);
@@ -55,7 +55,7 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
         }
         boolean t = checkObject(v);
         if (!t)
-            throw new JsInterfaceObjectException("this object has not javascriptInterface");
+            throw new JsInterfaceObjectException("this object has not offer method javascript to call , please check addJavascriptInterface annotation was be added");
 
         else
             addJavaObjectDirect(k, v);

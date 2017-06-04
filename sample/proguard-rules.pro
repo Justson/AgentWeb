@@ -29,5 +29,5 @@
 -keep class com.just.library.** {
     *;
 }
--keepclassmembers class com.just.library.agentweb.HelloJs{ *; }
+-keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
 -dontwarn com.just.library.**

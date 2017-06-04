@@ -8,19 +8,20 @@ import android.util.Log;
 
 public class LogUtils {
 
+    private static boolean isDebug=false;
     public static boolean isDebug() {
         return BuildConfig.DEBUG;
     }
 
     public static void i(String tag,String message){
 
-        if(BuildConfig.DEBUG)
+        if(isDebug)
             Log.i(tag,message);
     }
 
     public static void v(String tag,String message){
 
-        if(BuildConfig.DEBUG)
+        if(isDebug)
             Log.v(tag,message);
 
     }

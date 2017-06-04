@@ -43,7 +43,7 @@ public class JsAgentWebFragment extends AgentWebFragment {
 
         Log.i("Info","add android:"+mAgentWeb);
         if(mAgentWeb!=null){
-            mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new HelloJs(mAgentWeb,this.getActivity()));
+            mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this.getActivity()));
 
         }
 //        String p="\"hello\""+","+"\" js\"";

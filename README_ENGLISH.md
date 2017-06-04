@@ -182,10 +182,10 @@ If you are using ProGuard you might need to add the following option:
 
 
 ```
- Java injection class do not ProGuard, such as App inside HelloJs object, need Keep.
+ Java injection class do not ProGuard, such as App inside AndroidInterface object, need Keep.
 
 ```
--keepclassmembers class com.just.library.agentweb.HelloJs{ *; }
+-keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
 ```
 
 

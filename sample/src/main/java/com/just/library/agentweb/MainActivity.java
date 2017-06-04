@@ -25,17 +25,15 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTitleTextView;
 
 
-    public static final String[] datas=new String[]{"Activity 使用 AgentWeb","Fragment 使用 AgentWeb ","文件下载","input标签文件上传","Js 通信文件上传,兼用Android 4.4Kitkat","Js 通信","自定义进度条","自定义设置"};
+    public static final String[] datas = new String[]{"Activity 使用 AgentWeb", "Fragment 使用 AgentWeb ", "文件下载", "input标签文件上传", "Js 通信文件上传,兼用Android 4.4Kitkat", "Js 通信", "自定义进度条", "自定义设置"};
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        
 
         setContentView(R.layout.activity_main);
-
 
 
         mToolbar = (Toolbar) this.findViewById(R.id.toolbar);
@@ -66,41 +64,39 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
     }
 
-    private void doClick(int position){
+    private void doClick(int position) {
 
 
-        switch (position){
+        switch (position) {
 
             /*Activity agentWeb*/
             case 0:
 
-                startActivity(new Intent(this,WebActivity.class));
+                startActivity(new Intent(this, WebActivity.class));
                 break;
             case 1:
-                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,0));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(TYPE_KEY, 0));
                 break;
             case 2:
-                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,1));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(TYPE_KEY, 1));
                 break;
             case 3:
-                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,2));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(TYPE_KEY, 2));
                 break;
             case 4:
-                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,3));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(TYPE_KEY, 3));
                 break;
             case 5:
-                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,4));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(TYPE_KEY, 4));
                 break;
             case 6:
-                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,5));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(TYPE_KEY, 5));
                 break;
 
             case 7:
-                startActivity(new Intent(this,CommonActivity.class).putExtra(TYPE_KEY,6));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(TYPE_KEY, 6));
                 break;
         }
 
@@ -108,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class MainAdapter extends BaseAdapter{
+    public class MainAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -128,14 +124,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder mViewHolder;
-            if(convertView==null){
-                mViewHolder=new ViewHolder();
-               View mView= MainActivity.this.getLayoutInflater().inflate(R.layout.listview_main,parent,false);
-               mViewHolder.mTextView= (TextView) mView.findViewById(R.id.content);
+            if (convertView == null) {
+                mViewHolder = new ViewHolder();
+                View mView = MainActivity.this.getLayoutInflater().inflate(R.layout.listview_main, parent, false);
+                mViewHolder.mTextView = (TextView) mView.findViewById(R.id.content);
                 mView.setTag(mViewHolder);
-                convertView=mView;
-            }else{
-                mViewHolder= (ViewHolder) convertView.getTag();
+                convertView = mView;
+            } else {
+                mViewHolder = (ViewHolder) convertView.getTag();
             }
 
             mViewHolder.mTextView.setText(datas[position]);
@@ -145,12 +141,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    class ViewHolder{
+    class ViewHolder {
         TextView mTextView;
     }
-
-
-
 
 
 }

@@ -13,13 +13,13 @@ import com.just.library.AgentWeb;
  * Created by cenxiaozhong on 2017/5/14.
  */
 
-public class HelloJs {
+public class AndroidInterface {
 
 
     private AgentWeb agent;
     private Context context;
 
-    public HelloJs(AgentWeb agent, Context context) {
+    public AndroidInterface(AgentWeb agent, Context context) {
         this.agent = agent;
         this.context = context;
     }
@@ -41,9 +41,7 @@ public class HelloJs {
 
         Log.i("Info", "Thread:" + Thread.currentThread());
 
-//        SystemClock.sleep(3000);
-
-//        agent.getJsEntraceAccess().quickCallJs("callByAndroid", "你好","  js");
+            //对外接口
 
 
     }
