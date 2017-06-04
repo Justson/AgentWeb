@@ -329,7 +329,9 @@ public class AgentWebUtils {
 
         if (paths == null || paths.length == 0)
             return null;
-        Executor mExecutor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
+        int tmp=Runtime.getRuntime().availableProcessors() + 1;
+        int result=paths.length>tmp?tmp:paths.length;
+        Executor mExecutor = Executors.newFixedThreadPool(result);
         final Queue<FileParcel> mQueue = new LinkedBlockingQueue<>();
         CountDownLatch mCountDownLatch = new CountDownLatch(paths.length);
 
@@ -337,7 +339,7 @@ public class AgentWebUtils {
         for (String path : paths) {
 
 
-            Log.i("Info", "path   :  :" + path);
+            LogUtils.i("Info", "path   :  :" + path);
             if (TextUtils.isEmpty(path)) {
                 mCountDownLatch.countDown();
                 continue;
@@ -348,9 +350,10 @@ public class AgentWebUtils {
         }
         mCountDownLatch.await();
 
-        if (((ThreadPoolExecutor) mExecutor).isShutdown())
+        if (!((ThreadPoolExecutor) mExecutor).isShutdown())
             ((ThreadPoolExecutor) mExecutor).shutdownNow();
 
+        LogUtils.i("Info","isShutDown:"+(((ThreadPoolExecutor) mExecutor).isShutdown()));
         return mQueue;
     }
 

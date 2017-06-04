@@ -72,7 +72,9 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()
-                .go(getUrl());
+                .go(null);
+
+        mAgentWeb.getLoader().loadUrl(getUrl());
 
         long n = System.currentTimeMillis();
         Log.i("Info", "init used time:" + (n - p));

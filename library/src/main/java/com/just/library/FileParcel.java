@@ -2,7 +2,6 @@ package com.just.library;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /**
  * Created by cenxiaozhong on 2017/5/24.
@@ -25,7 +24,7 @@ public class FileParcel implements Parcelable {
         this.contentPath = contentPath;
         this.fileBase64 = fileBase64;
 
-        Log.i("Info","file:"+fileBase64);
+        LogUtils.i("Info","file:"+fileBase64);
     }
 
     public static final Creator<FileParcel> CREATOR = new Creator<FileParcel>() {

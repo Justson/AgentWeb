@@ -2,7 +2,6 @@ package com.just.library;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.webkit.WebView;
 
 import java.util.Map;
@@ -57,8 +56,8 @@ public class LoaderImpl implements ILoader {
             return;
         }
         //|| ((!url.startsWith("http")&&(!url.startsWith("javascript:"))))
-        if (TextUtils.isEmpty(url))
-            throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , file , please check url format");
+        /*if (TextUtils.isEmpty(url))
+            throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , file , please check url format");*/
 
         if (!AgentWebUtils.isEmptyMap(this.headers))
             this.mWebView.loadUrl(url, headers);
