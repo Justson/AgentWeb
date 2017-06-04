@@ -190,6 +190,7 @@ public class AgentWeb {
 
     public static AgentBuilderFragment with(@NonNull Fragment fragment) {
 
+
         Activity mActivity = null;
         if ((mActivity = fragment.getActivity()) == null)
             new NullPointerException("activity can not null");
