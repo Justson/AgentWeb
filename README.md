@@ -156,7 +156,7 @@ consoleMessage:callByAndroid  lineNumber:27
 -dontwarn com.just.library.**
 
 ```
-Java 注入类不要混淆 ， 例如 App 里面的 AndroidInterface 对象 ， 需要 Keep 。
+Java 注入类不要混淆 ， 例如 App 里面的 AndroidInterface 类 ， 需要 Keep 。
 
 ```
 -keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
