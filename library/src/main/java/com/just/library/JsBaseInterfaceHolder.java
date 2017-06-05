@@ -21,6 +21,8 @@ public abstract class JsBaseInterfaceHolder implements JsInterfaceHolder{
 
         if(Build.VERSION.SDK_INT<Build.VERSION_CODES.JELLY_BEAN_MR1)
             return true;
+        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE)
+            return true;
         boolean tag=false;
         Class clazz=v.getClass();
 
@@ -46,7 +48,7 @@ public abstract class JsBaseInterfaceHolder implements JsInterfaceHolder{
     }
 
     protected boolean checkSecurity(){
-        return mSecurityType!= AgentWeb.SecurityType.strict ?true:Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN_MR1;
+        return mSecurityType!= AgentWeb.SecurityType.strict ?true:AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE?true:Build.VERSION.SDK_INT>Build.VERSION_CODES.JELLY_BEAN_MR1;
     }
 
 

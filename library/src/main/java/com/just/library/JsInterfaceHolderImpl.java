@@ -29,6 +29,8 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
     @Override
     public JsInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps) {
 
+
+
         if(!checkSecurity()){
             return this;
         }
@@ -50,6 +52,7 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
     @Override
     public JsInterfaceHolder addJavaObject(String k, Object v) {
+
         if(!checkSecurity()){
             return this;
         }

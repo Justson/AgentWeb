@@ -69,7 +69,7 @@ public class BaseWebActivity extends AppCompatActivity {
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .setReceivedTitleCallback(mCallback)
-                .setSecutityType(AgentWeb.SecurityType.default_check)
+                .setSecutityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()
                 .go(null);

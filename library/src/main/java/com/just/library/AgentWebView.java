@@ -73,6 +73,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
             return;
         }
 
+        LogUtils.i("Info","addJavascriptInterface:"+interfaceObj+"   interfaceName:"+interfaceName);
         if (mJsCallJavas == null) {
             mJsCallJavas = new HashMap<String, JsCallJava>();
         }
