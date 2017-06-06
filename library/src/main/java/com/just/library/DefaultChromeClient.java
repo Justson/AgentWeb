@@ -298,7 +298,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
-        LogUtils.i("Infoss", "openFileChooser>=4.1");
+        LogUtils.i("Info", "openFileChooser>=4.1");
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class, String.class)) {
             super.openFileChooser(uploadFile, acceptType, capture);
             return;
@@ -312,13 +312,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             super.openFileChooser(valueCallback);
             return;
         }
-        Log.i("Infoss", "openFileChooser<3.0");
+        Log.i("Info", "openFileChooser<3.0");
         createAndOpenCommonFileLoader(valueCallback);
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
-        Log.i("Infoss", "openFileChooser>3.0");
+        Log.i("Info", "openFileChooser>3.0");
 
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class)) {
             super.openFileChooser(valueCallback, acceptType);
@@ -347,7 +347,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-        Log.i("Info", "consoleMessage:" + consoleMessage.message() + "  lineNumber:" + consoleMessage.lineNumber());
+        LogUtils.i("Info", "consoleMessage:" + consoleMessage.message() + "  lineNumber:" + consoleMessage.lineNumber());
         return true;
     }
 

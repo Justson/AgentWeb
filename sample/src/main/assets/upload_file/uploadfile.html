@@ -15,7 +15,24 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <!--<script type="text/javascript" src="jquery.js"></script>-->
     <script language="javascript">
-    
+
+/**
+* 从 file 域获取 本地图片 url
+*
+*/
+function getFileUrl(sourceId) {
+var url;
+console.log(navigator.userAgent);
+if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
+url = document.getElementById(sourceId).value;
+} else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
+url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+} else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
+url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+}
+return url;
+}
+
     $(function(){
   form.reset(); //清除浏览器记录的上次记录
   var file;
@@ -29,9 +46,13 @@
             var $img = $("#preview");
  
             if(fileObj && fileObj.files && fileObj.files[0]){
+                
                 dataURL = windowURL.createObjectURL(fileObj.files[0]);
+                //dataURL = getFileUrl('file_upload');;                
+                //console.log(" upload:"+dataURL+"    file:"+fileObj.files[0]);
                 $img.attr('src',dataURL);
             }else{
+                 console.log("else  upload");
                 dataURL = $file.val();
  
                 

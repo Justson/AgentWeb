@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.just.library.BuildConfig;
 
 import static com.just.library.agentweb.CommonActivity.TYPE_KEY;
 
@@ -63,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
+        if(BuildConfig.DEBUG){
+            Log.i("Info","Debug 模式");
+        }else{
+            Log.i("Info","release 模式");
+        }
 
     }
 

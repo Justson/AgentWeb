@@ -24,6 +24,7 @@ android {
     lintOptions{
         abortOnError false
     }
+    //defaultPublishConfig "debug" // 当为“release”时，BuildConfig.DEBUG = false;
 }
 
 task javadoc(type: Javadoc) {

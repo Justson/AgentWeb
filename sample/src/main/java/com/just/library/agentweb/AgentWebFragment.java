@@ -73,6 +73,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
 
+
     public WebSettings getSettings(){
         return WebDefaultSettingsManager.getInstance();
     }

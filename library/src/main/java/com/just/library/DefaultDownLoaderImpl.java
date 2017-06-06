@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.DownloadListener;
 
 import java.io.File;
@@ -31,7 +30,7 @@ public class DefaultDownLoaderImpl implements DownloadListener {
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
-        Log.i("Info", "url:" + url + "  package:"+mContext.getPackageName()+"  useraget:" + userAgent + " content:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength);
+        LogUtils.i("Info", "url:" + url + "  package:"+mContext.getPackageName()+"  useraget:" + userAgent + " content:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength);
 
         File mFile = getFile(contentDisposition, url);
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
@@ -42,7 +41,7 @@ public class DefaultDownLoaderImpl implements DownloadListener {
             return;
         }
         if (mFile != null)
-            new RealDownLoader(new DownLoadTask(NoticationID++, url, isForce, enableIndicator, mContext, mFile, contentLength, R.drawable.download)).execute();
+            new RealDownLoader(new DownLoadTask(NoticationID++, url, isForce, enableIndicator, mContext, mFile, contentLength, R.mipmap.download)).execute();
     }
 
     private File getFile(String contentDisposition, String url) {

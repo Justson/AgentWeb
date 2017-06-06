@@ -119,6 +119,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private void handleDataBelow(Intent data) {
         Uri mUri = data == null ? null : data.getData();
 
+        LogUtils.i("Info","handleDataBelow  -- >uri:"+mUri+"  mUriValueCallback:"+mUriValueCallback);
         if (mUriValueCallback != null)
             mUriValueCallback.onReceiveValue(mUri);
 
@@ -182,7 +183,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             try {
                 Queue<FileParcel> mQueue = AgentWebUtils.convertFile(paths);
                 String result = AgentWebUtils.FileParcetoJson(mQueue);
-                Log.i("Info", "result:" + result);
+                LogUtils.i("Info", "result:" + result);
                 if (mJsChannelCallback != null)
                     mJsChannelCallback.call(result);
 

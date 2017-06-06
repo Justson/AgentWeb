@@ -173,7 +173,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         long duration = (long) Math.abs((v / 100f * screenWidth) - (currentProgress / 100f * screenWidth));
 
 
-        /*默认每个像素十毫秒*/
+        /*默认每个像素8毫秒*/
         mValueAnimator.setDuration(isAuto ? duration * 8 : (long) (duration * weightDuration(v, currentProgress)));
         mValueAnimator.addUpdateListener(mAnimatorUpdateListener);
         mValueAnimator.addListener(mAnimatorListenerAdapter);
