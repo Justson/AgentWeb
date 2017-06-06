@@ -68,11 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        if(BuildConfig.DEBUG){
-            Log.i("Info","Debug 模式");
-        }else{
-            Log.i("Info","release 模式");
-        }
+        
 
     }
 
