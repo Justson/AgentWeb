@@ -32,7 +32,8 @@
             ></activity>
         <!--android:process=":web"-->
         <activity
-
+            android:hardwareAccelerated="true"
+            android:configChanges="orientation|screenSize"
             android:name=".CommonActivity"
             android:launchMode="singleTop"></activity>
 

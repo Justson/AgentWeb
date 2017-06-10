@@ -7,10 +7,12 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JsPromptResult;
@@ -37,8 +39,8 @@ import java.lang.ref.WeakReference;
 public class DefaultChromeClient extends WebChromeClientProgressWrapper implements FileUploadPop<IFileUploadChooser> {
 
 
-//    private Activity mActivity;
-    private WeakReference<Activity>mActivityWeakReference=null;
+    //    private Activity mActivity;
+    private WeakReference<Activity> mActivityWeakReference = null;
     private AlertDialog promptDialog = null;
     private AlertDialog confirmDialog = null;
     private JsPromptResult pJsResult = null;
@@ -51,15 +53,18 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private IFileUploadChooser mIFileUploadChooser;
 
-    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager) {
+    private IVideo mIVideo;
+
+
+    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager, @Nullable IVideo iVideo) {
         super(indicatorController, chromeClient);
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
 //        this.mActivity = activity;
-        mActivityWeakReference=new WeakReference<Activity>(activity);
+        mActivityWeakReference = new WeakReference<Activity>(activity);
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
 
-
+        this.mIVideo  = iVideo;
     }
 
 
@@ -67,9 +72,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
 
-        ChromeClientCallbackManager.AgentWebCompatInterface mAgentWebCompatInterface=null;
-        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE &&mChromeClientCallbackManager!=null&&(mAgentWebCompatInterface=mChromeClientCallbackManager.getAgentWebCompatInterface())!=null){
-            mAgentWebCompatInterface.onProgressChanged(view,newProgress);
+        ChromeClientCallbackManager.AgentWebCompatInterface mAgentWebCompatInterface = null;
+        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && (mAgentWebCompatInterface = mChromeClientCallbackManager.getAgentWebCompatInterface()) != null) {
+            mAgentWebCompatInterface.onProgressChanged(view, newProgress);
         }
 
     }
@@ -80,7 +85,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         if (mChromeClientCallbackManager != null && (mCallback = mChromeClientCallbackManager.getReceivedTitleCallback()) != null)
             mCallback.onReceivedTitle(view, title);
 
-        if (AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && (mChromeClientCallbackManager.getAgentWebCompatInterface()) != null)
+        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && (mChromeClientCallbackManager.getAgentWebCompatInterface()) != null)
             mChromeClientCallbackManager.getAgentWebCompatInterface().onReceivedTitle(view, title);
         if (isWrapper)
             super.onReceivedTitle(view, title);
@@ -95,8 +100,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             return super.onJsAlert(view, url, message, result);
         }
 
-        Activity mActivity=this.mActivityWeakReference.get();
-        if(mActivity==null)
+        Activity mActivity = this.mActivityWeakReference.get();
+        if (mActivity == null)
             return true;
         //
         AgentWebUtils.show(view,
@@ -143,7 +148,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
                 return super.onJsPrompt(view, url, message, defaultValue, result);
             }
-            if (AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && mChromeClientCallbackManager.getAgentWebCompatInterface() != null) {
+            if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && mChromeClientCallbackManager.getAgentWebCompatInterface() != null) {
 
                 LogUtils.i("Info", "mChromeClientCallbackManager.getAgentWebCompatInterface():" + mChromeClientCallbackManager.getAgentWebCompatInterface());
                 if (mChromeClientCallbackManager.getAgentWebCompatInterface().onJsPrompt(view, url, message, defaultValue, result))
@@ -177,8 +182,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private void showJsConfirm(String message, final JsResult result) {
 
-        Activity mActivity=this.mActivityWeakReference.get();
-        if(mActivity!=null)
+        Activity mActivity = this.mActivityWeakReference.get();
+        if (mActivity != null)
             return;
 
         if (confirmDialog == null)
@@ -212,8 +217,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
 
-        Activity mActivity=this.mActivityWeakReference.get();
-        if(mActivity==null)
+        Activity mActivity = this.mActivityWeakReference.get();
+        if (mActivity == null)
             return;
         if (promptDialog == null) {
 
@@ -286,8 +291,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
 
-        Activity mActivity=this.mActivityWeakReference.get();
-        if(mActivity==null)
+        Activity mActivity = this.mActivityWeakReference.get();
+        if (mActivity == null)
             return;
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
         this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl(webView, mActivity, filePathCallback, fileChooserParams);
@@ -329,9 +334,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
     private void createAndOpenCommonFileLoader(ValueCallback valueCallback) {
-        Activity mActivity=this.mActivityWeakReference.get();
-        if(mActivity==null)
-            return;;
+        Activity mActivity = this.mActivityWeakReference.get();
+        if (mActivity == null)
+            return;
+        ;
         this.mIFileUploadChooser = new FileUpLoadChooserImpl(mActivity, valueCallback);
         this.mIFileUploadChooser.openFileChooser();
 
@@ -347,8 +353,40 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+        super.onConsoleMessage(consoleMessage);
         LogUtils.i("Info", "consoleMessage:" + consoleMessage.message() + "  lineNumber:" + consoleMessage.lineNumber());
         return true;
+    }
+
+
+
+    @Override
+    public void onShowCustomView(View view, CustomViewCallback callback) {
+        Log.i("Info", "view:" + view + "   callback:" + callback);
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowCustomView", ChromePath + ".onShowCustomView", View.class, CustomViewCallback.class)) {
+            super.onShowCustomView(view, callback);
+            return;
+        }
+
+
+        if(mIVideo!=null)
+            mIVideo.onShowCustomView(view,callback);
+
+
+    }
+
+    @Override
+    public void onHideCustomView() {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ChromePath + ".onHideCustomView", View.class, CustomViewCallback.class)) {
+            LogUtils.i("Info","onHide:"+true);
+            super.onHideCustomView();
+            return;
+        }
+
+        LogUtils.i("Info","Videa:"+mIVideo);
+        if(mIVideo!=null)
+            mIVideo.onHideCustomView();
+
     }
 
 

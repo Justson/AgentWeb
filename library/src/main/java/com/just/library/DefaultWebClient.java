@@ -29,13 +29,13 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        Log.i("Info", "shouldOverrideUrlLoading");
+        LogUtils.i("Info", "shouldOverrideUrlLoading");
         return false;
     }
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        Log.i("Info", "onPageStarted");
+        LogUtils.i("Info", "onPageStarted");
         if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE&&mWebViewClientCallbackManager.getPageLifeCycleCallback()!=null){
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view,url,favicon);
         }
@@ -48,13 +48,13 @@ public class DefaultWebClient extends WrapperWebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-        Log.i("Info", "onReceivedError");
+        LogUtils.i("Info", "onReceivedError");
     }
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        Log.i("Info", "onReceivedError");
+        LogUtils.i("Info", "onReceivedError");
 
     }
 
@@ -65,16 +65,26 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
         super.onPageFinished(view, url);
 
-        Log.i("Info", "onPageFinished");
+        LogUtils.i("Info", "onPageFinished");
     }
 
 
 
     @Override
     public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-        Log.i("Info", "shouldOverrideKeyEvent");
+        LogUtils.i("Info", "shouldOverrideKeyEvent");
         return super.shouldOverrideKeyEvent(view, event);
     }
 
 
+    @Override
+    public void onScaleChanged(WebView view, float oldScale, float newScale) {
+        super.onScaleChanged(view, oldScale, newScale);
+
+        LogUtils.i("Info","onScaleChanged:"+oldScale+"   n:"+newScale);
+        if (newScale - oldScale > 7) {
+            view.setInitialScale((int) (oldScale / newScale * 100)); //异常放大，缩回去。
+        }
+
+    }
 }

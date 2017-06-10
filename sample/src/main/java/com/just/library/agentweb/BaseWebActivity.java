@@ -82,7 +82,7 @@ public class BaseWebActivity extends AppCompatActivity {
     }
 
     public String getUrl(){
-        return "http://www.jd.com";
+        return "http://www.tudou.com/albumplay/eu0K8vLTD48/aHeFLTBfzU0.html";
     }
 
     private ChromeClientCallbackManager.ReceivedTitleCallback mCallback = new ChromeClientCallbackManager.ReceivedTitleCallback() {

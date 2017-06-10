@@ -37,6 +37,8 @@ import java.util.Map;
  */
 public class AgentWeb {
 
+    private static final String TAG=AgentWeb.class.getSimpleName();
+
     private Activity mActivity;
     private ViewGroup mViewGroup;
     private WebCreator mWebCreator;
@@ -50,7 +52,7 @@ public class AgentWeb {
     private IEventHandler mIEventHandler;
 
     private ArrayMap<String, Object> mJavaObjects = new ArrayMap<>();
-    private int TAG = 0;
+    private int TAG_TARGET = 0;
     private WebListenerManager mWebListenerManager;
     private DownloadListener mDownloadListener = null;
     private ChromeClientCallbackManager mChromeClientCallbackManager;
@@ -65,6 +67,8 @@ public class AgentWeb {
     private JsEntraceAccess mJsEntraceAccess = null;
     private ILoader mILoader = null;
     private WebLifeCycle mWebLifeCycle;
+    private IVideo mIVideo=null;
+
 
 
     private AgentWeb(AgentBuilder agentBuilder) {
@@ -78,7 +82,7 @@ public class AgentWeb {
         mAgentWeb = this;
         this.mWebSettings = agentBuilder.mWebSettings;
         this.mIEventHandler = agentBuilder.mIEventHandler;
-        TAG = ACTIVITY_TAG;
+        TAG_TARGET = ACTIVITY_TAG;
         if (agentBuilder.mJavaObject != null && agentBuilder.mJavaObject.isEmpty())
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilder.mJavaObject);
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
@@ -95,7 +99,7 @@ public class AgentWeb {
 
 
     public AgentWeb(AgentBuilderFragment agentBuilderFragment) {
-        TAG = FRAGMENT_TAG;
+        TAG_TARGET = FRAGMENT_TAG;
         this.mActivity = agentBuilderFragment.mActivity;
         this.mFragment = agentBuilderFragment.mFragment;
         this.mViewGroup = agentBuilderFragment.mViewGroup;
@@ -197,11 +201,24 @@ public class AgentWeb {
         return new AgentBuilderFragment(mActivity, fragment);
     }
 
+    private EventInterceptor mEventInterceptor;
+    private EventInterceptor getInterceptor(){
+
+        if(this.mEventInterceptor!=null)
+            return this.mEventInterceptor;
+
+        if (mIVideo instanceof VideoImpl){
+            return this.mEventInterceptor=(EventInterceptor) this.mIVideo;
+        }
+
+        return null;
+
+    }
 
     public boolean handleKeyEvent(int keyCode, KeyEvent keyEvent) {
 
         if (mIEventHandler == null) {
-            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get());
+            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(),getInterceptor());
         }
         return mIEventHandler.onKeyDown(keyCode, keyEvent);
     }
@@ -209,7 +226,7 @@ public class AgentWeb {
     public boolean back() {
 
         if (mIEventHandler == null) {
-            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get());
+            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(),getInterceptor());
         }
         return mIEventHandler.back();
     }
@@ -223,7 +240,7 @@ public class AgentWeb {
     }
 
     public IEventHandler getIEventHandler() {
-        return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get())) : this.mIEventHandler;
+        return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(),getInterceptor())) : this.mIEventHandler;
     }
 
     private JsInterfaceHolder mJsInterfaceHolder = null;
@@ -280,7 +297,11 @@ public class AgentWeb {
             return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
         }*/
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager);
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager,this.mIVideo=getIVideo());
+    }
+
+    private IVideo getIVideo(){
+        return mIVideo==null?new VideoImpl(mActivity,mWebCreator.get()):mIVideo;
     }
 
 

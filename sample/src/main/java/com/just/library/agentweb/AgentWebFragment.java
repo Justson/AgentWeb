@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.just.library.AgentWeb;
 import com.just.library.ChromeClientCallbackManager;
+import com.just.library.LogUtils;
 import com.just.library.WebDefaultSettingsManager;
 import com.just.library.WebSettings;
 
@@ -100,7 +101,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
-            Log.i("Info","shouldOverrideUrlLoading");
+            LogUtils.i("Info","shouldOverrideUrlLoading");
             return false;
         }
 

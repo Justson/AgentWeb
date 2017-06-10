@@ -77,6 +77,16 @@ public class CommonActivity extends AppCompatActivity {
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://www.wandoujia.com/apps");
                 break;
 
+            case 7:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.tudou.com/albumplay/eu0K8vLTD48/aHeFLTBfzU0.html");
+                break;
+
+            case 8:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/sms/sms.html");
+                break;
+
         }
         ft.commit();
 
