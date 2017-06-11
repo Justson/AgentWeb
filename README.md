@@ -19,15 +19,16 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 6. 支持 Android 4.4 Kitkat 以及其他版本文件上传
 7. 支持注入 Cookies
 8. 加强 Web 安全
-9. 兼容低版本 Js 安全通信
-10. 更省电 。
+9. 支持全屏播放视频
+10. 兼容低版本 Js 安全通信
+11. 更省电 。
 
 ## 为什么要使用 AgentWeb ？
 
-|     Web     |  文件下载  |  文件上传 |   Js 通信  |  断点续传  |   使用简易度 |  进度条      | 线程安全    |
-|:-----------:|:---------:|:---------|:---------|:---------|:----------- |:-----------|:-----------|
-| WebView     |  不支持    | 不支持		|  支持    |     不支持 |    麻烦      | 没有        | 不安全      |
-| AgentWeb	 |  支持		| 支持		|  更简洁   |   支持    |    简洁      | 有         |  安全       |	
+|     Web     |  文件下载  |  文件上传 |   Js 通信  |  断点续传  |   使用简易度 |  进度条      | 线程安全    |全屏视频|
+|:-----------:|:---------:|:---------|:---------|:---------|:----------- |:-----------|:-----------|:--------|
+| WebView     |  不支持    | 不支持		|  支持    |     不支持 |    麻烦      | 没有        | 不安全      |不支持|
+| AgentWeb	 |  支持		| 支持		|  更简洁   |   支持    |    简洁      | 有         |  安全       |支持|	
 
 ## 引入
 
@@ -36,7 +37,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.1.2'
+   compile 'com.just.agentweb:agentweb:1.2.0'
    ```
 * Maven
 	
@@ -44,7 +45,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.1.2</version>
+	  <version>1.2.0</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -130,11 +131,20 @@ consoleMessage:callByAndroid  lineNumber:27
 #### 文件上传处理
 
 ```
-@Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mAgentWeb.uploadFileResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+```
+
+#### 全屏视频播放
+如果你的应用需要用到视频 ， 那么请你在使用 AgentWeb 的 Activity 对应的清单文件里加入如下配置
+
+```
+android:hardwareAccelerated="true"
+android:configChanges="orientation|screenSize"
 
 ```
 
