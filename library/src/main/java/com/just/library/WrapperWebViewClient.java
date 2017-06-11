@@ -38,10 +38,12 @@ public class WrapperWebViewClient extends WebViewClient {
 
 
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+
+        LogUtils.i("Info","loading request");
         if(mWebViewClient!=null){
-            return mWebViewClient.shouldOverrideUrlLoading(view,request.getUrl().toString());
+            return mWebViewClient.shouldOverrideUrlLoading(view,request);
         }
-        return shouldOverrideUrlLoading(view, request.getUrl().toString());
+        return super.shouldOverrideUrlLoading(view, request);
     }
 
 

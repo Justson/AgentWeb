@@ -37,7 +37,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private ImageView mFinishImageView;
     private TextView mTitleTextView;
     protected AgentWeb mAgentWeb;
-    public static final String URL_KEY="url_key";
+    public static final String URL_KEY = "url_key";
 
     public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -60,7 +60,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         super.onViewCreated(view, savedInstanceState);
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
-                .setIndicatorColorWithHeight(-1,2)//
+                .setIndicatorColorWithHeight(-1, 2)//
                 .setWebSettings(getSettings())//
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
@@ -74,25 +74,26 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
 
-
-    public WebSettings getSettings(){
+    public WebSettings getSettings() {
         return WebDefaultSettingsManager.getInstance();
     }
-    public String getUrl(){
-        String target="";
 
-        if(TextUtils.isEmpty(target=this.getArguments().getString(URL_KEY))){
-            target="http://www.jd.com";
+    public String getUrl() {
+        String target = "";
+
+        if (TextUtils.isEmpty(target = this.getArguments().getString(URL_KEY))) {
+            target = "http://www.jd.com";
         }
         return target;
     }
-    protected ChromeClientCallbackManager.ReceivedTitleCallback mCallback=new ChromeClientCallbackManager.ReceivedTitleCallback() {
+
+    protected ChromeClientCallbackManager.ReceivedTitleCallback mCallback = new ChromeClientCallbackManager.ReceivedTitleCallback() {
         @Override
         public void onReceivedTitle(WebView view, String title) {
-            if(mTitleTextView!=null&&!TextUtils.isEmpty(title))
-                if(title.length()>10)
-                    title=title.substring(0,10)+"...";
-                mTitleTextView.setText(title);
+            if (mTitleTextView != null && !TextUtils.isEmpty(title))
+                if (title.length() > 10)
+                    title = title.substring(0, 10) + "...";
+            mTitleTextView.setText(title);
 
         }
     };
@@ -100,20 +101,28 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-
-            LogUtils.i("Info","shouldOverrideUrlLoading");
-            return false;
+           return shouldOverrideUrlLoading(view,request.getUrl()+"");
         }
 
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            LogUtils.i("Info", "mWebViewClient shouldOverrideUrlLoading:" + url);
+            //intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会发开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
+            //例如优酷视频播放 ，intent://play?vid=XODEzMjU1MTI4&refer=&tuid=&ua=Mozilla%2F5.0%20(Linux%3B%20Android%207.0%3B%20SM-G9300%20Build%2FNRD90M%3B%20wv)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Version%2F4.0%20Chrome%2F58.0.3029.83%20Mobile%20Safari%2F537.36&source=exclusive-pageload&cookieid=14971464739049EJXvh|Z6i1re#Intent;scheme=youku;package=com.youku.phone;end;
+            //优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
+            if(url.startsWith("intent://"))
+                return true;
 
+            return false;
+        }
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-            Log.i("Info","url:"+url+"   target:"+getUrl());
-            if(url.equals(getUrl())){
+            Log.i("Info", "url:" + url + " onPageStarted  target:" + getUrl());
+            if (url.equals(getUrl())) {
                 pageNavigator(View.GONE);
-            }else{
+            } else {
                 pageNavigator(View.VISIBLE);
             }
 
@@ -126,7 +135,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         super.onActivityResult(requestCode, resultCode, data);
 
 //        Log.i("Info","onActivityResult result");
-        mAgentWeb.uploadFileResult(requestCode,resultCode,data);
+        mAgentWeb.uploadFileResult(requestCode, resultCode, data);
     }
 
     protected void initView(View view) {
@@ -144,7 +153,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     private void pageNavigator(int tag) {
 
-        Log.i("Info","TAG:"+tag);
+        Log.i("Info", "TAG:" + tag);
         mBackImageView.setVisibility(tag);
         mLineView.setVisibility(tag);
     }
@@ -154,11 +163,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void onClick(View v) {
 
 
-            switch (v.getId()){
+            switch (v.getId()) {
 
                 case R.id.iv_back:
 
-                    if(!mAgentWeb.back())
+                    if (!mAgentWeb.back())
                         AgentWebFragment.this.getActivity().finish();
 
                     break;
@@ -183,7 +192,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public boolean onFragmentKeyDown(int keyCode, KeyEvent event) {
-        return mAgentWeb.handleKeyEvent(keyCode,event);
+        return mAgentWeb.handleKeyEvent(keyCode, event);
     }
 
     @Override

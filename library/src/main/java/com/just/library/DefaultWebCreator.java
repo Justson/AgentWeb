@@ -33,6 +33,9 @@ public class DefaultWebCreator implements WebCreator {
     private int height_dp;
 
 
+    private boolean isCreated=false;
+
+
     DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp, WebView webView) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
@@ -94,6 +97,11 @@ public class DefaultWebCreator implements WebCreator {
     @Override
     public DefaultWebCreator create() {
 
+
+        if(isCreated){
+            return this;
+        }
+        isCreated=true;
         ViewGroup mViewGroup = this.mViewGroup;
         if (mViewGroup == null) {
             mViewGroup = createGroupWithWeb();

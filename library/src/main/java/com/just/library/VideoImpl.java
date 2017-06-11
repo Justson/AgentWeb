@@ -66,7 +66,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
         LogUtils.i("Info", "onHideCustomView:" + moiveView);
         if (moiveView == null)
             return;
-        if (mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        if (mActivity!=null&&mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         moiveView.setVisibility(View.GONE);

@@ -85,6 +85,8 @@ public class AgentWebUtils {
             return;
         if (Looper.myLooper() != Looper.getMainLooper())
             return;
+        m.loadUrl("about:blank");
+        m.stopLoading();
         m.getHandler().removeCallbacksAndMessages(null);
         m.removeAllViews();
         ((ViewGroup) m.getParent()).removeView(m);
@@ -218,13 +220,13 @@ public class AgentWebUtils {
             Method mMethod = clazz.getMethod(methodName, clazzs);
             String gStr = mMethod.toGenericString();
 
-            Log.i("Info", "gstr:" + gStr + "  method:" + method);
+
             tag = !gStr.contains(method);
         } catch (Exception igonre) {
             igonre.printStackTrace();
         }
 
-
+        Log.i("Info", "isOverriedMethod:" +tag);
         return tag;
     }
 
