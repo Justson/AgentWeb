@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alipay.sdk.app.PayTask;
+import com.alipay.sdk.util.H5PayResultModel;
 import com.just.library.AgentWeb;
 import com.just.library.ChromeClientCallbackManager;
 import com.just.library.LogUtils;
@@ -105,12 +107,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
 
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+        public boolean shouldOverrideUrlLoading(final WebView view, String url) {
             LogUtils.i("Info", "mWebViewClient shouldOverrideUrlLoading:" + url);
-            //intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会发开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
+            //intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会打开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
             //例如优酷视频播放 ，intent://play?vid=XODEzMjU1MTI4&refer=&tuid=&ua=Mozilla%2F5.0%20(Linux%3B%20Android%207.0%3B%20SM-G9300%20Build%2FNRD90M%3B%20wv)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Version%2F4.0%20Chrome%2F58.0.3029.83%20Mobile%20Safari%2F537.36&source=exclusive-pageload&cookieid=14971464739049EJXvh|Z6i1re#Intent;scheme=youku;package=com.youku.phone;end;
             //优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
-            if(url.startsWith("intent://"))
+            if (url.startsWith("intent://") && url.contains("com.youku.phone"))
+                return true;
+            else if(isAlipay(view,url))
                 return true;
 
             return false;
@@ -151,9 +155,37 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         pageNavigator(View.GONE);
     }
 
+    private boolean isAlipay(final WebView view, String url){
+
+        final PayTask task = new PayTask(getActivity());
+        final String ex = task.fetchOrderInfoFromH5PayUrl(url);
+        LogUtils.i("Info","alipay:"+ex);
+        if (!TextUtils.isEmpty(ex)) {
+            System.out.println("paytask:::::" + url);
+            new Thread(new Runnable() {
+                public void run() {
+                    System.out.println("payTask:::" + ex);
+                    final H5PayResultModel result = task.h5Pay(ex, true);
+                    if (!TextUtils.isEmpty(result.getReturnUrl())) {
+                        getActivity().runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                view.loadUrl(result.getReturnUrl());
+                            }
+                        });
+                    }
+                }
+            }).start();
+
+            return true;
+        }
+        return false;
+    }
+
     private void pageNavigator(int tag) {
 
-        Log.i("Info", "TAG:" + tag);
+       // Log.i("Info", "TAG:" + tag);
         mBackImageView.setVisibility(tag);
         mLineView.setVisibility(tag);
     }

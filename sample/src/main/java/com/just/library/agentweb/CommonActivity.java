@@ -81,8 +81,6 @@ public class CommonActivity extends AppCompatActivity {
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://www.wandoujia.com/apps");
                 break;
 
-
-
             case 8:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/sms/sms.html");

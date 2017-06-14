@@ -36,6 +36,11 @@ public class DefaultWebClient extends WrapperWebViewClient {
     private WebViewClient mWebViewClient;
     private boolean webClientHelper=false;
     private static final String WEBVIEWCLIENTPATH="android.webkit.WebViewClient";
+
+
+    public static final String INTENT_SCHEME="intent://";
+    public static final String WEBCHAT_PAY_SCHEME="weixin://wap/pay?";
+
     DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager,boolean webClientHelper) {
         super(client);
         this.mWebViewClient=client;
@@ -56,8 +61,15 @@ public class DefaultWebClient extends WrapperWebViewClient {
             return true;
         }
 
-        if(webClientHelper&&tag>0&&request.getUrl().toString().startsWith("intent://")){ //
+        if(webClientHelper&&request.getUrl().toString().startsWith(INTENT_SCHEME)){ //
             handleIntentUrl(request.getUrl()+"");
+            return true;
+        }
+
+        //06-13 10:21:22.238 21630-21630/com.just.library.agentweb I/Info: url:weixin://wap/pay?appid%3Dwxb08de3dfbafe2a05%26noncestr%3Da3e707b7ba724555a623cdcb487c9752%26package%3DWAP%26prepayid%3Dwx20170613102122864958995b0782239150%26sign%3D54C503BE0D29F0013D71E9A5FB634E6D%26timestamp%3D1497320482
+
+        if(webClientHelper&&request.getUrl().toString().startsWith(WEBCHAT_PAY_SCHEME)){
+            startActivity(request.getUrl().toString());
             return true;
         }
 
@@ -79,8 +91,13 @@ public class DefaultWebClient extends WrapperWebViewClient {
             return true;
         }
 
-        if(webClientHelper&&tag>0&&url.startsWith("intent://")){ //拦截
+        if(webClientHelper&&url.startsWith(INTENT_SCHEME)){ //拦截
             handleIntentUrl(url);
+            return true;
+        }
+
+        if(webClientHelper&&url.startsWith(WEBCHAT_PAY_SCHEME)){
+            startActivity(url);
             return true;
         }
 
@@ -96,7 +113,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
         try {
 
             Intent intent=null;
-            if(TextUtils.isEmpty(intentUrl)||!intentUrl.startsWith("intent://"))
+            if(TextUtils.isEmpty(intentUrl)||!intentUrl.startsWith(INTENT_SCHEME))
                 return ;
 
             Activity mActivity=null;
@@ -110,7 +127,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
                 mActivity.startActivity(intent);
                 return;
             }
-            intent=new Intent().setData(Uri.parse("market://details?id=" + intent.getPackage()));
+            /*intent=new Intent().setData(Uri.parse("market://details?id=" + intent.getPackage()));
             info=packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
             LogUtils.i("Info","resolveInfo:"+info);
             if (info != null) {  //跳到应用市场
@@ -124,7 +141,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
             if (info != null) {  //跳到浏览器
                 mActivity.startActivity(intent);
                 return;
-            }
+            }*/
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -165,13 +182,13 @@ public class DefaultWebClient extends WrapperWebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-        LogUtils.i("Info", "onReceivedError");
+        LogUtils.i("Info", "onReceivedError："+description+"  code:"+errorCode);
     }
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        LogUtils.i("Info", "onReceivedError");
+        LogUtils.i("Info", "onReceivedError:"+error.toString());
 
     }
 
@@ -193,6 +210,28 @@ public class DefaultWebClient extends WrapperWebViewClient {
         return super.shouldOverrideKeyEvent(view, event);
     }
 
+
+    private void startActivity(String url){
+
+
+        try {
+
+            if(mWeakReference.get()==null)
+                return;
+
+            LogUtils.i("Info","start wechat pay Activity");
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            mWeakReference.get().startActivity(intent);
+
+        }catch (Exception e){
+            LogUtils.i("Info","支付异常");
+            e.printStackTrace();
+        }
+
+
+    }
 
     @Override
     public void onScaleChanged(WebView view, float oldScale, float newScale) {

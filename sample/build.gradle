@@ -36,6 +36,9 @@ android {
         abortOnError false
     }
 
+    lintOptions{
+        abortOnError false;
+    }
 
 
 }
@@ -46,10 +49,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.2.0'
-
     testCompile 'junit:junit:4.12'
     compile project(':library')
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    compile files('libs/alipaySingle-20170510.jar')
 }

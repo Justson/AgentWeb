@@ -1,8 +1,11 @@
 ![](./img/logo.png)
 
+[![License][licensesvg]][license]
+
 ### [README of English](./README_ENGLISH.md)
 
 ## AgentWeb 介绍
+
 AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、 加强 Web 安全的库 。让你几行代码集成一个小型浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
 
 ## 前言 
@@ -22,6 +25,9 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 9. 支持全屏播放视频
 10. 兼容低版本 Js 安全通信
 11. 更省电 。
+12. 支持调起微信支付
+13. 支持调起支付宝（请参照sample）
+14. 默认支持定位
 
 ## 为什么要使用 AgentWeb ？
 
@@ -37,7 +43,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.2.0'
+   compile 'com.just.agentweb:agentweb:1.2.1'
    ```
 * Maven
 	
@@ -45,7 +51,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.2.0</version>
+	  <version>1.2.1</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -73,31 +79,27 @@ mAgentWeb = AgentWeb.with(this)//传入Activity
 
 
 ## 效果图 
-![京东](./img/jd.png)
+<a href="img/jd.png"><img src="img/jd.png" width="30%"/></a> <a href="img/wechat pay.png"><img src="img/wechat pay.png" width="30%"/></a> <a href="img/alipay.png"><img src="img/alipay.png" width="30%"/></a>
+
+<a href="img/js.png"><img src="img/js.png" width="30%"/></a> <a href="img/custom setting.png"><img src="img/custom setting.png" width="30%"/></a> <a href="img/video.png"><img src="img/video.png" width="30%"/></a>
 
 
 
-#### Javascript 通信拼接太麻烦 ？ 请看 。
-
+* #### Javascript 通信拼接太麻烦 ？ 请看 。
 ```
 //Javascript 方法
 function callByAndroid(){
       console.log("callByAndroid")
   }
-
-
-```
-Android 端
-
-`mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");`
-
-结果
-```
+//Android 端
+mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
+//结果
 consoleMessage:callByAndroid  lineNumber:27
 ```
 
-#### 事件处理
 
+
+* #### 事件处理
 ```
 @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -107,11 +109,9 @@ consoleMessage:callByAndroid  lineNumber:27
         }
         return super.onKeyDown(keyCode, event);
     }
-
 ```
 
-#### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
-
+* #### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
 ```
 	@Override
     protected void onPause() {
@@ -125,33 +125,30 @@ consoleMessage:callByAndroid  lineNumber:27
         mAgentWeb.getWebLifeCycle().onResume();
         super.onResume();
     }
-
 ```
 
-#### 文件上传处理
-
+* #### 文件上传处理
 ```
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         mAgentWeb.uploadFileResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 ```
 
-#### 全屏视频播放
-如果你的应用需要用到视频 ， 那么请你在使用 AgentWeb 的 Activity 对应的清单文件里加入如下配置
-
+* #### 全屏视频播放
 ```
+<!--如果你的应用需要用到视频 ， 那么请你在使用 AgentWeb 的 Activity 对应的清单文件里加入如下配置-->
 android:hardwareAccelerated="true"
 android:configChanges="orientation|screenSize"
-
 ```
 
-##### 到了这里 ， 弱弱问一句 ， 你还有什么理由不使用 AgentWeb ？
-
-
-
+* #### 定位
+```
+	<!--AgentWeb 是默认启动定位的 ， 请在你的 AndroidManifest 文件里面加入如下权限 。-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+```
 
 
 
@@ -172,6 +169,11 @@ Java 注入类不要混淆 ， 例如 App 里面的 AndroidInterface 类 ， 需
 -keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
 ```
 
+## 更新日志
+* v_1.2.1 支持调起支付宝 ， 微信支付 。
+* v_1.2.0 全面支持全屏视频
+* v_1.1.2 完善功能
+
 
 
 ## 致谢
@@ -179,12 +181,45 @@ Java 注入类不要混淆 ， 例如 App 里面的 AndroidInterface 类 ， 需
 
 * [WebView 参考文献](https://juejin.im/post/58a037df86b599006b3fade4)
 
-## 总结
-AgentWeb 是一个把 WebView 完全代理出来 ， 脱离 Activity 、 Fragment xml 布局 ， 独立的 Android Web 库 。
 
+## 有问题或者有更好的建议
+* [![QQ0Group][qq0groupsvg]][qq0group]
+* 欢迎提 [Issues](https://github.com/Justson/AgentWeb/issues)
+
+
+## 关于我
+一个位于深圳的 Android 开发者 ， 如果你有更好的工作机会提供给我 ， 请联系 Email : xiaozhongcen@gmail.com
+
+
+[licensesvg]: https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg
+[license]: https://github.com/Justson/AgentWeb/blob/master/LICENSE
+
+[qq0groupsvg]: https://img.shields.io/badge/QQ群-599471474-fba7f9.svg
+[qq0group]: https://shang.qq.com/wpa/qunwpa?idkey=62baf2c3ec6b0863155b0c7a10c71bba2608cb0b6532fc18515835e54c69bdd3
+
+
+## AgentWeb
+AgentWeb 是一个把 WebView 完全代理出来 ， 脱离 Activity 、 Fragment xml 布局 ， 独立的 Android Web 库 。
 
 ### 最后如果该库对你有帮助不妨对右上角点点 Star 对我支持 ， 感谢万分 ! 当然我更喜欢你 Fork PR 成为项目贡献者 . [AgentWeb](https://github.com/Justson/AgentWeb)  
 
+
+## License
+```
+Copyright (C)  Justson(https://github.com/Justson/AgentWeb)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
 	
 	
 

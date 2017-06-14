@@ -209,7 +209,7 @@ public class AgentWebUtils {
     }
 
     public static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
-        Log.i("Info", "currentObject:" + currentObject + "  methodName:" + methodName + "   method:" + method);
+        LogUtils.i("Info", "currentObject:" + currentObject + "  methodName:" + methodName + "   method:" + method);
         boolean tag = false;
         if (currentObject == null)
             return tag;
@@ -226,7 +226,7 @@ public class AgentWebUtils {
             igonre.printStackTrace();
         }
 
-        Log.i("Info", "isOverriedMethod:" +tag);
+        LogUtils.i("Info", "isOverriedMethod:" +tag);
         return tag;
     }
 
