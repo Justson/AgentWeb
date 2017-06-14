@@ -195,7 +195,7 @@ Java 注入类不要混淆 ， 例如 App 里面的 AndroidInterface 类 ， 需
 [license]: https://github.com/Justson/AgentWeb/blob/master/LICENSE
 
 [qq0groupsvg]: https://img.shields.io/badge/QQ群-599471474-fba7f9.svg
-[qq0group]: https://shang.qq.com/wpa/qunwpa?idkey=62baf2c3ec6b0863155b0c7a10c71bba2608cb0b6532fc18515835e54c69bdd3
+[qq0group]: http://qm.qq.com/cgi-bin/qm/qr?k=KpyfInzI2nr-Lh4StG0oh68GpbcD0vMG
 
 
 ## AgentWeb
