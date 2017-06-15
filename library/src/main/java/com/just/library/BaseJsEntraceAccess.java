@@ -21,7 +21,7 @@ public abstract class BaseJsEntraceAccess implements JsEntraceAccess {
 
         Log.i("Info","js:"+js);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             this.evaluateJs(js, callback);
         } else {
             this.loadJs(js);

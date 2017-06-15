@@ -79,6 +79,9 @@ public class BaseWebActivity extends AppCompatActivity {
         long n = System.currentTimeMillis();
         Log.i("Info", "init used time:" + (n - p));
 
+
+
+
     }
 
     public String getUrl(){
