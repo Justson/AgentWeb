@@ -95,6 +95,12 @@ public class BaseWebActivity extends AppCompatActivity {
 
             Log.i("Info","progress:"+newProgress);
         }
+
+        @Override
+        public View getVideoLoadingProgressView() {
+            Log.i("Info","getVideoLoadingProgressView   ---   >>  ");
+            return super.getVideoLoadingProgressView();
+        }
     };
     public String getUrl(){
         return "https://m.jd.com/";

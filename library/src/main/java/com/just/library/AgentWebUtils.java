@@ -87,9 +87,12 @@ public class AgentWebUtils {
             return;
         m.loadUrl("about:blank");
         m.stopLoading();
-        m.getHandler().removeCallbacksAndMessages(null);
+        if (m.getHandler() != null)
+            m.getHandler().removeCallbacksAndMessages(null);
         m.removeAllViews();
         ((ViewGroup) m.getParent()).removeView(m);
+        m.setWebChromeClient(null);
+        m.setWebViewClient(null);
         m.setTag(null);
         m.clearHistory();
         m.destroy();
@@ -226,7 +229,7 @@ public class AgentWebUtils {
             igonre.printStackTrace();
         }
 
-        LogUtils.i("Info", "isOverriedMethod:" +tag);
+        LogUtils.i("Info", "isOverriedMethod:" + tag);
         return tag;
     }
 
@@ -331,8 +334,8 @@ public class AgentWebUtils {
 
         if (paths == null || paths.length == 0)
             return null;
-        int tmp=Runtime.getRuntime().availableProcessors() + 1;
-        int result=paths.length>tmp?tmp:paths.length;
+        int tmp = Runtime.getRuntime().availableProcessors() + 1;
+        int result = paths.length > tmp ? tmp : paths.length;
         Executor mExecutor = Executors.newFixedThreadPool(result);
         final Queue<FileParcel> mQueue = new LinkedBlockingQueue<>();
         CountDownLatch mCountDownLatch = new CountDownLatch(paths.length);
@@ -355,7 +358,7 @@ public class AgentWebUtils {
         if (!((ThreadPoolExecutor) mExecutor).isShutdown())
             ((ThreadPoolExecutor) mExecutor).shutdownNow();
 
-        LogUtils.i("Info","isShutDown:"+(((ThreadPoolExecutor) mExecutor).isShutdown()));
+        LogUtils.i("Info", "isShutDown:" + (((ThreadPoolExecutor) mExecutor).isShutdown()));
         return mQueue;
     }
 

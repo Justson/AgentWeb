@@ -213,6 +213,7 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
     }
 
     public View getVideoLoadingProgressView() {
+        LogUtils.i("Info","getVideoLoadingProgressView  call back");
         if (this.mRealWebChromeClient != null)
             return this.mRealWebChromeClient.getVideoLoadingProgressView();
         return null;
