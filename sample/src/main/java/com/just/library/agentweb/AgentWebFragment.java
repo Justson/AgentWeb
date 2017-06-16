@@ -72,6 +72,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .go(getUrl());
 
 
+
         initView(view);
     }
 
@@ -105,6 +106,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
            return shouldOverrideUrlLoading(view,request.getUrl()+"");
         }
+
+
 
         @Override
         public boolean shouldOverrideUrlLoading(final WebView view, String url) {

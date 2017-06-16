@@ -24,7 +24,7 @@ public class ChromeClientProgress extends WebChromeClient {
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
-
+       // super.onProgressChanged(view,newProgress);
         if (mIndicatorController != null)
             mIndicatorController.progress(view, newProgress);
     }

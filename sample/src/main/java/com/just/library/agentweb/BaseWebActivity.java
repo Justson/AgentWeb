@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -69,6 +70,7 @@ public class BaseWebActivity extends AppCompatActivity {
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .setReceivedTitleCallback(mCallback)
+                .setWebChromeClient(mWebChromeClient)
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()
@@ -82,8 +84,18 @@ public class BaseWebActivity extends AppCompatActivity {
 
 
 
+
+
     }
 
+    private WebChromeClient mWebChromeClient=new WebChromeClient(){
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            //super.onProgressChanged(view, newProgress);
+
+            Log.i("Info","progress:"+newProgress);
+        }
+    };
     public String getUrl(){
         return "https://m.jd.com/";
     }

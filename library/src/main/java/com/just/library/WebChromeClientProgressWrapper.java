@@ -42,6 +42,11 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
 
     }
 
+    @Override
+    public void onProgressChanged(WebView view, int newProgress) {
+        if (this.mRealWebChromeClient != null)
+            this.mRealWebChromeClient.onProgressChanged(view, newProgress);
+    }
 
     public void onReceivedTitle(WebView view, String title) {
         if (this.mRealWebChromeClient != null)
