@@ -9,8 +9,7 @@
 AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、 加强 Web 安全的库 。让你几行代码集成一个小型浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
 
 ## 前言 
-WebView 可谓是每个应用必备的一个控件了 ，但是谈起它的使用 ，让很多人都不是那么喜欢它 ，比如说每个 Web 页面都需要各种一大推的 setting ，好一点的可能封装成一个 BaseWebActivity 和 BaseWebFragment ，但是重复的代码总是让有洁癖的程序员不舒服 ，而且 WebView 本身功能也不是很完善 ， AgentWeb 就泥补了这些空缺 。
-
+WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个完善的控件 ， 比如说自身就不支持下载和上传文件以及全屏视频等等 ， 在这些地方或多或少都会踩到坑 ，AgentWeb 就是为了帮用户减少没必要踩的坑 ， 让用户轻轻松松一句话就完成所有 Web 页面的渲染与交互 。   
 
 
 ## AgentWeb 功能
@@ -85,7 +84,7 @@ mAgentWeb = AgentWeb.with(this)//传入Activity
 
 
 
-* #### Javascript 通信拼接太麻烦 ？ 请看 。
+* #### 调用 Javascript 方法拼接太麻烦 ？ 请看 。
 ```
 //Javascript 方法
 function callByAndroid(){
@@ -97,6 +96,13 @@ mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
 consoleMessage:callByAndroid  lineNumber:27
 ```
 
+* #### Javascript 调 Java ?
+```
+//Android 端 ， AndroidInterface 是一个注入类 ，里面有一个无参数方法：callAndroid 
+mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this));
+//在 Js 里就能通过 
+window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAndroid 方法
+```
 
 
 * #### 事件处理
@@ -150,7 +156,40 @@ android:configChanges="orientation|screenSize"
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 ```
 
+* #### WebChromeClient Or WebViewClient 处理业务逻辑
+```
+// AgentWeb 保持了 WebView 的使用 ， 
+mAgentWeb = AgentWeb.with(this)//
+                .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )//
+                .useDefaultIndicator()//
+                .defaultProgressBarColor()
+                .setReceivedTitleCallback(mCallback)
+                .setWebChromeClient(mWebChromeClient)
+                .setWebViewClient(mWebViewClient)
+                .setSecutityType(AgentWeb.SecurityType.strict)
+                .createAgentWeb()//
+                .ready()
+                .go(getUrl());
+//WebViewClient
+private WebViewClient mWebViewClient=new WebViewClient(){
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+           //do you  work
+        }
+    };
+    //WebChromeClient
+    private WebChromeClient mWebChromeClient=new WebChromeClient(){
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            //do you work
+        }
+    };                
+```
 
+* #### 获取 WebView
+```
+ WebView mWebView=mAgentWeb.getWebCreator().get();
+```
 
 
 ## 混淆
