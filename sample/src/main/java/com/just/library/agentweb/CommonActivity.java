@@ -85,6 +85,11 @@ public class CommonActivity extends AppCompatActivity {
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/sms/sms.html");
                 break;
+            /* 自定义 WebView */
+            case 9:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomWebViewFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "");
+                break;
 
         }
         ft.commit();

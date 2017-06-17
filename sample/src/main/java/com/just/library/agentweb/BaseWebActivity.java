@@ -2,6 +2,7 @@ package com.just.library.agentweb;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -62,19 +64,17 @@ public class BaseWebActivity extends AppCompatActivity {
 
         long p = System.currentTimeMillis();
 
-
-
-
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )//
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
+                .setWebViewClient(mWebViewClient)
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()
-                .go(null);
+                .go(getUrl());
 
         mAgentWeb.getLoader().loadUrl(getUrl());
 
@@ -88,18 +88,22 @@ public class BaseWebActivity extends AppCompatActivity {
 
     }
 
+    private WebViewClient mWebViewClient=new WebViewClient(){
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+           //do you  work
+            Log.i("Info","BaseWebActivity onPageStarted");
+        }
+    };
     private WebChromeClient mWebChromeClient=new WebChromeClient(){
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //do you work
-
             Log.i("Info","progress:"+newProgress);
         }
-
-
     };
     public String getUrl(){
-        //return "https://m.jd.com/";
+
         return "https://m.jd.com/";
     }
 

@@ -24,7 +24,7 @@ android {
     lintOptions{
         abortOnError false
     }
-   defaultPublishConfig "debug"
+   //defaultPublishConfig "debug"
 
 }
 
@@ -44,7 +44,7 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'agentweb'
-    version = '1.2.1'
+    version = '1.2.2'
     description = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 }

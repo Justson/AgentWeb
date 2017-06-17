@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:weightSum="2"
+android:orientation="vertical">
+
+
+<include android:id="@+id/toolbar" layout="@layout/toorbar_main"></include>
+
+<EditText
+    android:id="@+id/markdownText"
+    android:layout_width="fill_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:gravity="left"
+    android:background="#e2e2e2"
+    android:inputType="textMultiLine" >
+
+
+</EditText>
+
+</LinearLayout>
