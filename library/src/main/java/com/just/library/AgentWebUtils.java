@@ -90,7 +90,9 @@ public class AgentWebUtils {
         if (m.getHandler() != null)
             m.getHandler().removeCallbacksAndMessages(null);
         m.removeAllViews();
-        ((ViewGroup) m.getParent()).removeView(m);
+        ViewGroup mViewGroup = null;
+        if ((mViewGroup = ((ViewGroup) m.getParent())) != null)
+            mViewGroup.removeView(m);
         m.setWebChromeClient(null);
         m.setWebViewClient(null);
         m.setTag(null);

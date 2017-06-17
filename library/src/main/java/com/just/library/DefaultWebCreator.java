@@ -137,10 +137,10 @@ public class DefaultWebCreator implements WebCreator {
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
         } else if (AgentWebConfig.isKikatOrBelowKikat) {
 
-            mWebView = new AgentWebView(mActivity.getApplicationContext());
+            mWebView = new AgentWebView(mActivity);
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
         } else {
-            mWebView = new WebView(mActivity.getApplicationContext());
+            mWebView = new WebView(mActivity);
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
         }
 

@@ -91,18 +91,15 @@ public class BaseWebActivity extends AppCompatActivity {
     private WebChromeClient mWebChromeClient=new WebChromeClient(){
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-            //super.onProgressChanged(view, newProgress);
+            //do you work
 
             Log.i("Info","progress:"+newProgress);
         }
 
-        @Override
-        public View getVideoLoadingProgressView() {
-            Log.i("Info","getVideoLoadingProgressView   ---   >>  ");
-            return super.getVideoLoadingProgressView();
-        }
+
     };
     public String getUrl(){
+        //return "https://m.jd.com/";
         return "https://m.jd.com/";
     }
 
