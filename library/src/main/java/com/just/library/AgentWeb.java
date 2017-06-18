@@ -100,7 +100,7 @@ public class AgentWeb {
     }
 
 
-    public AgentWeb(AgentBuilderFragment agentBuilderFragment) {
+    private AgentWeb(AgentBuilderFragment agentBuilderFragment) {
         TAG_TARGET = FRAGMENT_TAG;
         this.mActivity = agentBuilderFragment.mActivity;
         this.mFragment = agentBuilderFragment.mFragment;
