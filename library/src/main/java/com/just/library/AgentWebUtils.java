@@ -30,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,7 +62,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * <b>@公司：</b><br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
- * source code  https://github.com/Justson/AgentWeb
+ * source CODE  https://github.com/Justson/AgentWeb
  */
 
 public class AgentWebUtils {
@@ -345,7 +346,6 @@ public class AgentWebUtils {
         int i = 1;
         for (String path : paths) {
 
-
             LogUtils.i("Info", "path   :  :" + path);
             if (TextUtils.isEmpty(path)) {
                 mCountDownLatch.countDown();
@@ -616,5 +616,18 @@ public class AgentWebUtils {
     public static boolean isEmptyMap(Map map) {
 
         return map == null || map.isEmpty();
+    }
+
+    private static Toast mToast=null;
+    public static void toastShowShort(Context context , String msg){
+
+        if(mToast==null){
+            mToast=Toast.makeText(context.getApplicationContext(),msg,Toast.LENGTH_SHORT);
+        }else{
+
+            mToast.setText(msg);
+        }
+        mToast.show();
+
     }
 }

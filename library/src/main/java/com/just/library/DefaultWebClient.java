@@ -25,7 +25,7 @@ import java.lang.ref.WeakReference;
  * <b>@公司：</b> <br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
- *     source code  https://github.com/Justson/AgentWeb
+ *     source CODE  https://github.com/Justson/AgentWeb
  */
 
 public class DefaultWebClient extends WrapperWebViewClient {
@@ -182,7 +182,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-        LogUtils.i("Info", "onReceivedError："+description+"  code:"+errorCode);
+        LogUtils.i("Info", "onReceivedError："+description+"  CODE:"+errorCode);
     }
 
     @Override

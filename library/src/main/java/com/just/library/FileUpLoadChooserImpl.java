@@ -61,7 +61,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     public void openFileChooser() {
         if (isL && mFileChooserParams != null)
             mActivity.startActivityForResult(mFileChooserParams.createIntent(), REQUEST_CODE);
-
         else
             this.openRealFileChooser();
     }
@@ -171,7 +170,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         private JsChannelCallback mJsChannelCallback;
         private String[] paths;
 
-        public CovertFileThread(JsChannelCallback jsChannelCallback, String[] paths) {
+        private CovertFileThread(JsChannelCallback jsChannelCallback, String[] paths) {
             this.mJsChannelCallback = jsChannelCallback;
             this.paths = paths;
         }

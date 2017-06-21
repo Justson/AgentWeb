@@ -3,17 +3,20 @@ package com.just.library;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
- * source code  https://github.com/Justson/AgentWeb
+ * source CODE  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultDownLoaderImpl implements DownloadListener {
+public class DefaultDownLoaderImpl implements DownloadListener ,DownLoadResultListener{
 
     private Context mContext;
     private boolean isForce;
@@ -21,11 +24,18 @@ public class DefaultDownLoaderImpl implements DownloadListener {
 
     private static int NoticationID = 1;
 
-    public DefaultDownLoaderImpl(Context context, boolean isforce, boolean enableIndicator) {
+    private static ArrayMap<String,String> mTaskMap=new ArrayMap<>();
+    private List<DownLoadResultListener>mDownLoadResultListeners;
+
+    private LinkedList<String> mList=new LinkedList<>();
+
+    public DefaultDownLoaderImpl(Context context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener>downLoadResultListeners) {
         this.mContext = context;
         this.isForce = isforce;
         this.enableIndicator = enableIndicator;
+        this.mDownLoadResultListeners=downLoadResultListeners;
     }
+
 
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
@@ -40,8 +50,20 @@ public class DefaultDownLoaderImpl implements DownloadListener {
                 mContext.startActivity(mIntent);
             return;
         }
-        if (mFile != null)
-            new RealDownLoader(new DownLoadTask(NoticationID++, url, isForce, enableIndicator, mContext, mFile, contentLength, R.mipmap.download)).execute();
+
+        if(mList.contains(url)){
+
+            AgentWebUtils.toastShowShort(mContext,"该任务已经存在 ， 请勿重复点击下载!");
+            return;
+        }
+
+        if (mFile != null){
+            mList.add(url);
+            mList.add(mFile.getAbsolutePath());
+            mDownLoadResultListeners.add(this);
+            //默认串行下载.
+            new RealDownLoader(new DownLoadTask(NoticationID++, url,mDownLoadResultListeners, isForce, enableIndicator, mContext, mFile, contentLength, R.mipmap.download)).execute();
+        }
     }
 
     private File getFile(String contentDisposition, String url) {
@@ -82,4 +104,29 @@ public class DefaultDownLoaderImpl implements DownloadListener {
         return null;
     }
 
+    @Override
+    public void success(String path) {
+
+
+        removeTask(path);
+
+    }
+
+
+
+    @Override
+    public void error(String path,String resUrl,String cause, Throwable e) {
+
+        removeTask(path);
+    }
+
+    private synchronized void removeTask(String path) {
+        if(AgentWebUtils.isEmptyCollection(mList))
+            return;
+
+        int index=mList.indexOf(path);
+        LogUtils.i("Info","index:"+index+"paths:"+mList+"   path:"+path);
+        mList.remove(index);
+        mList.remove(index-1);
+    }
 }

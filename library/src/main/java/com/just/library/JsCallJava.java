@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class JsCallJava {
     private final static String TAG = "JsCallJava";
-    private final static String RETURN_RESULT_FORMAT = "{\"code\": %d, \"result\": %s}";
+    private final static String RETURN_RESULT_FORMAT = "{\"CODE\": %d, \"result\": %s}";
     private static final String MSG_PROMPT_HEADER = "AgentWeb:";
     private static final String KEY_OBJ = "obj";
     private static final String KEY_METHOD = "method";
@@ -54,9 +54,9 @@ public class JsCallJava {
             sb.append(MSG_PROMPT_HEADER);
             sb.append("'+JSON.stringify(");
             sb.append(promptMsgFormat("'" + mInterfacedName + "'", "l", "e", "f"));
-            sb.append("));console.log(\"invoke \"+l+\", time: \"+(new Date().getTime()-k));var g=JSON.parse(m);if(g.code!=200){throw\"");
+            sb.append("));console.log(\"invoke \"+l+\", time: \"+(new Date().getTime()-k));var g=JSON.parse(m);if(g.CODE!=200){throw\"");
             sb.append(mInterfacedName);
-            sb.append(" call error, code:\"+g.code+\", message:\"+g.result}return g.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c===\"function\"&&d!==\"callback\"){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.");
+            sb.append(" call error, CODE:\"+g.CODE+\", message:\"+g.result}return g.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c===\"function\"&&d!==\"callback\"){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.");
             sb.append(mInterfacedName);
             sb.append("=a;console.log(\"");
             sb.append(mInterfacedName);

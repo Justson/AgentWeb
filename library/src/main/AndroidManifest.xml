@@ -18,6 +18,7 @@
                 android:resource="@xml/web_download_paths"/>
         </provider>
 
+        <receiver android:name=".RealDownLoader$NotificationBroadcastReceiver"></receiver>
     </application>
 
 </manifest>

@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
@@ -35,21 +34,21 @@ public class Notity {
 
 
     public void notify_progress(PendingIntent pendingIntent, int smallIcon,
-                                String ticker, String title, String content, boolean sound, boolean vibrate, boolean lights) {
+                                String ticker, String title, String content, boolean sound, boolean vibrate, boolean lights, PendingIntent pendingIntentCancel) {
 
-        setCompatBuilder(pendingIntent, smallIcon, ticker, title, content, sound, vibrate, lights);
+        setCompatBuilder(pendingIntent, smallIcon, ticker, title, content, sound, vibrate, lights,pendingIntentCancel);
 
     }
 
     /**
      * 设置在顶部通知栏中的各种信息
-     *
-     * @param pendingIntent
+     *  @param pendingIntent
      * @param smallIcon
      * @param ticker
+     * @param pendingIntentCancel
      */
     private void setCompatBuilder(PendingIntent pendingIntent, int smallIcon, String ticker,
-                                  String title, String content, boolean sound, boolean vibrate, boolean lights) {
+                                  String title, String content, boolean sound, boolean vibrate, boolean lights, PendingIntent pendingIntentCancel) {
 //        // 如果当前Activity启动在前台，则不开启新的Activity。
 //        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //        // 当设置下面PendingIntent.FLAG_UPDATE_CURRENT这个参数的时候，常常使得点击通知栏没效果，你需要给notification设置一个独一无二的requestCode
@@ -86,6 +85,12 @@ public class Notity {
 		 */
         int defaults = 0;
 
+        cBuilder.setDeleteIntent(pendingIntentCancel);
+
+
+
+
+
         if (sound) {
             defaults |= Notification.DEFAULT_SOUND;
         }
@@ -96,13 +101,22 @@ public class Notity {
             defaults |= Notification.DEFAULT_LIGHTS;
         }
 
+
+
         cBuilder.setDefaults(defaults);
     }
 
     public void setProgress(int maxprogress,int currentprogress, boolean exc){
         cBuilder.setProgress(maxprogress,currentprogress,exc);
-
         sent();
+    }
+
+    public boolean hasDeleteContent(){
+        return cBuilder.mNotification.deleteIntent!=null;
+    }
+
+    public void setDelecte(PendingIntent intent){
+        cBuilder.mNotification.deleteIntent = intent;
     }
 
     public void setProgressFinish(String content,PendingIntent pendingIntent){
@@ -118,7 +132,7 @@ public class Notity {
 
 
         notification = cBuilder.build();
-         Log.i("Info","send:"+NOTIFICATION_ID+"  nocation:"+notification+"  ");
+         //LogUtils.i("Info","send:"+NOTIFICATION_ID+"  nocation:"+notification+"  ");
         // 发送该通知
         nm.notify(NOTIFICATION_ID, notification);
     }

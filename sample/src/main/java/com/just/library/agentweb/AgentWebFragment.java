@@ -12,6 +12,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -23,9 +25,12 @@ import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
 import com.just.library.AgentWeb;
 import com.just.library.ChromeClientCallbackManager;
+import com.just.library.DownLoadResultListener;
 import com.just.library.LogUtils;
 import com.just.library.WebDefaultSettingsManager;
 import com.just.library.WebSettings;
+
+import java.io.File;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
@@ -65,8 +70,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setIndicatorColorWithHeight(-1, 2)//
                 .setWebSettings(getSettings())//
                 .setWebViewClient(mWebViewClient)
+                .setWebChromeClient(mWebChromeClient)
                 .setReceivedTitleCallback(mCallback)
                 .setSecurityType(AgentWeb.SecurityType.strict)
+                .addDownLoadResultListener(mDownLoadResultListener)
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());
@@ -76,6 +83,21 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         initView(view);
     }
 
+    protected DownLoadResultListener mDownLoadResultListener=new DownLoadResultListener() {
+        @Override
+        public void success(String path) {
+
+            Log.i("Info","path:"+path);
+            File mFile=new File(path);
+            mFile.delete();
+        }
+
+        @Override
+        public void error(String path, String resUrl, String cause, Throwable e) {
+
+            Log.i("Info","path:"+path+"  url:"+resUrl+"  couse:"+cause);
+        }
+    };
 
     public WebSettings getSettings() {
         return WebDefaultSettingsManager.getInstance();
@@ -100,7 +122,19 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
     };
+    protected WebChromeClient mWebChromeClient=new WebChromeClient(){
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            super.onProgressChanged(view, newProgress);
+        }
+    };
     protected WebViewClient mWebViewClient = new WebViewClient() {
+
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            super.onReceivedError(view, request, error);
+        }
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {

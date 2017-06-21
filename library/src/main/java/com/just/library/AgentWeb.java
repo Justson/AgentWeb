@@ -17,6 +17,8 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,6 +97,7 @@ public class AgentWeb {
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         this.webClientHelper=agentBuilder.webclientHelper;
+        setLoadListener(agentBuilder.mDownLoadResultListeners);
         doCompat();
         doSafeCheck();
     }
@@ -122,10 +125,9 @@ public class AgentWeb {
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper=agentBuilderFragment.webClientHelper;
+        setLoadListener(agentBuilderFragment.mDownLoadResultListeners);
         doCompat();
         doSafeCheck();
-
-
     }
 
 
@@ -284,10 +286,16 @@ public class AgentWeb {
     }
 
 
+    private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners){
+        DownloadListener mDownloadListener = this.mDownloadListener;
+        if (mDownloadListener == null) {
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity.getApplicationContext(), false, true,downLoadResultListeners);
+        }
+    }
     private DownloadListener getLoadListener() {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity.getApplicationContext(), false, true);
+            setLoadListener(new ArrayList<DownLoadResultListener>());
         }
         return mDownloadListener;
     }
@@ -399,6 +407,7 @@ public class AgentWeb {
         private int mIndicatorColorWithHeight = -1;
         private WebView mWebView;
         private boolean webclientHelper =true;
+        public ArrayList<DownLoadResultListener> mDownLoadResultListeners;
 
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
@@ -609,6 +618,16 @@ public class AgentWeb {
             mAgentBuilder.webclientHelper =false;
             return this;
         }
+
+        public CommonAgentBuilder addDownLoadResultListener(DownLoadResultListener downLoadResultListener){
+
+            if(this.mAgentBuilder.mDownLoadResultListeners==null){
+                this.mAgentBuilder.mDownLoadResultListeners=new ArrayList<>();
+            }
+            this.mAgentBuilder.mDownLoadResultListeners.add(downLoadResultListener);
+            return this;
+        }
+        
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -675,6 +694,7 @@ public class AgentWeb {
         private WebView mWebView;
         private WebViewClientCallbackManager mWebViewClientCallbackManager = new WebViewClientCallbackManager();
         private boolean webClientHelper =true;
+        private List<DownLoadResultListener> mDownLoadResultListeners=null;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -824,6 +844,15 @@ public class AgentWeb {
             return this;
         }
 
+
+        public CommonBuilderForFragment addDownLoadResultListener(DownLoadResultListener downLoadResultListener){
+
+            if(this.mAgentBuilderFragment.mDownLoadResultListeners==null){
+                this.mAgentBuilderFragment.mDownLoadResultListeners=new ArrayList<>();
+            }
+            this.mAgentBuilderFragment.mDownLoadResultListeners.add(downLoadResultListener);
+            return this;
+        }
     }
 
 

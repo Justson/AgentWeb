@@ -11,7 +11,7 @@ import android.webkit.WebView;
  * <b>@公司：</b> 宝诺科技<br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
- *     source code  https://github.com/Justson/AgentWeb
+ *     source CODE  https://github.com/Justson/AgentWeb
  */
 
 public class ChromeClientProgress extends WebChromeClient {
