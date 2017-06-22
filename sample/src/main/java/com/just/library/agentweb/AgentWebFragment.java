@@ -81,6 +81,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         initView(view);
+
+
     }
 
     protected DownLoadResultListener mDownLoadResultListener=new DownLoadResultListener() {

@@ -113,7 +113,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
         } catch (Exception e) {
 
-            this.e=e;
+            this.e=e;//逃逸
             LogUtils.i("Info", "doInBackground   Exception:" + e.getMessage());
             e.printStackTrace();
 
@@ -358,7 +358,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 case 400:
                     return "网络连接出错";
                 case 401:
-                    return "连接状态码出错 ， 非200 或者 206";
+                    return "连接状态码出错 ， 非200 或者 非206";
                 case 402 :
                     return "内存空间不足";
                 case 403:
@@ -391,9 +391,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
             String action = intent.getAction();
-
-            LogUtils.i("Info", "action:" + action);
-
 
             if (action.equals("com.agentweb.notification_cancelled")) {
 
