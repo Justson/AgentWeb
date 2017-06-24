@@ -24,7 +24,7 @@ android {
     lintOptions{
         abortOnError false
     }
-   defaultPublishConfig "debug"
+   //defaultPublishConfig "debug"
 
 }
 

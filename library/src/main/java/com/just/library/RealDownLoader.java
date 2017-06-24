@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -42,7 +41,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private static final int TIME_OUT = 30000000;
     private Notity mNotity;
 
-    private static final int ERROR_LOAD = 200;
+    private static final int ERROR_LOAD = 406;
 
 
     private AtomicBoolean atomic = new AtomicBoolean(false);
@@ -198,36 +197,29 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 mNotity.cancel(mDownLoadTask.getId());
 
             Intent intent = AgentWebUtils.getIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
-            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+           // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
-                    0x110, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mDownLoadTask.getId()<<4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             mNotity.setProgressFinish("点击打开", rightPendIntent);
 
         }
 
     }
 
-    private void doCallback(int code) {
-
-        List<DownLoadResultListener> mDownLoadResultListeners = null;
-        LogUtils.i("Info", " doCallback  mDownLoadTask.getDownLoadResultListeners():" + mDownLoadTask.getDownLoadResultListeners());
-        if (AgentWebUtils.isEmptyCollection((mDownLoadResultListeners = mDownLoadTask.getDownLoadResultListeners()))) {
-            AgentWebUtils.toastShowShort(mDownLoadTask.getContext(), "下载失败出错了");
+    private void doCallback(Integer code) {
+        DownLoadResultListener mDownLoadResultListener = null;
+        LogUtils.i("Info", " doCallback  mDownLoadTask.getDownLoadResultListeners():" + mDownLoadTask.getDownLoadResultListener());
+        if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener())==null) {
             return;
         }
-
-        for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
-
-            if (code > 200) {
-                mDownLoadResultListener.error(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), DownLoadErrorMsg.getCodeToMsg(code), this.e == null ? new RuntimeException("下载出错 ， 原因:" + DownLoadErrorMsg.getCodeToMsg(code)) : this.e);
-            } else {
-
-                mDownLoadResultListener.success(mDownLoadTask.getFile().getPath());
-            }
+        if (code > 200) {
+            mDownLoadResultListener.error(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), DownLoadErrorMsg.getCodeToMsg(code), this.e == null ? new RuntimeException("下载出错 ， 原因:" + DownLoadErrorMsg.getCodeToMsg(code)) : this.e);
+        } else {
+            mDownLoadResultListener.success(mDownLoadTask.getFile().getPath());
         }
 
-
     }
+
 
     private void buildNotify(Intent intent, int id, String progressHint) {
 
@@ -250,7 +242,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private PendingIntent buildCancelContent(Context context, int id) {
 
         Intent intentCancel = new Intent(context, NotificationBroadcastReceiver.class);
-        intentCancel.setAction("com.agentweb.notification_cancelled");
+        intentCancel.setAction("com.agentweb.cancelled");
         intentCancel.putExtra("type", "type");
         intentCancel.putExtra("TAG", mDownLoadTask.getUrl());
         PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id << 3, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -262,7 +254,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private int doDownLoad(InputStream in, RandomAccessFile out) throws IOException {
 
         byte[] buffer = new byte[102400];
-        BufferedInputStream bis = new BufferedInputStream(in, 102400);
+        BufferedInputStream bis = new BufferedInputStream(in, 1024*10);
         try {
 
             out.seek(out.length());
@@ -272,7 +264,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
             while (!atomic.get()) {
-                int n = bis.read(buffer, 0, 102400);
+                int n = bis.read(buffer, 0, 1024*10);
                 if (n == -1) {
                     break;
                 }
@@ -314,7 +306,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     @Override
     public void update(Observable o, Object arg) {
 
-        LogUtils.i("Info", "update Object    ... ");
+        //LogUtils.i("Info", "update Object    ... ");
         String url = "";
         if (arg instanceof String && !TextUtils.isEmpty(url = (String) arg) && url.equals(mDownLoadTask.getUrl())) {
             toCancel();
@@ -393,7 +385,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
             String action = intent.getAction();
 
-            if (action.equals("com.agentweb.notification_cancelled")) {
+            if (action.equals("com.agentweb.cancelled")) {
 
 
                 try {

@@ -20,6 +20,7 @@ import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
+import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -122,6 +123,50 @@ public class AgentWebUtils {
         return info != null && info.isConnected();
     }
 
+
+    public static int checkNetworkType(Context context) {
+
+        int netType = 0;
+        //连接管理对象
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        //获取NetworkInfo对象
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo == null)
+            return netType;
+        switch (networkInfo.getType()) {
+            case ConnectivityManager.TYPE_WIFI:
+            case ConnectivityManager.TYPE_WIMAX:
+            case ConnectivityManager.TYPE_ETHERNET:
+                return 1;
+
+            case ConnectivityManager.TYPE_MOBILE:
+                switch (networkInfo.getSubtype()) {
+                    case TelephonyManager.NETWORK_TYPE_LTE:  // 4G
+                    case TelephonyManager.NETWORK_TYPE_HSPAP:
+                    case TelephonyManager.NETWORK_TYPE_EHRPD:
+                        return 2;
+                    case TelephonyManager.NETWORK_TYPE_UMTS: // 3G
+                    case TelephonyManager.NETWORK_TYPE_CDMA:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                    case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                        return 3;
+
+                    case TelephonyManager.NETWORK_TYPE_GPRS: // 2G
+                    case TelephonyManager.NETWORK_TYPE_EDGE:
+                        return 4;
+
+                    default:
+                        return netType;
+                }
+
+            default:
+
+                return netType;
+        }
+
+    }
+
     public static long getAvailableStorage() {
         try {
             StatFs stat = new StatFs(Environment.getExternalStorageDirectory().toString());
@@ -205,6 +250,7 @@ public class AgentWebUtils {
             snackbar.setAction(actionText, listener);
         }
         snackbar.show();
+
     }
 
     public static void dismiss() {
@@ -511,12 +557,14 @@ public class AgentWebUtils {
 
     public static Intent getIntentCompat(Context context, File file) {
         Intent mIntent = null;
+        LogUtils.i("Info", "getIntentCompat  :" + context.getApplicationInfo().targetSdkVersion);
         if (context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.N) {
 
             mIntent = new Intent(Intent.ACTION_VIEW);
             mIntent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file), "application/vnd.android.package-archive");
             mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
+
             mIntent = AgentWebUtils.getFileIntent(file);
         }
 
@@ -618,12 +666,13 @@ public class AgentWebUtils {
         return map == null || map.isEmpty();
     }
 
-    private static Toast mToast=null;
-    public static void toastShowShort(Context context , String msg){
+    private static Toast mToast = null;
 
-        if(mToast==null){
-            mToast=Toast.makeText(context.getApplicationContext(),msg,Toast.LENGTH_SHORT);
-        }else{
+    public static void toastShowShort(Context context, String msg) {
+
+        if (mToast == null) {
+            mToast = Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_SHORT);
+        } else {
 
             mToast.setText(msg);
         }

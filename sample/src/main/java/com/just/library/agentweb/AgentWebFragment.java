@@ -30,8 +30,6 @@ import com.just.library.LogUtils;
 import com.just.library.WebDefaultSettingsManager;
 import com.just.library.WebSettings;
 
-import java.io.File;
-
 /**
  * Created by cenxiaozhong on 2017/5/15.
  */
@@ -90,14 +88,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void success(String path) {
 
             Log.i("Info","path:"+path);
-            File mFile=new File(path);
-            mFile.delete();
+            /*File mFile=new File(path);
+            mFile.delete();*/
         }
 
         @Override
         public void error(String path, String resUrl, String cause, Throwable e) {
 
-            Log.i("Info","path:"+path+"  url:"+resUrl+"  couse:"+cause);
+            Log.i("Info","path:"+path+"  url:"+resUrl+"  couse:"+cause+"  Throwable:"+e);
         }
     };
 

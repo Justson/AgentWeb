@@ -1,13 +1,17 @@
 package com.just.library;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,7 +20,7 @@ import java.util.List;
  * source CODE  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultDownLoaderImpl implements DownloadListener ,DownLoadResultListener{
+public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultListener {
 
     private Context mContext;
     private boolean isForce;
@@ -24,47 +28,108 @@ public class DefaultDownLoaderImpl implements DownloadListener ,DownLoadResultLi
 
     private static int NoticationID = 1;
 
-    private static ArrayMap<String,String> mTaskMap=new ArrayMap<>();
-    private List<DownLoadResultListener>mDownLoadResultListeners;
+    private static ArrayMap<String, String> mTaskMap = new ArrayMap<>();
+    private List<DownLoadResultListener> mDownLoadResultListeners;
 
-    private LinkedList<String> mList=new LinkedList<>();
+    private LinkedList<String> mList = new LinkedList<>();
 
-    public DefaultDownLoaderImpl(Context context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener>downLoadResultListeners) {
-        this.mContext = context;
+    private WeakReference<Activity> mActivityWeakReference = null;
+
+
+    public DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners) {
+        mActivityWeakReference = new WeakReference<Activity>(context);
+        this.mContext = context.getApplicationContext();
         this.isForce = isforce;
         this.enableIndicator = enableIndicator;
-        this.mDownLoadResultListeners=downLoadResultListeners;
+        this.mDownLoadResultListeners = downLoadResultListeners;
     }
 
 
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
-        LogUtils.i("Info", "url:" + url + "  package:"+mContext.getPackageName()+"  useraget:" + userAgent + " content:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength);
+        LogUtils.i("Info", "  package:" + mContext.getPackageName() + "  useraget:" + userAgent + " contentDisposition:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength + "   url:" + url);
+
 
         File mFile = getFile(contentDisposition, url);
+        LogUtils.i("Info", "contentLength:" + contentLength + "   mFileLeng:" + mFile.length());
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
 
-            Intent mIntent=AgentWebUtils.getIntentCompat(mContext,mFile);
+            Intent mIntent = AgentWebUtils.getIntentCompat(mContext, mFile);
             if (mIntent != null)
                 mContext.startActivity(mIntent);
             return;
         }
 
-        if(mList.contains(url)){
+        if (mList.contains(url)) {
 
-            AgentWebUtils.toastShowShort(mContext,"该任务已经存在 ， 请勿重复点击下载!");
+            AgentWebUtils.toastShowShort(mContext, "该任务已经存在 ， 请勿重复点击下载!");
             return;
         }
 
-        if (mFile != null){
-            mList.add(url);
-            mList.add(mFile.getAbsolutePath());
-            mDownLoadResultListeners.add(this);
-            //默认串行下载.
-            new RealDownLoader(new DownLoadTask(NoticationID++, url,mDownLoadResultListeners, isForce, enableIndicator, mContext, mFile, contentLength, R.mipmap.download)).execute();
+        if (mFile == null)
+            return;
+
+        if (AgentWebUtils.checkNetworkType(mContext) > 1) { //移动数据
+
+            showDialog(url, contentLength, mFile);
+            return;
         }
+
+        performDownLoad(url, contentLength, mFile);
+
+
     }
+
+    private void forceDown(final String url, final long contentLength, final File file) {
+
+        isForce = true;
+        performDownLoad(url, contentLength, file);
+
+
+    }
+
+    private void showDialog(final String url, final long contentLength, final File file) {
+
+        Activity mActivity;
+        if ((mActivity = mActivityWeakReference.get()) == null)
+            return;
+
+        AlertDialog mAlertDialog = null;
+        mAlertDialog = new AlertDialog.Builder(mActivity)//
+                .setTitle("提示")//
+                .setMessage("当前网络类型为蜂窝移动数据网络，您确定要下载吗?")//
+                .setNegativeButton("下载", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (dialog != null)
+                            dialog.dismiss();
+                        forceDown(url, contentLength, file);
+                    }
+                })//
+                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (dialog != null)
+                            dialog.dismiss();
+                    }
+                }).create();
+
+        mAlertDialog.show();
+
+    }
+
+    private void performDownLoad(String url, long contentLength, File file) {
+
+        mList.add(url);
+        mList.add(file.getAbsolutePath());
+        //并行下载.
+        /*new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, R.mipmap.download)).executeOnExecutor(Executors.newCachedThreadPool(),(Void[])null);*/
+        //默认串行下载.
+        new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, R.mipmap.download)).execute();
+    }
+
 
     private File getFile(String contentDisposition, String url) {
 
@@ -110,23 +175,37 @@ public class DefaultDownLoaderImpl implements DownloadListener ,DownLoadResultLi
 
         removeTask(path);
 
-    }
 
+        for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
+            mDownLoadResultListener.success(path);
+        }
+    }
 
 
     @Override
-    public void error(String path,String resUrl,String cause, Throwable e) {
+    public void error(String path, String resUrl, String cause, Throwable e) {
 
         removeTask(path);
+
+        if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
+            AgentWebUtils.toastShowShort(mContext, "下载失败出错了");
+            return;
+        }
+
+        for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
+            mDownLoadResultListener.error(path, resUrl, cause, e);
+        }
     }
 
     private synchronized void removeTask(String path) {
-        if(AgentWebUtils.isEmptyCollection(mList))
+        if (AgentWebUtils.isEmptyCollection(mList))
             return;
 
-        int index=mList.indexOf(path);
-        LogUtils.i("Info","index:"+index+"paths:"+mList+"   path:"+path);
+        int index = mList.indexOf(path);
+        if (index == -1)
+            return;
+        LogUtils.i("Info", "index:" + index + "paths:" + mList + "   path:" + path);
         mList.remove(index);
-        mList.remove(index-1);
+        mList.remove(index - 1);
     }
 }

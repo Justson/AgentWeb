@@ -4,7 +4,7 @@ import android.content.Context;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.List;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
@@ -28,11 +28,10 @@ public class DownLoadTask implements Serializable {
 
     private int drawableRes;
 
+    private WeakReference<DownLoadResultListener>mReference=null;
 
-    private List<DownLoadResultListener> mDownLoadResultListeners=null;
 
-
-    public DownLoadTask(int id, String url, List<DownLoadResultListener> downLoadResultListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, int drawableRes) {
+    public DownLoadTask(int id, String url, DownLoadResultListener downLoadResultListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, int drawableRes) {
         this.id = id;
         this.url = url;
         this.isForce = isForce;
@@ -41,7 +40,7 @@ public class DownLoadTask implements Serializable {
         mFile = file;
         this.length = length;
         this.drawableRes = drawableRes;
-        this.mDownLoadResultListeners=downLoadResultListeners;
+        mReference=new WeakReference<DownLoadResultListener>(downLoadResultListeners);
     }
 
     public int getId() {
@@ -104,13 +103,11 @@ public class DownLoadTask implements Serializable {
         return drawableRes;
     }
 
-    public List<DownLoadResultListener> getDownLoadResultListeners() {
-        return mDownLoadResultListeners;
+    public DownLoadResultListener getDownLoadResultListener() {
+        return mReference.get();
     }
 
-    public void setDownLoadResultListeners(List<DownLoadResultListener> downLoadResultListeners) {
-        mDownLoadResultListeners = downLoadResultListeners;
-    }
+
 
     public void setDrawableRes(int drawableRes) {
         this.drawableRes = drawableRes;

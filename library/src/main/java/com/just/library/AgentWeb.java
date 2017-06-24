@@ -289,7 +289,7 @@ public class AgentWeb {
     private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners){
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity.getApplicationContext(), false, true,downLoadResultListeners);
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true,downLoadResultListeners);
         }
     }
     private DownloadListener getLoadListener() {
