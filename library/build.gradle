@@ -36,7 +36,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    //compile 'com.android.support:appcompat-v7:25.2.0'
+
     testCompile 'junit:junit:4.12'
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
@@ -45,7 +45,7 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'agentweb'
-    version = '1.2.2'
+    version = '1.2.3'
     description = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 }

@@ -27,10 +27,11 @@ public class WebActivity extends BaseWebActivity {
     protected void onResume() {
         super.onResume();
 
+        //测试Cookies
         try {
 
             String targetUrl="";
-            Log.i("Info","cookies:"+AgentWebConfig.getCookiesByUrl(targetUrl="http://www.jd.com"));
+            Log.i("Info","cookies:"+ AgentWebConfig.getCookiesByUrl(targetUrl="http://www.jd.com"));
             AgentWebConfig.removeAllCookies(new ValueCallback<Boolean>() {
                 @Override
                 public void onReceiveValue(Boolean value) {
@@ -40,7 +41,7 @@ public class WebActivity extends BaseWebActivity {
 
             String tagInfo=AgentWebConfig.getCookiesByUrl(targetUrl);
             Log.i("Info","tag:"+tagInfo);
-            AgentWebConfig.syncCookies("http://www.jd.com","ID=IDHl3NVU0N3ltZm9OWHhubHVQZW1BRThLdGhLaFc5TnVtQWd1S2g1REcwNVhTS3RXQVFBQEBFDA984906B62C444931EA0");
+            AgentWebConfig.syncCookie("http://www.jd.com","ID=IDHl3NVU0N3ltZm9OWHhubHVQZW1BRThLdGhLaFc5TnVtQWd1S2g1REcwNVhTS3RXQVFBQEBFDA984906B62C444931EA0");
             String tag=AgentWebConfig.getCookiesByUrl(targetUrl);
             Log.i("Info","tag:"+tag);
             AgentWebConfig.removeSessionCookies();

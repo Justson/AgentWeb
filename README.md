@@ -42,7 +42,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.2.2'
+   compile 'com.just.agentweb:agentweb:1.2.3'
    ```
 * Maven
 	
@@ -50,7 +50,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.2.2</version>
+	  <version>1.2.3</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -191,6 +191,16 @@ private WebViewClient mWebViewClient=new WebViewClient(){
  WebView mWebView=mAgentWeb.getWebCreator().get();
 ```
 
+* #### 同步 Cookie
+```
+AgentWebConfig.syncCookies("http://www.jd.com","ID=XXXX")
+```
+
+* #### 查看 Cookies
+```
+String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
+```
+
 
 ## 混淆
 如果你的项目需要加入混淆 ， 请加入如下配置
@@ -209,7 +219,8 @@ Java 注入类不要混淆 ， 例如 App 里面的 AndroidInterface 类 ， 需
 ```
 
 ## 更新日志
-* v_1.2.2 修复已知 Bug 
+* v_1.2.3 新增下载结果回调 。 
+* v_1.2.2 修复已知 Bug 。
 * v_1.2.1 支持调起支付宝 ， 微信支付 。
 * v_1.2.0 全面支持全屏视频
 * v_1.1.2 完善功能

@@ -98,7 +98,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         AlertDialog mAlertDialog = null;
         mAlertDialog = new AlertDialog.Builder(mActivity)//
                 .setTitle("提示")//
-                .setMessage("您确定使用手机流量下载吗?")//
+                .setMessage("您正在使用手机流量 ， 继续下载该文件吗?")//
                 .setNegativeButton("下载", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -188,7 +188,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         removeTask(path);
 
         if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
-            AgentWebUtils.toastShowShort(mContext, "下载失败出错了");
+            AgentWebUtils.toastShowShort(mContext, "下载失败 ， 出错了 ！");
             return;
         }
 

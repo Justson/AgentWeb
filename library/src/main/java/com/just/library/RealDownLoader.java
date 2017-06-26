@@ -153,7 +153,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
         HttpURLConnection mHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
         mHttpURLConnection.setRequestProperty("Accept", "application/*");
-        mHttpURLConnection.setConnectTimeout(5000);
+        mHttpURLConnection.setConnectTimeout(5000*2);
         return mHttpURLConnection;
     }
 
@@ -181,28 +181,36 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     @Override
     protected void onPostExecute(Integer integer) {
 
-        LogUtils.i("Info", "onPostExecute:" + integer);
-        mObservable.deleteObserver(this);
-        doCallback(integer);
-        if (integer > 200) {
+        try {
 
-            if (mNotity != null)
-                mNotity.cancel(mDownLoadTask.getId());
-            return;
+            LogUtils.i("Info", "onPostExecute:" + integer);
+            mObservable.deleteObserver(this);
+            doCallback(integer);
+            if (integer > 200) {
+
+                if (mNotity != null)
+                    mNotity.cancel(mDownLoadTask.getId());
+                return;
+            }
+
+            if (mDownLoadTask.isEnableIndicator()) {
+
+                if (mNotity != null)
+                    mNotity.cancel(mDownLoadTask.getId());
+
+                Intent intent = AgentWebUtils.getIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
+                // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
+                        mDownLoadTask.getId()<<4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mNotity.setProgressFinish("点击打开", rightPendIntent);
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+            LogUtils.i("Info","e:"+e.getMessage());
         }
 
-        if (mDownLoadTask.isEnableIndicator()) {
-
-            if (mNotity != null)
-                mNotity.cancel(mDownLoadTask.getId());
-
-            Intent intent = AgentWebUtils.getIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
-           // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
-                    mDownLoadTask.getId()<<4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-            mNotity.setProgressFinish("点击打开", rightPendIntent);
-
-        }
 
     }
 

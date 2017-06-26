@@ -101,7 +101,7 @@ public class AgentWebConfig {
     }
 
 
-    /*public static void syncCookies(Context context, String cookies, String url) {
+    /*public static void syncCookie(Context context, String cookies, String url) {
 
         try {
            // createCookiesSyncInstance(context);
@@ -134,7 +134,7 @@ public class AgentWebConfig {
     }
 
 
-    public static void syncCookies(String url, String cookies) {
+    public static void syncCookie(String url, String cookies) {
 
         CookieManager mCookieManager = CookieManager.getInstance();
         if (mCookieManager != null) {
