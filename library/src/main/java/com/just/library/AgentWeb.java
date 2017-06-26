@@ -263,6 +263,7 @@ public class AgentWeb {
 
     private AgentWeb ready() {
 
+        AgentWebConfig.initCookiesManager(mActivity.getApplicationContext());
         WebSettings mWebSettings = this.mWebSettings;
         if (mWebSettings == null) {
             this.mWebSettings = mWebSettings = WebDefaultSettingsManager.getInstance();

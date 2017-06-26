@@ -289,7 +289,7 @@ public class AgentWebUtils {
             webView.clearCache(true);
             webView.clearHistory();
             webView.clearFormData();
-            AgentWebConfig.removeAllCookies(context);
+            AgentWebConfig.removeAllCookies(null);
         } catch (Exception e) {
             e.printStackTrace();
         }

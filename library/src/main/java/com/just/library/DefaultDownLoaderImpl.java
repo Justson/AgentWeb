@@ -52,7 +52,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
 
         File mFile = getFile(contentDisposition, url);
-        LogUtils.i("Info", "contentLength:" + contentLength + "   mFileLeng:" + mFile.length());
+     //   LogUtils.i("Info", "contentLength:" + contentLength + "   mFileLeng:" + mFile.length());
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
 
             Intent mIntent = AgentWebUtils.getIntentCompat(mContext, mFile);
@@ -98,7 +98,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         AlertDialog mAlertDialog = null;
         mAlertDialog = new AlertDialog.Builder(mActivity)//
                 .setTitle("提示")//
-                .setMessage("当前网络类型为蜂窝移动数据网络，您确定要下载吗?")//
+                .setMessage("您确定使用手机流量下载吗?")//
                 .setNegativeButton("下载", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -204,7 +204,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         int index = mList.indexOf(path);
         if (index == -1)
             return;
-        LogUtils.i("Info", "index:" + index + "paths:" + mList + "   path:" + path);
+        //LogUtils.i("Info", "index:" + index + "paths:" + mList + "   path:" + path);
         mList.remove(index);
         mList.remove(index - 1);
     }

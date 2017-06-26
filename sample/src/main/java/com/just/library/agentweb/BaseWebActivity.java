@@ -99,7 +99,7 @@ public class BaseWebActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //do you work
-            Log.i("Info","progress:"+newProgress);
+//            Log.i("Info","progress:"+newProgress);
         }
     };
     public String getUrl(){
