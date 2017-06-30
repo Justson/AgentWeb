@@ -1,10 +1,5 @@
 package com.just.library.agentweb;
 
-import android.util.Log;
-import android.webkit.ValueCallback;
-
-import com.just.library.AgentWebConfig;
-
 /**
  * Created by cenxiaozhong on 2017/5/22.
  */
@@ -20,6 +15,9 @@ public class WebActivity extends BaseWebActivity {
     @Override
     protected void onStart() {
 
+
+
+
         super.onStart();
     }
 
@@ -28,7 +26,7 @@ public class WebActivity extends BaseWebActivity {
         super.onResume();
 
         //测试Cookies
-        try {
+        /*try {
 
             String targetUrl="";
             Log.i("Info","cookies:"+ AgentWebConfig.getCookiesByUrl(targetUrl="http://www.jd.com"));
@@ -41,15 +39,14 @@ public class WebActivity extends BaseWebActivity {
 
             String tagInfo=AgentWebConfig.getCookiesByUrl(targetUrl);
             Log.i("Info","tag:"+tagInfo);
-            AgentWebConfig.syncCookie("http://www.jd.com","ID=IDHl3NVU0N3ltZm9OWHhubHVQZW1BRThLdGhLaFc5TnVtQWd1S2g1REcwNVhTS3RXQVFBQEBFDA984906B62C444931EA0");
+            AgentWebConfig.syncCookies("http://www.jd.com","ID=IDHl3NVU0N3ltZm9OWHhubHVQZW1BRThLdGhLaFc5TnVtQWd1S2g1REcwNVhTS3RXQVFBQEBFDA984906B62C444931EA0");
             String tag=AgentWebConfig.getCookiesByUrl(targetUrl);
             Log.i("Info","tag:"+tag);
             AgentWebConfig.removeSessionCookies();
             Log.i("Info","removeSessionCookies:"+AgentWebConfig.getCookiesByUrl(targetUrl));
         }catch (Exception e){
             e.printStackTrace();
-        }
-
+        }*/
 
     }
 }

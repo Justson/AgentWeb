@@ -175,7 +175,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         removeTask(path);
 
-
+        if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
+            return;
+        }
         for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
             mDownLoadResultListener.success(path);
         }

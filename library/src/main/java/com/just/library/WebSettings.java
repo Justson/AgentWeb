@@ -16,5 +16,12 @@ public interface WebSettings <T extends android.webkit.WebSettings>{
 
     WebSettings toSetting(WebView webView);
 
+
     T getWebSettings();
+
+
+
+
+
+
 }

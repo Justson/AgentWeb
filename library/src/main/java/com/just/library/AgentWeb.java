@@ -40,7 +40,6 @@ import java.util.Map;
 public class AgentWeb {
 
     private static final String TAG=AgentWeb.class.getSimpleName();
-
     private Activity mActivity;
     private ViewGroup mViewGroup;
     private WebCreator mWebCreator;
@@ -52,7 +51,6 @@ public class AgentWeb {
     private boolean enableProgress;
     private Fragment mFragment;
     private IEventHandler mIEventHandler;
-
     private ArrayMap<String, Object> mJavaObjects = new ArrayMap<>();
     private int TAG_TARGET = 0;
     private WebListenerManager mWebListenerManager;
@@ -70,7 +68,6 @@ public class AgentWeb {
     private ILoader mILoader = null;
     private WebLifeCycle mWebLifeCycle;
     private IVideo mIVideo=null;
-
     private boolean  webClientHelper=false;
 
 
@@ -196,6 +193,8 @@ public class AgentWeb {
 
 
     public static AgentBuilder with(@NonNull Activity activity) {
+        if (activity == null)
+            throw new NullPointerException("activity can not null");
         return new AgentBuilder(activity);
     }
 
@@ -204,7 +203,7 @@ public class AgentWeb {
 
         Activity mActivity = null;
         if ((mActivity = fragment.getActivity()) == null)
-            new NullPointerException("activity can not null");
+            throw new NullPointerException("activity can not null");
         return new AgentBuilderFragment(mActivity, fragment);
     }
 
@@ -351,7 +350,7 @@ public class AgentWeb {
 
     public void destroyAndKill() {
         destroy();
-        if (AgentWebUtils.isMainProcess(mActivity)) {
+        if (!AgentWebUtils.isMainProcess(mActivity)) {
             LogUtils.i("Info", "退出进程");
             System.exit(0);
         }
@@ -377,7 +376,6 @@ public class AgentWeb {
     }
 
 
-    /*********************************************************为Activity构建AgentWeb***********************************************************************/
 
 
     public static class AgentBuilder {
