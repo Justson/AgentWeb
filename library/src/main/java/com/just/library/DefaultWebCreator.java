@@ -25,18 +25,15 @@ public class DefaultWebCreator implements WebCreator {
     private ViewGroup mViewGroup;
     private boolean isNeedDefaultProgress;
     private int index;
-
     private BaseIndicatorView progressView;
     private ViewGroup.LayoutParams mLayoutParams = null;
     private int color = -1;
-
     private int height_dp;
-
-
     private boolean isCreated=false;
+    private IWebLayout mIWebLayout;
 
 
-    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp, WebView webView) {
+    protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp, WebView webView,IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = true;
@@ -45,18 +42,20 @@ public class DefaultWebCreator implements WebCreator {
         this.mLayoutParams = lp;
         this.height_dp = height_dp;
         this.mWebView = webView;
+        this.mIWebLayout=webLayout;
     }
 
-    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, @Nullable WebView webView) {
+   protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, @Nullable WebView webView,IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = false;
         this.index = index;
         this.mLayoutParams = lp;
         this.mWebView = webView;
+        this.mIWebLayout=webLayout;
     }
 
-    DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView, WebView webView) {
+   protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView, WebView webView,IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.isNeedDefaultProgress = false;
@@ -64,6 +63,7 @@ public class DefaultWebCreator implements WebCreator {
         this.mLayoutParams = lp;
         this.progressView = progressView;
         this.mWebView = webView;
+        this.mIWebLayout=webLayout;
     }
 
     private WebView mWebView = null;
@@ -104,13 +104,13 @@ public class DefaultWebCreator implements WebCreator {
         isCreated=true;
         ViewGroup mViewGroup = this.mViewGroup;
         if (mViewGroup == null) {
-            mViewGroup = createGroupWithWeb();
+            mViewGroup = this.mFrameLayout= (FrameLayout)createGroupWithWeb();
             mActivity.setContentView(mViewGroup);
         } else {
             if (index == -1)
-                mViewGroup.addView(createGroupWithWeb(), mLayoutParams);
+                mViewGroup.addView( this.mFrameLayout= (FrameLayout)createGroupWithWeb(), mLayoutParams);
             else
-                mViewGroup.addView(createGroupWithWeb(), index, mLayoutParams);
+                mViewGroup.addView(this.mFrameLayout= (FrameLayout)createGroupWithWeb(), index, mLayoutParams);
         }
         return this;
     }
@@ -129,25 +129,11 @@ public class DefaultWebCreator implements WebCreator {
 
     private ViewGroup createGroupWithWeb() {
         Activity mActivity = this.mActivity;
-
         FrameLayout mFrameLayout = new FrameLayout(mActivity);
-        WebView mWebView = null;
-        if (this.mWebView != null) {
-            mWebView = this.mWebView;
-            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
-        } else if (AgentWebConfig.isKikatOrBelowKikat) {
-
-            mWebView = new AgentWebView(mActivity);
-            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
-        } else {
-            mWebView = new WebView(mActivity);
-            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
-        }
-
-
+        addChildren(mFrameLayout);
+        View target=mIWebLayout==null?(this.mWebView= (WebView) web()):webLayout();
         FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
-        mFrameLayout.addView(this.mWebView = mWebView, mLayoutParams);
-
+        mFrameLayout.addView(target, mLayoutParams);
 
         LogUtils.i("Info", "    webView:" + (this.mWebView instanceof AgentWebView));
         if (isNeedDefaultProgress) {
@@ -169,6 +155,38 @@ public class DefaultWebCreator implements WebCreator {
         }
         return mFrameLayout;
 
+    }
+
+    protected void addChildren(FrameLayout frameLayout){
+
+    }
+
+    private View webLayout(){
+        WebView mWebView = null;
+        if((mWebView=mIWebLayout.getWeb())==null){
+            mWebView=web();
+            mIWebLayout.getLayout().addView(mWebView,-1,-1);
+        }
+        this.mWebView=mWebView;
+        return mIWebLayout.getLayout();
+
+    }
+
+    private WebView web(){
+
+        WebView mWebView = null;
+        if (this.mWebView != null) {
+            mWebView = this.mWebView;
+            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
+        } else if (AgentWebConfig.isKikatOrBelowKikat) {
+            mWebView = new AgentWebView(mActivity);
+            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
+        } else {
+            mWebView = new WebView(mActivity);
+            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
+        }
+
+        return mWebView;
     }
 
     @Override

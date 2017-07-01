@@ -64,7 +64,7 @@ public class CommonActivity extends AppCompatActivity {
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/upload_file/jsuploadfile.html");
                 break;
             case 4:
-                ft.add(R.id.container_framelayout, mAgentWebFragment = JsAgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                ft.add(R.id.container_framelayout, mAgentWebFragment = JsAgentWebFragment.getInstance(mBundle = new Bundle()), JsAgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/js_interaction/hello.html");
                 break;
 
@@ -73,11 +73,11 @@ public class CommonActivity extends AppCompatActivity {
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://m.youku.com/video/id_XODEzMjU1MTI4.html");
                 break;
             case 6:
-                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomIndicatorFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomIndicatorFragment.getInstance(mBundle = new Bundle()), CustomIndicatorFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://www.taobao.com");
                 break;
             case 7:
-                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), CustomSettingsFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://www.wandoujia.com/apps");
                 break;
 
@@ -87,8 +87,13 @@ public class CommonActivity extends AppCompatActivity {
                 break;
             /* 自定义 WebView */
             case 9:
-                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomWebViewFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                ft.add(R.id.container_framelayout, mAgentWebFragment = CustomWebViewFragment.getInstance(mBundle = new Bundle()), CustomWebViewFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "");
+                break;
+            /*回弹效果*/
+            case 10:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = TwinklingWebFragment.getInstance(mBundle = new Bundle()), TwinklingWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.mogujie.com/");
                 break;
 
         }

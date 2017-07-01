@@ -57,4 +57,5 @@ dependencies {
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     compile files('libs/alipaySingle-20170510.jar')
     compile 'us.feras.mdv:markdownview:1.1.0'
+    compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
 }

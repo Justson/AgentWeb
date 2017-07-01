@@ -221,7 +221,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
             return;
         }
         if (code > 200) {
-            mDownLoadResultListener.error(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), DownLoadErrorMsg.getCodeToMsg(code), this.e == null ? new RuntimeException("下载出错 ， 原因:" + DownLoadErrorMsg.getCodeToMsg(code)) : this.e);
+            mDownLoadResultListener.error(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), DownLoadErrorMsg.getMsgByCode(code), this.e == null ? new RuntimeException("下载出错 ， 原因:" + DownLoadErrorMsg.getMsgByCode(code)) : this.e);
         } else {
             mDownLoadResultListener.success(mDownLoadTask.getFile().getPath());
         }
@@ -351,7 +351,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
         }
 
 
-        public static String getCodeToMsg(int code) {
+        public static String getMsgByCode(int code) {
             LogUtils.i("Info", "  CODE:" + code);
             switch (code) {
 

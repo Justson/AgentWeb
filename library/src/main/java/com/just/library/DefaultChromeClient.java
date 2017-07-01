@@ -377,7 +377,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     @Override
     public void onHideCustomView() {
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ChromePath + ".onHideCustomView", View.class, CustomViewCallback.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ChromePath + ".onHideCustomView")) {
             LogUtils.i("Info","onHide:"+true);
             super.onHideCustomView();
             return;
