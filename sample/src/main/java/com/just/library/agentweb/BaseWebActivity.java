@@ -72,6 +72,7 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
                 .setSecutityType(AgentWeb.SecurityType.strict)
+                .setWebLayout(new WebLayout(this))
                 .createAgentWeb()//
                 .ready()
                 .go(getUrl());

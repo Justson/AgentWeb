@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
@@ -31,6 +32,7 @@ public class DefaultWebCreator implements WebCreator {
     private int height_dp;
     private boolean isCreated=false;
     private IWebLayout mIWebLayout;
+    private BaseProgressSpec mBaseProgressSpec;
 
 
     protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp, WebView webView,IWebLayout webLayout) {
@@ -125,19 +127,18 @@ public class DefaultWebCreator implements WebCreator {
         return mFrameLayout;
     }
 
-    private BaseProgressSpec mBaseProgressSpec;
+
 
     private ViewGroup createGroupWithWeb() {
         Activity mActivity = this.mActivity;
         FrameLayout mFrameLayout = new FrameLayout(mActivity);
-        addChildren(mFrameLayout);
+        mFrameLayout.setBackgroundColor(Color.WHITE);
         View target=mIWebLayout==null?(this.mWebView= (WebView) web()):webLayout();
         FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
         mFrameLayout.addView(target, mLayoutParams);
 
         LogUtils.i("Info", "    webView:" + (this.mWebView instanceof AgentWebView));
         if (isNeedDefaultProgress) {
-
             FrameLayout.LayoutParams lp = null;
             WebProgress mWebProgress = new WebProgress(mActivity);
             if (height_dp > 0)
@@ -149,23 +150,23 @@ public class DefaultWebCreator implements WebCreator {
             lp.gravity = Gravity.TOP;
             mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgress), lp);
         } else if (!isNeedDefaultProgress && progressView != null) {
-
-//            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(-2, -2);
             mFrameLayout.addView((View) (this.mBaseProgressSpec = (BaseProgressSpec) progressView), progressView.offerLayoutParams());
         }
         return mFrameLayout;
 
     }
 
-    protected void addChildren(FrameLayout frameLayout){
 
-    }
 
     private View webLayout(){
         WebView mWebView = null;
         if((mWebView=mIWebLayout.getWeb())==null){
             mWebView=web();
             mIWebLayout.getLayout().addView(mWebView,-1,-1);
+            LogUtils.i("Info","add webview");
+
+        }else{
+            AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
         }
         this.mWebView=mWebView;
         return mIWebLayout.getLayout();

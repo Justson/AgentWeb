@@ -76,7 +76,7 @@ public class AgentWeb {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.enableProgress = agentBuilder.enableProgress;
-        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight, agentBuilder.mWebView,null) : agentBuilder.mWebCreator;
+        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight, agentBuilder.mWebView,agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
@@ -407,6 +407,7 @@ public class AgentWeb {
         private WebView mWebView;
         private boolean webclientHelper =true;
         public ArrayList<DownLoadResultListener> mDownLoadResultListeners;
+        public IWebLayout mWebLayout;
 
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
@@ -605,6 +606,10 @@ public class AgentWeb {
 
         public CommonAgentBuilder setWebView(@Nullable WebView webView) {
             this.mAgentBuilder.mWebView = webView;
+            return this;
+        }
+        public CommonAgentBuilder setWebLayout(@NonNull IWebLayout webLayout){
+            this.mAgentBuilder.mWebLayout=webLayout;
             return this;
         }
 
@@ -838,7 +843,7 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setWebLayout(IWebLayout iWebLayout){
+        public CommonBuilderForFragment setWebLayout(@Nullable IWebLayout iWebLayout){
                 this.mAgentBuilderFragment.mWebLayout=iWebLayout;
             return this;
         }

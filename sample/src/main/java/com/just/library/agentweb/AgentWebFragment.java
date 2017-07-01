@@ -57,12 +57,17 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.fragment_agentweb, container, false);
     }
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .setIndicatorColorWithHeight(-1, 2)//
@@ -76,12 +81,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .ready()//
                 .go(getUrl());
 
-
-
         initView(view);
 
-
     }
+
+
 
     protected DownLoadResultListener mDownLoadResultListener=new DownLoadResultListener() {
         @Override

@@ -92,7 +92,7 @@ public class CommonActivity extends AppCompatActivity {
                 break;
             /*回弹效果*/
             case 10:
-                ft.add(R.id.container_framelayout, mAgentWebFragment = TwinklingWebFragment.getInstance(mBundle = new Bundle()), TwinklingWebFragment.class.getName());
+                ft.add(R.id.container_framelayout, mAgentWebFragment = BounceWebFragment.getInstance(mBundle = new Bundle()), BounceWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://www.mogujie.com/");
                 break;
 

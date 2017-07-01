@@ -17,15 +17,15 @@ import com.just.library.AgentWebUtils;
  * Created by cenxiaozhong on 2017/7/1.
  */
 
-public class TwinklingWebFragment extends AgentWebFragment {
+public class BounceWebFragment extends AgentWebFragment {
 
-    public static  TwinklingWebFragment getInstance(Bundle bundle){
+    public static BounceWebFragment getInstance(Bundle bundle){
 
-        TwinklingWebFragment mTwinklingWebFragment=new TwinklingWebFragment();
-        if(mTwinklingWebFragment!=null)
-            mTwinklingWebFragment.setArguments(bundle);
+        BounceWebFragment mBounceWebFragment =new BounceWebFragment();
+        if(mBounceWebFragment !=null)
+            mBounceWebFragment.setArguments(bundle);
 
-        return mTwinklingWebFragment;
+        return mBounceWebFragment;
     }
 
 
@@ -53,7 +53,7 @@ public class TwinklingWebFragment extends AgentWebFragment {
 
 
 
-        addChildren((FrameLayout) mAgentWeb.getWebCreator().getGroup());
+        addBGChild((FrameLayout) mAgentWeb.getWebCreator().getGroup()); // 得到 AgentWeb 最底层的控件
         initView(view);
 
     }
@@ -61,17 +61,16 @@ public class TwinklingWebFragment extends AgentWebFragment {
 
 
 
-
-    protected void addChildren(FrameLayout frameLayout) {
-
+    protected void addBGChild(FrameLayout frameLayout) {
 
         TextView mTextView=new TextView(frameLayout.getContext());
         mTextView.setText("技术由 AgentWeb 提供");
+        mTextView.setTextSize(16);
         mTextView.setTextColor(Color.parseColor("#727779"));
         frameLayout.setBackgroundColor(Color.parseColor("#272b2d"));
         FrameLayout.LayoutParams mFlp=new FrameLayout.LayoutParams(-2,-2);
         mFlp.gravity= Gravity.CENTER_HORIZONTAL;
-        mFlp.topMargin= AgentWebUtils.dp2px(frameLayout.getContext(),10);
+        mFlp.topMargin= AgentWebUtils.dp2px(frameLayout.getContext(),15);
         frameLayout.addView(mTextView,0,mFlp);
     }
 
