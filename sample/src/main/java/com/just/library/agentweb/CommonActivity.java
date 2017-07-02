@@ -49,7 +49,7 @@ public class CommonActivity extends AppCompatActivity {
             /*Fragment 使用AgenWebt*/
             case 0:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.vip.com");
+                mBundle.putString(AgentWebFragment.URL_KEY, "https://m.vip.com/?source=www&jump_https=1");
                 break;
             case 1:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
@@ -74,7 +74,7 @@ public class CommonActivity extends AppCompatActivity {
                 break;
             case 6:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = CustomIndicatorFragment.getInstance(mBundle = new Bundle()), CustomIndicatorFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.taobao.com");
+                mBundle.putString(AgentWebFragment.URL_KEY, "https://m.taobao.com/?sprefer=sypc00");
                 break;
             case 7:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), CustomSettingsFragment.class.getName());
@@ -93,7 +93,7 @@ public class CommonActivity extends AppCompatActivity {
             /*回弹效果*/
             case 10:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = BounceWebFragment.getInstance(mBundle = new Bundle()), BounceWebFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "http://www.mogujie.com/");
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://m.mogujie.com/?f=mgjlm&ptp=_qd._cps______3069826.152.1.0");
                 break;
 
         }

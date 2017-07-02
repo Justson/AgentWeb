@@ -1,15 +1,21 @@
 package com.just.library.agentweb;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -43,6 +49,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private TextView mTitleTextView;
     protected AgentWeb mAgentWeb;
     public static final String URL_KEY = "url_key";
+    private ImageView mMoreImageView;
+    private PopupMenu mPopupMenu;
 
     public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -60,7 +68,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         return inflater.inflate(R.layout.fragment_agentweb, container, false);
     }
-
 
 
     @Override
@@ -86,12 +93,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
 
-
-    protected DownLoadResultListener mDownLoadResultListener=new DownLoadResultListener() {
+    protected DownLoadResultListener mDownLoadResultListener = new DownLoadResultListener() {
         @Override
         public void success(String path) {
 
-            Log.i("Info","path:"+path);
+            Log.i("Info", "path:" + path);
             /*File mFile=new File(path);
             mFile.delete();*/
         }
@@ -99,7 +105,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public void error(String path, String resUrl, String cause, Throwable e) {
 
-            Log.i("Info","path:"+path+"  url:"+resUrl+"  couse:"+cause+"  Throwable:"+e);
+            Log.i("Info", "path:" + path + "  url:" + resUrl + "  couse:" + cause + "  Throwable:" + e);
         }
     };
 
@@ -126,7 +132,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
     };
-    protected WebChromeClient mWebChromeClient=new WebChromeClient(){
+    protected WebChromeClient mWebChromeClient = new WebChromeClient() {
 
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
@@ -142,9 +148,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-           return shouldOverrideUrlLoading(view,request.getUrl()+"");
+            return shouldOverrideUrlLoading(view, request.getUrl() + "");
         }
-
 
 
         @Override
@@ -155,7 +160,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             //优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
             if (url.startsWith("intent://") && url.contains("com.youku.phone"))
                 return true;
-            else if(isAlipay(view,url))
+            else if (isAlipay(view, url))
                 return true;
 
             return false;
@@ -193,14 +198,17 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mBackImageView.setOnClickListener(mOnClickListener);
         mFinishImageView.setOnClickListener(mOnClickListener);
 
+        mMoreImageView = (ImageView) view.findViewById(R.id.iv_more);
+        mMoreImageView.setOnClickListener(mOnClickListener);
+
         pageNavigator(View.GONE);
     }
 
-    private boolean isAlipay(final WebView view, String url){
+    private boolean isAlipay(final WebView view, String url) {
 
         final PayTask task = new PayTask(getActivity());
         final String ex = task.fetchOrderInfoFromH5PayUrl(url);
-        LogUtils.i("Info","alipay:"+ex);
+        LogUtils.i("Info", "alipay:" + ex);
         if (!TextUtils.isEmpty(ex)) {
             System.out.println("paytask:::::" + url);
             new Thread(new Runnable() {
@@ -224,9 +232,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         return false;
     }
 
-    private void pageNavigator(int tag) {
+     private void pageNavigator(int tag) {
 
-       // Log.i("Info", "TAG:" + tag);
+        // Log.i("Info", "TAG:" + tag);
         mBackImageView.setVisibility(tag);
         mLineView.setVisibility(tag);
     }
@@ -247,9 +255,67 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 case R.id.iv_finish:
                     AgentWebFragment.this.getActivity().finish();
                     break;
+                case R.id.iv_more:
+                    showPoPup(v);
+                    break;
+
             }
         }
+
+
     };
+
+
+    private void openBrowser(String targetUrl) {
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        Uri url = Uri.parse(targetUrl);
+        intent.setData(url);
+        startActivity(intent);
+    }
+
+    private void showPoPup(View view) {
+        if (mPopupMenu == null) {
+            mPopupMenu = new PopupMenu(this.getActivity(), view);
+            mPopupMenu.inflate(R.menu.toolbar_menu);
+            mPopupMenu.setOnMenuItemClickListener(mOnMenuItemClickListener);
+        }
+        mPopupMenu.show();
+    }
+
+    private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+
+            switch (item.getItemId()) {
+
+                case R.id.refresh:
+                    if (mAgentWeb != null)
+                        mAgentWeb.getLoader().reload();
+                    return true;
+
+                case R.id.copy:
+                    if (mAgentWeb != null)
+                        toCopy(AgentWebFragment.this.getContext(), mAgentWeb.getWebCreator().get().getUrl());
+                    return true;
+                case R.id.default_browser:
+                    if (mAgentWeb != null)
+                        openBrowser(mAgentWeb.getWebCreator().get().getUrl());
+                    return true;
+                default:
+                    return false;
+            }
+
+        }
+    };
+
+
+    private void toCopy(Context context, String text) {
+
+        ClipboardManager mClipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
+
+    }
 
     @Override
     public void onResume() {

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/refresh"
+        android:title="刷新网页"
+        android:visible="true"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/copy"
+        android:title="复制链接"
+        android:visible="true"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/default_browser"
+        android:title="在浏览器打开"
+        android:visible="true"
+        app:showAsAction="never"/>
+
+
+</menu>

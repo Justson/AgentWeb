@@ -52,6 +52,17 @@
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
+
+
+        <ImageView
+            android:id="@+id/iv_more"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/more"
+            android:scaleType="center"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/iv_back_selector"
+            />
     </RelativeLayout>
 
 
