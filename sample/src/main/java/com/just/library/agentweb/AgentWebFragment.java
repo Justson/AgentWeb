@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
 import com.just.library.AgentWeb;
+import com.just.library.AgentWebUtils;
 import com.just.library.ChromeClientCallbackManager;
 import com.just.library.DownLoadResultListener;
 import com.just.library.LogUtils;
@@ -260,6 +261,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
     private void openBrowser(String targetUrl) {
+        if(!TextUtils.isEmpty(targetUrl)&&targetUrl.startsWith("file://")){
+            AgentWebUtils.toastShowShort(this.getContext(),targetUrl+" 该链接无法使用浏览器打开。");
+            return;
+        }
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
         Uri url = Uri.parse(targetUrl);
