@@ -194,7 +194,7 @@ private WebViewClient mWebViewClient=new WebViewClient(){
 
 * #### 同步 Cookie
 ```
-AgentWebConfig.syncCookies("http://www.jd.com","ID=XXXX")
+AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
 ```
 
 * #### 查看 Cookies

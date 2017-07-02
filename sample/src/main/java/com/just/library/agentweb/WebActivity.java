@@ -36,7 +36,7 @@ public class WebActivity extends BaseWebActivity {
 
             String tagInfo=AgentWebConfig.getCookiesByUrl(targetUrl);
             Log.i("Info","tag:"+tagInfo);
-            AgentWebConfig.syncCookies("http://www.jd.com","ID=IDHl3NVU0N3ltZm9OWHhubHVQZW1BRThLdGhLaFc5TnVtQWd1S2g1REcwNVhTS3RXQVFBQEBFDA984906B62C444931EA0");
+            AgentWebConfig.syncCookie("http://www.jd.com","ID=IDHl3NVU0N3ltZm9OWHhubHVQZW1BRThLdGhLaFc5TnVtQWd1S2g1REcwNVhTS3RXQVFBQEBFDA984906B62C444931EA0");
             String tag=AgentWebConfig.getCookiesByUrl(targetUrl);
             Log.i("Info","tag:"+tag);
             AgentWebConfig.removeSessionCookies();
