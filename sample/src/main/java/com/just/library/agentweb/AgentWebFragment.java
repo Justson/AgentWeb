@@ -65,7 +65,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         return inflater.inflate(R.layout.fragment_agentweb, container, false);
     }
 
@@ -73,7 +72,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
 
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
@@ -96,16 +94,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     protected DownLoadResultListener mDownLoadResultListener = new DownLoadResultListener() {
         @Override
         public void success(String path) {
-
-            Log.i("Info", "path:" + path);
-            /*File mFile=new File(path);
-            mFile.delete();*/
+            //do you work
         }
 
         @Override
         public void error(String path, String resUrl, String cause, Throwable e) {
-
-            Log.i("Info", "path:" + path + "  url:" + resUrl + "  couse:" + cause + "  Throwable:" + e);
+           //do you work
         }
     };
 
@@ -184,7 +178,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        Log.i("Info","onActivityResult result");
         mAgentWeb.uploadFileResult(requestCode, resultCode, data);
     }
 
@@ -239,7 +232,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mLineView.setVisibility(tag);
     }
 
-    View.OnClickListener mOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 

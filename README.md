@@ -27,6 +27,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 12. 支持调起微信支付
 13. 支持调起支付宝（请参照sample）
 14. 默认支持定位
+15. 支持传入 WebLayout（下拉回弹效果）
 
 ## 为什么要使用 AgentWeb ？
 
@@ -42,7 +43,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.2.3'
+   compile 'com.just.agentweb:agentweb:1.2.4'
    ```
 * Maven
 	
@@ -50,7 +51,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.2.3</version>
+	  <version>1.2.4</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -212,18 +213,19 @@ String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 -dontwarn com.just.library.**
 
 ```
-Java 注入类不要混淆 ， 例如 App 里面的 AndroidInterface 类 ， 需要 Keep 。
+Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 需要 Keep 。
 
 ```
 -keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
 ```
 
 ## 更新日志
+* v_1.2.4 支持传入 IWebLayout ，可以完成下拉回弹效果 。
 * v_1.2.3 新增下载结果回调 。 
 * v_1.2.2 修复已知 Bug 。
 * v_1.2.1 支持调起支付宝 ， 微信支付 。
-* v_1.2.0 全面支持全屏视频
-* v_1.1.2 完善功能
+* v_1.2.0 全面支持全屏视频 。
+* v_1.1.2 完善功能 。
 
 
 
