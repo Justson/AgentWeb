@@ -9,7 +9,7 @@ public class WebActivity extends BaseWebActivity {
     @Override
     public String getUrl() {
 
-        return "http://b.eqxiu.com/s/Std5nTvN?eqrcode=1&from=timeline&isappinstalled=0";
+        return super.getUrl();
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
-import android.support.v4.util.ArrayMap;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
@@ -25,14 +24,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private Context mContext;
     private boolean isForce;
     private boolean enableIndicator;
-
     private volatile static int NoticationID = 1;
-
-    private static ArrayMap<String, String> mTaskMap = new ArrayMap<>();
     private List<DownLoadResultListener> mDownLoadResultListeners;
-
     private LinkedList<String> mList = new LinkedList<>();
-
     private WeakReference<Activity> mActivityWeakReference = null;
 
 
