@@ -26,7 +26,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private boolean isForce;
     private boolean enableIndicator;
 
-    private static int NoticationID = 1;
+    private volatile static int NoticationID = 1;
 
     private static ArrayMap<String, String> mTaskMap = new ArrayMap<>();
     private List<DownLoadResultListener> mDownLoadResultListeners;

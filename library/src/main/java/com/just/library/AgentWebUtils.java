@@ -562,6 +562,7 @@ public class AgentWebUtils {
 
             mIntent = new Intent(Intent.ACTION_VIEW);
             mIntent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file), "application/vnd.android.package-archive");
+            mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
 
