@@ -27,8 +27,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alipay.sdk.app.PayTask;
-import com.alipay.sdk.util.H5PayResultModel;
 import com.just.library.AgentWeb;
 import com.just.library.AgentWebUtils;
 import com.just.library.ChromeClientCallbackManager;
@@ -88,6 +86,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .go(getUrl());
 
         initView(view);
+
+
 
     }
 
@@ -155,8 +155,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             //优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
             if (url.startsWith("intent://") && url.contains("com.youku.phone"))
                 return true;
-            else if (isAlipay(view, url))
-                return true;
+            /*else if (isAlipay(view, url))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理该url
+                return true;*/
 
             return false;
         }
@@ -198,33 +198,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         pageNavigator(View.GONE);
     }
 
-    private boolean isAlipay(final WebView view, String url) {
 
-        final PayTask task = new PayTask(getActivity());
-        final String ex = task.fetchOrderInfoFromH5PayUrl(url);
-        LogUtils.i("Info", "alipay:" + ex);
-        if (!TextUtils.isEmpty(ex)) {
-            System.out.println("paytask:::::" + url);
-            new Thread(new Runnable() {
-                public void run() {
-                    System.out.println("payTask:::" + ex);
-                    final H5PayResultModel result = task.h5Pay(ex, true);
-                    if (!TextUtils.isEmpty(result.getReturnUrl())) {
-                        getActivity().runOnUiThread(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                view.loadUrl(result.getReturnUrl());
-                            }
-                        });
-                    }
-                }
-            }).start();
-
-            return true;
-        }
-        return false;
-    }
 
      private void pageNavigator(int tag) {
 

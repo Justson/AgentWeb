@@ -99,7 +99,7 @@ public class WrapperWebViewClient extends WebViewClient {
         if(mWebViewClient!=null){
             return mWebViewClient.shouldInterceptRequest(view,request);
         }
-        return shouldInterceptRequest(view, request.getUrl().toString());
+        return super.shouldInterceptRequest(view, request);
     }
 
 

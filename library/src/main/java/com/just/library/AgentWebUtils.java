@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.StatFs;
 import android.provider.DocumentsContract;
@@ -680,4 +681,14 @@ public class AgentWebUtils {
         mToast.show();
 
     }
+
+    private static Handler mHandler=null;
+
+
+    public static void RunInUiThread(Runnable runnable){
+        if(mHandler==null)
+            mHandler=new Handler(Looper.getMainLooper());
+        mHandler.post(runnable);
+    }
+
 }
