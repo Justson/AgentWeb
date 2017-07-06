@@ -19,7 +19,7 @@ import android.webkit.WebViewClient;
  * <b>@描述:source CODE  https://github.com/Justson/AgentWeb</b><br>
  */
 
-public class WebDefaultSettingsManager implements WebSettings ,WebListenerManager {
+public class WebDefaultSettingsManager implements AgentWebSettings,WebListenerManager {
 
     private android.webkit.WebSettings mWebSettings;
 
@@ -31,7 +31,7 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
     }
 
     @Override
-    public WebSettings toSetting(WebView webView) {
+    public AgentWebSettings toSetting(WebView webView) {
 
         mWebSettings = webView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
@@ -55,7 +55,7 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
-//        mWebSettings.setRenderPriority(android.webkit.WebSettings.RenderPriority.HIGH);
+//        mWebSettings.setRenderPriority(android.webkit.AgentWebSettings.RenderPriority.HIGH);
         mWebSettings.setTextZoom(100);
         mWebSettings.setDatabaseEnabled(true);
         mWebSettings.setAppCacheEnabled(true);
@@ -91,7 +91,6 @@ public class WebDefaultSettingsManager implements WebSettings ,WebListenerManage
 
         //缓存文件最大值
         mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
-
 
         return this;
     }

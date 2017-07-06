@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.webkit.WebView;
 
-import java.util.Map;
-
 /**
  * Created by cenxiaozhong on 2017/6/3.
  */
@@ -15,15 +13,14 @@ public class LoaderImpl implements ILoader {
 
     private Handler mHandler = null;
     private WebView mWebView;
+    private HttpHeaders mHttpHeaders;
 
-    private Map<String, String> headers = null;
-
-    LoaderImpl(WebView webView, Map<String, String> map) {
+    LoaderImpl(WebView webView, HttpHeaders httpHeaders) {
         this.mWebView = webView;
         if (this.mWebView == null)
             new NullPointerException("webview is null");
 
-        this.headers = map;
+        this.mHttpHeaders = httpHeaders;
         mHandler = new Handler(Looper.getMainLooper());
     }
 
@@ -59,10 +56,11 @@ public class LoaderImpl implements ILoader {
         /*if (TextUtils.isEmpty(url))
             throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , file , please check url format");*/
 
-        if (!AgentWebUtils.isEmptyMap(this.headers))
-            this.mWebView.loadUrl(url, headers);
-        else
+        if (mHttpHeaders==null|| mHttpHeaders.isEmptyHeaders())
             this.mWebView.loadUrl(url);
+        else {
+            this.mWebView.loadUrl(url, mHttpHeaders.getHeaders());
+        }
     }
 
     @Override
@@ -127,5 +125,10 @@ public class LoaderImpl implements ILoader {
         }
         this.mWebView.loadDataWithBaseURL(baseUrl, data, mimeType, encoding, historyUrl);
 
+    }
+
+    @Override
+    public HttpHeaders getHttpHeaders() {
+        return this.mHttpHeaders==null?this.mHttpHeaders=HttpHeaders.create():this.mHttpHeaders;
     }
 }

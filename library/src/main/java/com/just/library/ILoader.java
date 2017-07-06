@@ -18,4 +18,6 @@ public interface ILoader {
     void loadDataWithBaseURL(String baseUrl, String data,
                              String mimeType, String encoding, String historyUrl);
 
+
+    HttpHeaders getHttpHeaders();
 }

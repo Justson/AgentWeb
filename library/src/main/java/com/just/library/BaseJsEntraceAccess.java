@@ -1,7 +1,6 @@
 package com.just.library;
 
 import android.os.Build;
-import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
 
@@ -19,7 +18,7 @@ public abstract class BaseJsEntraceAccess implements JsEntraceAccess {
     @Override
     public void callJs(String js, final ValueCallback<String> callback) {
 
-        Log.i("Info","js:"+js);
+        LogUtils.i("Info","js:"+js);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             this.evaluateJs(js, callback);

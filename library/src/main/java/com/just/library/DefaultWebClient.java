@@ -182,7 +182,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
                     System.out.println("payTask:::" + ex);
                     final H5PayResultModel result = task.h5Pay(ex, true);
                     if (!TextUtils.isEmpty(result.getReturnUrl())) {
-                        AgentWebUtils.RunInUiThread(new Runnable() {
+                        AgentWebUtils.runInUiThread(new Runnable() {
 
                             @Override
                             public void run() {

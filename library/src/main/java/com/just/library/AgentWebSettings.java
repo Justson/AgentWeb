@@ -12,9 +12,9 @@ import android.webkit.WebView;
  * <b>@描述:source CODE  https://github.com/Justson/AgentWeb</b><br>
  */
 
-public interface WebSettings <T extends android.webkit.WebSettings>{
+public interface AgentWebSettings<T extends android.webkit.WebSettings>{
 
-    WebSettings toSetting(WebView webView);
+    AgentWebSettings toSetting(WebView webView);
 
 
     T getWebSettings();

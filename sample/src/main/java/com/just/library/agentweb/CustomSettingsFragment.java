@@ -2,7 +2,7 @@ package com.just.library.agentweb;
 
 import android.os.Bundle;
 
-import com.just.library.WebSettings;
+import com.just.library.AgentWebSettings;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
@@ -22,7 +22,7 @@ public class CustomSettingsFragment extends AgentWebFragment {
 
 
     @Override
-    public WebSettings getSettings() {
+    public AgentWebSettings getSettings() {
 
         return new CustomSettings();
     }

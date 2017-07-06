@@ -685,7 +685,7 @@ public class AgentWebUtils {
     private static Handler mHandler=null;
 
 
-    public static void RunInUiThread(Runnable runnable){
+    public static void runInUiThread(Runnable runnable){
         if(mHandler==null)
             mHandler=new Handler(Looper.getMainLooper());
         mHandler.post(runnable);

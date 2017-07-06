@@ -2,8 +2,8 @@ package com.just.library.agentweb;
 
 import android.webkit.WebView;
 
+import com.just.library.AgentWebSettings;
 import com.just.library.WebDefaultSettingsManager;
-import com.just.library.WebSettings;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
@@ -16,7 +16,7 @@ public class CustomSettings extends WebDefaultSettingsManager {
 
 
     @Override
-    public WebSettings toSetting(WebView webView) {
+    public AgentWebSettings toSetting(WebView webView) {
         super.toSetting(webView);
         getWebSettings().setBlockNetworkImage(false);//是否阻塞加载网络图片  协议http or https
         getWebSettings().setAllowFileAccess(false); //允许加载本地文件html  file协议, 这可能会造成不安全 , 建议重写关闭
