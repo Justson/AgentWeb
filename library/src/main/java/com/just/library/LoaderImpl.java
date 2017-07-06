@@ -128,6 +128,22 @@ public class LoaderImpl implements ILoader {
     }
 
     @Override
+    public void postUrl(final String url, final byte[] postData) {
+
+        if (!AgentWebUtils.isUIThread()) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    postUrl(url,postData);
+                }
+            });
+            return;
+        }
+
+        this.mWebView.postUrl(url,postData);
+    }
+
+    @Override
     public HttpHeaders getHttpHeaders() {
         return this.mHttpHeaders==null?this.mHttpHeaders=HttpHeaders.create():this.mHttpHeaders;
     }

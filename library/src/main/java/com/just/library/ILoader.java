@@ -19,5 +19,7 @@ public interface ILoader {
                              String mimeType, String encoding, String historyUrl);
 
 
+    void postUrl(String url ,byte[] params);
+
     HttpHeaders getHttpHeaders();
 }

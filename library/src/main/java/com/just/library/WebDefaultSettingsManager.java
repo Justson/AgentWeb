@@ -2,7 +2,6 @@ package com.just.library;
 
 
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
@@ -32,6 +31,12 @@ public class WebDefaultSettingsManager implements AgentWebSettings,WebListenerMa
 
     @Override
     public AgentWebSettings toSetting(WebView webView) {
+        settings(webView);
+        return this;
+    }
+
+    private void settings(WebView webView){
+
 
         mWebSettings = webView.getSettings();
         mWebSettings.setJavaScriptEnabled(true);
@@ -79,7 +84,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings,WebListenerMa
         //
         String dir =AgentWebConfig.getCachePath(webView.getContext());
 
-        Log.i("Info","dir:"+dir+"   appcache:"+AgentWebConfig.getCachePath(webView.getContext()));
+        LogUtils.i("Info","dir:"+dir+"   appcache:"+AgentWebConfig.getCachePath(webView.getContext()));
         //设置数据库路径  api19 已经废弃,这里只针对 webkit 起作用
         mWebSettings.setGeolocationDatabasePath(dir);
         mWebSettings.setDatabasePath(dir);
@@ -92,7 +97,8 @@ public class WebDefaultSettingsManager implements AgentWebSettings,WebListenerMa
         //缓存文件最大值
         mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
 
-        return this;
+
+
     }
 
     @Override
@@ -110,7 +116,6 @@ public class WebDefaultSettingsManager implements AgentWebSettings,WebListenerMa
     @Override
     public WebListenerManager setWebViewClient(WebView webView, WebViewClient webViewClient) {
         webView.setWebViewClient(webViewClient);
-
         return this;
     }
 
@@ -120,11 +125,5 @@ public class WebDefaultSettingsManager implements AgentWebSettings,WebListenerMa
         return this;
     }
 
-    /*static class InnerSettingsHolder {
-        private static final WebDefaultSettingsManager target = new WebDefaultSettingsManager();
 
-        private static WebDefaultSettingsManager getHolder() {
-            return target;
-        }
-    }*/
 }

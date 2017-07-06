@@ -91,11 +91,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
 
-        Log.i("Info","header:"+mAgentWeb.getLoader().getHttpHeaders());
-
-        mAgentWeb.getLoader().getHttpHeaders().additionalHttpHeader("just","yes");
-
-        Log.i("Info","header:"+mAgentWeb.getLoader().getHttpHeaders());
 
     }
 
