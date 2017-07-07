@@ -28,19 +28,20 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private List<DownLoadResultListener> mDownLoadResultListeners;
     private LinkedList<String> mList = new LinkedList<>();
     private WeakReference<Activity> mActivityWeakReference = null;
+    private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=null;
 
-
-    public DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners) {
+    public DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig) {
         mActivityWeakReference = new WeakReference<Activity>(context);
         this.mContext = context.getApplicationContext();
         this.isForce = isforce;
         this.enableIndicator = enableIndicator;
         this.mDownLoadResultListeners = downLoadResultListeners;
+        this.mDownLoadMsgConfig=msgConfig;
     }
 
 
     @Override
-    public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+    public synchronized void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
         LogUtils.i("Info", "  package:" + mContext.getPackageName() + "  useraget:" + userAgent + " contentDisposition:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength + "   url:" + url);
 
@@ -57,7 +58,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         if (mList.contains(url)) {
 
-            AgentWebUtils.toastShowShort(mContext, "该任务已经存在 ， 请勿重复点击下载!");
+            AgentWebUtils.toastShowShort(mContext, mDownLoadMsgConfig.getTaskHasBeenExist());
             return;
         }
 
@@ -91,9 +92,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         AlertDialog mAlertDialog = null;
         mAlertDialog = new AlertDialog.Builder(mActivity)//
-                .setTitle("提示")//
-                .setMessage("您正在使用手机流量 ， 继续下载该文件吗?")//
-                .setNegativeButton("下载", new DialogInterface.OnClickListener() {
+                .setTitle(mDownLoadMsgConfig.getTips())//
+                .setMessage(mDownLoadMsgConfig.getHoneycomblow())//
+                .setNegativeButton(mDownLoadMsgConfig.getDownLoad(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (dialog != null)
@@ -101,7 +102,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                         forceDown(url, contentLength, file);
                     }
                 })//
-                .setPositiveButton("取消", new DialogInterface.OnClickListener() {
+                .setPositiveButton(mDownLoadMsgConfig.getCancel(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -121,7 +122,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         //并行下载.
         /*new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, R.mipmap.download)).executeOnExecutor(Executors.newCachedThreadPool(),(Void[])null);*/
         //默认串行下载.
-        new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, R.mipmap.download)).execute();
+        new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength,mDownLoadMsgConfig, R.mipmap.download)).execute();
     }
 
 
@@ -184,7 +185,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         removeTask(path);
 
         if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
-            AgentWebUtils.toastShowShort(mContext, "下载失败 ， 出错了 ！");
+            AgentWebUtils.toastShowShort(mContext, mDownLoadMsgConfig.getDownLoadFail());
             return;
         }
 

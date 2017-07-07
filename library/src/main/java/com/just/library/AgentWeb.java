@@ -69,7 +69,7 @@ public class AgentWeb {
     private WebLifeCycle mWebLifeCycle;
     private IVideo mIVideo=null;
     private boolean  webClientHelper=false;
-
+    private DefaultMsgConfig mDefaultMsgConfig;
 
 
     private AgentWeb(AgentBuilder agentBuilder) {
@@ -94,9 +94,8 @@ public class AgentWeb {
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         this.webClientHelper=agentBuilder.webclientHelper;
+        init();
         setLoadListener(agentBuilder.mDownLoadResultListeners);
-        doCompat();
-        doSafeCheck();
     }
 
 
@@ -122,12 +121,19 @@ public class AgentWeb {
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper=agentBuilderFragment.webClientHelper;
+        init();
         setLoadListener(agentBuilderFragment.mDownLoadResultListeners);
+    }
+
+    private void init(){
+        mDefaultMsgConfig = new DefaultMsgConfig();
         doCompat();
         doSafeCheck();
     }
 
-
+    public DefaultMsgConfig getDefaultMsgConfig(){
+        return this.mDefaultMsgConfig;
+    }
     private void doCompat() {
 
 
@@ -289,7 +295,7 @@ public class AgentWeb {
     private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners){
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true,downLoadResultListeners);
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true,downLoadResultListeners,mDefaultMsgConfig.getDownLoadMsgConfig());
         }
     }
     private DownloadListener getLoadListener() {

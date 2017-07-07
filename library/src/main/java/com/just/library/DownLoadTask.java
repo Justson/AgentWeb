@@ -29,9 +29,10 @@ public class DownLoadTask implements Serializable {
     private int drawableRes;
 
     private WeakReference<DownLoadResultListener>mReference=null;
+    private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig;
 
 
-    public DownLoadTask(int id, String url, DownLoadResultListener downLoadResultListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, int drawableRes) {
+    public DownLoadTask(int id, String url, DownLoadResultListener downLoadResultListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig, int drawableRes) {
         this.id = id;
         this.url = url;
         this.isForce = isForce;
@@ -41,6 +42,7 @@ public class DownLoadTask implements Serializable {
         this.length = length;
         this.drawableRes = drawableRes;
         mReference=new WeakReference<DownLoadResultListener>(downLoadResultListeners);
+        this.mDownLoadMsgConfig=downLoadMsgConfig;
     }
 
     public int getId() {
@@ -73,6 +75,22 @@ public class DownLoadTask implements Serializable {
 
     public void setEnableIndicator(boolean enableIndicator) {
         this.enableIndicator = enableIndicator;
+    }
+
+    public WeakReference<DownLoadResultListener> getReference() {
+        return mReference;
+    }
+
+    public void setReference(WeakReference<DownLoadResultListener> reference) {
+        mReference = reference;
+    }
+
+    public DefaultMsgConfig.DownLoadMsgConfig getDownLoadMsgConfig() {
+        return mDownLoadMsgConfig;
+    }
+
+    public void setDownLoadMsgConfig(DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig) {
+        mDownLoadMsgConfig = downLoadMsgConfig;
     }
 
     public Context getContext() {
