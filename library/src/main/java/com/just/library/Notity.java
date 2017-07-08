@@ -111,6 +111,11 @@ public class Notity {
         sent();
     }
 
+    public void setContentText(String text){
+
+        cBuilder.setContentText(text);
+    }
+
     public boolean hasDeleteContent(){
         return cBuilder.mNotification.deleteIntent!=null;
     }

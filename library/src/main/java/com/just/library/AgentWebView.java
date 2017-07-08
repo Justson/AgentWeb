@@ -113,7 +113,6 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
     @Override
     public void clearHistory() {
         if (mIsInited) {
-
             super.clearHistory();
         }
     }

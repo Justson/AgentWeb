@@ -19,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.UnknownFormatConversionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -73,7 +74,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
         super.onPreExecute();
 
         mObservable.addObserver(this);
-        buildNotify(new Intent(), mDownLoadTask.getId(), mDownLoadTask.getDownLoadMsgConfig().getLoading());
+        buildNotify(new Intent(), mDownLoadTask.getId(),mDownLoadTask.getDownLoadMsgConfig().getPreLoading());
     }
 
     private boolean checkDownLoaderCondition() {
@@ -163,19 +164,28 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     protected void onProgressUpdate(Integer... values) {
 
 
+        try {
+
+            //LogUtils.i("Info", "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
+            long c = System.currentTimeMillis();
+            if (mNotity != null && c - time > 800) {
+                time = c;
+                if (!mNotity.hasDeleteContent())
+                    mNotity.setDelecte(buildCancelContent(mDownLoadTask.getContext().getApplicationContext(), mDownLoadTask.getId()));
+
+                int mProgress=(int) ((tmp + loaded) / Float.valueOf(totals) * 100);
+                mNotity.setContentText(String.format(mDownLoadTask.getDownLoadMsgConfig().getLoading(),mProgress+"%"));
+                mNotity.setProgress(100,mProgress , false);
+            }
+
+        }catch (UnknownFormatConversionException e){
+            e.printStackTrace();
+        }
         long current = System.currentTimeMillis();
         used = current - begin;
 
 
-        //LogUtils.i("Info", "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
 
-        long c = System.currentTimeMillis();
-        if (mNotity != null && c - time > 800) {
-            time = c;
-            if (!mNotity.hasDeleteContent())
-                mNotity.setDelecte(buildCancelContent(mDownLoadTask.getContext().getApplicationContext(), mDownLoadTask.getId()));
-            mNotity.setProgress(100, (int) ((tmp + loaded) / Float.valueOf(totals) * 100), false);
-        }
     }
 
     @Override

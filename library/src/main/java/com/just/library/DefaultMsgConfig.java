@@ -36,13 +36,23 @@ public final class DefaultMsgConfig {
 
         private String mDownLoadFail="下载失败 ， 出错了 ！";
 
-        private String mLoading="正在下载中";
+        private String mLoading="当前进度:%s";
 
         private String mTrickter="您有一条新通知";
 
         private String mFileDownLoad="文件下载";
 
         private String mClickOpen="点击打开";
+
+        private String preLoading="即将开始下载文件";
+
+        public String getPreLoading() {
+            return preLoading;
+        }
+
+        public void setPreLoading(String preLoading) {
+            this.preLoading = preLoading;
+        }
 
         DownLoadMsgConfig(){
 

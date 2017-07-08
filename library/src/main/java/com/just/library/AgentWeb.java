@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class AgentWeb {
 
-    private static final String TAG=AgentWeb.class.getSimpleName();
+    private static final String TAG = AgentWeb.class.getSimpleName();
     private Activity mActivity;
     private ViewGroup mViewGroup;
     private WebCreator mWebCreator;
@@ -67,8 +67,8 @@ public class AgentWeb {
     private JsEntraceAccess mJsEntraceAccess = null;
     private ILoader mILoader = null;
     private WebLifeCycle mWebLifeCycle;
-    private IVideo mIVideo=null;
-    private boolean  webClientHelper=false;
+    private IVideo mIVideo = null;
+    private boolean webClientHelper = false;
     private DefaultMsgConfig mDefaultMsgConfig;
 
 
@@ -76,7 +76,7 @@ public class AgentWeb {
         this.mActivity = agentBuilder.mActivity;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.enableProgress = agentBuilder.enableProgress;
-        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight, agentBuilder.mWebView,agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
+        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
@@ -93,7 +93,7 @@ public class AgentWeb {
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.headers);
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
-        this.webClientHelper=agentBuilder.webclientHelper;
+        this.webClientHelper = agentBuilder.webclientHelper;
         init();
         setLoadListener(agentBuilder.mDownLoadResultListeners);
     }
@@ -106,7 +106,7 @@ public class AgentWeb {
         this.mViewGroup = agentBuilderFragment.mViewGroup;
         this.mIEventHandler = agentBuilderFragment.mIEventHandler;
         this.enableProgress = agentBuilderFragment.enableProgress;
-        mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp, agentBuilderFragment.mWebView,agentBuilderFragment.mWebLayout) : agentBuilderFragment.mWebCreator;
+        mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp, agentBuilderFragment.mWebView, agentBuilderFragment.mWebLayout) : agentBuilderFragment.mWebCreator;
         mIndicatorController = agentBuilderFragment.mIndicatorController;
         this.mWebChromeClient = agentBuilderFragment.mWebChromeClient;
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
@@ -120,20 +120,22 @@ public class AgentWeb {
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilderFragment.mHttpHeaders);
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
-        this.webClientHelper=agentBuilderFragment.webClientHelper;
+        this.webClientHelper = agentBuilderFragment.webClientHelper;
         init();
         setLoadListener(agentBuilderFragment.mDownLoadResultListeners);
     }
 
-    private void init(){
-        mDefaultMsgConfig = new DefaultMsgConfig();
+    private void init() {
+        if (this.mDownloadListener == null)
+            mDefaultMsgConfig = new DefaultMsgConfig();
         doCompat();
         doSafeCheck();
     }
 
-    public DefaultMsgConfig getDefaultMsgConfig(){
+    public DefaultMsgConfig getDefaultMsgConfig() {
         return this.mDefaultMsgConfig;
     }
+
     private void doCompat() {
 
 
@@ -161,14 +163,14 @@ public class AgentWeb {
 
     }
 
-    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp, WebView webView,IWebLayout webLayout) {
+    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
 
         if (progressView != null && enableProgress) {
-            return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView,webLayout);
+            return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView, webLayout);
         } else {
             return enableProgress ?
-                    new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp, webView,webLayout)
-                    : new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView,webLayout);
+                    new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp, webView, webLayout)
+                    : new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView, webLayout);
         }
     }
 
@@ -214,13 +216,14 @@ public class AgentWeb {
     }
 
     private EventInterceptor mEventInterceptor;
-    private EventInterceptor getInterceptor(){
 
-        if(this.mEventInterceptor!=null)
+    private EventInterceptor getInterceptor() {
+
+        if (this.mEventInterceptor != null)
             return this.mEventInterceptor;
 
-        if (mIVideo instanceof VideoImpl){
-            return this.mEventInterceptor=(EventInterceptor) this.mIVideo;
+        if (mIVideo instanceof VideoImpl) {
+            return this.mEventInterceptor = (EventInterceptor) this.mIVideo;
         }
 
         return null;
@@ -230,7 +233,7 @@ public class AgentWeb {
     public boolean handleKeyEvent(int keyCode, KeyEvent keyEvent) {
 
         if (mIEventHandler == null) {
-            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(),getInterceptor());
+            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(), getInterceptor());
         }
         return mIEventHandler.onKeyDown(keyCode, keyEvent);
     }
@@ -238,7 +241,7 @@ public class AgentWeb {
     public boolean back() {
 
         if (mIEventHandler == null) {
-            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(),getInterceptor());
+            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(), getInterceptor());
         }
         return mIEventHandler.back();
     }
@@ -252,7 +255,7 @@ public class AgentWeb {
     }
 
     public IEventHandler getIEventHandler() {
-        return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(),getInterceptor())) : this.mIEventHandler;
+        return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(), getInterceptor())) : this.mIEventHandler;
     }
 
     private JsInterfaceHolder mJsInterfaceHolder = null;
@@ -292,12 +295,13 @@ public class AgentWeb {
     }
 
 
-    private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners){
+    private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners) {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true,downLoadResultListeners,mDefaultMsgConfig.getDownLoadMsgConfig());
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true, downLoadResultListeners, mDefaultMsgConfig.getDownLoadMsgConfig());
         }
     }
+
     private DownloadListener getLoadListener() {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
@@ -316,11 +320,11 @@ public class AgentWeb {
             return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
         }*/
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager,this.mIVideo=getIVideo());
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo());
     }
 
-    private IVideo getIVideo(){
-        return mIVideo==null?new VideoImpl(mActivity,mWebCreator.get()):mIVideo;
+    private IVideo getIVideo() {
+        return mIVideo == null ? new VideoImpl(mActivity, mWebCreator.get()) : mIVideo;
     }
 
 
@@ -329,10 +333,10 @@ public class AgentWeb {
     }
 
     private WebViewClient getClient() {
-        if (!webClientHelper&&AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
+        if (!webClientHelper && AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
             return mWebViewClient;
         } else {
-            return new DefaultWebClient(mActivity,this.mWebViewClient, this.mWebViewClientCallbackManager,webClientHelper);
+            return new DefaultWebClient(mActivity, this.mWebViewClient, this.mWebViewClientCallbackManager, webClientHelper);
         }
 
     }
@@ -382,8 +386,6 @@ public class AgentWeb {
     }
 
 
-
-
     public static class AgentBuilder {
 
         private Activity mActivity;
@@ -411,7 +413,7 @@ public class AgentWeb {
         private ArrayMap<String, Object> mJavaObject = null;
         private int mIndicatorColorWithHeight = -1;
         private WebView mWebView;
-        private boolean webclientHelper =true;
+        private boolean webclientHelper = true;
         public ArrayList<DownLoadResultListener> mDownLoadResultListeners;
         public IWebLayout mWebLayout;
 
@@ -469,7 +471,8 @@ public class AgentWeb {
 
         private void addHeader(String k, String v) {
             if (headers == null)
-                headers=HttpHeaders.create();;
+                headers = HttpHeaders.create();
+            ;
             headers.additionalHttpHeader(k, v);
 
         }
@@ -613,8 +616,9 @@ public class AgentWeb {
             this.mAgentBuilder.mWebView = webView;
             return this;
         }
-        public CommonAgentBuilder setWebLayout(@NonNull IWebLayout webLayout){
-            this.mAgentBuilder.mWebLayout=webLayout;
+
+        public CommonAgentBuilder setWebLayout(@NonNull IWebLayout webLayout) {
+            this.mAgentBuilder.mWebLayout = webLayout;
             return this;
         }
 
@@ -623,20 +627,20 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder closeWebViewClientHelper(){
-            mAgentBuilder.webclientHelper =false;
+        public CommonAgentBuilder closeWebViewClientHelper() {
+            mAgentBuilder.webclientHelper = false;
             return this;
         }
 
-        public CommonAgentBuilder addDownLoadResultListener(DownLoadResultListener downLoadResultListener){
+        public CommonAgentBuilder addDownLoadResultListener(DownLoadResultListener downLoadResultListener) {
 
-            if(this.mAgentBuilder.mDownLoadResultListeners==null){
-                this.mAgentBuilder.mDownLoadResultListeners=new ArrayList<>();
+            if (this.mAgentBuilder.mDownLoadResultListeners == null) {
+                this.mAgentBuilder.mDownLoadResultListeners = new ArrayList<>();
             }
             this.mAgentBuilder.mDownLoadResultListeners.add(downLoadResultListener);
             return this;
         }
-        
+
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -702,9 +706,9 @@ public class AgentWeb {
         private SecurityType mSecurityType = SecurityType.default_check;
         private WebView mWebView;
         private WebViewClientCallbackManager mWebViewClientCallbackManager = new WebViewClientCallbackManager();
-        private boolean webClientHelper =true;
-        private List<DownLoadResultListener> mDownLoadResultListeners=null;
-        public IWebLayout mWebLayout=null;
+        private boolean webClientHelper = true;
+        private List<DownLoadResultListener> mDownLoadResultListeners = null;
+        public IWebLayout mWebLayout = null;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -712,7 +716,7 @@ public class AgentWeb {
             mFragment = fragment;
         }
 
-        public IndicatorBuilderForFragment setAgentWebParent(@NonNull ViewGroup v,@NonNull ViewGroup.LayoutParams lp) {
+        public IndicatorBuilderForFragment setAgentWebParent(@NonNull ViewGroup v, @NonNull ViewGroup.LayoutParams lp) {
             this.mViewGroup = v;
             this.mLayoutParams = lp;
             return new IndicatorBuilderForFragment(this);
@@ -733,7 +737,7 @@ public class AgentWeb {
         private void addHeader(String k, String v) {
 
             if (mHttpHeaders == null)
-                mHttpHeaders=HttpHeaders.create();
+                mHttpHeaders = HttpHeaders.create();
             mHttpHeaders.additionalHttpHeader(k, v);
 
         }
@@ -798,8 +802,8 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment closeWebViewClientHelper(){
-            mAgentBuilderFragment.webClientHelper =false;
+        public CommonBuilderForFragment closeWebViewClientHelper() {
+            mAgentBuilderFragment.webClientHelper = false;
             return this;
         }
 
@@ -833,7 +837,7 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment addJavascriptInterface(@NonNull String name,@NonNull Object o) {
+        public CommonBuilderForFragment addJavascriptInterface(@NonNull String name, @NonNull Object o) {
             this.mAgentBuilderFragment.addJavaObject(name, o);
             return this;
         }
@@ -848,8 +852,8 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setWebLayout(@Nullable IWebLayout iWebLayout){
-                this.mAgentBuilderFragment.mWebLayout=iWebLayout;
+        public CommonBuilderForFragment setWebLayout(@Nullable IWebLayout iWebLayout) {
+            this.mAgentBuilderFragment.mWebLayout = iWebLayout;
             return this;
         }
 
@@ -860,10 +864,10 @@ public class AgentWeb {
         }
 
 
-        public CommonBuilderForFragment addDownLoadResultListener(DownLoadResultListener downLoadResultListener){
+        public CommonBuilderForFragment addDownLoadResultListener(DownLoadResultListener downLoadResultListener) {
 
-            if(this.mAgentBuilderFragment.mDownLoadResultListeners==null){
-                this.mAgentBuilderFragment.mDownLoadResultListeners=new ArrayList<>();
+            if (this.mAgentBuilderFragment.mDownLoadResultListeners == null) {
+                this.mAgentBuilderFragment.mDownLoadResultListeners = new ArrayList<>();
             }
             this.mAgentBuilderFragment.mDownLoadResultListeners.add(downLoadResultListener);
             return this;
