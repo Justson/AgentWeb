@@ -190,16 +190,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     protected void initView(View view) {
         mBackImageView = (ImageView) view.findViewById(R.id.iv_back);
         mLineView = view.findViewById(R.id.view_line);
-
         mFinishImageView = (ImageView) view.findViewById(R.id.iv_finish);
         mTitleTextView = (TextView) view.findViewById(R.id.toolbar_title);
-
         mBackImageView.setOnClickListener(mOnClickListener);
         mFinishImageView.setOnClickListener(mOnClickListener);
-
         mMoreImageView = (ImageView) view.findViewById(R.id.iv_more);
         mMoreImageView.setOnClickListener(mOnClickListener);
-
         pageNavigator(View.GONE);
     }
 
@@ -207,7 +203,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
      private void pageNavigator(int tag) {
 
-        // Log.i("Info", "TAG:" + tag);
         mBackImageView.setVisibility(tag);
         mLineView.setVisibility(tag);
     }

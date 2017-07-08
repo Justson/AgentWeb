@@ -39,7 +39,7 @@ Support | Simplicity | Support | Concise | Yes | Security | Support |
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.2.4'
+   compile 'com.just.agentweb:agentweb:1.2.5'
    ```
 * Maven
 	
@@ -47,7 +47,7 @@ Support | Simplicity | Support | Concise | Yes | Security | Support |
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.2.4</version>
+	  <version>1.2.5</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -212,6 +212,7 @@ Java injection class do not confuse, such as sample inside the AndroidInterface 
 ```
 
 ## Update log
+* V_1.2.5 Prompt information support settings
 * V_1.2.4 support incoming IWebLayout, you can complete the pull-down effect.
 * V_1.2.3 Added download result callback.
 * V_1.2.2 Fix known bugs.
@@ -246,7 +247,7 @@ An Android developer located in Shenzhen, if you have a better job offer availab
 ## AgentWeb
 AgentWeb is a WebView completely out of the Act, from the Activity, Fragment xml layout, independent of the Android Web library.
 
-### Finally, if the library is helpful to you, I may be grateful to the top right corner of my support, thanks! Of course, I prefer you to become a contributor to Fork PR. [AgentWeb] (https://github.com/Justson/ AgentWeb)
+#### Finally, if the library is helpful to you, I may be grateful to the top right corner of my support, thanks! Of course, I prefer you to become a contributor to Fork PR.   [AgentWeb] (https://github.com/Justson/ AgentWeb)
 
 ## License
 ```
