@@ -85,6 +85,7 @@ public class BaseWebActivity extends AppCompatActivity {
 
 
 
+
     }
 
     private WebViewClient mWebViewClient=new WebViewClient(){

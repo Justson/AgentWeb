@@ -28,12 +28,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.just.library.AgentWeb;
+import com.just.library.AgentWebSettings;
 import com.just.library.AgentWebUtils;
 import com.just.library.ChromeClientCallbackManager;
+import com.just.library.DefaultMsgConfig;
 import com.just.library.DownLoadResultListener;
 import com.just.library.LogUtils;
 import com.just.library.WebDefaultSettingsManager;
-import com.just.library.AgentWebSettings;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
@@ -90,7 +91,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
 
-        //  DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
+          DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
 

@@ -414,8 +414,8 @@ public class AgentWeb {
         private int mIndicatorColorWithHeight = -1;
         private WebView mWebView;
         private boolean webclientHelper = true;
-        public ArrayList<DownLoadResultListener> mDownLoadResultListeners;
-        public IWebLayout mWebLayout;
+        private ArrayList<DownLoadResultListener> mDownLoadResultListeners;
+        private IWebLayout mWebLayout;
 
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
@@ -708,7 +708,7 @@ public class AgentWeb {
         private WebViewClientCallbackManager mWebViewClientCallbackManager = new WebViewClientCallbackManager();
         private boolean webClientHelper = true;
         private List<DownLoadResultListener> mDownLoadResultListeners = null;
-        public IWebLayout mWebLayout = null;
+        private IWebLayout mWebLayout = null;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {

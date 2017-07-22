@@ -9,7 +9,7 @@ public class WebActivity extends BaseWebActivity {
     @Override
     public String getUrl() {
 
-        return super.getUrl();
+        return "http://120.27.246.134:8092/merchant/692772  ";
     }
 
     @Override

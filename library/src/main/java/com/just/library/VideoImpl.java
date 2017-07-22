@@ -38,6 +38,8 @@ public class VideoImpl implements IVideo, EventInterceptor {
             return;
         mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+//        mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         if (moiveView != null){
             callback.onCustomViewHidden();
             return;
@@ -68,6 +70,11 @@ public class VideoImpl implements IVideo, EventInterceptor {
             return;
         if (mActivity!=null&&mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        /*WindowManager.LayoutParams attrs = mActivity.getWindow().getAttributes();
+        attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        mActivity.getWindow().setAttributes(attrs);
+        mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);*/
 
         moiveView.setVisibility(View.GONE);
         if (moiveParentView != null && moiveView != null) {

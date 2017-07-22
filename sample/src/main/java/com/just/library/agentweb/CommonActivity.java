@@ -46,7 +46,7 @@ public class CommonActivity extends AppCompatActivity {
 
         switch (key) {
 
-            /*Fragment 使用AgenWebt*/
+            /*Fragment 使用AgenWeb*/
             case 0:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "https://m.vip.com/?source=www&jump_https=1");
@@ -96,6 +96,11 @@ public class CommonActivity extends AppCompatActivity {
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://m.mogujie.com/?f=mgjlm&ptp=_qd._cps______3069826.152.1.0");
                 break;
 
+            /*JsBridge效果*/
+            case 11:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = JsbridgeWebFragment.getInstance(mBundle = new Bundle()), JsbridgeWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/jsbridge/demo.html");
+                break;
         }
         ft.commit();
 

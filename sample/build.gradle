@@ -58,4 +58,7 @@ dependencies {
     compile files('libs/alipaySingle-20170510.jar')
     compile 'us.feras.mdv:markdownview:1.1.0'
     compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    compile 'com.github.lzyzsd:jsbridge:1.0.4'
+    compile 'com.google.code.gson:gson:2.3.1'
+
 }
