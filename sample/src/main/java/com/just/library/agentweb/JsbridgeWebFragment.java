@@ -54,7 +54,8 @@ public class JsbridgeWebFragment extends AgentWebFragment {
                 .go(getUrl());
 
 
-        
+
+
         initView(view);
 
 
