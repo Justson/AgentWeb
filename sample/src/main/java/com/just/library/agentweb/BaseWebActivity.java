@@ -26,6 +26,10 @@ import com.just.library.LogUtils;
  * Created by cenxiaozhong on 2017/5/26.
  *
  * source CODE  https://github.com/Justson/AgentWeb
+ *
+ * 使用 AgentWeb 需要通过组合或者继承。
+ * <p>
+ * BaseWebActivity 演示的是组合使用 。
  */
 
 public class BaseWebActivity extends AppCompatActivity {

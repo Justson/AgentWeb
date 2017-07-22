@@ -16,7 +16,7 @@ import com.just.library.BaseAgentWebActivity;
 /**
  * Created by cenxiaozhong on 2017/7/22.
  * <p>
- * 使用 AgentWeb 的方法有两种， 第一种是组合 ， 第二种是继承 。
+ * 使用 AgentWeb 需要组合， 或者继承方式。
  * <p>
  * EasyWebActivity 演示的是继承使用 。
  */
@@ -40,9 +40,7 @@ public class EasyWebActivity extends BaseAgentWebActivity {
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 EasyWebActivity.this.finish();
-
 
             }
         });
@@ -58,6 +56,16 @@ public class EasyWebActivity extends BaseAgentWebActivity {
     @Override
     protected void setTitle(WebView view, String title) {
        mTitleTextView.setText(title);
+    }
+
+    @Override
+    protected int getIndicatorColor() {
+        return Color.parseColor("#ff0000");
+    }
+
+    @Override
+    protected int getIndicatorHeight() {
+        return 3;
     }
 
     @Nullable
