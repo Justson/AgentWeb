@@ -16,7 +16,7 @@ import com.just.library.AgentWeb;
 
 public class AndroidInterface {
 
-
+    private Handler deliver = new Handler(Looper.getMainLooper());
     private AgentWeb agent;
     private Context context;
 
@@ -25,7 +25,7 @@ public class AndroidInterface {
         this.context = context;
     }
 
-    private Handler deliver = new Handler(Looper.getMainLooper());
+
 
     @JavascriptInterface
     public void callAndroid(final String msg) {
@@ -42,9 +42,6 @@ public class AndroidInterface {
 
 
         Log.i("Info", "Thread:" + Thread.currentThread());
-
-            //对外接口
-
 
     }
 

@@ -38,6 +38,7 @@
             android:configChanges="orientation|screenSize"
             android:name=".CommonActivity"
             android:launchMode="singleTop"></activity>
+        <activity android:name=".EasyWebActivity" android:launchMode="singleTop"></activity>
 
     </application>
 
