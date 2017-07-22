@@ -15,6 +15,7 @@ import com.just.library.AgentWebUtils;
 
 /**
  * Created by cenxiaozhong on 2017/7/1.
+ *  source CODE  https://github.com/Justson/AgentWeb
  */
 
 public class BounceWebFragment extends AgentWebFragment {

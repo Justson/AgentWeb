@@ -15,6 +15,7 @@ import com.just.library.AgentWeb;
 
 /**
  * Created by cenxiaozhong on 2017/7/1.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class JsbridgeWebFragment extends AgentWebFragment {

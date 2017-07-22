@@ -12,6 +12,7 @@ import com.lcodecore.tkrefreshlayout.TwinklingRefreshLayout;
 
 /**
  * Created by cenxiaozhong on 2017/7/1.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class WebLayout implements IWebLayout {

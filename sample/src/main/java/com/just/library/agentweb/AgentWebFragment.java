@@ -38,6 +38,8 @@ import com.just.library.WebDefaultSettingsManager;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
+ *  source CODE  https://github.com/Justson/AgentWeb
+ *
  */
 
 public class AgentWebFragment extends Fragment implements FragmentKeyDown {

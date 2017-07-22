@@ -259,7 +259,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 
 
 ## 关于我
-一个位于深圳的 Android 开发者 ， 如果你有更好的工作机会提供给我 ， 请联系 Email : xiaozhongcen@gmail.com
+一个位于深圳的 Android 开发者 ， 如果你有工作机会提供给我 ， 请联系 Email : xiaozhongcen@gmail.com
 
 
 [licensesvg]: https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg

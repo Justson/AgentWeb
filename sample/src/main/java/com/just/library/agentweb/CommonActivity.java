@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 
 /**
  * Created by cenxiaozhong on 2017/5/23.
+ *  source CODE  https://github.com/Justson/AgentWeb
  */
 
 public class CommonActivity extends AppCompatActivity {

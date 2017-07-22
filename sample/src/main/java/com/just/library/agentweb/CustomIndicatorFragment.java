@@ -14,6 +14,7 @@ import com.just.library.WebDefaultSettingsManager;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class CustomIndicatorFragment extends AgentWebFragment {

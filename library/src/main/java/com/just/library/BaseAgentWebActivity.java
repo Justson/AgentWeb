@@ -9,10 +9,12 @@ import android.view.KeyEvent;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebViewClient;
-import android.widget.LinearLayout;
 
 /**
  * Created by cenxiaozhong on 2017/7/22.
+ *
+ *
+ * source CODE  https://github.com/Justson/AgentWeb
  */
 
 public abstract class BaseAgentWebActivity  extends AppCompatActivity{
@@ -26,7 +28,7 @@ public abstract class BaseAgentWebActivity  extends AppCompatActivity{
 
 
         mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent(parentView = getAgentWebParent(), new LinearLayout.LayoutParams(-1, -1))//
+                .setAgentWebParent(parentView = getAgentWebParent(), new ViewGroup.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())
                 .setReceivedTitleCallback(getReceivedTitleCallback())
@@ -91,7 +93,7 @@ public abstract class BaseAgentWebActivity  extends AppCompatActivity{
     protected @Nullable String getUrl(){
         return null;
     }
-    public AgentWebSettings getAgentWebSettings() {
+    public @Nullable AgentWebSettings getAgentWebSettings() {
         return WebDefaultSettingsManager.getInstance();
     }
 

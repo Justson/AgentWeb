@@ -6,6 +6,7 @@ import com.just.library.AgentWebSettings;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class CustomSettingsFragment extends AgentWebFragment {

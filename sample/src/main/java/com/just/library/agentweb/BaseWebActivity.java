@@ -24,6 +24,8 @@ import com.just.library.LogUtils;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
+ *
+ * source CODE  https://github.com/Justson/AgentWeb
  */
 
 public class BaseWebActivity extends AppCompatActivity {

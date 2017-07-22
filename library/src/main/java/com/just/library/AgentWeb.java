@@ -581,7 +581,7 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder setAgentWebSettings(AgentWebSettings agentWebSettings) {
+        public CommonAgentBuilder setAgentWebSettings(@Nullable AgentWebSettings agentWebSettings) {
             this.mAgentBuilder.mAgentWebSettings = agentWebSettings;
             return this;
         }

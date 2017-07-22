@@ -19,6 +19,9 @@ import com.just.library.BuildConfig;
 
 import static com.just.library.agentweb.CommonActivity.TYPE_KEY;
 
+/**
+ * source code  https://github.com/Justson/AgentWeb
+ */
 public class MainActivity extends AppCompatActivity {
 
 
