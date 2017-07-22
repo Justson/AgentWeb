@@ -40,6 +40,7 @@
             android:launchMode="singleTop"></activity>
         <activity android:name=".EasyWebActivity" android:launchMode="singleTop"></activity>
 
+        <activity android:name=".ContainerActivity" android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>
