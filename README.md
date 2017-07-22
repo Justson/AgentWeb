@@ -205,6 +205,17 @@ AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
 String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 ```
 
+* #### AgentWeb 所需要的权限
+```
+ <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+```
+
 
 ## 混淆
 如果你的项目需要加入混淆 ， 请加入如下配置
