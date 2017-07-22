@@ -67,7 +67,6 @@ public abstract class BaseAgentWebActivity  extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        LogUtils.i("Info", "result:" + requestCode + " result:" + resultCode);
         mAgentWeb.uploadFileResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -112,4 +111,6 @@ public abstract class BaseAgentWebActivity  extends AppCompatActivity{
     protected @Nullable WebViewClient getWebViewClient(){
         return null;
     }
+
+
 }
