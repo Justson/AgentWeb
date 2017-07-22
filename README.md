@@ -216,6 +216,9 @@ String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
 ```
 
+## 注意事项
+* 支付宝使用需要引入支付宝SDK ，并在项目中依赖 ， 微信支付不需要做任何操作。
+* 注意动态权限申请权限 。
 
 ## 混淆
 如果你的项目需要加入混淆 ， 请加入如下配置
