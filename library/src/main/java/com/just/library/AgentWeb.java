@@ -581,7 +581,7 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder setWebSettings(AgentWebSettings agentWebSettings) {
+        public CommonAgentBuilder setAgentWebSettings(AgentWebSettings agentWebSettings) {
             this.mAgentBuilder.mAgentWebSettings = agentWebSettings;
             return this;
         }
@@ -823,7 +823,7 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setWebSettings(@Nullable AgentWebSettings agentWebSettings) {
+        public CommonBuilderForFragment setAgentWebWebSettings(@Nullable AgentWebSettings agentWebSettings) {
             this.mAgentBuilderFragment.mAgentWebSettings = agentWebSettings;
             return this;
         }

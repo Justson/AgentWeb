@@ -73,10 +73,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .setIndicatorColorWithHeight(-1, 2)//
-                .setWebSettings(getSettings())//
+                .setAgentWebWebSettings(getSettings())//
                 .setWebViewClient(mWebViewClient)
                 .setWebChromeClient(mWebChromeClient)
                 .setReceivedTitleCallback(mCallback)

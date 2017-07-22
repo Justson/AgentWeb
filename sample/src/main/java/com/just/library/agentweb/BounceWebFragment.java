@@ -40,7 +40,7 @@ public class BounceWebFragment extends AgentWebFragment {
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .setIndicatorColorWithHeight(-1, 2)//
-                .setWebSettings(getSettings())//
+                .setAgentWebWebSettings(getSettings())//
                 .setWebViewClient(mWebViewClient)
                 .setWebChromeClient(mWebChromeClient)
                 .setReceivedTitleCallback(mCallback)

@@ -37,7 +37,7 @@ public class CustomIndicatorFragment extends AgentWebFragment {
         this.mAgentWeb = AgentWeb.with( this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .setCustomIndicator(mCommonIndicator)
-                .setWebSettings(WebDefaultSettingsManager.getInstance())//
+                .setAgentWebWebSettings(WebDefaultSettingsManager.getInstance())//
                 .setWebViewClient(mWebViewClient)
                 .setReceivedTitleCallback(mCallback)
                 .setSecurityType(AgentWeb.SecurityType.strict)
