@@ -317,6 +317,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public void onDestroyView() {
+        //mAgentWeb.clearWebCache();
         mAgentWeb.getWebLifeCycle().onDestroy();
         super.onDestroyView();
         //  mAgentWeb.destroy();

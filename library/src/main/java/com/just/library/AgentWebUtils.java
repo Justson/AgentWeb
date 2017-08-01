@@ -31,6 +31,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -287,10 +288,17 @@ public class AgentWebUtils {
     public static void clearWebViewAllCache(Context context, WebView webView) {
 
         try {
+
+            AgentWebConfig.removeAllCookies(null);
+            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+            webView.getSettings().setJavaScriptEnabled(false);
+            context.deleteDatabase("webviewCache.db");
+            context.deleteDatabase("webview.db");
+            clearCache(context,0);
             webView.clearCache(true);
             webView.clearHistory();
             webView.clearFormData();
-            AgentWebConfig.removeAllCookies(null);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -310,6 +318,9 @@ public class AgentWebUtils {
     static int clearCacheFolder(final File dir, final int numDays) {
 
         int deletedFiles = 0;
+        if (dir != null) {
+            Log.i("Info", "dir:" + dir.getAbsolutePath());
+        }
         if (dir != null && dir.isDirectory()) {
             try {
                 for (File child : dir.listFiles()) {
@@ -322,6 +333,7 @@ public class AgentWebUtils {
                     //then delete the files and subdirectories in this dir
                     //only empty directories can be deleted, so subdirs have been done first
                     if (child.lastModified() < new Date().getTime() - numDays * DateUtils.DAY_IN_MILLIS) {
+                        Log.i("Info", "getName:" + child.getName());
                         if (child.delete()) {
                             deletedFiles++;
                         }
@@ -682,12 +694,12 @@ public class AgentWebUtils {
 
     }
 
-    private static Handler mHandler=null;
+    private static Handler mHandler = null;
 
 
-    public static void runInUiThread(Runnable runnable){
-        if(mHandler==null)
-            mHandler=new Handler(Looper.getMainLooper());
+    public static void runInUiThread(Runnable runnable) {
+        if (mHandler == null)
+            mHandler = new Handler(Looper.getMainLooper());
         mHandler.post(runnable);
     }
 

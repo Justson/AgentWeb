@@ -195,7 +195,12 @@ public class AgentWeb {
 
     public AgentWeb clearWebCache() {
 
-        AgentWebUtils.clearWebViewAllCache(mActivity);
+        if(this.getWebCreator().get()!=null){
+            Log.i("Info","清空 webview 缓存");
+            AgentWebUtils.clearWebViewAllCache(mActivity,this.getWebCreator().get());
+        }else{
+            AgentWebUtils.clearWebViewAllCache(mActivity);
+        }
         return this;
     }
 
