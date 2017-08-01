@@ -294,13 +294,13 @@ public class AgentWebUtils {
             webView.getSettings().setJavaScriptEnabled(false);
             context.deleteDatabase("webviewCache.db");
             context.deleteDatabase("webview.db");
-            clearCache(context,0);
+            //clearCache(context,0);
             webView.clearCache(true);
             webView.clearHistory();
             webView.clearFormData();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignore) {
+            //ignore.printStackTrace();
         }
     }
 
