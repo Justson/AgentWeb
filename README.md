@@ -29,6 +29,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 14. 默认支持定位
 15. 支持传入 WebLayout（下拉回弹效果）
 16. 支持自定义 WebView 
+17. 支持 JsBridge
 
 ## 为什么要使用 AgentWeb ？
 
