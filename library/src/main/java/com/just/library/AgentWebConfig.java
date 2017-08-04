@@ -21,6 +21,8 @@ public class AgentWebConfig {
     static final String DOWNLOAD_PATH = "download";
 
 
+    public static boolean DEBUG=false;
+
     static final boolean isKikatOrBelowKikat = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
 //    static final boolean isKikatOrBelowKikat= true;
 

@@ -10,7 +10,7 @@ public class LogUtils {
 
 
     public static boolean isDebug() {
-        return BuildConfig.DEBUG;
+        return AgentWebConfig.DEBUG;
     }
 
     public static void i(String tag,String message){

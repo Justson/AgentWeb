@@ -252,9 +252,6 @@ public class AgentWeb {
         return mIEventHandler.back();
     }
 
-    /*public static AgentWeb withCreatorWeb(WebCreator creatorWeb) {
-        return new AgentBuilder(creatorWeb).buildAgentWeb();
-    }*/
 
     public WebCreator getWebCreator() {
         return this.mWebCreator;
@@ -381,7 +378,7 @@ public class AgentWeb {
 
         if (mIFileUploadChooser == null)
             mIFileUploadChooser = mAgentWebJsInterfaceCompat.pop();
-        Log.i("Info", "file upload:" + mIFileUploadChooser);
+        LogUtils.i("Info", "file upload:" + mIFileUploadChooser);
         if (mIFileUploadChooser != null)
             mIFileUploadChooser.fetchFilePathFromIntent(requestCode, resultCode, data);
 
@@ -674,7 +671,6 @@ public class AgentWeb {
     }
 
 
-    /*********************为Fragment构建AgentWeb***********************/
 
     public static final class AgentBuilderFragment {
         private Activity mActivity;

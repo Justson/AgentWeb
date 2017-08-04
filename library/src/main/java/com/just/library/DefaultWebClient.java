@@ -29,97 +29,99 @@ import java.lang.ref.WeakReference;
  * <b>@公司：</b> <br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
- *     source CODE  https://github.com/Justson/AgentWeb
+ * source CODE  https://github.com/Justson/AgentWeb
  */
 
 public class DefaultWebClient extends WrapperWebViewClient {
 
     private WebViewClientCallbackManager mWebViewClientCallbackManager;
-    private WeakReference<Activity>mWeakReference=null;
-    private static final int CONSTANTS_ABNORMAL_BIG=7;
+    private WeakReference<Activity> mWeakReference = null;
+    private static final int CONSTANTS_ABNORMAL_BIG = 7;
     private WebViewClient mWebViewClient;
-    private boolean webClientHelper=false;
-    private static final String WEBVIEWCLIENTPATH="android.webkit.WebViewClient";
-    public static final String INTENT_SCHEME="intent://";
-    public static final String WEBCHAT_PAY_SCHEME="weixin://wap/pay?";
+    private boolean webClientHelper = false;
+    private static final String WEBVIEWCLIENTPATH = "android.webkit.WebViewClient";
+    public static final String INTENT_SCHEME = "intent://";
+    public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
     private static final boolean hasAlipayLib;
+
     static {
-        boolean tag=true;
+        boolean tag = true;
         try {
             Class.forName("com.alipay.sdk.app.PayTask");
-        }catch (Throwable ignore){
-            tag=false;
+        } catch (Throwable ignore) {
+            tag = false;
         }
-        hasAlipayLib =tag;
+        hasAlipayLib = tag;
 
-        LogUtils.i("Info","static  hasAlipayLib:"+hasAlipayLib);
+        LogUtils.i("Info", "static  hasAlipayLib:" + hasAlipayLib);
     }
 
-    DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager,boolean webClientHelper) {
+    DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper) {
         super(client);
-        this.mWebViewClient=client;
-        mWeakReference=new WeakReference<Activity>(activity);
-        this.mWebViewClientCallbackManager=manager;
-        this.webClientHelper=webClientHelper;
+        this.mWebViewClient = client;
+        mWeakReference = new WeakReference<Activity>(activity);
+        this.mWebViewClientCallbackManager = manager;
+        this.webClientHelper = webClientHelper;
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         LogUtils.i("Info", " DefaultWebClient shouldOverrideUrlLoading");
-        if(webClientHelper&&handleNormalLinked(request.getUrl()+"")){
+        if (webClientHelper && handleNormalLinked(request.getUrl() + "")) {
             return true;
         }
-        int tag=-1;
+        int tag = -1;
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", WEBVIEWCLIENTPATH + ".shouldOverrideUrlLoading", WebView.class, WebResourceRequest.class)&&(((tag=1)>0)&&super.shouldOverrideUrlLoading(view,request))) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", WEBVIEWCLIENTPATH + ".shouldOverrideUrlLoading", WebView.class, WebResourceRequest.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, request))) {
             return true;
         }
 
-        if(webClientHelper&&request.getUrl().toString().startsWith(INTENT_SCHEME)){ //
-            handleIntentUrl(request.getUrl()+"");
+        if (webClientHelper && request.getUrl().toString().startsWith(INTENT_SCHEME)) { //
+            handleIntentUrl(request.getUrl() + "");
             return true;
         }
 
         //06-13 10:21:22.238 21630-21630/com.just.library.agentweb I/Info: url:weixin://wap/pay?appid%3Dwxb08de3dfbafe2a05%26noncestr%3Da3e707b7ba724555a623cdcb487c9752%26package%3DWAP%26prepayid%3Dwx20170613102122864958995b0782239150%26sign%3D54C503BE0D29F0013D71E9A5FB634E6D%26timestamp%3D1497320482
 
-        if(webClientHelper&&request.getUrl().toString().startsWith(WEBCHAT_PAY_SCHEME)){
+        if (webClientHelper && request.getUrl().toString().startsWith(WEBCHAT_PAY_SCHEME)) {
             startActivity(request.getUrl().toString());
             return true;
         }
-        if(webClientHelper&&hasAlipayLib&&isAlipay(view,request.getUrl()+""))
+        if (webClientHelper && hasAlipayLib && isAlipay(view, request.getUrl() + ""))
             return true;
 
-        if(tag>0)
+        if (tag > 0)
             return false;
 
-        return super.shouldOverrideUrlLoading(view,request);
+        return super.shouldOverrideUrlLoading(view, request);
     }
+
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        LogUtils.i("Info","shouldOverrideUrlLoading --->  url:"+url);
-        if(webClientHelper&&handleNormalLinked(url)){
+        LogUtils.i("Info", "shouldOverrideUrlLoading --->  url:" + url);
+        if (webClientHelper && handleNormalLinked(url)) {
             return true;
         }
 
-        int tag=-1;
+        int tag = -1;
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", WEBVIEWCLIENTPATH + ".shouldOverrideUrlLoading", WebView.class, String.class)&&(((tag=1)>0)&&super.shouldOverrideUrlLoading(view,url))) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", WEBVIEWCLIENTPATH + ".shouldOverrideUrlLoading", WebView.class, String.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, url))) {
             return true;
         }
 
-        if(webClientHelper&&url.startsWith(INTENT_SCHEME)){ //拦截
+        if (webClientHelper && url.startsWith(INTENT_SCHEME)) { //拦截
             handleIntentUrl(url);
             return true;
         }
 
-        if(webClientHelper&&url.startsWith(WEBCHAT_PAY_SCHEME)){
+        if (webClientHelper && url.startsWith(WEBCHAT_PAY_SCHEME)) {
             startActivity(url);
             return true;
         }
-        if(webClientHelper&&hasAlipayLib&&isAlipay(view,url))
+        if (webClientHelper && hasAlipayLib && isAlipay(view, url))
             return true;
 
-        if(tag>0)
+        if (tag > 0)
             return false;
 
 
@@ -127,20 +129,20 @@ public class DefaultWebClient extends WrapperWebViewClient {
     }
 
 
-    private void handleIntentUrl(String intentUrl){
+    private void handleIntentUrl(String intentUrl) {
         try {
 
-            Intent intent=null;
-            if(TextUtils.isEmpty(intentUrl)||!intentUrl.startsWith(INTENT_SCHEME))
-                return ;
-
-            Activity mActivity=null;
-            if((mActivity=mWeakReference.get())==null)
+            Intent intent = null;
+            if (TextUtils.isEmpty(intentUrl) || !intentUrl.startsWith(INTENT_SCHEME))
                 return;
-            PackageManager packageManager =mActivity.getPackageManager();
+
+            Activity mActivity = null;
+            if ((mActivity = mWeakReference.get()) == null)
+                return;
+            PackageManager packageManager = mActivity.getPackageManager();
             intent = new Intent().parseUri(intentUrl, Intent.URI_INTENT_SCHEME);
             ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            LogUtils.i("Info","resolveInfo:"+info+"   package:"+intent.getPackage());
+            LogUtils.i("Info", "resolveInfo:" + info + "   package:" + intent.getPackage());
             if (info != null) {  //跳到该应用
                 mActivity.startActivity(intent);
                 return;
@@ -160,8 +162,9 @@ public class DefaultWebClient extends WrapperWebViewClient {
                 mActivity.startActivity(intent);
                 return;
             }*/
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (Throwable e) {
+            if (LogUtils.isDebug())
+                e.printStackTrace();
         }
 
 
@@ -169,17 +172,14 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     private boolean isAlipay(final WebView view, String url) {
 
-        Activity mActivity=null;
-        if((mActivity=mWeakReference.get())==null)
+        Activity mActivity = null;
+        if ((mActivity = mWeakReference.get()) == null)
             return false;
         final PayTask task = new PayTask(mActivity);
         final String ex = task.fetchOrderInfoFromH5PayUrl(url);
-        LogUtils.i("Info", "alipay:" + ex);
         if (!TextUtils.isEmpty(ex)) {
-            System.out.println("paytask:::::" + url);
-           AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+            AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
                 public void run() {
-                    System.out.println("payTask:::" + ex);
                     final H5PayResultModel result = task.h5Pay(ex, true);
                     if (!TextUtils.isEmpty(result.getReturnUrl())) {
                         AgentWebUtils.runInUiThread(new Runnable() {
@@ -199,11 +199,11 @@ public class DefaultWebClient extends WrapperWebViewClient {
     }
 
 
-    private boolean handleNormalLinked(String url){
+    private boolean handleNormalLinked(String url) {
         if (url.startsWith(WebView.SCHEME_TEL) || url.startsWith("sms:") || url.startsWith(WebView.SCHEME_MAILTO)) {
             try {
-                Activity mActivity=null;
-                if((mActivity=mWeakReference.get())==null)
+                Activity mActivity = null;
+                if ((mActivity = mWeakReference.get()) == null)
                     return false;
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
@@ -218,38 +218,36 @@ public class DefaultWebClient extends WrapperWebViewClient {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         LogUtils.i("Info", "onPageStarted");
-        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE&&mWebViewClientCallbackManager.getPageLifeCycleCallback()!=null){
-            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view,url,favicon);
+        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClientCallbackManager.getPageLifeCycleCallback() != null) {
+            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view, url, favicon);
         }
         super.onPageStarted(view, url, favicon);
 
     }
 
 
-
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-        LogUtils.i("Info", "onReceivedError："+description+"  CODE:"+errorCode);
+        LogUtils.i("Info", "onReceivedError：" + description + "  CODE:" + errorCode);
     }
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        LogUtils.i("Info", "onReceivedError:"+error.toString());
+        LogUtils.i("Info", "onReceivedError:" + error.toString());
 
     }
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        if(AgentWebConfig.WEBVIEW_TYPE==AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE&&mWebViewClientCallbackManager.getPageLifeCycleCallback()!=null){
-            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view,url);
+        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClientCallbackManager.getPageLifeCycleCallback() != null) {
+            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
         }
         super.onPageFinished(view, url);
 
         LogUtils.i("Info", "onPageFinished");
     }
-
 
 
     @Override
@@ -259,23 +257,25 @@ public class DefaultWebClient extends WrapperWebViewClient {
     }
 
 
-    private void startActivity(String url){
+    private void startActivity(String url) {
 
 
         try {
 
-            if(mWeakReference.get()==null)
+            if (mWeakReference.get() == null)
                 return;
 
-            LogUtils.i("Info","start wechat pay Activity");
+            LogUtils.i("Info", "start wechat pay Activity");
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             mWeakReference.get().startActivity(intent);
 
-        }catch (Exception e){
-            LogUtils.i("Info","支付异常");
-            e.printStackTrace();
+        } catch (Exception e) {
+            if(LogUtils.isDebug()){
+                LogUtils.i("Info", "支付异常");
+                e.printStackTrace();
+            }
         }
 
 
@@ -285,12 +285,12 @@ public class DefaultWebClient extends WrapperWebViewClient {
     public void onScaleChanged(WebView view, float oldScale, float newScale) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onScaleChanged", WEBVIEWCLIENTPATH + ".onScaleChanged", WebView.class, float.class,float.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onScaleChanged", WEBVIEWCLIENTPATH + ".onScaleChanged", WebView.class, float.class, float.class)) {
             super.onScaleChanged(view, oldScale, newScale);
             return;
         }
 
-        LogUtils.i("Info","onScaleChanged:"+oldScale+"   n:"+newScale);
+        LogUtils.i("Info", "onScaleChanged:" + oldScale + "   n:" + newScale);
         if (newScale - oldScale > CONSTANTS_ABNORMAL_BIG) {
             view.setInitialScale((int) (oldScale / newScale * 100));
         }

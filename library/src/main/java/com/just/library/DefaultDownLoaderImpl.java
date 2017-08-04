@@ -43,11 +43,10 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     @Override
     public synchronized void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
-        LogUtils.i("Info", "  package:" + mContext.getPackageName() + "  useraget:" + userAgent + " contentDisposition:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength + "   url:" + url);
+//        LogUtils.i("Info", "  package:" + mContext.getPackageName() + "  userAgent:" + userAgent + " contentDisposition:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength + "   url:" + url);
 
 
         File mFile = getFile(contentDisposition, url);
-     //   LogUtils.i("Info", "contentLength:" + contentLength + "   mFileLeng:" + mFile.length());
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
 
             Intent mIntent = AgentWebUtils.getIntentCompat(mContext, mFile);
