@@ -149,8 +149,10 @@ public class DefaultWebCreator implements WebCreator {
                 mWebProgress.setColor(color);
             lp.gravity = Gravity.TOP;
             mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgress), lp);
+            mWebProgress.setVisibility(View.GONE);
         } else if (!isNeedDefaultProgress && progressView != null) {
             mFrameLayout.addView((View) (this.mBaseProgressSpec = (BaseProgressSpec) progressView), progressView.offerLayoutParams());
+            progressView.setVisibility(View.GONE);
         }
         return mFrameLayout;
 

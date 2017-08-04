@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -105,6 +106,8 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     }
 
     public void show() {
+
+        Log.i("Info","show  -- >:"+getVisibility());
         if(getVisibility()==View.GONE){
             this.setVisibility(View.VISIBLE);
             currentProgress=0f;
@@ -117,6 +120,8 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         if (getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
+        if(progress<80f)
+            return;
         startAnim(progress, false);
     }
 
@@ -160,7 +165,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         if (target == value)
             return;
 
-        if(value<currentProgress)
+        if(value<currentProgress&&value!=-1)
             return;
 
         float v = (isAuto) ? 80f : value;
@@ -178,7 +183,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
 
         /*默认每个像素8毫秒*/
-        mValueAnimator.setDuration(isAuto ? duration * 8 : (long) (duration * weightDuration(v, currentProgress)));
+        mValueAnimator.setDuration(isAuto ? duration * 4 : (long) (duration * weightDuration(v, currentProgress)));
         mValueAnimator.addUpdateListener(mAnimatorUpdateListener);
         mValueAnimator.addListener(mAnimatorListenerAdapter);
         mValueAnimator.start();
