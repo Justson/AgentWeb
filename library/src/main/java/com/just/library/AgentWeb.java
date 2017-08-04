@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewGroup;
@@ -319,13 +320,8 @@ public class AgentWeb {
 
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
-        /*if (mWebChromeClient != null) {
-            return enableProgress ? new WebChromeClientProgressWrapper(mIndicatorController, mWebChromeClient) : mWebChromeClient;
-        } else {
-            return new DefaultChromeClient(this.mActivity, mIndicatorController, this.mChromeClientCallbackManager);
-        }*/
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo());
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController=mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo());
     }
 
     private IVideo getIVideo() {
@@ -354,6 +350,8 @@ public class AgentWeb {
 
     private AgentWeb go(String url) {
         this.getLoader().loadUrl(url);
+        if(!TextUtils.isEmpty(url))
+            getIndicatorController().offerIndicator().show();
         return this;
     }
 
