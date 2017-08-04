@@ -39,7 +39,7 @@ public class ChromeClientCallbackManager {
     }
     public void setAgentWebCompatInterface(AgentWebCompatInterface agentWebCompatInterface){
         this.mAgentWebCompatInterface=agentWebCompatInterface;
-        LogUtils.i("Info","agent:"+agentWebCompatInterface);
+//        LogUtils.i("Info","agent:"+agentWebCompatInterface);
     }
 
      interface AgentWebCompatInterface{
