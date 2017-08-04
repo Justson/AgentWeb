@@ -350,7 +350,8 @@ public class AgentWeb {
 
     private AgentWeb go(String url) {
         this.getLoader().loadUrl(url);
-        if(!TextUtils.isEmpty(url))
+        IndicatorController mIndicatorController=null;
+        if(!TextUtils.isEmpty(url)&&(mIndicatorController=getIndicatorController())!=null&&mIndicatorController.offerIndicator()!=null)
             getIndicatorController().offerIndicator().show();
         return this;
     }
