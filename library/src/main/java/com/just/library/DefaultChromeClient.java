@@ -117,7 +117,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         return true;
     }
 
-
+    
     @Override
     public void onReceivedIcon(WebView view, Bitmap icon) {
         super.onReceivedIcon(view, icon);
@@ -126,12 +126,14 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public void onGeolocationPermissionsHidePrompt() {
         super.onGeolocationPermissionsHidePrompt();
+        LogUtils.i("Info","onGeolocationPermissionsHidePrompt");
     }
 
     //location
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 
+        LogUtils.i("Info","onGeolocationPermissionsShowPrompt:"+origin+"   callback:"+callback);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ChromePath + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             return;

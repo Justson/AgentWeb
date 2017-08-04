@@ -29,7 +29,7 @@ android {
             dirs 'libs', 'providedLibs'
         }
     }
-   //defaultPublishConfig "debug"
+   defaultPublishConfig "debug"
 
 }
 

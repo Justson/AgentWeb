@@ -142,6 +142,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     };
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
 
+
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
           //  super.onProgressChanged(view, newProgress);

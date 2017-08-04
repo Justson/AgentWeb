@@ -51,9 +51,15 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
 
             Intent mIntent = AgentWebUtils.getIntentCompat(mContext, mFile);
-            if (mIntent != null)
-                mContext.startActivity(mIntent);
-            return;
+            try {
+                if (mIntent != null)
+                    mContext.startActivity(mIntent);
+                return;
+            }catch (Throwable throwable){
+                if(LogUtils.isDebug())
+                    throwable.printStackTrace();
+            }
+
         }
 
         if (mList.contains(url)) {
