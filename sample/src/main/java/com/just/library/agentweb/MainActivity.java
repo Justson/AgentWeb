@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.just.library.BuildConfig;
+import com.just.library.AgentWebConfig;
 
 import static com.just.library.agentweb.CommonActivity.TYPE_KEY;
 
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        if(BuildConfig.DEBUG){
+        if(AgentWebConfig.DEBUG){
             Log.i("Info","Debug 模式");
         }else{
             Log.i("Info","release 模式");
