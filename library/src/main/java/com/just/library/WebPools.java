@@ -9,7 +9,8 @@ import android.content.MutableContextWrapper;
 import android.webkit.WebView;
 
 import java.util.Queue;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  *
@@ -20,30 +21,41 @@ public class WebPools {
     private final Queue<WebView> mWebViews;
 
     private Object lock = new Object();
-    private static final WebPools mWebPools = new WebPools();
+    private static WebPools mWebPools = null;
+
+    private static final AtomicReference<WebPools> mAtomicReference = new AtomicReference<>();
 
     private WebPools() {
-        mWebViews=new LinkedBlockingDeque<WebView>();
+        mWebViews = new LinkedBlockingQueue<>();
     }
 
-    public static WebView acquireWebView(Activity activity) {
 
-        return mWebPools.acquireWebViewInternal(activity);
+    public static WebPools getInstance() {
 
+        for (; ; ) {
+            if (mAtomicReference.get() != null)
+                return mAtomicReference.get();
+            if (mAtomicReference.compareAndSet(null, new WebPools()))
+                return mAtomicReference.get();
+
+        }
     }
 
-    public static void recyclerWebView(WebView webView){
 
-        MutableContextWrapper mContext= (MutableContextWrapper) webView.getContext();
-        mContext.setBaseContext(null);
+    public static void recycleWebView(WebView webView) {
 
+        if (webView.getContext() instanceof MutableContextWrapper) {
+            MutableContextWrapper mContext = (MutableContextWrapper) webView.getContext();
+            mContext.setBaseContext(null);
+        }
         mWebPools.enqueue(webView);
 
     }
 
-    private void enqueue(WebView webView){
+    private void enqueue(WebView webView) {
         mWebViews.offer(webView);
     }
+
     public WebView acquireWebViewInternal(Activity activity) {
 
         WebView mWebView = mWebViews.poll();
@@ -57,7 +69,6 @@ public class WebPools {
             return mWebView;
         }
     }
-
 
 
 }
