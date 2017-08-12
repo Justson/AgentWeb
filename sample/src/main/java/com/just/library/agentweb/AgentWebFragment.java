@@ -93,6 +93,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         initView(view);
 
+        mAgentWeb.getWebCreator().get().removeJavascriptInterface("agentWeb");
 
 
 

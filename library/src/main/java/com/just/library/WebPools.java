@@ -82,7 +82,6 @@ public class WebPools {
             }
             if(webView.getContext() instanceof  Activity){
 //            throw new RuntimeException("leaked");
-
                 LogUtils.i("Info","Abandon this webview  ， It will cause leak if enqueue !");
             }
 
