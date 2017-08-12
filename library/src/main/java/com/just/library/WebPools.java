@@ -42,21 +42,17 @@ public class WebPools {
     }
 
 
-    public static void recycleWebView(WebView webView) {
-
-        if (webView.getContext() instanceof MutableContextWrapper) {
-            MutableContextWrapper mContext = (MutableContextWrapper) webView.getContext();
-            mContext.setBaseContext(null);
-        }
-        mWebPools.enqueue(webView);
-
+    public void recycle(WebView webView) {
+        recycleInternal(webView);
     }
 
-    private void enqueue(WebView webView) {
-        mWebViews.offer(webView);
+
+
+    public WebView acquireWebView(Activity activity) {
+        return acquireWebView(activity);
     }
 
-    public WebView acquireWebViewInternal(Activity activity) {
+    private WebView acquireWebViewInternal(Activity activity) {
 
         WebView mWebView = mWebViews.poll();
         if (mWebView == null) {
@@ -70,5 +66,14 @@ public class WebPools {
         }
     }
 
+
+
+    private void recycleInternal(WebView webView) {
+        if (webView.getContext() instanceof MutableContextWrapper) {
+            MutableContextWrapper mContext = (MutableContextWrapper) webView.getContext();
+            mContext.setBaseContext(null);
+        }
+        mWebViews.offer(webView);
+    }
 
 }
