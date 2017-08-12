@@ -90,6 +90,7 @@ public class AgentWebUtils {
         if (Looper.myLooper() != Looper.getMainLooper())
             return;
         m.loadUrl("about:blank");
+        m.removeJavascriptInterface("agentWeb");
         m.stopLoading();
         if (m.getHandler() != null)
             m.getHandler().removeCallbacksAndMessages(null);
@@ -99,12 +100,12 @@ public class AgentWebUtils {
             mViewGroup.removeView(m);
         m.setWebChromeClient(null);
         m.setWebViewClient(null);
+        m.setDownloadListener(null);
         m.setTag(null);
         m.clearHistory();
-        m.destroy();
-        m = null;
-
-
+        if (m.getContext() instanceof Activity)
+            m.destroy();
+        m=null;
     }
 
     public static boolean checkWifi(Context context) {

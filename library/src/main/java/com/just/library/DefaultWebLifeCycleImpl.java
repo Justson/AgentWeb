@@ -41,5 +41,6 @@ public class DefaultWebLifeCycleImpl implements WebLifeCycle {
     public void onDestroy() {
 
         AgentWebUtils.clearWebView(this.mWebView);
+        WebPools.getInstance().recycle(mWebView);
     }
 }

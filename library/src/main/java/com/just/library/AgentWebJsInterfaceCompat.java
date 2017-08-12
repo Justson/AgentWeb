@@ -3,17 +3,19 @@ package com.just.library;
 import android.app.Activity;
 import android.webkit.JavascriptInterface;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by cenxiaozhong on 2017/5/24.
  */
 
 public class AgentWebJsInterfaceCompat implements AgentWebCompat ,FileUploadPop<IFileUploadChooser> {
 
-    private AgentWeb mAgentWeb;
-    private Activity mActivity;
+    private WeakReference<AgentWeb> mReference=null;
+    private WeakReference<Activity> mActivityWeakReference=null;
      AgentWebJsInterfaceCompat(AgentWeb agentWeb,Activity activity){
-        this.mAgentWeb=agentWeb;
-         this.mActivity=activity;
+         mReference=new WeakReference<AgentWeb>(agentWeb);
+         mActivityWeakReference=new WeakReference<Activity>(activity);
     }
 
     private IFileUploadChooser mIFileUploadChooser;
@@ -21,15 +23,18 @@ public class AgentWebJsInterfaceCompat implements AgentWebCompat ,FileUploadPop<
     public void uploadFile(){
 
 
-        mIFileUploadChooser=new FileUpLoadChooserImpl(mActivity,new FileUpLoadChooserImpl.JsChannelCallback() {
-            @Override
-            public void call(String value) {
+        if(mActivityWeakReference.get()!=null){
+            mIFileUploadChooser=new FileUpLoadChooserImpl(mActivityWeakReference.get(),new FileUpLoadChooserImpl.JsChannelCallback() {
+                @Override
+                public void call(String value) {
 
-                if(mAgentWeb!=null)
-                    mAgentWeb.getJsEntraceAccess().quickCallJs("uploadFileResult",value);
-            }
-        });
-        mIFileUploadChooser.openFileChooser();
+                    if(mReference.get()!=null)
+                        mReference.get().getJsEntraceAccess().quickCallJs("uploadFileResult",value);
+                }
+            });
+            mIFileUploadChooser.openFileChooser();
+        }
+
 
     }
 

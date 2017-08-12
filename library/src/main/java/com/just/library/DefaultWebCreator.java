@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.content.MutableContextWrapper;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -182,10 +183,10 @@ public class DefaultWebCreator implements WebCreator {
             mWebView = this.mWebView;
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
         } else if (AgentWebConfig.isKikatOrBelowKikat) {
-            mWebView = new AgentWebView(mActivity);
+            mWebView = new AgentWebView(new MutableContextWrapper(mActivity));
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
         } else {
-            mWebView = new WebView(mActivity);
+            mWebView = WebPools.getInstance().acquireWebView(mActivity);
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
         }
 

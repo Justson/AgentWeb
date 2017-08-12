@@ -33,10 +33,10 @@ public class WebPools {
     public static WebPools getInstance() {
 
         for (; ; ) {
-            if (mAtomicReference.get() != null)
-                return mAtomicReference.get();
+            if (mWebPools != null)
+                return mWebPools;
             if (mAtomicReference.compareAndSet(null, new WebPools()))
-                return mAtomicReference.get();
+                return mWebPools=mAtomicReference.get();
 
         }
     }
@@ -49,12 +49,14 @@ public class WebPools {
 
 
     public WebView acquireWebView(Activity activity) {
-        return acquireWebView(activity);
+        return acquireWebViewInternal(activity);
     }
 
     private WebView acquireWebViewInternal(Activity activity) {
 
         WebView mWebView = mWebViews.poll();
+
+        LogUtils.i("Info","acquireWebViewInternal  webview:"+mWebView);
         if (mWebView == null) {
             synchronized (lock) {
                 return new WebView(new MutableContextWrapper(activity));
@@ -69,11 +71,26 @@ public class WebPools {
 
 
     private void recycleInternal(WebView webView) {
-        if (webView.getContext() instanceof MutableContextWrapper) {
-            MutableContextWrapper mContext = (MutableContextWrapper) webView.getContext();
-            mContext.setBaseContext(null);
+        try {
+
+            if (webView.getContext() instanceof MutableContextWrapper) {
+
+                MutableContextWrapper mContext = (MutableContextWrapper) webView.getContext();
+                mContext.setBaseContext(mContext.getApplicationContext());
+                LogUtils.i("Info","enqueue  webview:"+webView);
+                mWebViews.offer(webView);
+            }
+            if(webView.getContext() instanceof  Activity){
+//            throw new RuntimeException("leaked");
+
+                LogUtils.i("Info","Abandon this webview  ， It will cause leak if enqueue !");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        mWebViews.offer(webView);
+
+
     }
 
 }
