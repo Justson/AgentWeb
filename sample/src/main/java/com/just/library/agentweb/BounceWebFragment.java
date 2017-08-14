@@ -60,7 +60,7 @@ public class BounceWebFragment extends AgentWebFragment {
 
     }
 
-    private IWebLayout getWebLayout() {
+    protected IWebLayout getWebLayout() {
         return new WebLayout(getActivity());
     }
 

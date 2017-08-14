@@ -2,9 +2,15 @@ package com.just.library.agentweb;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 
 import com.just.library.IWebLayout;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 /**
  * Created by cenxiaozhong on 2017/7/1.
@@ -22,7 +28,7 @@ public class SmartRefreshWebFragment extends BounceWebFragment {
         return mSmartRefreshWebFragment;
     }
 
-    private SmartRefreshWebLayout mSmartRefreshLayout=null;
+    private SmartRefreshWebLayout mSmartRefreshWebLayout=null;
 
     @Override
     public String getUrl() {
@@ -30,25 +36,47 @@ public class SmartRefreshWebFragment extends BounceWebFragment {
     }
 
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        final SmartRefreshLayout mSmartRefreshLayout= (SmartRefreshLayout) this.mSmartRefreshWebLayout.getLayout();
+
+        final WebView mWebView=this.mSmartRefreshWebLayout.getWeb();
+        mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                mAgentWeb.getLoader().reload();
+
+                mSmartRefreshLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSmartRefreshLayout.finishRefresh();
+                    }
+                },2000);
+            }
+        });
+        mSmartRefreshLayout.autoRefresh();
+
+
+
+    }
+
+
+
+    @Override
     protected IWebLayout getWebLayout(){
-        return this.mSmartRefreshLayout=new SmartRefreshWebLayout(this.getActivity());
+        return this.mSmartRefreshWebLayout=new SmartRefreshWebLayout(this.getActivity());
     }
 
 
 
 
+    @Override
     protected void addBGChild(FrameLayout frameLayout) {
 
         frameLayout.setBackgroundColor(Color.TRANSPARENT);
-        /*TextView mTextView=new TextView(frameLayout.getContext());
-        mTextView.setText("技术由 AgentWeb 提供");
-        mTextView.setTextSize(16);
-        mTextView.setTextColor(Color.parseColor("#727779"));
-        frameLayout.setBackgroundColor(Color.parseColor("#272b2d"));
-        FrameLayout.LayoutParams mFlp=new FrameLayout.LayoutParams(-2,-2);
-        mFlp.gravity= Gravity.CENTER_HORIZONTAL;
-        mFlp.topMargin= AgentWebUtils.dp2px(frameLayout.getContext(),15);
-        frameLayout.addView(mTextView,0,mFlp);*/
+
     }
 
 
