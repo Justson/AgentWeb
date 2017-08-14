@@ -16,9 +16,6 @@ import com.just.library.BaseAgentWebActivity;
 /**
  * Created by cenxiaozhong on 2017/7/22.
  * <p>
- * 使用 AgentWeb 需要组合， 或者继承方式。
- * <p>
- * EasyWebActivity 演示的是继承使用 。
  */
 public class EasyWebActivity extends BaseAgentWebActivity {
 

@@ -40,7 +40,6 @@ import com.just.library.WebDefaultSettingsManager;
  * Created by cenxiaozhong on 2017/5/15.
  *
  *
- *
  * source code  https://github.com/Justson/AgentWeb
  */
 
@@ -92,9 +91,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         initView(view);
-
-        mAgentWeb.getWebCreator().get().removeJavascriptInterface("agentWeb");
-
 
 
           DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
