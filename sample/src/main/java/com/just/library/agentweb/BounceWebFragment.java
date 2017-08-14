@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.just.library.AgentWeb;
 import com.just.library.AgentWebUtils;
+import com.just.library.IWebLayout;
 
 /**
  * Created by cenxiaozhong on 2017/7/1.
@@ -45,7 +46,7 @@ public class BounceWebFragment extends AgentWebFragment {
                 .setWebViewClient(mWebViewClient)
                 .setWebChromeClient(mWebChromeClient)
                 .setReceivedTitleCallback(mCallback)
-                .setWebLayout(new WebLayout(this.getActivity()))
+                .setWebLayout(getWebLayout())
                 .setSecurityType(AgentWeb.SecurityType.strict)
                 .addDownLoadResultListener(mDownLoadResultListener)
                 .createAgentWeb()//
@@ -59,7 +60,9 @@ public class BounceWebFragment extends AgentWebFragment {
 
     }
 
-
+    private IWebLayout getWebLayout() {
+        return new WebLayout(getActivity());
+    }
 
 
     protected void addBGChild(FrameLayout frameLayout) {
