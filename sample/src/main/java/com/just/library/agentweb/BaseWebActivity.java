@@ -30,7 +30,6 @@ import com.just.library.LogUtils;
  *
  * 使用 AgentWeb 需要通过组合或者继承。
  * <p>
- * BaseWebActivity 演示的是组合使用 。
  */
 
 public class BaseWebActivity extends AppCompatActivity {
