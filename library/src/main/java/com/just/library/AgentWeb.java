@@ -318,7 +318,7 @@ public class AgentWeb {
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController=mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo());
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController=mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(),mDefaultMsgConfig.getChromeClientMsgCfg());
     }
 
     private IVideo getIVideo() {

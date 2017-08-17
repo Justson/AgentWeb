@@ -12,6 +12,12 @@ public final class DefaultMsgConfig {
 
     private DownLoadMsgConfig mDownLoadMsgConfig=null;
 
+    private ChromeClientMsgCfg mChromeClientMsgCfg=new ChromeClientMsgCfg();
+
+    public ChromeClientMsgCfg getChromeClientMsgCfg() {
+        return mChromeClientMsgCfg;
+    }
+
     DefaultMsgConfig(){
 
         mDownLoadMsgConfig= new DownLoadMsgConfig();
@@ -219,5 +225,52 @@ public final class DefaultMsgConfig {
         }
     }
 
+
+    public static final  class ChromeClientMsgCfg{
+
+        public FileUploadMsgConfig mFileUploadMsgConfig=new FileUploadMsgConfig();
+
+        public FileUploadMsgConfig getFileUploadMsgConfig() {
+            return mFileUploadMsgConfig;
+        }
+
+        public static final class FileUploadMsgConfig implements Parcelable{
+
+            private String[]medias=new String[]{"相机","文件选择器"};
+
+            FileUploadMsgConfig(){
+
+            }
+            protected FileUploadMsgConfig(Parcel in) {
+                medias = in.createStringArray();
+            }
+
+            public static final Creator<FileUploadMsgConfig> CREATOR = new Creator<FileUploadMsgConfig>() {
+                @Override
+                public FileUploadMsgConfig createFromParcel(Parcel in) {
+                    return new FileUploadMsgConfig(in);
+                }
+
+                @Override
+                public FileUploadMsgConfig[] newArray(int size) {
+                    return new FileUploadMsgConfig[size];
+                }
+            };
+
+            public String[] getMedias() {
+                return medias;
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeStringArray(medias);
+            }
+        }
+    }
 
 }

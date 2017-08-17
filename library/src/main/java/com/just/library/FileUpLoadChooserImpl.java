@@ -2,9 +2,11 @@ package com.just.library;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.ValueCallback;
@@ -31,15 +33,17 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private WebChromeClient.FileChooserParams mFileChooserParams;
     private JsChannelCallback mJsChannelCallback;
     private boolean jsChannel = false;
+    private AlertDialog mAlertDialog;
+    private static final String TAG=FileUpLoadChooserImpl.class.getSimpleName();
 
-    public FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback) {
+    FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback) {
         this.mActivity = activity;
         this.mUriValueCallback = callback;
         isL = false;
         jsChannel = false;
     }
 
-    public FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+    FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams) {
 
         jsChannel = false;
         this.mActivity = activity;
@@ -48,7 +52,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         isL = true;
     }
 
-    public FileUpLoadChooserImpl(Activity activity, JsChannelCallback jsChannelCallback) {
+    FileUpLoadChooserImpl(Activity activity, JsChannelCallback jsChannelCallback) {
         if (jsChannelCallback == null)
             throw new NullPointerException("jsChannelCallback can not null");
         jsChannel = true;
@@ -59,10 +63,32 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     @Override
     public void openFileChooser() {
+        //
+        openFileChooserInternal();
+
+    }
+
+    private void realOpenFileChooser() {
         if (isL && mFileChooserParams != null)
             mActivity.startActivityForResult(mFileChooserParams.createIntent(), REQUEST_CODE);
         else
             this.openRealFileChooser();
+    }
+
+    private void openFileChooserInternal() {
+
+        if (mAlertDialog == null)
+            mAlertDialog = new AlertDialog.Builder(mActivity)//
+                    .setSingleChoiceItems(new String[]{"相机", "文件选择器"}, 1, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            LogUtils.i(TAG,"which:"+which);
+                        }
+                    }).create();
+        mAlertDialog.show();
+
+
     }
 
 
@@ -118,7 +144,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private void handleDataBelow(Intent data) {
         Uri mUri = data == null ? null : data.getData();
 
-        LogUtils.i("Info","handleDataBelow  -- >uri:"+mUri+"  mUriValueCallback:"+mUriValueCallback);
+        LogUtils.i("Info", "handleDataBelow  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
         if (mUriValueCallback != null)
             mUriValueCallback.onReceiveValue(mUri);
 

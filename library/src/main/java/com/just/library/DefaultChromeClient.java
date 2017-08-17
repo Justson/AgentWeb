@@ -39,32 +39,32 @@ import java.lang.ref.WeakReference;
 public class DefaultChromeClient extends WebChromeClientProgressWrapper implements FileUploadPop<IFileUploadChooser> {
 
 
-    //    private Activity mActivity;
     private WeakReference<Activity> mActivityWeakReference = null;
     private AlertDialog promptDialog = null;
     private AlertDialog confirmDialog = null;
     private JsPromptResult pJsResult = null;
     private JsResult cJsResult = null;
+    private String TAG = DefaultChromeClient.class.getSimpleName();
     private ChromeClientCallbackManager mChromeClientCallbackManager;
-
     public static final String ChromePath = "android.webkit.WebChromeClient";
     private WebChromeClient mWebChromeClient;
     private boolean isWrapper = false;
-
     private IFileUploadChooser mIFileUploadChooser;
-
     private IVideo mIVideo;
 
 
-    public DefaultChromeClient(Activity activity, IndicatorController indicatorController, WebChromeClient chromeClient, ChromeClientCallbackManager chromeClientCallbackManager, @Nullable IVideo iVideo) {
+    DefaultChromeClient(Activity activity,
+                        IndicatorController indicatorController,
+                        WebChromeClient chromeClient,
+                        ChromeClientCallbackManager chromeClientCallbackManager,
+                        @Nullable IVideo iVideo,
+                        DefaultMsgConfig.ChromeClientMsgCfg chromeClientMsgCfg) {
         super(indicatorController, chromeClient);
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
-//        this.mActivity = activity;
         mActivityWeakReference = new WeakReference<Activity>(activity);
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
-
-        this.mIVideo  = iVideo;
+        this.mIVideo = iVideo;
     }
 
 
@@ -117,7 +117,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         return true;
     }
 
-    
+
     @Override
     public void onReceivedIcon(WebView view, Bitmap icon) {
         super.onReceivedIcon(view, icon);
@@ -126,14 +126,14 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public void onGeolocationPermissionsHidePrompt() {
         super.onGeolocationPermissionsHidePrompt();
-        LogUtils.i("Info","onGeolocationPermissionsHidePrompt");
+        LogUtils.i("Info", "onGeolocationPermissionsHidePrompt");
     }
 
     //location
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 
-        LogUtils.i("Info","onGeolocationPermissionsShowPrompt:"+origin+"   callback:"+callback);
+        LogUtils.i("Info", "onGeolocationPermissionsShowPrompt:" + origin + "   callback:" + callback);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ChromePath + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             return;
@@ -339,7 +339,6 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null)
             return;
-        ;
         this.mIFileUploadChooser = new FileUpLoadChooserImpl(mActivity, valueCallback);
         this.mIFileUploadChooser.openFileChooser();
 
@@ -347,7 +346,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     @Override
     public IFileUploadChooser pop() {
-        Log.i("Info", "offer:" + mIFileUploadChooser);
+        Log.i(TAG, "offer:" + mIFileUploadChooser);
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
         this.mIFileUploadChooser = null;
         return mIFileUploadChooser;
@@ -361,18 +360,17 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     }
 
 
-
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
-        LogUtils.i("Info", "view:" + view + "   callback:" + callback);
+        LogUtils.i(TAG, "view:" + view + "   callback:" + callback);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowCustomView", ChromePath + ".onShowCustomView", View.class, CustomViewCallback.class)) {
             super.onShowCustomView(view, callback);
             return;
         }
 
 
-        if(mIVideo!=null)
-            mIVideo.onShowCustomView(view,callback);
+        if (mIVideo != null)
+            mIVideo.onShowCustomView(view, callback);
 
 
     }
@@ -380,13 +378,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public void onHideCustomView() {
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ChromePath + ".onHideCustomView")) {
-            LogUtils.i("Info","onHide:"+true);
+            LogUtils.i(TAG, "onHide:" + true);
             super.onHideCustomView();
             return;
         }
 
-        LogUtils.i("Info","Videa:"+mIVideo);
-        if(mIVideo!=null)
+        LogUtils.i(TAG, "Video:" + mIVideo);
+        if (mIVideo != null)
             mIVideo.onHideCustomView();
 
     }

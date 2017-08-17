@@ -43,11 +43,12 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     @Override
     public synchronized void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
-//        LogUtils.i("Info", "  package:" + mContext.getPackageName() + "  userAgent:" + userAgent + " contentDisposition:" + contentDisposition + "  mine:" + mimetype + "  c:" + contentLength + "   url:" + url);
 
 
         File mFile = getFile(contentDisposition, url);
-        if (mFile != null && mFile.exists() && mFile.length() >= contentLength) {
+        if (mFile == null)
+            return;
+        if ( mFile.exists() && mFile.length() >= contentLength) {
 
             Intent mIntent = AgentWebUtils.getIntentCompat(mContext, mFile);
             try {
@@ -67,8 +68,6 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             return;
         }
 
-        if (mFile == null)
-            return;
 
         if (AgentWebUtils.checkNetworkType(mContext) > 1) { //移动数据
 
