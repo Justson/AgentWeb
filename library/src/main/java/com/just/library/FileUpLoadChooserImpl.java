@@ -29,7 +29,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private int tag = 0;
     private static final int REQUEST_CODE = 0x254;
     private boolean isL = false;
-
     private WebChromeClient.FileChooserParams mFileChooserParams;
     private JsChannelCallback mJsChannelCallback;
     private boolean jsChannel = false;
@@ -70,12 +69,10 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     @Override
     public void openFileChooser() {
-        //
         openFileChooserInternal();
-
     }
 
-    private void realOpenFileChooser() {
+    private void fileChooser() {
         if (isL && mFileChooserParams != null)
             mActivity.startActivityForResult(mFileChooserParams.createIntent(), REQUEST_CODE);
         else
@@ -93,7 +90,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                             LogUtils.i(TAG, "which:" + which);
                             if (which == 1) {
                                 cameraState = false;
-                                realOpenFileChooser();
+                                fileChooser();
                             } else {
                                 cameraState = true;
                                 realOpenCamera();
@@ -112,15 +109,21 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void realOpenCamera() {
 
-        if (mActivity == null)
-            return;
-        Intent intent = new Intent();
-        // 指定开启系统相机的Action
-        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        mUri = Uri.fromFile(AgentWebUtils.getImageFile());
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-        mActivity.startActivityForResult(intent, REQUEST_CODE);
+        try {
+            if (mActivity == null)
+                return;
+            Intent intent = new Intent();
+            // 指定开启系统相机的Action
+            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            mUri = Uri.fromFile(AgentWebUtils.createFile());
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
+            mActivity.startActivityForResult(intent, REQUEST_CODE);
+        }catch (Throwable ignore){
+            LogUtils.i(TAG,"找不到系统相机");
+        }
+
+
     }
 
 
@@ -223,11 +226,16 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void openRealFileChooser() {
 
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType("*/*");
-        mActivity.startActivityForResult(Intent.createChooser(i,
-                "File Chooser"), REQUEST_CODE);
+        try{
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            i.setType("*/*");
+            mActivity.startActivityForResult(Intent.createChooser(i,
+                    "File Chooser"), REQUEST_CODE);
+        }catch (Throwable throwable){
+            LogUtils.i(TAG,"找不到文件选择器");
+        }
+
     }
 
     static class CovertFileThread extends Thread {

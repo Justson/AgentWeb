@@ -425,7 +425,7 @@ public class AgentWebUtils {
         return mQueue;
     }
 
-    public static File getImageFile() {
+    public static File createFile() {
         File mFile=null;
         try {
 
