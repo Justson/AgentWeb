@@ -36,7 +36,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private static final String TAG = FileUpLoadChooserImpl.class.getSimpleName();
     private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
     private Uri mUri;
-
+    private WebView mWebView;
     private boolean cameraState = false;
 
     FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
@@ -48,7 +48,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
     FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
-
+        this.mWebView=webView;
         jsChannel = false;
         this.mActivity = activity;
         this.mUriValueCallbacks = valueCallback;
@@ -149,7 +149,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                 if (cameraState && mUriValueCallback != null)
                     mUriValueCallback.onReceiveValue(mUri);
                 else
-                    handleDataBelow(data);
+                    handleBelowLData(data);
             }
 
         }
@@ -182,10 +182,10 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
 
-    private void handleDataBelow(Intent data) {
+    private void handleBelowLData(Intent data) {
         Uri mUri = data == null ? null : data.getData();
 
-        LogUtils.i(TAG, "handleDataBelow  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
+        LogUtils.i(TAG, "handleBelowLData  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
         if (mUriValueCallback != null)
             mUriValueCallback.onReceiveValue(mUri);
 

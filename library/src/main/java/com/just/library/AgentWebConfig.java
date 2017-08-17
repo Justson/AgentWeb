@@ -107,20 +107,6 @@ public class AgentWebConfig {
     }
 
 
-    /*public static void syncCookie(Context context, String cookies, String url) {
-
-        try {
-           // createCookiesSyncInstance(context);
-            CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.setCookie(url, cookies);
-            toSyncCookies();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }*/
-
 
     private static boolean isInit = false;
 

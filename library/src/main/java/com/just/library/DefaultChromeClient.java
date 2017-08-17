@@ -172,7 +172,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             return super.onJsConfirm(view, url, message, result);
         }
         showJsConfirm(message, result);
-        return true;
+        return true; //
     }
 
 
