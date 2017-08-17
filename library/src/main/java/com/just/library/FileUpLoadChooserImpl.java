@@ -112,11 +112,11 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         try {
             if (mActivity == null)
                 return;
-            Intent intent = new Intent();
+            Intent intent = AgentWebUtils.getIntentCompat(mActivity,AgentWebUtils.createFile());
             // 指定开启系统相机的Action
+            mUri = intent.getData();
             intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
-            mUri = Uri.fromFile(AgentWebUtils.createFile());
             intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
             mActivity.startActivityForResult(intent, REQUEST_CODE);
         }catch (Throwable ignore){
@@ -142,9 +142,9 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         if (resultCode == Activity.RESULT_OK) {
 
             if (isL)
-                handleAboveL(cameraState ? new Uri[]{mUri} : handleData(data));
+                handleAboveL(cameraState ? new Uri[]{mUri} : processData(data));
             else if (jsChannel)
-                convertFileAndCallBack(cameraState ? new Uri[]{mUri} : handleData(data));
+                convertFileAndCallBack(cameraState ? new Uri[]{mUri} : processData(data));
             else {
                 if (cameraState && mUriValueCallback != null)
                     mUriValueCallback.onReceiveValue(mUri);
@@ -177,7 +177,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             return;
         }
 
-//        Log.i("Info", "length:" + paths.length);
         new CovertFileThread(this.mJsChannelCallback, paths).start();
 
     }
@@ -186,13 +185,13 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private void handleDataBelow(Intent data) {
         Uri mUri = data == null ? null : data.getData();
 
-        LogUtils.i("Info", "handleDataBelow  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
+        LogUtils.i(TAG, "handleDataBelow  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
         if (mUriValueCallback != null)
             mUriValueCallback.onReceiveValue(mUri);
 
     }
 
-    private Uri[] handleData(Intent data) {
+    private Uri[] processData(Intent data) {
 
         Uri[] datas = null;
         if (data == null) {

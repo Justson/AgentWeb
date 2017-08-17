@@ -588,10 +588,6 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder setWebCreator(@Nullable WebCreator webCreator) {
-            this.mAgentBuilder.mWebCreator = webCreator;
-            return this;
-        }
 
         public CommonAgentBuilder setReceivedTitleCallback(@Nullable ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback) {
             this.mAgentBuilder.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
@@ -797,10 +793,7 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setWebCreator(@Nullable WebCreator webCreator) {
-            this.mAgentBuilderFragment.mWebCreator = webCreator;
-            return this;
-        }
+        
 
         public CommonBuilderForFragment setWebChromeClient(@Nullable WebChromeClient webChromeClient) {
             this.mAgentBuilderFragment.mWebChromeClient = webChromeClient;
