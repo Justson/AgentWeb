@@ -2,8 +2,6 @@ package com.just.library;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -65,7 +63,6 @@ public class AgentWeb {
     private static final int ACTIVITY_TAG = 0;
     private static final int FRAGMENT_TAG = 1;
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
-    private Handler mHandler = new Handler(Looper.getMainLooper());
     private JsEntraceAccess mJsEntraceAccess = null;
     private ILoader mILoader = null;
     private WebLifeCycle mWebLifeCycle;
@@ -304,7 +301,7 @@ public class AgentWeb {
     private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners) {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true, downLoadResultListeners, mDefaultMsgConfig.getDownLoadMsgConfig());
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true, downLoadResultListeners, mDefaultMsgConfig.getDownLoadMsgConfig(),mPermissionInterceptor);
         }
     }
 
@@ -321,7 +318,7 @@ public class AgentWeb {
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg());
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(),this.mPermissionInterceptor,mWebCreator.get());
     }
 
     private IVideo getIVideo() {
@@ -337,7 +334,7 @@ public class AgentWeb {
         if (!webClientHelper && AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
             return mWebViewClient;
         } else {
-            return new DefaultWebClient(mActivity, this.mWebViewClient, this.mWebViewClientCallbackManager, webClientHelper);
+            return new DefaultWebClient(mActivity, this.mWebViewClient, this.mWebViewClientCallbackManager, webClientHelper,mPermissionInterceptor,mWebCreator.get());
         }
 
     }

@@ -56,7 +56,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
         LogUtils.i("Info", "static  hasAlipayLib:" + hasAlipayLib);
     }
 
-    DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper) {
+    DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
         super(client);
         this.mWebViewClient = client;
         mWeakReference = new WeakReference<Activity>(activity);

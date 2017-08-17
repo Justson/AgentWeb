@@ -52,13 +52,15 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private IFileUploadChooser mIFileUploadChooser;
     private IVideo mIVideo;
     private DefaultMsgConfig.ChromeClientMsgCfg mChromeClientMsgCfg;
+    private PermissionInterceptor mPermissionInterceptor;
+    private WebView mWebView;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
                         WebChromeClient chromeClient,
                         ChromeClientCallbackManager chromeClientCallbackManager,
                         @Nullable IVideo iVideo,
-                        DefaultMsgConfig.ChromeClientMsgCfg chromeClientMsgCfg) {
+                        DefaultMsgConfig.ChromeClientMsgCfg chromeClientMsgCfg, PermissionInterceptor permissionInterceptor, WebView webView) {
         super(indicatorController, chromeClient);
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
@@ -66,6 +68,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
         this.mIVideo = iVideo;
         this.mChromeClientMsgCfg=chromeClientMsgCfg;
+        this.mPermissionInterceptor=permissionInterceptor;
+        this.mWebView = webView;
     }
 
 

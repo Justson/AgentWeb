@@ -31,7 +31,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private WeakReference<Activity> mActivityWeakReference = null;
     private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=null;
 
-    public DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig) {
+    public DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig, PermissionInterceptor permissionInterceptor) {
         mActivityWeakReference = new WeakReference<Activity>(context);
         this.mContext = context.getApplicationContext();
         this.isForce = isforce;
