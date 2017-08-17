@@ -353,7 +353,6 @@ public class AgentWeb {
         return this;
     }
 
-    private boolean isKillProcess = false;
 
     public void destroy() {
         this.mWebLifeCycle.onDestroy();
@@ -548,7 +547,7 @@ public class AgentWeb {
 
     }
 
-    public static class CommonAgentBuilder {
+    public static final class CommonAgentBuilder {
         private AgentBuilder mAgentBuilder;
 
 
