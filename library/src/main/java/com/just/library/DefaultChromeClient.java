@@ -51,7 +51,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private boolean isWrapper = false;
     private IFileUploadChooser mIFileUploadChooser;
     private IVideo mIVideo;
-
+    private DefaultMsgConfig.ChromeClientMsgCfg mChromeClientMsgCfg;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
@@ -65,6 +65,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         mActivityWeakReference = new WeakReference<Activity>(activity);
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
         this.mIVideo = iVideo;
+        this.mChromeClientMsgCfg=chromeClientMsgCfg;
     }
 
 
@@ -297,7 +298,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         if (mActivity == null)
             return;
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
-        this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl(webView, mActivity, filePathCallback, fileChooserParams);
+        this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl(webView, mActivity, filePathCallback, fileChooserParams,mChromeClientMsgCfg.getFileUploadMsgConfig());
         mIFileUploadChooser.openFileChooser();
 
     }
@@ -339,7 +340,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null)
             return;
-        this.mIFileUploadChooser = new FileUpLoadChooserImpl(mActivity, valueCallback);
+        this.mIFileUploadChooser = new FileUpLoadChooserImpl(mActivity, valueCallback,mChromeClientMsgCfg.getFileUploadMsgConfig());
         this.mIFileUploadChooser.openFileChooser();
 
     }

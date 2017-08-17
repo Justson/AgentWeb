@@ -228,7 +228,7 @@ public final class DefaultMsgConfig {
 
     public static final  class ChromeClientMsgCfg{
 
-        public FileUploadMsgConfig mFileUploadMsgConfig=new FileUploadMsgConfig();
+        private FileUploadMsgConfig mFileUploadMsgConfig=new FileUploadMsgConfig();
 
         public FileUploadMsgConfig getFileUploadMsgConfig() {
             return mFileUploadMsgConfig;

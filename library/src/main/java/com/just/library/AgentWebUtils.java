@@ -57,6 +57,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
+
 /**
  * <b>@项目名：</b> agentweb<br>
  * <b>@包名：</b>com.just.library<br>
@@ -421,6 +423,18 @@ public class AgentWebUtils {
 
         LogUtils.i("Info", "isShutDown:" + (((ThreadPoolExecutor) mExecutor).isShutdown()));
         return mQueue;
+    }
+
+    public static File getImageFile() {
+        File mFile=null;
+        try {
+
+            mFile=new File(DOWNLOAD_FILE_PATH,System.currentTimeMillis()+"");
+            mFile.createNewFile();
+        }catch (Throwable e){
+
+        }
+        return mFile;
     }
 
 

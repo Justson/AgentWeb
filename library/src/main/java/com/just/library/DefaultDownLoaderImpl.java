@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
@@ -13,6 +12,8 @@ import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
+
+import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
@@ -157,7 +158,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             }
 
             LogUtils.i("Info", "file:" + filename);
-            File mFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + AgentWebConfig.DOWNLOAD_PATH, filename);
+            File mFile = new File(DOWNLOAD_FILE_PATH, filename);
             if (!mFile.exists())
                 mFile.createNewFile();
             return mFile;

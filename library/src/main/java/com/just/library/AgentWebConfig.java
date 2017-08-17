@@ -3,10 +3,13 @@ package com.just.library;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
+
+import java.io.File;
 
 /**
  * Created by cenxiaozhong on 2017/5/14.
@@ -21,6 +24,7 @@ public class AgentWebConfig {
     static final String DOWNLOAD_PATH = "download";
 
 
+    static final String DOWNLOAD_FILE_PATH= Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + AgentWebConfig.DOWNLOAD_PATH;
     public static boolean DEBUG=true;
 
     static final boolean isKikatOrBelowKikat = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;

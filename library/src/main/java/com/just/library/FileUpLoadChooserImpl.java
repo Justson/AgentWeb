@@ -5,10 +5,10 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -34,30 +34,37 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private JsChannelCallback mJsChannelCallback;
     private boolean jsChannel = false;
     private AlertDialog mAlertDialog;
-    private static final String TAG=FileUpLoadChooserImpl.class.getSimpleName();
+    private static final String TAG = FileUpLoadChooserImpl.class.getSimpleName();
+    private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
+    private Uri mUri;
 
-    FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback) {
+    private boolean cameraState = false;
+
+    FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
         this.mActivity = activity;
         this.mUriValueCallback = callback;
         isL = false;
+        this.mFileUploadMsgConfig = fileUploadMsgConfig;
         jsChannel = false;
     }
 
-    FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams) {
+    FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
 
         jsChannel = false;
         this.mActivity = activity;
         this.mUriValueCallbacks = valueCallback;
         this.mFileChooserParams = fileChooserParams;
         isL = true;
+        this.mFileUploadMsgConfig = fileUploadMsgConfig;
     }
 
-    FileUpLoadChooserImpl(Activity activity, JsChannelCallback jsChannelCallback) {
+    FileUpLoadChooserImpl(Activity activity, JsChannelCallback jsChannelCallback, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
         if (jsChannelCallback == null)
             throw new NullPointerException("jsChannelCallback can not null");
         jsChannel = true;
         this.mJsChannelCallback = jsChannelCallback;
         this.mActivity = activity;
+        this.mFileUploadMsgConfig = fileUploadMsgConfig;
 
     }
 
@@ -79,11 +86,23 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         if (mAlertDialog == null)
             mAlertDialog = new AlertDialog.Builder(mActivity)//
-                    .setSingleChoiceItems(new String[]{"相机", "文件选择器"}, 1, new DialogInterface.OnClickListener() {
+                    .setSingleChoiceItems(mFileUploadMsgConfig.getMedias(), -1, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
-                            LogUtils.i(TAG,"which:"+which);
+                            mAlertDialog.dismiss();
+                            LogUtils.i(TAG, "which:" + which);
+                            if (which == 1) {
+                                cameraState = false;
+                                realOpenFileChooser();
+                            } else {
+                                cameraState = true;
+                                realOpenCamera();
+                            }
+                        }
+                    }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            cancel();
                         }
                     }).create();
         mAlertDialog.show();
@@ -91,40 +110,60 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     }
 
+    private void realOpenCamera() {
+
+        if (mActivity == null)
+            return;
+        Intent intent = new Intent();
+        // 指定开启系统相机的Action
+        intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        mUri = Uri.fromFile(AgentWebUtils.getImageFile());
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
+        mActivity.startActivityForResult(intent, REQUEST_CODE);
+    }
+
 
     @Override
     public void fetchFilePathFromIntent(int requestCode, int resultCode, Intent data) {
 
-        Log.i("Info", "request:" + requestCode + "  result:" + resultCode + "  data:" + data);
+        LogUtils.i(TAG, "request:" + requestCode + "  result:" + resultCode + "  data:" + data);
         if (REQUEST_CODE != requestCode)
             return;
 
         if (resultCode == Activity.RESULT_CANCELED) {
-
-
-            if (jsChannel) {
-                mJsChannelCallback.call(null);
-                return;
-            }
-            if (mUriValueCallback != null)
-                mUriValueCallback.onReceiveValue(null);
-            if (mUriValueCallbacks != null)
-                mUriValueCallbacks.onReceiveValue(null);
+            cancel();
             return;
         }
 
         if (resultCode == Activity.RESULT_OK) {
 
             if (isL)
-                handleAboveL(handleData(data));
+                handleAboveL(cameraState ? new Uri[]{mUri} : handleData(data));
             else if (jsChannel)
-                convertFileAndCallBack(handleData(data));
-            else
-                handleDataBelow(data);
+                convertFileAndCallBack(cameraState ? new Uri[]{mUri} : handleData(data));
+            else {
+                if (cameraState && mUriValueCallback != null)
+                    mUriValueCallback.onReceiveValue(mUri);
+                else
+                    handleDataBelow(data);
+            }
 
         }
 
 
+    }
+
+    private void cancel() {
+        if (jsChannel) {
+            mJsChannelCallback.call(null);
+            return;
+        }
+        if (mUriValueCallback != null)
+            mUriValueCallback.onReceiveValue(null);
+        if (mUriValueCallbacks != null)
+            mUriValueCallbacks.onReceiveValue(null);
+        return;
     }
 
     private void convertFileAndCallBack(final Uri[] uris) {
