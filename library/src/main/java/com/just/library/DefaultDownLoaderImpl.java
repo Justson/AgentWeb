@@ -30,19 +30,38 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private LinkedList<String> mList = new LinkedList<>();
     private WeakReference<Activity> mActivityWeakReference = null;
     private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=null;
+    private static final String TAG=DefaultDownLoaderImpl.class.getSimpleName();
+    private PermissionInterceptor mPermissionListener=null;
 
-    public DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig, PermissionInterceptor permissionInterceptor) {
+     DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig, PermissionInterceptor permissionInterceptor) {
         mActivityWeakReference = new WeakReference<Activity>(context);
         this.mContext = context.getApplicationContext();
         this.isForce = isforce;
         this.enableIndicator = enableIndicator;
         this.mDownLoadResultListeners = downLoadResultListeners;
         this.mDownLoadMsgConfig=msgConfig;
+        this.mPermissionListener=permissionInterceptor;
     }
 
 
     @Override
     public synchronized void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+
+        onDownloadStartInternal(url, contentDisposition,  mimetype,contentLength);
+
+    }
+
+    private void onDownloadStartInternal(String url, String contentDisposition, String mimetype, long contentLength) {
+
+
+        LogUtils.i(TAG,"mime:"+mimetype);
+        if(this.mPermissionListener!=null){
+
+            if(this.mPermissionListener.intercept(url,AgentWebPermissions.STORAGE,"download")){
+                return;
+            }
+
+        }
 
 
 
@@ -75,10 +94,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             showDialog(url, contentLength, mFile);
             return;
         }
-
         performDownLoad(url, contentLength, mFile);
-
-
     }
 
     private void forceDown(final String url, final long contentLength, final File file) {

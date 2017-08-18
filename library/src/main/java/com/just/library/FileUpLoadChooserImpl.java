@@ -51,7 +51,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         this.mUriValueCallback = builder.mUriValueCallback;
         this.mUriValueCallbacks = builder.mUriValueCallbacks;
         this.isL = builder.isL;
-        this.jsChannel=builder.jsChannel;
+        this.jsChannel = builder.jsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
         this.mJsChannelCallback = builder.mJsChannelCallback;
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
@@ -119,7 +119,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             return;
 
         if (mPermissionInterceptor != null) {
-            if (mPermissionInterceptor.intercept(this.mWebView.getUrl(), AgentWebPermissions.CAMERA[0])) {
+            if (mPermissionInterceptor.intercept(this.mWebView.getUrl(), AgentWebPermissions.CAMERA,"camera")) {
                 cancel();
                 return;
             }

@@ -872,11 +872,11 @@ public class AgentWeb {
             this.mWeakReference=new WeakReference<PermissionInterceptor>(permissionInterceptor);
         }
         @Override
-        public boolean intercept(String url, String permissions) {
+        public boolean intercept(String url, String[] permissions,String a) {
             if(this.mWeakReference.get()==null){
                 return false;
             }
-            return mWeakReference.get().intercept(url,permissions);
+            return mWeakReference.get().intercept(url,permissions,a);
         }
     }
 

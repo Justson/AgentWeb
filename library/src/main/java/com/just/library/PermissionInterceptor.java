@@ -6,6 +6,6 @@ package com.just.library;
 
 public interface PermissionInterceptor {
 
-    boolean intercept(String url , String permissions);
+    boolean intercept(String url, String[] permissions, String action);
 
 }
