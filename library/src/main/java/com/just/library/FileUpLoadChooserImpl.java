@@ -4,17 +4,24 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 import static com.just.library.ActionActivity.KEY_ACTION;
 import static com.just.library.ActionActivity.KEY_URI;
+import static com.just.library.ActionActivity.start;
 
 /**
  * Created by cenxiaozhong on 2017/5/22.
@@ -44,6 +51,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         this.mUriValueCallback = builder.mUriValueCallback;
         this.mUriValueCallbacks = builder.mUriValueCallbacks;
         this.isL = builder.isL;
+        this.jsChannel=builder.jsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
         this.mJsChannelCallback = builder.mJsChannelCallback;
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
@@ -60,22 +68,22 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private void fileChooser() {
         ActionActivity.Action mAction = new ActionActivity.Action();
         mAction.setAction(ActionActivity.Action.ACTION_FILE);
-        ActionActivity.setFileDataListener(mFileDataListener);
+        ActionActivity.setFileDataListener(getFileDataListener());
         mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction));
 
     }
 
-    private final ActionActivity.FileDataListener mFileDataListener = new ActionActivity.FileDataListener() {
-        @Override
-        public void onFileDataResult(int requestCode, int resultCode, Intent data) {
-            fetchFilePathFromIntent(requestCode, resultCode, data);
-        }
-    };
+    private ActionActivity.FileDataListener getFileDataListener() {
+        return new ActionActivity.FileDataListener() {
+            @Override
+            public void onFileDataResult(int requestCode, int resultCode, Intent data) {
 
-    private void checkPermission() {
-
-
+                LogUtils.i(TAG, "request:" + requestCode + "  resultCode:" + resultCode);
+                fetchFilePathFromIntent(requestCode, resultCode, data);
+            }
+        };
     }
+
 
     private void openFileChooserInternal() {
 
@@ -91,7 +99,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                                 fileChooser();
                             } else {
                                 cameraState = true;
-                                realOpenCamera();
+                                onCameraAction();
                             }
                         }
                     }).setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -105,19 +113,80 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     }
 
-    private void realOpenCamera() {
+    private void onCameraAction() {
 
         if (mActivity == null)
             return;
 
+        if (mPermissionInterceptor != null) {
+            if (mPermissionInterceptor.intercept(this.mWebView.getUrl(), AgentWebPermissions.CAMERA[0])) {
+                cancel();
+                return;
+            }
+        }
 
-        ActionActivity.Action mAction=new ActionActivity.Action();
-        mAction.setAction(ActionActivity.Action.ACTION_CAMERA);
-        ActionActivity.setFileDataListener(this.mFileDataListener);
-        mActivity.startActivity(new Intent(mActivity,ActionActivity.class).putExtra(KEY_ACTION,mAction));
+        ActionActivity.Action mAction = new ActionActivity.Action();
+        List<String> deniedPermissions = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(deniedPermissions = checkNeedPermission()).isEmpty()) {
+            mAction.setAction(ActionActivity.Action.ACTION_PERMISSION);
+            mAction.setPermissions(deniedPermissions.toArray(new String[]{}));
+            ActionActivity.setPermissionListener(this.mPermissionListener);
+            start(mActivity, mAction);
+        } else {
+            openCameraAction();
+        }
 
     }
 
+    private List<String> checkNeedPermission() {
+
+        List<String> deniedPermissions = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(mActivity, AgentWebPermissions.CAMERA[0]) != PackageManager.PERMISSION_GRANTED) {
+            deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
+        }
+        for (int i = 0; i < AgentWebPermissions.STORAGE.length; i++) {
+
+            if (ContextCompat.checkSelfPermission(mActivity, AgentWebPermissions.STORAGE[i]) != PackageManager.PERMISSION_GRANTED) {
+                deniedPermissions.add(AgentWebPermissions.STORAGE[i]);
+            }
+        }
+        return deniedPermissions;
+    }
+
+    private void openCameraAction() {
+        ActionActivity.Action mAction = new ActionActivity.Action();
+        mAction.setAction(ActionActivity.Action.ACTION_CAMERA);
+        ActionActivity.setFileDataListener(this.getFileDataListener());
+        ActionActivity.start(mActivity, mAction);
+    }
+
+    private ActionActivity.PermissionListener mPermissionListener = new ActionActivity.PermissionListener() {
+        @Override
+        public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+
+            boolean tag = true;
+            for (int i = 0; i < permissions.length; i++) {
+
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    tag = false;
+                    break;
+                }
+            }
+            permissionResult(tag);
+
+        }
+    };
+
+    private void permissionResult(boolean grant) {
+        if (grant)
+            openCameraAction();
+        else {
+            LogUtils.i(TAG, "permission denied");
+            cancel();
+        }
+
+    }
 
     @Override
     public void fetchFilePathFromIntent(int requestCode, int resultCode, Intent data) {
@@ -139,7 +208,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                 convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
             else {
                 if (cameraState && mUriValueCallback != null)
-                    mUriValueCallback.onReceiveValue((Uri)data.getParcelableExtra(KEY_URI));
+                    mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
                 else
                     handleBelowLData(data);
             }
@@ -159,18 +228,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         if (mUriValueCallbacks != null)
             mUriValueCallbacks.onReceiveValue(null);
         return;
-    }
-
-    private void convertFileAndCallBack(final Uri[] uris) {
-
-        String[] paths = null;
-        if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
-            mJsChannelCallback.call(null);
-            return;
-        }
-
-        new CovertFileThread(this.mJsChannelCallback, paths).start();
-
     }
 
 
@@ -205,6 +262,18 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         }
         return datas;
 
+
+    }
+
+    private void convertFileAndCallBack(final Uri[] uris) {
+
+        String[] paths = null;
+        if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
+            mJsChannelCallback.call(null);
+            return;
+        }
+
+        new CovertFileThread(this.mJsChannelCallback, paths).start();
 
     }
 

@@ -187,11 +187,10 @@ public class AgentWebUtils {
     }
 
 
-
     public static Uri getUriFromFile(Context context, File file) {
         Uri uri = null;
 
-        LogUtils.i("Info","::"+context.getApplicationInfo().targetSdkVersion+"   INT:"+Build.VERSION.SDK_INT );
+//        LogUtils.i("Info", "::" + context.getApplicationInfo().targetSdkVersion + "   INT:" + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             uri = getUriFromFileForN(context, file);
         } else {
@@ -429,8 +428,8 @@ public class AgentWebUtils {
         String[] paths = new String[uris.length];
         int i = 0;
         for (Uri mUri : uris) {
+//            Log.i("Info", "  uri:" + mUri);
             paths[i++] = Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ? getFileAbsolutePath(activity, mUri) : getRealPathBelowVersion(activity, mUri);
-//            Log.i("Info", "path:" + paths[i-1] + "  uri:" + mUri);
 
         }
         return paths;
@@ -485,12 +484,12 @@ public class AgentWebUtils {
     }
 
     public static File createFile() {
-        File mFile=null;
+        File mFile = null;
         try {
 
-            mFile=new File(DOWNLOAD_FILE_PATH,System.currentTimeMillis()+"");
+            mFile = new File(DOWNLOAD_FILE_PATH, System.currentTimeMillis() + "");
             mFile.createNewFile();
-        }catch (Throwable e){
+        } catch (Throwable e) {
 
         }
         return mFile;
@@ -548,8 +547,11 @@ public class AgentWebUtils {
 
     @TargetApi(19)
     public static String getFileAbsolutePath(Activity context, Uri fileUri) {
+
         if (context == null || fileUri == null)
             return null;
+
+        LogUtils.i("Info","getAuthority:"+fileUri.getAuthority()+"  getHost:"+fileUri.getHost()+"   getPath:"+fileUri.getPath()+"  getScheme:"+fileUri.getScheme()+"  query:"+fileUri.getQuery());
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
             if (isExternalStorageDocument(fileUri)) {
                 String docId = DocumentsContract.getDocumentId(fileUri);
@@ -566,6 +568,7 @@ public class AgentWebUtils {
                 String docId = DocumentsContract.getDocumentId(fileUri);
                 String[] split = docId.split(":");
                 String type = split[0];
+
                 Uri contentUri = null;
                 if ("image".equals(type)) {
                     contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -579,7 +582,12 @@ public class AgentWebUtils {
                 return getDataColumn(context, contentUri, selection, selectionArgs);
             }
         } // MediaStore (and general)
-        else if ("content".equalsIgnoreCase(fileUri.getScheme())) {
+        else if(fileUri.getAuthority().equalsIgnoreCase(context.getPackageName() + ".AgentWebFileProvider")){
+
+            String path=fileUri.getPath();
+            int index=path.lastIndexOf("/");
+            return Environment.getExternalStorageDirectory()+File.separator+AgentWebConfig.DOWNLOAD_PATH+File.separator+path.substring(index+1,path.length());
+        }else if ("content".equalsIgnoreCase(fileUri.getScheme())) {
             // Return the remote address
             if (isGooglePhotosUri(fileUri))
                 return fileUri.getLastPathSegment();
@@ -598,7 +606,12 @@ public class AgentWebUtils {
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
+                /*List<String> mList = Arrays.asList(cursor.getColumnNames());
+                if (!mList.contains(MediaStore.Images.Media.DATA)) {
+                    LogUtils.i("Info", "datas:" + mList);
+                }*/
                 int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
                 return cursor.getString(index);
             }
         } finally {
@@ -642,21 +655,18 @@ public class AgentWebUtils {
 
     public static Intent getInstallApkIntentCompat(Context context, File file) {
 
-        Intent mIntent=new Intent().setAction(Intent.ACTION_VIEW).setType("application/vnd.android.package-archive");
-        setIntentData(context,mIntent,file,false);
+        Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW).setType("application/vnd.android.package-archive");
+        setIntentData(context, mIntent, file, false);
         return mIntent;
     }
 
     public static Intent getIntentCaptureCompat(Context context, File file) {
         Intent mIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        Uri mUri= getUriFromFile(context,file);
+        Uri mUri = getUriFromFile(context, file);
         mIntent.addCategory(Intent.CATEGORY_DEFAULT);
-        mIntent.putExtra(MediaStore.EXTRA_OUTPUT,mUri);
+        mIntent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
         return mIntent;
     }
-
-
-
 
 
     public static boolean isJson(String target) {

@@ -24,12 +24,15 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import java.io.File;
+
 import static android.provider.MediaStore.EXTRA_OUTPUT;
 import static com.just.library.ActionActivity.Action.ACTION_CAMERA;
 import static com.just.library.FileUpLoadChooserImpl.REQUEST_CODE;
 
 /**
  * <p>
+ * Created by cenxiaozhong on 2017.
  * </p>
  */
 public final class ActionActivity extends Activity {
@@ -39,7 +42,16 @@ public final class ActionActivity extends Activity {
     private static RationaleListener mRationaleListener;
     private static PermissionListener mPermissionListener;
     private static FileDataListener mFileDataListener;
-    private static final String TAG=ActionActivity.class.getSimpleName();
+    private static final String TAG = ActionActivity.class.getSimpleName();
+
+
+    static void start(Activity activity, Action action) {
+
+        Intent mIntent = new Intent(activity, ActionActivity.class);
+        mIntent.putExtra(KEY_ACTION, action);
+        activity.startActivity(mIntent);
+
+    }
 
     public static void setFileDataListener(FileDataListener fileDataListener) {
         mFileDataListener = fileDataListener;
@@ -54,18 +66,19 @@ public final class ActionActivity extends Activity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         Action mAction = intent.getParcelableExtra(KEY_ACTION);
-        if (mAction.action == Action.ACTION_PERMISSION){
+        if (mAction.action == Action.ACTION_PERMISSION) {
             permission(mAction);
-        }else if(mAction.action==ACTION_CAMERA){
+        } else if (mAction.action == ACTION_CAMERA) {
             realOpenCamera();
-        }else{
+        } else {
             fetchFile(mAction);
         }
 
     }
-    private void fetchFile(Action action){
 
-        if(mFileDataListener==null)
+    private void fetchFile(Action action) {
+
+        if (mFileDataListener == null)
             finish();
 
         openRealFileChooser();
@@ -74,7 +87,7 @@ public final class ActionActivity extends Activity {
     private void openRealFileChooser() {
 
         try {
-            if(mFileDataListener==null)
+            if (mFileDataListener == null)
                 return;
 
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
@@ -84,8 +97,8 @@ public final class ActionActivity extends Activity {
                     "File Chooser"), REQUEST_CODE);
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "找不到文件选择器");
-            mFileDataListener.onFileDataResult(REQUEST_CODE,-1,null);
-            mFileDataListener=null;
+            mFileDataListener.onFileDataResult(REQUEST_CODE, -1, null);
+            mFileDataListener = null;
             finish();
         }
 
@@ -94,9 +107,12 @@ public final class ActionActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode==REQUEST_CODE){
-            mFileDataListener.onFileDataResult(requestCode,resultCode,mUri!=null?new Intent().putExtra(KEY_URI,mUri):data);
-            mFileDataListener=null;
+
+        LogUtils.i(TAG, "mFileDataListener:" + mFileDataListener);
+        if (requestCode == REQUEST_CODE) {
+//            if (mFileDataListener != null)
+            mFileDataListener.onFileDataResult(requestCode, resultCode, mUri != null ? new Intent().putExtra(KEY_URI, mUri) : data);
+            mFileDataListener = null;
             finish();
         }
     }
@@ -105,6 +121,8 @@ public final class ActionActivity extends Activity {
         String[] permissions = action.permissions;
 
         if (permissions == null) {
+            mPermissionListener = null;
+            mRationaleListener = null;
             finish();
             return;
         }
@@ -124,18 +142,24 @@ public final class ActionActivity extends Activity {
         if (mPermissionListener != null)
             requestPermissions(permissions, 1);
     }
+
     private Uri mUri;
 
     private void realOpenCamera() {
 
         try {
-            Intent intent = AgentWebUtils.getIntentCaptureCompat(this, AgentWebUtils.createFile());
+            if (mFileDataListener == null)
+                finish();
+            File mFile=null;
+            Intent intent = AgentWebUtils.getIntentCaptureCompat(this,mFile= AgentWebUtils.createFile());
+            LogUtils.i(TAG, "listener:" + mFileDataListener+"  file:"+mFile.getAbsolutePath());
             // 指定开启系统相机的Action
             mUri = intent.getParcelableExtra(EXTRA_OUTPUT);
             this.startActivityForResult(intent, REQUEST_CODE);
         } catch (Throwable ignore) {
             LogUtils.i(TAG, "找不到系统相机");
-            mFileDataListener.onFileDataResult(REQUEST_CODE,-2,null);
+            mFileDataListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+            mFileDataListener = null;
             if (LogUtils.isDebug())
                 ignore.printStackTrace();
         }
@@ -173,10 +197,10 @@ public final class ActionActivity extends Activity {
         private int action;
 
 
-
-        public Action(){
+        public Action() {
 
         }
+
         protected Action(Parcel in) {
             permissions = in.createStringArray();
             action = in.readInt();
@@ -220,5 +244,10 @@ public final class ActionActivity extends Activity {
             dest.writeStringArray(permissions);
             dest.writeInt(action);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
