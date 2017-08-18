@@ -67,8 +67,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         mActivityWeakReference = new WeakReference<Activity>(activity);
         this.mChromeClientCallbackManager = chromeClientCallbackManager;
         this.mIVideo = iVideo;
-        this.mChromeClientMsgCfg=chromeClientMsgCfg;
-        this.mPermissionInterceptor=permissionInterceptor;
+        this.mChromeClientMsgCfg = chromeClientMsgCfg;
+        this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
     }
 
@@ -302,7 +302,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         if (mActivity == null)
             return;
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
-        this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl(webView, mActivity, filePathCallback, fileChooserParams,mChromeClientMsgCfg.getFileUploadMsgConfig());
+        this.mIFileUploadChooser = mIFileUploadChooser =new FileUpLoadChooserImpl.Builder()
+                .setWebView(webView)
+                .setActivity(mActivity)
+                .setUriValueCallbacks(filePathCallback)
+                .setFileChooserParams(fileChooserParams)
+                .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
+                .build();
         mIFileUploadChooser.openFileChooser();
 
     }
@@ -344,7 +350,12 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null)
             return;
-        this.mIFileUploadChooser = new FileUpLoadChooserImpl(mActivity, valueCallback,mChromeClientMsgCfg.getFileUploadMsgConfig());
+        this.mIFileUploadChooser = new FileUpLoadChooserImpl.Builder()
+                .setWebView(this.mWebView)
+                .setActivity(mActivity)
+                .setUriValueCallback(valueCallback)
+                .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
+                .build();
         this.mIFileUploadChooser.openFileChooser();
 
     }

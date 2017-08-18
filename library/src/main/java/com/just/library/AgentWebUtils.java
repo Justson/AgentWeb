@@ -6,6 +6,8 @@ import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -184,17 +186,74 @@ public class AgentWebUtils {
         }
     }
 
-    public static Intent getFileIntent(File file) {
-//       Uri uri = Uri.parse("http://m.ql18.com.cn/hpf10/1.pdf");
-        Uri uri = Uri.fromFile(file);
-        String type = getMIMEType(file);
-        Log.i("tag", "type=" + type);
-        Intent intent = new Intent("android.intent.action.VIEW");
-        intent.addCategory("android.intent.category.DEFAULT");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(uri, type);
-        return intent;
+
+
+    public static Uri getUriFromFile(Context context, File file) {
+        Uri uri = null;
+
+        LogUtils.i("Info","::"+context.getApplicationInfo().targetSdkVersion+"   INT:"+Build.VERSION.SDK_INT );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            uri = getUriFromFileForN(context, file);
+        } else {
+            uri = Uri.fromFile(file);
+        }
+        return uri;
     }
+
+    public static Uri getUriFromFileForN(Context context, File file) {
+        Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file);
+        return fileUri;
+    }
+
+
+    public static void setIntentDataAndType(Context context,
+                                            Intent intent,
+                                            String type,
+                                            File file,
+                                            boolean writeAble) {
+        if (Build.VERSION.SDK_INT >= 24) {
+            intent.setDataAndType(getUriFromFile(context, file), type);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (writeAble) {
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), type);
+        }
+    }
+
+
+    public static void setIntentData(Context context,
+                                     Intent intent,
+                                     File file,
+                                     boolean writeAble) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.setData(getUriFromFile(context, file));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (writeAble) {
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+        } else {
+            intent.setData(Uri.fromFile(file));
+        }
+    }
+
+
+    public static void grantPermissions(Context context, Intent intent, Uri uri, boolean writeAble) {
+
+        int flag = Intent.FLAG_GRANT_READ_URI_PERMISSION;
+        if (writeAble) {
+            flag |= Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+        }
+        intent.addFlags(flag);
+        List<ResolveInfo> resInfoList = context.getPackageManager()
+                .queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        for (ResolveInfo resolveInfo : resInfoList) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            context.grantUriPermission(packageName, uri, flag);
+        }
+    }
+
 
     private static String getMIMEType(File f) {
         String type = "";
@@ -581,23 +640,23 @@ public class AgentWebUtils {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
+    public static Intent getInstallApkIntentCompat(Context context, File file) {
 
-    public static Intent getIntentCompat(Context context, File file) {
-        Intent mIntent = null;
-        LogUtils.i("Info", "getIntentCompat  :" + context.getApplicationInfo().targetSdkVersion);
-        if (context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.N) {
-
-            mIntent = new Intent(Intent.ACTION_VIEW);
-            mIntent.setDataAndType(FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file), "application/vnd.android.package-archive");
-            mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        } else {
-
-            mIntent = AgentWebUtils.getFileIntent(file);
-        }
-
+        Intent mIntent=new Intent().setAction(Intent.ACTION_VIEW).setType("application/vnd.android.package-archive");
+        setIntentData(context,mIntent,file,false);
         return mIntent;
     }
+
+    public static Intent getIntentCaptureCompat(Context context, File file) {
+        Intent mIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Uri mUri= getUriFromFile(context,file);
+        mIntent.addCategory(Intent.CATEGORY_DEFAULT);
+        mIntent.putExtra(MediaStore.EXTRA_OUTPUT,mUri);
+        return mIntent;
+    }
+
+
+
 
 
     public static boolean isJson(String target) {

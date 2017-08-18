@@ -51,7 +51,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             return;
         if ( mFile.exists() && mFile.length() >= contentLength) {
 
-            Intent mIntent = AgentWebUtils.getIntentCompat(mContext, mFile);
+            Intent mIntent = AgentWebUtils.getInstallApkIntentCompat(mContext, mFile);
             try {
                 if (mIntent != null)
                     mContext.startActivity(mIntent);

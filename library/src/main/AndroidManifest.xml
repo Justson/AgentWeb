@@ -17,6 +17,13 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/web_download_paths"/>
         </provider>
+        <activity
+            android:name=".ActionActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="standard"
+            android:theme="@style/actionActivity"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden"/>
 
         <receiver android:name=".RealDownLoader$NotificationBroadcastReceiver"></receiver>
     </application>

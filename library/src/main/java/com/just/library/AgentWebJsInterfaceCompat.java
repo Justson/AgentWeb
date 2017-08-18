@@ -25,15 +25,16 @@ public class AgentWebJsInterfaceCompat implements AgentWebCompat, FileUploadPop<
     public void uploadFile() {
 
 
-        if (mActivityWeakReference.get() != null&&mReference.get()!=null) {
-            mIFileUploadChooser = new FileUpLoadChooserImpl(mActivityWeakReference.get(), new FileUpLoadChooserImpl.JsChannelCallback() {
-                @Override
-                public void call(String value) {
-
-                    if (mReference.get() != null)
-                        mReference.get().getJsEntraceAccess().quickCallJs("uploadFileResult", value);
-                }
-            }, mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileUploadMsgConfig());
+        if (mActivityWeakReference.get() != null && mReference.get() != null) {
+            mIFileUploadChooser = new FileUpLoadChooserImpl.Builder()
+                    .setActivity(mActivityWeakReference.get())
+                    .setJsChannelCallback(new FileUpLoadChooserImpl.JsChannelCallback() {
+                        @Override
+                        public void call(String value) {
+                            if (mReference.get() != null)
+                                mReference.get().getJsEntraceAccess().quickCallJs("uploadFileResult", value);
+                        }
+                    }).setFileUploadMsgConfig(mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileUploadMsgConfig()).build();
             mIFileUploadChooser.openFileChooser();
         }
 

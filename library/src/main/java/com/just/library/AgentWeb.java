@@ -366,6 +366,7 @@ public class AgentWeb {
         }
     }
 
+    @Deprecated
     public void uploadFileResult(int requestCode, int resultCode, Intent data) {
 
         IFileUploadChooser mIFileUploadChooser = null;

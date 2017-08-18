@@ -5,8 +5,6 @@ import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.ValueCallback;
@@ -14,6 +12,9 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import java.util.Queue;
+
+import static com.just.library.ActionActivity.KEY_ACTION;
+import static com.just.library.ActionActivity.KEY_URI;
 
 /**
  * Created by cenxiaozhong on 2017/5/22.
@@ -24,10 +25,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private Activity mActivity;
     private ValueCallback<Uri> mUriValueCallback;
     private ValueCallback<Uri[]> mUriValueCallbacks;
-    private Fragment mFragment;
-    //1表示fragment 0 表示activity
-    private int tag = 0;
-    private static final int REQUEST_CODE = 0x254;
+    public static final int REQUEST_CODE = 0x254;
     private boolean isL = false;
     private WebChromeClient.FileChooserParams mFileChooserParams;
     private JsChannelCallback mJsChannelCallback;
@@ -38,34 +36,21 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private Uri mUri;
     private WebView mWebView;
     private boolean cameraState = false;
+    private PermissionInterceptor mPermissionInterceptor;
 
-    FileUpLoadChooserImpl(Activity activity, ValueCallback<Uri> callback, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
-        this.mActivity = activity;
-        this.mUriValueCallback = callback;
-        isL = false;
-        this.mFileUploadMsgConfig = fileUploadMsgConfig;
-        jsChannel = false;
-    }
+    public FileUpLoadChooserImpl(Builder builder) {
 
-    FileUpLoadChooserImpl(WebView webView, Activity activity, ValueCallback<Uri[]> valueCallback, WebChromeClient.FileChooserParams fileChooserParams, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
-        this.mWebView=webView;
-        jsChannel = false;
-        this.mActivity = activity;
-        this.mUriValueCallbacks = valueCallback;
-        this.mFileChooserParams = fileChooserParams;
-        isL = true;
-        this.mFileUploadMsgConfig = fileUploadMsgConfig;
-    }
-
-    FileUpLoadChooserImpl(Activity activity, JsChannelCallback jsChannelCallback, DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
-        if (jsChannelCallback == null)
-            throw new NullPointerException("jsChannelCallback can not null");
-        jsChannel = true;
-        this.mJsChannelCallback = jsChannelCallback;
-        this.mActivity = activity;
-        this.mFileUploadMsgConfig = fileUploadMsgConfig;
+        this.mActivity = builder.mActivity;
+        this.mUriValueCallback = builder.mUriValueCallback;
+        this.mUriValueCallbacks = builder.mUriValueCallbacks;
+        this.isL = builder.isL;
+        this.mFileChooserParams = builder.mFileChooserParams;
+        this.mJsChannelCallback = builder.mJsChannelCallback;
+        this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
+        this.mWebView = builder.mWebView;
 
     }
+
 
     @Override
     public void openFileChooser() {
@@ -73,10 +58,23 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
     private void fileChooser() {
-        if (isL && mFileChooserParams != null)
-            mActivity.startActivityForResult(mFileChooserParams.createIntent(), REQUEST_CODE);
-        else
-            this.openRealFileChooser();
+        ActionActivity.Action mAction = new ActionActivity.Action();
+        mAction.setAction(ActionActivity.Action.ACTION_FILE);
+        ActionActivity.setFileDataListener(mFileDataListener);
+        mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction));
+
+    }
+
+    private final ActionActivity.FileDataListener mFileDataListener = new ActionActivity.FileDataListener() {
+        @Override
+        public void onFileDataResult(int requestCode, int resultCode, Intent data) {
+            fetchFilePathFromIntent(requestCode, resultCode, data);
+        }
+    };
+
+    private void checkPermission() {
+
+
     }
 
     private void openFileChooserInternal() {
@@ -109,20 +107,14 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void realOpenCamera() {
 
-        try {
-            if (mActivity == null)
-                return;
-            Intent intent = AgentWebUtils.getIntentCompat(mActivity,AgentWebUtils.createFile());
-            // 指定开启系统相机的Action
-            mUri = intent.getData();
-            intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-            mActivity.startActivityForResult(intent, REQUEST_CODE);
-        }catch (Throwable ignore){
-            LogUtils.i(TAG,"找不到系统相机");
-        }
+        if (mActivity == null)
+            return;
 
+
+        ActionActivity.Action mAction=new ActionActivity.Action();
+        mAction.setAction(ActionActivity.Action.ACTION_CAMERA);
+        ActionActivity.setFileDataListener(this.mFileDataListener);
+        mActivity.startActivity(new Intent(mActivity,ActionActivity.class).putExtra(KEY_ACTION,mAction));
 
     }
 
@@ -142,12 +134,12 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         if (resultCode == Activity.RESULT_OK) {
 
             if (isL)
-                handleAboveL(cameraState ? new Uri[]{mUri} : processData(data));
+                handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
             else if (jsChannel)
-                convertFileAndCallBack(cameraState ? new Uri[]{mUri} : processData(data));
+                convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
             else {
                 if (cameraState && mUriValueCallback != null)
-                    mUriValueCallback.onReceiveValue(mUri);
+                    mUriValueCallback.onReceiveValue((Uri)data.getParcelableExtra(KEY_URI));
                 else
                     handleBelowLData(data);
             }
@@ -223,20 +215,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
 
-    private void openRealFileChooser() {
-
-        try{
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-            i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");
-            mActivity.startActivityForResult(Intent.createChooser(i,
-                    "File Chooser"), REQUEST_CODE);
-        }catch (Throwable throwable){
-            LogUtils.i(TAG,"找不到文件选择器");
-        }
-
-    }
-
     static class CovertFileThread extends Thread {
 
         private JsChannelCallback mJsChannelCallback;
@@ -268,4 +246,78 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         void call(String value);
     }
+
+    public static final class Builder {
+
+        private Activity mActivity;
+        private ValueCallback<Uri> mUriValueCallback;
+        private ValueCallback<Uri[]> mUriValueCallbacks;
+        private boolean isL = false;
+        private WebChromeClient.FileChooserParams mFileChooserParams;
+        private JsChannelCallback mJsChannelCallback;
+        private boolean jsChannel = false;
+        private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
+        private WebView mWebView;
+        private PermissionInterceptor mPermissionInterceptor;
+
+        public Builder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+            mPermissionInterceptor = permissionInterceptor;
+            return this;
+        }
+
+        public Builder setActivity(Activity activity) {
+            mActivity = activity;
+            return this;
+        }
+
+        public Builder setUriValueCallback(ValueCallback<Uri> uriValueCallback) {
+            mUriValueCallback = uriValueCallback;
+            isL = false;
+            jsChannel = false;
+            mUriValueCallbacks = null;
+            mJsChannelCallback = null;
+            return this;
+        }
+
+        public Builder setUriValueCallbacks(ValueCallback<Uri[]> uriValueCallbacks) {
+            mUriValueCallbacks = uriValueCallbacks;
+            isL = true;
+            mUriValueCallback = null;
+            mJsChannelCallback = null;
+            jsChannel = false;
+            return this;
+        }
+
+
+        public Builder setFileChooserParams(WebChromeClient.FileChooserParams fileChooserParams) {
+            mFileChooserParams = fileChooserParams;
+            return this;
+        }
+
+        public Builder setJsChannelCallback(JsChannelCallback jsChannelCallback) {
+            mJsChannelCallback = jsChannelCallback;
+            jsChannel = true;
+            mUriValueCallback = null;
+            mUriValueCallbacks = null;
+            return this;
+        }
+
+
+        public Builder setFileUploadMsgConfig(DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
+            mFileUploadMsgConfig = fileUploadMsgConfig;
+            return this;
+        }
+
+
+        public Builder setWebView(WebView webView) {
+            mWebView = webView;
+            return this;
+        }
+
+
+        public FileUpLoadChooserImpl build() {
+            return new FileUpLoadChooserImpl(this);
+        }
+    }
+
 }
