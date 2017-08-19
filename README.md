@@ -247,10 +247,15 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * v_1.2.0 全面支持全屏视频 。
 * v_1.1.2 完善功能 。
 
+## 下个版本功能预告
+
+* 支持动态权限申请
+* 废弃 uploadFileResult (走 ActionActivity 绕过该方法)
+* 加入权限控制
 
 
 ## 致谢
-* [360 大牛 SafeWebView](https://github.com/seven456/SafeWebView)
+* [SafeWebView](https://github.com/seven456/SafeWebView)
 
 * [WebView 参考文献](https://juejin.im/post/58a037df86b599006b3fade4)
 
@@ -270,9 +275,6 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 [qq0groupsvg]: https://img.shields.io/badge/QQ群-599471474-fba7f9.svg
 [qq0group]: http://qm.qq.com/cgi-bin/qm/qr?k=KpyfInzI2nr-Lh4StG0oh68GpbcD0vMG
 
-
-## AgentWeb
-AgentWeb 是一个把 WebView 完全代理出来 ， 脱离 Activity 、 Fragment xml 布局 ， 独立的 Android Web 库 。
 
 ### 最后如果该库对你有帮助不妨对右上角点点 Star 对我支持 ， 感谢万分 ! 当然我更喜欢你 Fork PR 成为项目贡献者 . [AgentWeb](https://github.com/Justson/AgentWeb)  
 
