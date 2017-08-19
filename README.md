@@ -124,7 +124,7 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
 
 * #### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
 ```
-	@Override
+@Override
     protected void onPause() {
         mAgentWeb.getWebLifeCycle().onPause();
         super.onPause();
@@ -156,9 +156,9 @@ android:configChanges="orientation|screenSize"
 
 * #### 定位
 ```
-	<!--AgentWeb 是默认启动定位的 ， 请在你的 AndroidManifest 文件里面加入如下权限 。-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<!--AgentWeb 是默认启动定位的 ， 请在你的 AndroidManifest 文件里面加入如下权限 。-->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 ```
 
 * #### WebChromeClient Or WebViewClient 处理业务逻辑
@@ -182,8 +182,8 @@ private WebViewClient mWebViewClient=new WebViewClient(){
            //do you  work
         }
     };
-    //WebChromeClient
-    private WebChromeClient mWebChromeClient=new WebChromeClient(){
+//WebChromeClient
+private WebChromeClient mWebChromeClient=new WebChromeClient(){
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //do you work
@@ -208,7 +208,7 @@ String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 
 * #### AgentWeb 所需要的权限
 ```
- <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+ 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
@@ -250,8 +250,9 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 ## 下个版本功能预告
 
 * 支持动态权限申请
-* 废弃 uploadFileResult (走 ActionActivity 绕过该方法)
+* 废弃 `uploadFileResult` API (走 `ActionActivity` 绕过该方法)
 * 加入权限控制
+* `FileChooser` 加入了拍照选择
 
 
 ## 致谢
