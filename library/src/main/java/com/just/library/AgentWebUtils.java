@@ -74,6 +74,7 @@ import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
 
 public class AgentWebUtils {
 
+    private static final String TAG=AgentWebUtils.class.getSimpleName();
     public static int px2dp(Context context, float pxValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -437,6 +438,7 @@ public class AgentWebUtils {
 
     private static String getRealPathBelowVersion(Context context, Uri uri) {
         String filePath = null;
+        LogUtils.i(TAG,"method -> getRealPathBelowVersion "+uri+"   path:"+uri.getPath()+"    getAuthority:"+uri.getAuthority());
         String[] projection = {MediaStore.Images.Media.DATA};
 
         CursorLoader loader = new CursorLoader(context, uri, projection, null,
@@ -447,6 +449,11 @@ public class AgentWebUtils {
             cursor.moveToFirst();
             filePath = cursor.getString(cursor.getColumnIndex(projection[0]));
             cursor.close();
+        }
+        if(filePath==null){
+//            filePath="file:".concat(uri.getPath());
+            filePath=uri.getPath();
+
         }
         return filePath;
     }
@@ -465,7 +472,7 @@ public class AgentWebUtils {
         int i = 1;
         for (String path : paths) {
 
-            LogUtils.i("Info", "path   :  :" + path);
+            LogUtils.i(TAG, "path:" + path);
             if (TextUtils.isEmpty(path)) {
                 mCountDownLatch.countDown();
                 continue;
@@ -530,9 +537,13 @@ public class AgentWebUtils {
                         os.write(b, 0, len);
                     }
                     mQueue.offer(new FileParcel(id, mFile.getAbsolutePath(), Base64.encodeToString(os.toByteArray(), Base64.DEFAULT)));
-
+                    LogUtils.i(TAG,"enqueu");
+                }else{
+                    LogUtils.i(TAG,"File no exists");
                 }
-            } catch (Exception e) {
+
+            } catch (Throwable e) {
+                LogUtils.i(TAG,"throwwable");
                 e.printStackTrace();
             } finally {
                 CloseUtils.closeIO(is);
@@ -656,6 +667,13 @@ public class AgentWebUtils {
     public static Intent getInstallApkIntentCompat(Context context, File file) {
 
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW).setType("application/vnd.android.package-archive");
+        setIntentData(context, mIntent, file, false);
+        return mIntent;
+    }
+
+    public static Intent getCommonFileIntentCompat(Context context , File file){
+        Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
+        mIntent.setType(getMIMEType(file));
         setIntentData(context, mIntent, file, false);
         return mIntent;
     }

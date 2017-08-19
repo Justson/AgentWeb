@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,54 +34,108 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private List<DownLoadResultListener> mDownLoadResultListeners;
     private LinkedList<String> mList = new LinkedList<>();
     private WeakReference<Activity> mActivityWeakReference = null;
-    private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=null;
-    private static final String TAG=DefaultDownLoaderImpl.class.getSimpleName();
-    private PermissionInterceptor mPermissionListener=null;
+    private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = null;
+    private static final String TAG = DefaultDownLoaderImpl.class.getSimpleName();
+    private PermissionInterceptor mPermissionListener = null;
+    private String url;
+    private String contentDisposition;
+    private long contentLength;
 
-     DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig, PermissionInterceptor permissionInterceptor) {
+    DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig, PermissionInterceptor permissionInterceptor) {
         mActivityWeakReference = new WeakReference<Activity>(context);
         this.mContext = context.getApplicationContext();
         this.isForce = isforce;
         this.enableIndicator = enableIndicator;
         this.mDownLoadResultListeners = downLoadResultListeners;
-        this.mDownLoadMsgConfig=msgConfig;
-        this.mPermissionListener=permissionInterceptor;
+        this.mDownLoadMsgConfig = msgConfig;
+        this.mPermissionListener = permissionInterceptor;
     }
 
 
     @Override
     public synchronized void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
-        onDownloadStartInternal(url, contentDisposition,  mimetype,contentLength);
+        onDownloadStartInternal(url, contentDisposition, mimetype, contentLength);
 
     }
 
     private void onDownloadStartInternal(String url, String contentDisposition, String mimetype, long contentLength) {
 
-
-        LogUtils.i(TAG,"mime:"+mimetype);
-        if(this.mPermissionListener!=null){
-
-            if(this.mPermissionListener.intercept(url,AgentWebPermissions.STORAGE,"download")){
+        if (mActivityWeakReference.get() == null)
+            return;
+        LogUtils.i(TAG, "mime:" + mimetype);
+        if (this.mPermissionListener != null) {
+            if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
                 return;
             }
-
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
+            List<String> mList = null;
+            if ((mList = checkNeedPermission()).isEmpty()) {
+                preDownload(url, contentDisposition, contentLength);
+            } else {
+                ActionActivity.Action mAction = new ActionActivity.Action();
+                mAction.setPermissions(AgentWebPermissions.STORAGE);
+                mAction.setAction(ActionActivity.Action.ACTION_PERMISSION);
+                ActionActivity.setPermissionListener(getPermissionListener());
+                this.url=url;
+                this.contentDisposition=contentDisposition;
+                this.contentLength=contentLength;
+                ActionActivity.start(mActivityWeakReference.get(), mAction);
 
+            }
+
+        } else {
+
+            preDownload(url, contentDisposition, contentLength);
+        }
+    }
+
+    private ActionActivity.PermissionListener getPermissionListener() {
+        return new ActionActivity.PermissionListener() {
+            @Override
+            public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+                if (checkNeedPermission().isEmpty()) {
+                    preDownload(DefaultDownLoaderImpl.this.url,DefaultDownLoaderImpl.this.contentDisposition,DefaultDownLoaderImpl.this.contentLength);
+                    url=null;
+                    contentDisposition=null;
+                    contentLength=-1;
+                } else {
+                    LogUtils.i(TAG,"储存权限获取失败~");
+                }
+
+            }
+        };
+    }
+
+    private List<String> checkNeedPermission() {
+
+        List<String> deniedPermissions = new ArrayList<>();
+
+        for (int i = 0; i < AgentWebPermissions.STORAGE.length; i++) {
+
+            if (ContextCompat.checkSelfPermission(mActivityWeakReference.get(), AgentWebPermissions.STORAGE[i]) != PackageManager.PERMISSION_GRANTED) {
+                deniedPermissions.add(AgentWebPermissions.STORAGE[i]);
+            }
+        }
+        return deniedPermissions;
+    }
+
+    private void preDownload(String url, String contentDisposition, long contentLength) {
         File mFile = getFile(contentDisposition, url);
         if (mFile == null)
             return;
-        if ( mFile.exists() && mFile.length() >= contentLength) {
+        if (mFile.exists() && mFile.length() >= contentLength) {
 
-            Intent mIntent = AgentWebUtils.getInstallApkIntentCompat(mContext, mFile);
+            Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
             try {
                 if (mIntent != null)
                     mContext.startActivity(mIntent);
                 return;
-            }catch (Throwable throwable){
-                if(LogUtils.isDebug())
+            } catch (Throwable throwable) {
+                if (LogUtils.isDebug())
                     throwable.printStackTrace();
             }
 
@@ -94,13 +153,13 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             showDialog(url, contentLength, mFile);
             return;
         }
-        performDownLoad(url, contentLength, mFile);
+        performDownload(url, contentLength, mFile);
     }
 
     private void forceDown(final String url, final long contentLength, final File file) {
 
         isForce = true;
-        performDownLoad(url, contentLength, file);
+        performDownload(url, contentLength, file);
 
 
     }
@@ -136,14 +195,14 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
     }
 
-    private void performDownLoad(String url, long contentLength, File file) {
+    private void performDownload(String url, long contentLength, File file) {
 
         mList.add(url);
         mList.add(file.getAbsolutePath());
         //并行下载.
         /*new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, R.mipmap.download)).executeOnExecutor(Executors.newCachedThreadPool(),(Void[])null);*/
         //默认串行下载.
-        new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength,mDownLoadMsgConfig, R.mipmap.download)).execute();
+        new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, R.mipmap.download)).execute();
     }
 
 

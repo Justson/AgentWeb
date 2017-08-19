@@ -106,8 +106,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
     protected PermissionInterceptor mPermissionInterceptor=new PermissionInterceptor() {
-        //AgentWeb 所有动态需要的权限拦截都会回调到该方法， 返回true表示应用拦截该不给该Url这个权限，返回false AgentWeb 会动态申请权限。
+
+        //AgentWeb 动态需要的权限拦截都会回调到该方法， 返回true表示应用拦截该不给该Url这个权限，返回false AgentWeb 会动态申请权限。
         //比如 http//:www.taobao.com该Url 需要定位权限， 返回false ，如果版本大于23 ， agentWeb 会动态申请权限 。
+        //这里可以做一些敏感权限拦截
         @Override
         public boolean intercept(String url, String[] permissions,String action) {
             LogUtils.i("Info","url:"+url+"  permission:"+permissions+" action:"+action);
@@ -204,7 +206,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        mAgentWeb.uploadFileResult(requestCode, resultCode, data); //1.3.0开始 废弃该api ，没有api代替 ；
+        mAgentWeb.uploadFileResult(requestCode, resultCode, data); //1.3.0开始 废弃该api ，没有api代替 ,使用 ActionActivity 绕行该方法 ,降低使用门槛
     }
 
     protected void initView(View view) {

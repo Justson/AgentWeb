@@ -32,7 +32,7 @@ import static com.just.library.FileUpLoadChooserImpl.REQUEST_CODE;
 
 /**
  * <p>
- * Created by cenxiaozhong on 2017.
+ * Created by cenxiaozhong on 2017.8.19
  * </p>
  */
 public final class ActionActivity extends Activity {
@@ -53,11 +53,11 @@ public final class ActionActivity extends Activity {
 
     }
 
-    public static void setFileDataListener(FileDataListener fileDataListener) {
+    static void setFileDataListener(FileDataListener fileDataListener) {
         mFileDataListener = fileDataListener;
     }
 
-    public static void setPermissionListener(PermissionListener permissionListener) {
+    static void setPermissionListener(PermissionListener permissionListener) {
         mPermissionListener = permissionListener;
     }
 
@@ -87,8 +87,10 @@ public final class ActionActivity extends Activity {
     private void openRealFileChooser() {
 
         try {
-            if (mFileDataListener == null)
+            if (mFileDataListener == null) {
+                finish();
                 return;
+            }
 
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -150,9 +152,9 @@ public final class ActionActivity extends Activity {
         try {
             if (mFileDataListener == null)
                 finish();
-            File mFile=null;
-            Intent intent = AgentWebUtils.getIntentCaptureCompat(this,mFile= AgentWebUtils.createFile());
-            LogUtils.i(TAG, "listener:" + mFileDataListener+"  file:"+mFile.getAbsolutePath());
+            File mFile = null;
+            Intent intent = AgentWebUtils.getIntentCaptureCompat(this, mFile = AgentWebUtils.createFile());
+            LogUtils.i(TAG, "listener:" + mFileDataListener + "  file:" + mFile.getAbsolutePath());
             // 指定开启系统相机的Action
             mUri = intent.getParcelableExtra(EXTRA_OUTPUT);
             this.startActivityForResult(intent, REQUEST_CODE);
