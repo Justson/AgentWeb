@@ -73,7 +73,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
         super.onPreExecute();
 
         mObservable.addObserver(this);
-        buildNotify(new Intent(), mDownLoadTask.getId(),mDownLoadTask.getDownLoadMsgConfig().getPreLoading());
+        buildNotify(new Intent(), mDownLoadTask.getId(), mDownLoadTask.getDownLoadMsgConfig().getPreLoading());
     }
 
     private boolean checkDownLoaderCondition() {
@@ -153,7 +153,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
         HttpURLConnection mHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
         mHttpURLConnection.setRequestProperty("Accept", "application/*");
-        mHttpURLConnection.setConnectTimeout(5000*2);
+        mHttpURLConnection.setConnectTimeout(5000 * 2);
         return mHttpURLConnection;
     }
 
@@ -172,17 +172,16 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 if (!mNotity.hasDeleteContent())
                     mNotity.setDelecte(buildCancelContent(mDownLoadTask.getContext().getApplicationContext(), mDownLoadTask.getId()));
 
-                int mProgress=(int) ((tmp + loaded) / Float.valueOf(totals) * 100);
-                mNotity.setContentText(String.format(mDownLoadTask.getDownLoadMsgConfig().getLoading(),mProgress+"%"));
-                mNotity.setProgress(100,mProgress , false);
+                int mProgress = (int) ((tmp + loaded) / Float.valueOf(totals) * 100);
+                mNotity.setContentText(String.format(mDownLoadTask.getDownLoadMsgConfig().getLoading(), mProgress + "%"));
+                mNotity.setProgress(100, mProgress, false);
             }
 
-        }catch (UnknownFormatConversionException e){
+        } catch (UnknownFormatConversionException e) {
             e.printStackTrace();
         }
         long current = System.currentTimeMillis();
         used = current - begin;
-
 
 
     }
@@ -208,16 +207,16 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                     mNotity.cancel(mDownLoadTask.getId());
 
                 Intent intent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
-                // intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
-                        mDownLoadTask.getId()<<4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mDownLoadTask.getId() << 4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                 mNotity.setProgressFinish(mDownLoadTask.getDownLoadMsgConfig().getClickOpen(), rightPendIntent);
 
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.i("Info","e:"+e.getMessage());
+            LogUtils.i("Info", "e:" + e.getMessage());
         }
 
 
@@ -225,7 +224,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
     private void doCallback(Integer code) {
         DownLoadResultListener mDownLoadResultListener = null;
-        if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener())==null) {
+        if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
             return;
         }
         if (code > 200) {
@@ -270,7 +269,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private int doDownLoad(InputStream in, RandomAccessFile out) throws IOException {
 
         byte[] buffer = new byte[102400];
-        BufferedInputStream bis = new BufferedInputStream(in, 1024*10);
+        BufferedInputStream bis = new BufferedInputStream(in, 1024 * 10);
         try {
 
             out.seek(out.length());
@@ -280,7 +279,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
             while (!atomic.get()) {
-                int n = bis.read(buffer, 0, 1024*10);
+                int n = bis.read(buffer, 0, 1024 * 10);
                 if (n == -1) {
                     break;
                 }
@@ -302,7 +301,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 }
             }
 
-            LogUtils.i("Info", "atomic:" + atomic.get() );
+            LogUtils.i("Info", "atomic:" + atomic.get());
             if (atomic.get()) {
                 return DownLoadMsg.USER_CANCEL.CODE;
             }

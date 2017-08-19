@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
 
 /**
@@ -81,9 +82,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                 mAction.setPermissions(AgentWebPermissions.STORAGE);
                 mAction.setAction(ActionActivity.Action.ACTION_PERMISSION);
                 ActionActivity.setPermissionListener(getPermissionListener());
-                this.url=url;
-                this.contentDisposition=contentDisposition;
-                this.contentLength=contentLength;
+                this.url = url;
+                this.contentDisposition = contentDisposition;
+                this.contentLength = contentLength;
                 ActionActivity.start(mActivityWeakReference.get(), mAction);
 
             }
@@ -99,12 +100,12 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             @Override
             public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
                 if (checkNeedPermission().isEmpty()) {
-                    preDownload(DefaultDownLoaderImpl.this.url,DefaultDownLoaderImpl.this.contentDisposition,DefaultDownLoaderImpl.this.contentLength);
-                    url=null;
-                    contentDisposition=null;
-                    contentLength=-1;
+                    preDownload(DefaultDownLoaderImpl.this.url, DefaultDownLoaderImpl.this.contentDisposition, DefaultDownLoaderImpl.this.contentLength);
+                    url = null;
+                    contentDisposition = null;
+                    contentLength = -1;
                 } else {
-                    LogUtils.i(TAG,"储存权限获取失败~");
+                    LogUtils.i(TAG, "储存权限获取失败~");
                 }
 
             }
@@ -132,8 +133,11 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
             Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
             try {
-                if (mIntent != null)
+                if (mIntent != null) {
+                    if (!(mContext instanceof Activity))
+                        mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(mIntent);
+                }
                 return;
             } catch (Throwable throwable) {
                 if (LogUtils.isDebug())

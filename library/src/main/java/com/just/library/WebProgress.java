@@ -29,16 +29,14 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     private int mColor;
     private Paint mPaint;
     private ValueAnimator mValueAnimator;
+    private int targetWidth = 0;
 
     public WebProgress(Context context) {
         this(context, null);
     }
-
     public WebProgress(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
-    private int targetWidth = 0;
 
     public WebProgress(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
