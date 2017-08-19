@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
@@ -262,7 +261,6 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
     }
 
     public View getVideoLoadingProgressView() {
-        LogUtils.i("Info","getVideoLoadingProgressView  call back");
         if (this.mRealWebChromeClient != null)
             return this.mRealWebChromeClient.getVideoLoadingProgressView();
         return super.getVideoLoadingProgressView();
@@ -287,19 +285,16 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
 
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
-        /*believe me , i never want to do this */
         commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, ValueCallback.class, String.class, String.class);
     }
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
-        Log.i("Infoss", "openFileChooser");
         commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback}, ValueCallback.class);
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
-        Log.i("Infoss", "openFileChooser.1");
         commonRefect(this.mRealWebChromeClient, "openFileChooser", new Object[]{valueCallback, acceptType}, ValueCallback.class, String.class);
     }
 
@@ -311,16 +306,10 @@ public class WebChromeClientProgressWrapper extends ChromeClientProgress {
             Class<?> clazz = o.getClass();
             Method mMethod = clazz.getMethod(mothed, clazzs);
             mMethod.invoke(o, os);
-        } catch (Exception igore) {
-//            igore.printStackTrace();
+        } catch (Exception ignore) {
         }
 
     }
 
-
-    /*public void setupAutoFill(Message msg) {
-        if (this.mRealWebChromeClient != null)
-            return this.mRealWebChromeClient.setupAutoFill();
-    }*/
 
 }

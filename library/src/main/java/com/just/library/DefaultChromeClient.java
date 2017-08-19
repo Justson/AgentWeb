@@ -3,10 +3,13 @@ package com.just.library;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
@@ -24,6 +27,9 @@ import android.webkit.WebView;
 import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
+
+import static com.just.library.ActionActivity.KEY_FROM_INTENTION;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -54,6 +60,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private DefaultMsgConfig.ChromeClientMsgCfg mChromeClientMsgCfg;
     private PermissionInterceptor mPermissionInterceptor;
     private WebView mWebView;
+
+    public static final int FROM_CODE_INTENTION=0x18;
+    public static final int FROM_CODE_INTENTION_LOCATION=FROM_CODE_INTENTION<<2;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
@@ -143,8 +152,72 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             return;
         }
-        callback.invoke(origin, true, false);
+        onGeolocationPermissionsShowPromptInternal(origin, callback);
     }
+
+    private String origin = null;
+    private GeolocationPermissions.Callback mCallback = null;
+
+    private void onGeolocationPermissionsShowPromptInternal(String origin, GeolocationPermissions.Callback callback) {
+
+        if (mPermissionInterceptor != null) {
+            if (mPermissionInterceptor.intercept(this.mWebView.getUrl(), AgentWebPermissions.LOCATION, "location")){
+                callback.invoke(origin,false,false);
+                return;
+            }
+        }
+
+        Activity mActivity = mActivityWeakReference.get();
+        if (mActivity == null){
+            callback.invoke(origin,false,false);
+            return;
+        }
+
+        List<String> deniedPermissions = null;
+        if ((deniedPermissions = AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.LOCATION)).isEmpty()) {
+            callback.invoke(origin, true, false);
+        } else {
+
+            ActionActivity.Action mAction=ActionActivity.Action.createPermissionsAction(deniedPermissions.toArray(new String[]{}));
+            mAction.setFromIntention(FROM_CODE_INTENTION_LOCATION);
+            ActionActivity.setPermissionListener(mPermissionListener);
+            this.mCallback =callback;
+            this.origin=origin;
+            ActionActivity.start(mActivity, mAction);
+        }
+
+
+    }
+
+    private ActionActivity.PermissionListener mPermissionListener = new ActionActivity.PermissionListener() {
+        @Override
+        public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
+
+
+            if (extras.getInt(KEY_FROM_INTENTION) == FROM_CODE_INTENTION_LOCATION) {
+                boolean t=true;
+                for (int p : grantResults) {
+                    if (p != PackageManager.PERMISSION_GRANTED){
+                        t=false;
+                        break;
+                    }
+                }
+
+                if(mCallback!=null){
+                    if(t){
+                        mCallback.invoke(origin,true,false);
+                    }else{
+                        mCallback.invoke(origin,false,false);
+                    }
+
+                    mCallback=null;
+                    origin=null;
+                }
+
+            }
+
+        }
+    };
 
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
@@ -302,7 +375,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         if (mActivity == null)
             return;
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
-        this.mIFileUploadChooser = mIFileUploadChooser =new FileUpLoadChooserImpl.Builder()
+        this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl.Builder()
                 .setWebView(webView)
                 .setActivity(mActivity)
                 .setUriValueCallbacks(filePathCallback)

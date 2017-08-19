@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -96,7 +97,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private ActionActivity.PermissionListener getPermissionListener() {
         return new ActionActivity.PermissionListener() {
             @Override
-            public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+            public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
                 if (checkNeedPermission().isEmpty()) {
                     preDownload(DefaultDownLoaderImpl.this.url,DefaultDownLoaderImpl.this.contentDisposition,DefaultDownLoaderImpl.this.contentLength);
                     url=null;

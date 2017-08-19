@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -162,8 +163,9 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
     private ActionActivity.PermissionListener mPermissionListener = new ActionActivity.PermissionListener() {
+
         @Override
-        public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
 
             boolean tag = true;
             for (int i = 0; i < permissions.length; i++) {

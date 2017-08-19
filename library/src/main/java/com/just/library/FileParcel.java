@@ -24,7 +24,6 @@ public class FileParcel implements Parcelable {
         this.contentPath = contentPath;
         this.fileBase64 = fileBase64;
 
-        LogUtils.i("Info","file:"+fileBase64);
     }
 
     public static final Creator<FileParcel> CREATOR = new Creator<FileParcel>() {

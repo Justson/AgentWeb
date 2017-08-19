@@ -11,6 +11,7 @@ import android.webkit.WebView;
 public abstract class BaseJsEntraceAccess implements JsEntraceAccess {
 
     private WebView mWebView;
+    public static final String TAG=BaseJsEntraceAccess.class.getSimpleName();
     BaseJsEntraceAccess(WebView webView){
         this.mWebView=webView;
     }
@@ -18,8 +19,7 @@ public abstract class BaseJsEntraceAccess implements JsEntraceAccess {
     @Override
     public void callJs(String js, final ValueCallback<String> callback) {
 
-        LogUtils.i("Info","js:"+js);
-
+        LogUtils.i(TAG,"method callJs:"+js);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             this.evaluateJs(js, callback);
         } else {

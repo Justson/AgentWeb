@@ -84,9 +84,6 @@ public class DefaultWebCreator implements WebCreator {
         return mFrameLayout;
     }
 
-    public void setFrameLayout(FrameLayout frameLayout) {
-        mFrameLayout = frameLayout;
-    }
 
     public View getTargetProgress() {
         return targetProgress;

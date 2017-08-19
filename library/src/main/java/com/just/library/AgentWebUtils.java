@@ -21,6 +21,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
 import android.telephony.TelephonyManager;
@@ -47,6 +48,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -365,6 +367,21 @@ public class AgentWebUtils {
         }
     }
 
+    public static List<String> getDeniedPermissions(Activity activity,String[]permissions){
+
+        if(permissions==null||permissions.length==0)
+            return null;
+        List<String> deniedPermissions = new ArrayList<>();
+        for (int i = 0; i < permissions.length; i++) {
+
+            if (ContextCompat.checkSelfPermission(activity, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
+                deniedPermissions.add(permissions[i]);
+            }
+        }
+        return deniedPermissions;
+
+    }
+
     public static void clearWebViewAllCache(Context context) {
 
         try {
@@ -563,7 +580,7 @@ public class AgentWebUtils {
             return null;
 
         LogUtils.i("Info","getAuthority:"+fileUri.getAuthority()+"  getHost:"+fileUri.getHost()+"   getPath:"+fileUri.getPath()+"  getScheme:"+fileUri.getScheme()+"  query:"+fileUri.getQuery());
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
             if (isExternalStorageDocument(fileUri)) {
                 String docId = DocumentsContract.getDocumentId(fileUri);
                 String[] split = docId.split(":");

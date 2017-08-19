@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -226,7 +225,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
     private void doCallback(Integer code) {
         DownLoadResultListener mDownLoadResultListener = null;
-        LogUtils.i("Info", " doCallback  mDownLoadTask.getDownLoadResultListeners():" + mDownLoadTask.getDownLoadResultListener());
         if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener())==null) {
             return;
         }
@@ -405,7 +403,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
             if (action.equals("com.agentweb.cancelled")) {
 
-
                 try {
 
                     String url = intent.getStringExtra("TAG");
@@ -415,12 +412,8 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                     mMethod.invoke(mObservable, (Object[]) null);
                     mObservable.notifyObservers(url);
                     LogUtils.i("Info", "size:" + mObservable.countObservers());
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e1) {
-                    e1.printStackTrace();
-                } catch (IllegalAccessException e1) {
-                    e1.printStackTrace();
+                } catch (Throwable ignore) {
+//                    ignore.printStackTrace();
                 }
 
             }

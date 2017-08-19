@@ -25,6 +25,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.File;
+import java.util.Arrays;
 
 import static android.provider.MediaStore.EXTRA_OUTPUT;
 import static com.just.library.ActionActivity.Action.ACTION_CAMERA;
@@ -39,10 +40,12 @@ public final class ActionActivity extends Activity {
 
     public static final String KEY_ACTION = "KEY_ACTION";
     public static final String KEY_URI = "KEY_URI";
+    public static final String KEY_FROM_INTENTION = "KEY_FROM_INTENTION";
     private static RationaleListener mRationaleListener;
     private static PermissionListener mPermissionListener;
     private static FileDataListener mFileDataListener;
     private static final String TAG = ActionActivity.class.getSimpleName();
+    private Action mAction;
 
 
     static void start(Activity activity, Action action) {
@@ -65,7 +68,7 @@ public final class ActionActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        Action mAction = intent.getParcelableExtra(KEY_ACTION);
+        mAction = intent.getParcelableExtra(KEY_ACTION);
         if (mAction.action == Action.ACTION_PERMISSION) {
             permission(mAction);
         } else if (mAction.action == ACTION_CAMERA) {
@@ -135,7 +138,7 @@ public final class ActionActivity extends Activity {
                 rationale = shouldShowRequestPermissionRationale(permission);
                 if (rationale) break;
             }
-            mRationaleListener.onRationaleResult(rationale);
+            mRationaleListener.onRationaleResult(rationale, new Bundle());
             mRationaleListener = null;
             finish();
             return;
@@ -172,18 +175,21 @@ public final class ActionActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (mPermissionListener != null)
-            mPermissionListener.onRequestPermissionsResult(permissions, grantResults);
+        if (mPermissionListener != null) {
+            Bundle mBundle = new Bundle();
+            mBundle.putInt(KEY_FROM_INTENTION, mAction.fromIntention);
+            mPermissionListener.onRequestPermissionsResult(permissions, grantResults, mBundle);
+        }
         mPermissionListener = null;
         finish();
     }
 
     interface RationaleListener {
-        void onRationaleResult(boolean showRationale);
+        void onRationaleResult(boolean showRationale, Bundle extras);
     }
 
     interface PermissionListener {
-        void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults);
+        void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras);
     }
 
     interface FileDataListener {
@@ -197,6 +203,7 @@ public final class ActionActivity extends Activity {
         public transient static final int ACTION_CAMERA = 3;
         private String[] permissions;
         private int action;
+        private int fromIntention;
 
 
         public Action() {
@@ -206,6 +213,7 @@ public final class ActionActivity extends Activity {
         protected Action(Parcel in) {
             permissions = in.createStringArray();
             action = in.readInt();
+            fromIntention = in.readInt();
         }
 
         public static final Creator<Action> CREATOR = new Creator<Action>() {
@@ -245,7 +253,36 @@ public final class ActionActivity extends Activity {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeStringArray(permissions);
             dest.writeInt(action);
+            dest.writeInt(fromIntention);
         }
+
+        @Override
+        public String toString() {
+            return "Action{" +
+                    "permissions=" + Arrays.toString(permissions) +
+                    ", action=" + action +
+                    ", fromIntention=" + fromIntention +
+                    '}';
+        }
+
+
+        public int getFromIntention() {
+            return fromIntention;
+        }
+
+        public static Action createPermissionsAction(String[] permissions) {
+            ActionActivity.Action mAction = new ActionActivity.Action();
+            mAction.setAction(ActionActivity.Action.ACTION_PERMISSION);
+            mAction.setPermissions(permissions);
+            return mAction;
+        }
+
+        public Action setFromIntention(int fromIntention) {
+            this.fromIntention = fromIntention;
+            return this;
+        }
+
+
     }
 
     @Override
