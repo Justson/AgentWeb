@@ -39,7 +39,7 @@ public class EasyWebActivity extends BaseAgentWebActivity {
             @Override
             public void onClick(View v) {
                 EasyWebActivity.this.finish();
-
+//                onKeyDown(KeyEvent.KEYCODE_BACK,new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_BACK));
             }
         });
     }

@@ -43,6 +43,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
     public static final String INTENT_SCHEME = "intent://";
     public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
     private static final boolean hasAlipayLib;
+    private static final String TAG = DefaultWebClient.class.getSimpleName();
 
     static {
         boolean tag = true;
@@ -53,7 +54,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
         hasAlipayLib = tag;
 
-        LogUtils.i("Info", "static  hasAlipayLib:" + hasAlipayLib);
+        LogUtils.i(TAG, "static  hasAlipayLib:" + hasAlipayLib);
     }
 
     DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
@@ -66,7 +67,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        LogUtils.i("Info", " DefaultWebClient shouldOverrideUrlLoading");
+        LogUtils.i(TAG, " DefaultWebClient shouldOverrideUrlLoading");
         if (webClientHelper && handleNormalLinked(request.getUrl() + "")) {
             return true;
         }
@@ -98,7 +99,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        LogUtils.i("Info", "shouldOverrideUrlLoading --->  url:" + url);
+        LogUtils.i(TAG, "shouldOverrideUrlLoading --->  url:" + url);
         if (webClientHelper && handleNormalLinked(url)) {
             return true;
         }
@@ -142,14 +143,14 @@ public class DefaultWebClient extends WrapperWebViewClient {
             PackageManager packageManager = mActivity.getPackageManager();
             intent = new Intent().parseUri(intentUrl, Intent.URI_INTENT_SCHEME);
             ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            LogUtils.i("Info", "resolveInfo:" + info + "   package:" + intent.getPackage());
+            LogUtils.i(TAG, "resolveInfo:" + info + "   package:" + intent.getPackage());
             if (info != null) {  //跳到该应用
                 mActivity.startActivity(intent);
                 return;
             }
             /*intent=new Intent().setData(Uri.parse("market://details?id=" + intent.getPackage()));
             info=packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            LogUtils.i("Info","resolveInfo:"+info);
+            LogUtils.i(TAG,"resolveInfo:"+info);
             if (info != null) {  //跳到应用市场
                 mActivity.startActivity(intent);
                 return;
@@ -157,7 +158,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
             intent=new Intent().setData(Uri.parse("https://play.google.com/store/apps/details?id=" + intent.getPackage()));
             info=packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            LogUtils.i("Info","resolveInfo:"+info);
+            LogUtils.i(TAG,"resolveInfo:"+info);
             if (info != null) {  //跳到浏览器
                 mActivity.startActivity(intent);
                 return;
@@ -172,28 +173,32 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     private boolean isAlipay(final WebView view, String url) {
 
-        Activity mActivity = null;
-        if ((mActivity = mWeakReference.get()) == null)
-            return false;
-        final PayTask task = new PayTask(mActivity);
-        final String ex = task.fetchOrderInfoFromH5PayUrl(url);
-        if (!TextUtils.isEmpty(ex)) {
-            AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-                public void run() {
-                    final H5PayResultModel result = task.h5Pay(ex, true);
-                    if (!TextUtils.isEmpty(result.getReturnUrl())) {
-                        AgentWebUtils.runInUiThread(new Runnable() {
+        try {
+            Activity mActivity = null;
+            if ((mActivity = mWeakReference.get()) == null)
+                return false;
+            final PayTask task = new PayTask(mActivity);
+            final String ex = task.fetchOrderInfoFromH5PayUrl(url);
+            if (!TextUtils.isEmpty(ex)) {
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+                    public void run() {
+                        final H5PayResultModel result = task.h5Pay(ex, true);
+                        if (!TextUtils.isEmpty(result.getReturnUrl())) {
+                            AgentWebUtils.runInUiThread(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                view.loadUrl(result.getReturnUrl());
-                            }
-                        });
+                                @Override
+                                public void run() {
+                                    view.loadUrl(result.getReturnUrl());
+                                }
+                            });
+                        }
                     }
-                }
-            });
+                });
 
-            return true;
+                return true;
+            }
+        } catch (Throwable ignore) {
+
         }
         return false;
     }
@@ -217,7 +222,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        LogUtils.i("Info", "onPageStarted");
+        LogUtils.i(TAG, "onPageStarted");
         if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClientCallbackManager.getPageLifeCycleCallback() != null) {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view, url, favicon);
         }
@@ -229,13 +234,13 @@ public class DefaultWebClient extends WrapperWebViewClient {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
-        LogUtils.i("Info", "onReceivedError：" + description + "  CODE:" + errorCode);
+        LogUtils.i(TAG, "onReceivedError：" + description + "  CODE:" + errorCode);
     }
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         super.onReceivedError(view, request, error);
-        LogUtils.i("Info", "onReceivedError:" + error.toString());
+        LogUtils.i(TAG, "onReceivedError:" + error.toString());
 
     }
 
@@ -246,13 +251,13 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
         super.onPageFinished(view, url);
 
-        LogUtils.i("Info", "onPageFinished");
+        LogUtils.i(TAG, "onPageFinished");
     }
 
 
     @Override
     public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-        LogUtils.i("Info", "shouldOverrideKeyEvent");
+        LogUtils.i(TAG, "shouldOverrideKeyEvent");
         return super.shouldOverrideKeyEvent(view, event);
     }
 
@@ -265,15 +270,15 @@ public class DefaultWebClient extends WrapperWebViewClient {
             if (mWeakReference.get() == null)
                 return;
 
-            LogUtils.i("Info", "start wechat pay Activity");
+            LogUtils.i(TAG, "start wechat pay Activity");
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             mWeakReference.get().startActivity(intent);
 
         } catch (Exception e) {
-            if(LogUtils.isDebug()){
-                LogUtils.i("Info", "支付异常");
+            if (LogUtils.isDebug()) {
+                LogUtils.i(TAG, "支付异常");
                 e.printStackTrace();
             }
         }
@@ -290,7 +295,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
             return;
         }
 
-        LogUtils.i("Info", "onScaleChanged:" + oldScale + "   n:" + newScale);
+        LogUtils.i(TAG, "onScaleChanged:" + oldScale + "   n:" + newScale);
         if (newScale - oldScale > CONSTANTS_ABNORMAL_BIG) {
             view.setInitialScale((int) (oldScale / newScale * 100));
         }

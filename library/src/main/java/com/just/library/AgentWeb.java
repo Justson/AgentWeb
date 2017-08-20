@@ -91,7 +91,7 @@ public class AgentWeb {
         this.mSecurityType = agentBuilder.mSecurityType;
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.headers);
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
-        this.mPermissionInterceptor=new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
+        this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         this.webClientHelper = agentBuilder.webclientHelper;
         init();
@@ -115,7 +115,7 @@ public class AgentWeb {
         if (agentBuilderFragment.mJavaObject != null && agentBuilderFragment.mJavaObject.isEmpty())
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilderFragment.mJavaObject);
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
-        this.mPermissionInterceptor=new PermissionInterceptorWrapper(agentBuilderFragment.mPermissionInterceptor);
+        this.mPermissionInterceptor = agentBuilderFragment.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilderFragment.mPermissionInterceptor);
         this.mWebViewClientCallbackManager = agentBuilderFragment.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilderFragment.mSecurityType;
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilderFragment.mHttpHeaders);
@@ -289,10 +289,12 @@ public class AgentWeb {
         if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
             mJsInterfaceHolder.addJavaObjects(mJavaObjects);
         }
-        mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
-        mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
-        mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
 
+        if (mWebListenerManager != null) {
+            mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
+            mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
+            mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
+        }
 
         return this;
     }
@@ -301,7 +303,7 @@ public class AgentWeb {
     private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners) {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true, downLoadResultListeners, mDefaultMsgConfig.getDownLoadMsgConfig(),mPermissionInterceptor);
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true, downLoadResultListeners, mDefaultMsgConfig.getDownLoadMsgConfig(), mPermissionInterceptor);
         }
     }
 
@@ -318,7 +320,7 @@ public class AgentWeb {
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(),this.mPermissionInterceptor,mWebCreator.get());
+        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
     }
 
     private IVideo getIVideo() {
@@ -334,7 +336,7 @@ public class AgentWeb {
         if (!webClientHelper && AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
             return mWebViewClient;
         } else {
-            return new DefaultWebClient(mActivity, this.mWebViewClient, this.mWebViewClientCallbackManager, webClientHelper,mPermissionInterceptor,mWebCreator.get());
+            return new DefaultWebClient(mActivity, this.mWebViewClient, this.mWebViewClientCallbackManager, webClientHelper, mPermissionInterceptor, mWebCreator.get());
         }
 
     }
@@ -629,8 +631,9 @@ public class AgentWeb {
             this.mAgentBuilder.mDownLoadResultListeners.add(downLoadResultListener);
             return this;
         }
-        public CommonAgentBuilder setPermissionInterceptor(PermissionInterceptor permissionInterceptor){
-            this.mAgentBuilder.mPermissionInterceptor=permissionInterceptor;
+
+        public CommonAgentBuilder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+            this.mAgentBuilder.mPermissionInterceptor = permissionInterceptor;
             return this;
         }
 
@@ -700,7 +703,7 @@ public class AgentWeb {
         private boolean webClientHelper = true;
         private List<DownLoadResultListener> mDownLoadResultListeners = null;
         private IWebLayout mWebLayout = null;
-        private PermissionInterceptor mPermissionInterceptor=null;
+        private PermissionInterceptor mPermissionInterceptor = null;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -851,10 +854,11 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setPermissionInterceptor(PermissionInterceptor permissionInterceptor){
-            this.mAgentBuilderFragment.mPermissionInterceptor=permissionInterceptor;
+        public CommonBuilderForFragment setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+            this.mAgentBuilderFragment.mPermissionInterceptor = permissionInterceptor;
             return this;
         }
+
         public CommonBuilderForFragment addDownLoadResultListener(DownLoadResultListener downLoadResultListener) {
 
             if (this.mAgentBuilderFragment.mDownLoadResultListeners == null) {
@@ -865,18 +869,20 @@ public class AgentWeb {
         }
     }
 
-    private static final class PermissionInterceptorWrapper implements PermissionInterceptor{
+    private static final class PermissionInterceptorWrapper implements PermissionInterceptor {
 
         private WeakReference<PermissionInterceptor> mWeakReference;
-        private PermissionInterceptorWrapper(PermissionInterceptor permissionInterceptor){
-            this.mWeakReference=new WeakReference<PermissionInterceptor>(permissionInterceptor);
+
+        private PermissionInterceptorWrapper(PermissionInterceptor permissionInterceptor) {
+            this.mWeakReference = new WeakReference<PermissionInterceptor>(permissionInterceptor);
         }
+
         @Override
-        public boolean intercept(String url, String[] permissions,String a) {
-            if(this.mWeakReference.get()==null){
+        public boolean intercept(String url, String[] permissions, String a) {
+            if (this.mWeakReference.get() == null) {
                 return false;
             }
-            return mWeakReference.get().intercept(url,permissions,a);
+            return mWeakReference.get().intercept(url, permissions, a);
         }
     }
 

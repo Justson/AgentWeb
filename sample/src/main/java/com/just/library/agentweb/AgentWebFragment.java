@@ -55,6 +55,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public static final String URL_KEY = "url_key";
     private ImageView mMoreImageView;
     private PopupMenu mPopupMenu;
+    public static final String TAG=AgentWebFragment.class.getSimpleName();
 
     public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -107,12 +108,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     protected PermissionInterceptor mPermissionInterceptor=new PermissionInterceptor() {
 
-        //AgentWeb 动态需要的权限拦截都会回调到该方法， 返回true表示应用拦截该不给该Url这个权限，返回false AgentWeb 会动态申请权限。
-        //比如 http//:www.taobao.com该Url 需要定位权限， 返回false ，如果版本大于23 ， agentWeb 会动态申请权限 。
-        //这里可以做一些敏感权限拦截
+        //AgentWeb 在触发某些敏感的 Action 时候会回调该方法， 比如定位触发 。
+        //例如 http//:www.taobao.com 该 Url 需要定位权限， 返回false ，如果版本大于等于23 ， agentWeb 会动态申请权限 ，true 该Url对应页面请求定位失败。
+        //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
         @Override
         public boolean intercept(String url, String[] permissions,String action) {
-            LogUtils.i("Info","url:"+url+"  permission:"+permissions+" action:"+action);
+            LogUtils.i(TAG,"url:"+url+"  permission:"+permissions+" action:"+action);
             return false;
         }
     };
@@ -157,7 +158,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
           //  super.onProgressChanged(view, newProgress);
-            //Log.i("Info","onProgressChanged:"+newProgress+"  view:"+view);
+            //Log.i(TAG,"onProgressChanged:"+newProgress+"  view:"+view);
         }
     };
     protected WebViewClient mWebViewClient = new WebViewClient() {
@@ -176,7 +177,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         //
         @Override
         public boolean shouldOverrideUrlLoading(final WebView view, String url) {
-            LogUtils.i("Info", "mWebViewClient shouldOverrideUrlLoading:" + url);
+            LogUtils.i(TAG, "mWebViewClient shouldOverrideUrlLoading:" + url);
             //intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会打开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
             //例如优酷视频播放 ，intent://play?...package=com.youku.phone;end;
             //优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
@@ -191,7 +192,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-            Log.i("Info", "url:" + url + " onPageStarted  target:" + getUrl());
+            Log.i(TAG, "url:" + url + " onPageStarted  target:" + getUrl());
             if (url.equals(getUrl())) {
                 pageNavigator(View.GONE);
             } else {

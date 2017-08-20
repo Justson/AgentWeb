@@ -60,7 +60,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private DefaultMsgConfig.ChromeClientMsgCfg mChromeClientMsgCfg;
     private PermissionInterceptor mPermissionInterceptor;
     private WebView mWebView;
-
+    private String origin = null;
+    private GeolocationPermissions.Callback mCallback = null;
     public static final int FROM_CODE_INTENTION = 0x18;
     public static final int FROM_CODE_INTENTION_LOCATION = FROM_CODE_INTENTION << 2;
 
@@ -115,17 +116,26 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         }
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null)
+        if (mActivity == null) {
+            result.cancel();
             return true;
+        }
         //
-        AgentWebUtils.show(view,
-                message,
-                Snackbar.LENGTH_SHORT,
-                Color.WHITE,
-                mActivity.getResources().getColor(R.color.black),
-                null,
-                -1,
-                null);
+        try {
+            AgentWebUtils.show(view,
+                    message,
+                    Snackbar.LENGTH_SHORT,
+                    Color.WHITE,
+                    mActivity.getResources().getColor(R.color.black),
+                    null,
+                    -1,
+                    null);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            if(LogUtils.isDebug())
+                LogUtils.i(TAG,throwable.getMessage());
+        }
+
         result.confirm();
 
         return true;
@@ -155,8 +165,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         onGeolocationPermissionsShowPromptInternal(origin, callback);
     }
 
-    private String origin = null;
-    private GeolocationPermissions.Callback mCallback = null;
+
 
     private void onGeolocationPermissionsShowPromptInternal(String origin, GeolocationPermissions.Callback callback) {
 
@@ -265,7 +274,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void showJsConfirm(String message, final JsResult result) {
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null){
+        if (mActivity == null) {
             result.cancel();
             return;
         }
@@ -302,8 +311,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null)
+        if (mActivity == null) {
+            js.cancel();
             return;
+        }
         if (promptDialog == null) {
 
             final EditText et = new EditText(mActivity);

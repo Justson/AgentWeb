@@ -54,7 +54,8 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         }
 
         if (Build.VERSION.SDK_INT >= 21) {
-            mWebSettings.setMixedContentMode(0);
+            //适配5.0不允许http和https混合使用情况
+            mWebSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else if (Build.VERSION.SDK_INT >= 19) {
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -94,10 +95,6 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         mWebSettings.setGeolocationDatabasePath(dir);
         mWebSettings.setDatabasePath(dir);
         mWebSettings.setAppCachePath(dir);
-        //适配5.0不允许http和https混合使用情况
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mWebSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
 
         //缓存文件最大值
         mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
