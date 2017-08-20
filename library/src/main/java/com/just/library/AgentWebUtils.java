@@ -76,7 +76,8 @@ import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
 
 public class AgentWebUtils {
 
-    private static final String TAG=AgentWebUtils.class.getSimpleName();
+    private static final String TAG = AgentWebUtils.class.getSimpleName();
+
     public static int px2dp(Context context, float pxValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -367,9 +368,9 @@ public class AgentWebUtils {
         }
     }
 
-    public static List<String> getDeniedPermissions(Activity activity,String[]permissions){
+    public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
 
-        if(permissions==null||permissions.length==0)
+        if (permissions == null || permissions.length == 0)
             return null;
         List<String> deniedPermissions = new ArrayList<>();
         for (int i = 0; i < permissions.length; i++) {
@@ -443,19 +444,27 @@ public class AgentWebUtils {
         if (activity == null || uris == null || uris.length == 0) {
             return null;
         }
-        String[] paths = new String[uris.length];
-        int i = 0;
-        for (Uri mUri : uris) {
-//            Log.i("Info", "  uri:" + mUri);
-            paths[i++] = Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ? getFileAbsolutePath(activity, mUri) : getRealPathBelowVersion(activity, mUri);
+        try {
 
+            String[] paths = new String[uris.length];
+            int i = 0;
+            for (Uri mUri : uris) {
+                paths[i++] = Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2 ? getFileAbsolutePath(activity, mUri) : getRealPathBelowVersion(activity, mUri);
+
+            }
+            return paths;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            if (LogUtils.isDebug())
+                    throwable.printStackTrace();
         }
-        return paths;
+        return null;
+
     }
 
     private static String getRealPathBelowVersion(Context context, Uri uri) {
         String filePath = null;
-        LogUtils.i(TAG,"method -> getRealPathBelowVersion "+uri+"   path:"+uri.getPath()+"    getAuthority:"+uri.getAuthority());
+        LogUtils.i(TAG, "method -> getRealPathBelowVersion " + uri + "   path:" + uri.getPath() + "    getAuthority:" + uri.getAuthority());
         String[] projection = {MediaStore.Images.Media.DATA};
 
         CursorLoader loader = new CursorLoader(context, uri, projection, null,
@@ -467,9 +476,9 @@ public class AgentWebUtils {
             filePath = cursor.getString(cursor.getColumnIndex(projection[0]));
             cursor.close();
         }
-        if(filePath==null){
+        if (filePath == null) {
 //            filePath="file:".concat(uri.getPath());
-            filePath=uri.getPath();
+            filePath = uri.getPath();
 
         }
         return filePath;
@@ -554,13 +563,13 @@ public class AgentWebUtils {
                         os.write(b, 0, len);
                     }
                     mQueue.offer(new FileParcel(id, mFile.getAbsolutePath(), Base64.encodeToString(os.toByteArray(), Base64.DEFAULT)));
-                    LogUtils.i(TAG,"enqueu");
-                }else{
-                    LogUtils.i(TAG,"File no exists");
+                    LogUtils.i(TAG, "enqueu");
+                } else {
+                    LogUtils.i(TAG, "File no exists");
                 }
 
             } catch (Throwable e) {
-                LogUtils.i(TAG,"throwwable");
+                LogUtils.i(TAG, "throwwable");
                 e.printStackTrace();
             } finally {
                 CloseUtils.closeIO(is);
@@ -579,7 +588,7 @@ public class AgentWebUtils {
         if (context == null || fileUri == null)
             return null;
 
-        LogUtils.i("Info","getAuthority:"+fileUri.getAuthority()+"  getHost:"+fileUri.getHost()+"   getPath:"+fileUri.getPath()+"  getScheme:"+fileUri.getScheme()+"  query:"+fileUri.getQuery());
+        LogUtils.i("Info", "getAuthority:" + fileUri.getAuthority() + "  getHost:" + fileUri.getHost() + "   getPath:" + fileUri.getPath() + "  getScheme:" + fileUri.getScheme() + "  query:" + fileUri.getQuery());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
             if (isExternalStorageDocument(fileUri)) {
                 String docId = DocumentsContract.getDocumentId(fileUri);
@@ -610,12 +619,12 @@ public class AgentWebUtils {
                 return getDataColumn(context, contentUri, selection, selectionArgs);
             }
         } // MediaStore (and general)
-        else if(fileUri.getAuthority().equalsIgnoreCase(context.getPackageName() + ".AgentWebFileProvider")){
+        else if (fileUri.getAuthority().equalsIgnoreCase(context.getPackageName() + ".AgentWebFileProvider")) {
 
-            String path=fileUri.getPath();
-            int index=path.lastIndexOf("/");
-            return Environment.getExternalStorageDirectory()+File.separator+AgentWebConfig.DOWNLOAD_PATH+File.separator+path.substring(index+1,path.length());
-        }else if ("content".equalsIgnoreCase(fileUri.getScheme())) {
+            String path = fileUri.getPath();
+            int index = path.lastIndexOf("/");
+            return Environment.getExternalStorageDirectory() + File.separator + AgentWebConfig.DOWNLOAD_PATH + File.separator + path.substring(index + 1, path.length());
+        } else if ("content".equalsIgnoreCase(fileUri.getScheme())) {
             // Return the remote address
             if (isGooglePhotosUri(fileUri))
                 return fileUri.getLastPathSegment();
@@ -634,12 +643,7 @@ public class AgentWebUtils {
         try {
             cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null);
             if (cursor != null && cursor.moveToFirst()) {
-                /*List<String> mList = Arrays.asList(cursor.getColumnNames());
-                if (!mList.contains(MediaStore.Images.Media.DATA)) {
-                    LogUtils.i("Info", "datas:" + mList);
-                }*/
                 int index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-
                 return cursor.getString(index);
             }
         } finally {
@@ -688,7 +692,7 @@ public class AgentWebUtils {
         return mIntent;
     }
 
-    public static Intent getCommonFileIntentCompat(Context context , File file){
+    public static Intent getCommonFileIntentCompat(Context context, File file) {
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
         mIntent.setType(getMIMEType(file));
         setIntentData(context, mIntent, file, false);

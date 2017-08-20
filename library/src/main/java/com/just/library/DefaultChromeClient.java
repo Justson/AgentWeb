@@ -396,6 +396,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
                 .setUriValueCallbacks(filePathCallback)
                 .setFileChooserParams(fileChooserParams)
                 .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
+                .setPermissionInterceptor(this.mPermissionInterceptor)
                 .build();
         mIFileUploadChooser.openFileChooser();
 
@@ -443,6 +444,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
                 .setActivity(mActivity)
                 .setUriValueCallback(valueCallback)
                 .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
+                .setPermissionInterceptor(this.mPermissionInterceptor)
                 .build();
         this.mIFileUploadChooser.openFileChooser();
 

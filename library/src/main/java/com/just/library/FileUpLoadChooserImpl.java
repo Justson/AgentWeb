@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Queue;
 
 import static com.just.library.ActionActivity.KEY_ACTION;
+import static com.just.library.ActionActivity.KEY_FROM_INTENTION;
 import static com.just.library.ActionActivity.KEY_URI;
 import static com.just.library.ActionActivity.start;
 
@@ -45,6 +46,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private WebView mWebView;
     private boolean cameraState = false;
     private PermissionInterceptor mPermissionInterceptor;
+    private int FROM_INTENTION_CODE = 21;
 
     public FileUpLoadChooserImpl(Builder builder) {
 
@@ -57,21 +59,45 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         this.mJsChannelCallback = builder.mJsChannelCallback;
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
         this.mWebView = builder.mWebView;
-
+        this.mPermissionInterceptor = builder.mPermissionInterceptor;
     }
 
 
     @Override
     public void openFileChooser() {
+        if (!AgentWebUtils.isUIThread()) {
+            AgentWebUtils.runInUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    openFileChooser();
+                }
+            });
+            return;
+        }
+
         openFileChooserInternal();
     }
 
     private void fileChooser() {
+
+        List<String> permission = null;
+        if (AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.STORAGE).isEmpty()) {
+            touchOffFileChooserAction();
+        } else {
+            ActionActivity.Action mAction = ActionActivity.Action.createPermissionsAction(AgentWebPermissions.STORAGE);
+            mAction.setFromIntention(FROM_INTENTION_CODE >> 2);
+            ActionActivity.setPermissionListener(mPermissionListener);
+            ActionActivity.start(mActivity, mAction);
+        }
+
+
+    }
+
+    private void touchOffFileChooserAction() {
         ActionActivity.Action mAction = new ActionActivity.Action();
         mAction.setAction(ActionActivity.Action.ACTION_FILE);
         ActionActivity.setFileDataListener(getFileDataListener());
         mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction));
-
     }
 
     private ActionActivity.FileDataListener getFileDataListener() {
@@ -120,10 +146,11 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             return;
 
         if (mPermissionInterceptor != null) {
-            if (mPermissionInterceptor.intercept(this.mWebView.getUrl(), AgentWebPermissions.CAMERA,"camera")) {
+            if (mPermissionInterceptor.intercept(FileUpLoadChooserImpl.this.mWebView.getUrl(), AgentWebPermissions.CAMERA, "camera")) {
                 cancel();
                 return;
             }
+
         }
 
         ActionActivity.Action mAction = new ActionActivity.Action();
@@ -131,6 +158,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(deniedPermissions = checkNeedPermission()).isEmpty()) {
             mAction.setAction(ActionActivity.Action.ACTION_PERMISSION);
             mAction.setPermissions(deniedPermissions.toArray(new String[]{}));
+            mAction.setFromIntention(FROM_INTENTION_CODE >> 3);
             ActionActivity.setPermissionListener(this.mPermissionListener);
             start(mActivity, mAction);
         } else {
@@ -175,18 +203,28 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                     break;
                 }
             }
-            permissionResult(tag);
+            permissionResult(tag, extras.getInt(KEY_FROM_INTENTION));
 
         }
     };
 
-    private void permissionResult(boolean grant) {
-        if (grant)
-            openCameraAction();
-        else {
-            LogUtils.i(TAG, "permission denied");
-            cancel();
+    private void permissionResult(boolean grant, int from_intention) {
+        if (from_intention == FROM_INTENTION_CODE >> 2) {
+            if (grant) {
+                touchOffFileChooserAction();
+            } else {
+                cancel();
+                LogUtils.i(TAG, "permission denied");
+            }
+        } else if (from_intention == FROM_INTENTION_CODE >> 3) {
+            if (grant)
+                openCameraAction();
+            else {
+                cancel();
+                LogUtils.i(TAG, "permission denied");
+            }
         }
+
 
     }
 

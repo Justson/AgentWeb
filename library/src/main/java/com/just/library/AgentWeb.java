@@ -137,6 +137,11 @@ public class AgentWeb {
         return this.mDefaultMsgConfig;
     }
 
+
+    public PermissionInterceptor getPermissionInterceptor() {
+        return this.mPermissionInterceptor;
+    }
+
     private void doCompat() {
 
 
