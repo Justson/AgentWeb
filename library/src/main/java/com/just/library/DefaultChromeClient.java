@@ -61,8 +61,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private PermissionInterceptor mPermissionInterceptor;
     private WebView mWebView;
 
-    public static final int FROM_CODE_INTENTION=0x18;
-    public static final int FROM_CODE_INTENTION_LOCATION=FROM_CODE_INTENTION<<2;
+    public static final int FROM_CODE_INTENTION = 0x18;
+    public static final int FROM_CODE_INTENTION_LOCATION = FROM_CODE_INTENTION << 2;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
@@ -140,14 +140,14 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public void onGeolocationPermissionsHidePrompt() {
         super.onGeolocationPermissionsHidePrompt();
-        LogUtils.i("Info", "onGeolocationPermissionsHidePrompt");
+        LogUtils.i(TAG, "onGeolocationPermissionsHidePrompt");
     }
 
     //location
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 
-        LogUtils.i("Info", "onGeolocationPermissionsShowPrompt:" + origin + "   callback:" + callback);
+        LogUtils.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin + "   callback:" + callback);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ChromePath + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             return;
@@ -161,15 +161,15 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void onGeolocationPermissionsShowPromptInternal(String origin, GeolocationPermissions.Callback callback) {
 
         if (mPermissionInterceptor != null) {
-            if (mPermissionInterceptor.intercept(this.mWebView.getUrl(), AgentWebPermissions.LOCATION, "location")){
-                callback.invoke(origin,false,false);
+            if (mPermissionInterceptor.intercept(this.mWebView.getUrl(), AgentWebPermissions.LOCATION, "location")) {
+                callback.invoke(origin, false, false);
                 return;
             }
         }
 
         Activity mActivity = mActivityWeakReference.get();
-        if (mActivity == null){
-            callback.invoke(origin,false,false);
+        if (mActivity == null) {
+            callback.invoke(origin, false, false);
             return;
         }
 
@@ -178,11 +178,11 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             callback.invoke(origin, true, false);
         } else {
 
-            ActionActivity.Action mAction=ActionActivity.Action.createPermissionsAction(deniedPermissions.toArray(new String[]{}));
+            ActionActivity.Action mAction = ActionActivity.Action.createPermissionsAction(deniedPermissions.toArray(new String[]{}));
             mAction.setFromIntention(FROM_CODE_INTENTION_LOCATION);
             ActionActivity.setPermissionListener(mPermissionListener);
-            this.mCallback =callback;
-            this.origin=origin;
+            this.mCallback = callback;
+            this.origin = origin;
             ActionActivity.start(mActivity, mAction);
         }
 
@@ -195,23 +195,23 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
             if (extras.getInt(KEY_FROM_INTENTION) == FROM_CODE_INTENTION_LOCATION) {
-                boolean t=true;
+                boolean t = true;
                 for (int p : grantResults) {
-                    if (p != PackageManager.PERMISSION_GRANTED){
-                        t=false;
+                    if (p != PackageManager.PERMISSION_GRANTED) {
+                        t = false;
                         break;
                     }
                 }
 
-                if(mCallback!=null){
-                    if(t){
-                        mCallback.invoke(origin,true,false);
-                    }else{
-                        mCallback.invoke(origin,false,false);
+                if (mCallback != null) {
+                    if (t) {
+                        mCallback.invoke(origin, true, false);
+                    } else {
+                        mCallback.invoke(origin, false, false);
                     }
 
-                    mCallback=null;
-                    origin=null;
+                    mCallback = null;
+                    origin = null;
                 }
 
             }
@@ -244,6 +244,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
+
+        LogUtils.i(TAG, message);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ChromePath + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
 
             return super.onJsConfirm(view, url, message, result);
@@ -263,8 +265,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void showJsConfirm(String message, final JsResult result) {
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity != null)
+        if (mActivity == null){
+            result.cancel();
             return;
+        }
 
         if (confirmDialog == null)
             confirmDialog = new AlertDialog.Builder(mActivity)//
@@ -359,7 +363,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-        LogUtils.i("Infoss", "openFileChooser>=5.0");
+        LogUtils.i(TAG, "openFileChooser>=5.0");
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowFileChooser", ChromePath + ".onShowFileChooser", WebView.class, ValueCallback.class, FileChooserParams.class)) {
 
             return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
@@ -389,7 +393,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
-        LogUtils.i("Info", "openFileChooser>=4.1");
+        LogUtils.i(TAG, "openFileChooser>=4.1");
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class, String.class)) {
             super.openFileChooser(uploadFile, acceptType, capture);
             return;
@@ -403,13 +407,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             super.openFileChooser(valueCallback);
             return;
         }
-        Log.i("Info", "openFileChooser<3.0");
+        Log.i(TAG, "openFileChooser<3.0");
         createAndOpenCommonFileLoader(valueCallback);
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
-        Log.i("Info", "openFileChooser>3.0");
+        Log.i(TAG, "openFileChooser>3.0");
 
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class)) {
             super.openFileChooser(valueCallback, acceptType);
@@ -444,7 +448,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         super.onConsoleMessage(consoleMessage);
-        LogUtils.i("Info", "consoleMessage:" + consoleMessage.message() + "  lineNumber:" + consoleMessage.lineNumber());
+        LogUtils.i(TAG, "consoleMessage:" + consoleMessage.message() + "  lineNumber:" + consoleMessage.lineNumber());
         return true;
     }
 

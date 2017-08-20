@@ -238,9 +238,9 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 ```
 
 ## 更新日志
-* v_1.2.6 修复Android 4.4以下布局错乱
-* v_1.2.5 提示信息支持配置
-* v_1.2.4 支持传入 IWebLayout ，可以完成下拉回弹效果 。
+* v_1.2.6 修复Android 4.4以下布局错乱 。
+* v_1.2.5 提示信息支持配置 。
+* v_1.2.4 支持传入 IWebLayout ，支持下拉回弹，下拉刷新效果 。
 * v_1.2.3 新增下载结果回调 。 
 * v_1.2.2 修复已知 Bug 。
 * v_1.2.1 支持调起支付宝 ， 微信支付 。
@@ -250,7 +250,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 ## 下个版本功能预告
 
 * 支持动态权限申请
-* 废弃 `uploadFileResult` API (走 `ActionActivity` 绕过该方法)
+* 废弃 `uploadFileResult` 方法 (走 `ActionActivity` 绕过该方法)
 * 加入权限控制
 * `FileChooser` 加入了拍照选择
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -51,8 +52,17 @@ public class EasyWebActivity extends BaseAgentWebActivity {
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (mAgentWeb != null && mAgentWeb.handleKeyEvent(keyCode, event)) {
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     protected void setTitle(WebView view, String title) {
-       mTitleTextView.setText(title);
+        mTitleTextView.setText(title);
     }
 
     @Override
