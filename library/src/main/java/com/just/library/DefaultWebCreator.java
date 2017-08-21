@@ -33,6 +33,7 @@ public class DefaultWebCreator implements WebCreator {
     private boolean isCreated=false;
     private IWebLayout mIWebLayout;
     private BaseProgressSpec mBaseProgressSpec;
+    private static final String TAG=DefaultWebCreator.class.getSimpleName();
 
 
     protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp, WebView webView,IWebLayout webLayout) {
@@ -134,7 +135,7 @@ public class DefaultWebCreator implements WebCreator {
         FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
         mFrameLayout.addView(target, mLayoutParams);
 
-        LogUtils.i("Info", "    webView:" + (this.mWebView instanceof AgentWebView));
+        LogUtils.i(TAG, "    webView:" + (this.mWebView instanceof AgentWebView));
         if (isNeedDefaultProgress) {
             FrameLayout.LayoutParams lp = null;
             WebProgress mWebProgress = new WebProgress(mActivity);
@@ -162,7 +163,7 @@ public class DefaultWebCreator implements WebCreator {
         if((mWebView=mIWebLayout.getWeb())==null){
             mWebView=web();
             mIWebLayout.getLayout().addView(mWebView,-1,-1);
-            LogUtils.i("Info","add webview");
+            LogUtils.i(TAG,"add webview");
 
         }else{
             AgentWebConfig.WEBVIEW_TYPE=AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
