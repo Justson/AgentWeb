@@ -67,7 +67,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        LogUtils.i(TAG, " DefaultWebClient shouldOverrideUrlLoading");
+        LogUtils.i(TAG, " DefaultWebClient shouldOverrideUrlLoading:"+request.getUrl());
         if (webClientHelper && handleNormalLinked(request.getUrl() + "")) {
             return true;
         }

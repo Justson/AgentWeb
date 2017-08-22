@@ -28,7 +28,6 @@ import com.just.library.LogUtils;
  *
  * source CODE  https://github.com/Justson/AgentWeb
  *
- * 使用 AgentWeb 需要通过组合或者继承。
  * <p>
  */
 

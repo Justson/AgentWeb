@@ -203,8 +203,10 @@ public class AgentWebUtils {
         return uri;
     }
 
+
     public static Uri getUriFromFileForN(Context context, File file) {
         Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file);
+//        LogUtils.i(TAG, "getUriFromFileForN:" + (context.getPackageName() + ".AgentWebFileProvider"+"   uri:"+fileUri));
         return fileUri;
     }
 
@@ -456,7 +458,7 @@ public class AgentWebUtils {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             if (LogUtils.isDebug())
-                    throwable.printStackTrace();
+                throwable.printStackTrace();
         }
         return null;
 
@@ -687,15 +689,14 @@ public class AgentWebUtils {
 
     public static Intent getInstallApkIntentCompat(Context context, File file) {
 
-        Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW).setType("application/vnd.android.package-archive");
-        setIntentData(context, mIntent, file, false);
+        Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
+        setIntentDataAndType(context, mIntent, "application/vnd.android.package-archive", file, false);
         return mIntent;
     }
 
     public static Intent getCommonFileIntentCompat(Context context, File file) {
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
-        mIntent.setType(getMIMEType(file));
-        setIntentData(context, mIntent, file, false);
+        setIntentDataAndType(context, mIntent, getMIMEType(file), file, false);
         return mIntent;
     }
 

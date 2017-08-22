@@ -1,5 +1,6 @@
 package com.just.library;
 
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -206,11 +207,24 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 if (mNotity != null)
                     mNotity.cancel(mDownLoadTask.getId());
 
-                Intent intent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
-                        mDownLoadTask.getId() << 4, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                mNotity.setProgressFinish(mDownLoadTask.getDownLoadMsgConfig().getClickOpen(), rightPendIntent);
+
+                Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
+                try {
+                    if (mIntent != null) {
+                        if (!(mDownLoadTask.getContext() instanceof Activity))
+                            mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
+                        PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
+                                mDownLoadTask.getId() << 4, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        mNotity.setProgressFinish(mDownLoadTask.getDownLoadMsgConfig().getClickOpen(), rightPendIntent);
+//                        mDownLoadTask.getContext().startActivity(mIntent);
+                    }
+                    return;
+                } catch (Throwable throwable) {
+                    if (LogUtils.isDebug())
+                        throwable.printStackTrace();
+                }
 
             }
 

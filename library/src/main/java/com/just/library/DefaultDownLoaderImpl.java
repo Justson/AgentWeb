@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
 
 /**
@@ -133,6 +132,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
             Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
             try {
+//                mContext.getPackageManager().resolveActivity(mIntent)
                 if (mIntent != null) {
                     if (!(mContext instanceof Activity))
                         mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

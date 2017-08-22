@@ -105,7 +105,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
     public void show() {
 
-        Log.i("Info", "show  -- >:" + getVisibility());
+        LogUtils.i("WebProgress", "show  -- >:" + getVisibility());
         if (getVisibility() == View.GONE) {
             this.setVisibility(View.VISIBLE);
             currentProgress = 0f;
