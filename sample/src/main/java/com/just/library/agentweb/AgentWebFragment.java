@@ -267,6 +267,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         Uri url = Uri.parse(targetUrl);
         intent.setData(url);
         startActivity(intent);
+
+
     }
 
     private void showPoPup(View view) {

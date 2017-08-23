@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
-
 /**
  * Created by cenxiaozhong on 2017/5/13.
  * source CODE  https://github.com/Justson/AgentWeb
@@ -238,10 +236,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             }
 
             LogUtils.i("Info", "file:" + filename);
-            File mFile = new File(DOWNLOAD_FILE_PATH, filename);
-            if (!mFile.exists())
-                mFile.createNewFile();
-            return mFile;
+            return AgentWebUtils.createFileByName(mContext,filename,false);
         } catch (Exception e) {
             e.printStackTrace();
         }

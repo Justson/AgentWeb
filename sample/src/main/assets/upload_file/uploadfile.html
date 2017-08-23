@@ -67,6 +67,7 @@ return url;
             }
     //输出选中结果
     console.log(this.value);
+    alert(this.value);
     //每次选中都保存旧元素，并使用新的控件替换
     $(this).clone().replaceAll(file=this);
   }).submit(function(){

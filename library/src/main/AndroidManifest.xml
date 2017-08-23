@@ -15,7 +15,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/web_download_paths"/>
+                android:resource="@xml/web_files_paths"/>
         </provider>
         <activity
             android:name=".ActionActivity"

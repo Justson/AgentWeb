@@ -3,7 +3,6 @@ package com.just.library;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -19,22 +18,15 @@ import java.io.File;
 public class AgentWebConfig {
 
 
-    static final String AGENTWEB_CACHE_PATCH = "/agentweb_cache";
-
-    static final String DOWNLOAD_PATH = "download";
-
-
-    static final String DOWNLOAD_FILE_PATH= Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + AgentWebConfig.DOWNLOAD_PATH;
-    public static boolean DEBUG=true;
-
+    static final String AGENTWEB_CACHE_PATCH = File.separator+"agentweb_cache";
+    static final String FILE_CACHE_PATH = "agentweb-cache";
+    static String AGENTWEB_FILE_PATH;
+    public static boolean DEBUG = true;
     static final boolean isKikatOrBelowKikat = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
-//    static final boolean isKikatOrBelowKikat= true;
-
-
+    //    static final boolean isKikatOrBelowKikat= true;
     public static final int WEBVIEW_DEFAULT_TYPE = 1;
     public static final int WEBVIEW_AGENTWEB_SAFE_TYPE = 2;
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
-
     static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
 
 
@@ -105,7 +97,6 @@ public class AgentWebConfig {
             }
         };
     }
-
 
 
     private static boolean isInit = false;

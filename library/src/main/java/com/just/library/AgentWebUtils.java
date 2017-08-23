@@ -24,6 +24,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
+import android.support.v4.os.EnvironmentCompat;
 import android.telephony.TelephonyManager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -45,14 +46,17 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
@@ -61,7 +65,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.just.library.AgentWebConfig.DOWNLOAD_FILE_PATH;
+import static com.just.library.AgentWebConfig.AGENTWEB_FILE_PATH;
+import static com.just.library.AgentWebConfig.FILE_CACHE_PATH;
 
 /**
  * <b>@项目名：</b> agentweb<br>
@@ -115,6 +120,21 @@ public class AgentWebUtils {
 
     }
 
+    public static String getAgentWebFilePath(Context context) {
+        if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH))
+            return AGENTWEB_FILE_PATH;
+        String dir = getDiskCacheDir(context);
+        File mFile = new File(dir, FILE_CACHE_PATH);
+        try {
+            mFile.mkdirs();
+        } catch (Throwable throwable) {
+            LogUtils.i(TAG, "create dir exception");
+        }
+        LogUtils.i(TAG, "path:" + mFile.getAbsolutePath() + "  path:" + mFile.getPath());
+        return AGENTWEB_FILE_PATH = mFile.getAbsolutePath();
+
+    }
+
     public static boolean checkWifi(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity == null) {
@@ -133,6 +153,22 @@ public class AgentWebUtils {
         return info != null && info.isConnected();
     }
 
+    static File createFileByName(Context context, String name, boolean convert) throws IOException {
+
+        String path = getAgentWebFilePath(context);
+        File mFile = new File(path, name);
+        if (mFile.exists()) {
+            if (convert) {
+                mFile.delete();
+                mFile.createNewFile();
+            }
+        } else {
+            mFile.createNewFile();
+        }
+
+        return mFile;
+
+    }
 
     public static int checkNetworkType(Context context) {
 
@@ -243,6 +279,21 @@ public class AgentWebUtils {
         }
     }
 
+    static String getDiskCacheDir(Context context) {
+        /*String cachePath = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            cachePath = context.getExternalCacheDir().getPath();
+            LogUtils.i(TAG, "cachepath:" + cachePath);
+        } else {
+            cachePath = context.getCacheDir().getPath();
+        }*/
+
+        File mFile = context.getExternalCacheDir();
+        if (Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(mFile)))
+            return mFile.getPath();
+        return null;
+    }
 
     public static void grantPermissions(Context context, Intent intent, Uri uri, boolean writeAble) {
 
@@ -360,10 +411,10 @@ public class AgentWebUtils {
             webView.getSettings().setJavaScriptEnabled(false);
             context.deleteDatabase("webviewCache.db");
             context.deleteDatabase("webview.db");
-            //clearCache(context,0);
             webView.clearCache(true);
             webView.clearHistory();
             webView.clearFormData();
+            clearCacheFolder(new File(AgentWebConfig.getCachePath(context)), 0);
 
         } catch (Exception ignore) {
             //ignore.printStackTrace();
@@ -395,7 +446,6 @@ public class AgentWebUtils {
         }
     }
 
-    //// 来源stackflow
     static int clearCacheFolder(final File dir, final int numDays) {
 
         int deletedFiles = 0;
@@ -518,12 +568,14 @@ public class AgentWebUtils {
         return mQueue;
     }
 
-    public static File createFile() {
+    public static File createImageFile(Context context) {
         File mFile = null;
         try {
 
-            mFile = new File(DOWNLOAD_FILE_PATH, System.currentTimeMillis() + "");
-            mFile.createNewFile();
+            String timeStamp =
+                    new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
+            String imageName = String.format("AgentWeb_%s.jpg", timeStamp);
+            mFile = createFileByName(context, imageName, true);
         } catch (Throwable e) {
 
         }
@@ -625,7 +677,7 @@ public class AgentWebUtils {
 
             String path = fileUri.getPath();
             int index = path.lastIndexOf("/");
-            return Environment.getExternalStorageDirectory() + File.separator + AgentWebConfig.DOWNLOAD_PATH + File.separator + path.substring(index + 1, path.length());
+            return getAgentWebFilePath(context) + File.separator + path.substring(index + 1, path.length());
         } else if ("content".equalsIgnoreCase(fileUri.getScheme())) {
             // Return the remote address
             if (isGooglePhotosUri(fileUri))
