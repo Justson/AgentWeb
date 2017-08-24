@@ -82,6 +82,7 @@ import static com.just.library.AgentWebConfig.FILE_CACHE_PATH;
 public class AgentWebUtils {
 
     private static final String TAG = AgentWebUtils.class.getSimpleName();
+    private static Handler mHandler = null;
 
     public static int px2dp(Context context, float pxValue) {
 
@@ -156,6 +157,8 @@ public class AgentWebUtils {
     static File createFileByName(Context context, String name, boolean convert) throws IOException {
 
         String path = getAgentWebFilePath(context);
+        if (TextUtils.isEmpty(path))
+            return null;
         File mFile = new File(path, name);
         if (mFile.exists()) {
             if (convert) {
@@ -402,6 +405,14 @@ public class AgentWebUtils {
     }
 
 
+    public static void clearAgentWebCache(Context context) {
+        try {
+            clearCacheFolder(new File(getAgentWebFilePath(context)), 0);
+        } catch (Throwable throwable) {
+
+        }
+    }
+
     public static void clearWebViewAllCache(Context context, WebView webView) {
 
         try {
@@ -478,12 +489,6 @@ public class AgentWebUtils {
     }
 
 
-    /*
-     * Delete the files older than numDays days from the application cache
-     * 0 means all files.
-     *
-     * // 来源stackflow
-     */
     public static void clearCache(final Context context, final int numDays) {
         Log.i("Info", String.format("Starting cache prune, deleting files older than %d days", numDays));
         int numDeletedFiles = clearCacheFolder(context.getCacheDir(), numDays);
@@ -574,7 +579,7 @@ public class AgentWebUtils {
 
             String timeStamp =
                     new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
-            String imageName = String.format("AgentWeb_%s.jpg", timeStamp);
+            String imageName = String.format("aw_%s.jpg", timeStamp);
             mFile = createFileByName(context, imageName, true);
         } catch (Throwable e) {
 
@@ -782,7 +787,7 @@ public class AgentWebUtils {
 
     }
 
-    public static String FileParcetoJson(Collection<FileParcel> collection) {
+    public static String convertFileParceObjectsToJson(Collection<FileParcel> collection) {
 
         if (collection == null || collection.size() == 0)
             return null;
@@ -868,8 +873,6 @@ public class AgentWebUtils {
         mToast.show();
 
     }
-
-    private static Handler mHandler = null;
 
 
     public static void runInUiThread(Runnable runnable) {

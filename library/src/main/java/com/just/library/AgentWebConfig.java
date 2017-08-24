@@ -18,7 +18,7 @@ import java.io.File;
 public class AgentWebConfig {
 
 
-    static final String AGENTWEB_CACHE_PATCH = File.separator+"agentweb_cache";
+    static final String AGENTWEB_CACHE_PATCH = File.separator+"agentweb-cache";
     static final String FILE_CACHE_PATH = "agentweb-cache";
     static String AGENTWEB_FILE_PATH;
     public static boolean DEBUG = true;
@@ -28,6 +28,7 @@ public class AgentWebConfig {
     public static final int WEBVIEW_AGENTWEB_SAFE_TYPE = 2;
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
     static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
+    private static boolean isInit = false;
 
 
     //获取Cookie
@@ -99,7 +100,7 @@ public class AgentWebConfig {
     }
 
 
-    private static boolean isInit = false;
+
 
     static synchronized void initCookiesManager(Context context) {
         if (!isInit) {
@@ -112,7 +113,7 @@ public class AgentWebConfig {
         return context.getCacheDir().getAbsolutePath() + AGENTWEB_CACHE_PATCH;
     }
 
-    public static String getDatabasesCachePath(Context context) {
+     static String getDatabasesCachePath(Context context) {
         return context.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
     }
 

@@ -26,6 +26,7 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.just.library.AgentWeb;
 import com.just.library.AgentWebSettings;
@@ -39,8 +40,8 @@ import com.just.library.WebDefaultSettingsManager;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
- *
- *
+ * <p>
+ * <p>
  * source code  https://github.com/Justson/AgentWeb
  */
 
@@ -55,7 +56,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public static final String URL_KEY = "url_key";
     private ImageView mMoreImageView;
     private PopupMenu mPopupMenu;
-    public static final String TAG=AgentWebFragment.class.getSimpleName();
+    public static final String TAG = AgentWebFragment.class.getSimpleName();
 
     public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -96,24 +97,22 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         initView(view);
 
 
-          DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig=mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
+        DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
         //优化
-
-
 
 
     }
 
 
-    protected PermissionInterceptor mPermissionInterceptor=new PermissionInterceptor() {
+    protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
 
         //AgentWeb 在触发某些敏感的 Action 时候会回调该方法， 比如定位触发 。
         //例如 http//:www.taobao.com 该 Url 需要定位权限， 返回false ，如果版本大于等于23 ， agentWeb 会动态申请权限 ，true 该Url对应页面请求定位失败。
         //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
         @Override
-        public boolean intercept(String url, String[] permissions,String action) {
-            LogUtils.i(TAG,"url:"+url+"  permission:"+permissions+" action:"+action);
+        public boolean intercept(String url, String[] permissions, String action) {
+            LogUtils.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
             return false;
         }
     };
@@ -127,7 +126,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         @Override
         public void error(String path, String resUrl, String cause, Throwable e) {
-           //do you work
+            //do you work
         }
     };
 
@@ -157,7 +156,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
-          //  super.onProgressChanged(view, newProgress);
+            //  super.onProgressChanged(view, newProgress);
             //Log.i(TAG,"onProgressChanged:"+newProgress+"  view:"+view);
         }
     };
@@ -223,8 +222,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
 
-
-     private void pageNavigator(int tag) {
+    private void pageNavigator(int tag) {
 
         mBackImageView.setVisibility(tag);
         mLineView.setVisibility(tag);
@@ -258,8 +256,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
     private void openBrowser(String targetUrl) {
-        if(!TextUtils.isEmpty(targetUrl)&&targetUrl.startsWith("file://")){
-            AgentWebUtils.toastShowShort(this.getContext(),targetUrl+" 该链接无法使用浏览器打开。");
+        if (!TextUtils.isEmpty(targetUrl) && targetUrl.startsWith("file://")) {
+            AgentWebUtils.toastShowShort(this.getContext(), targetUrl + " 该链接无法使用浏览器打开。");
             return;
         }
         Intent intent = new Intent();
@@ -299,12 +297,30 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                     if (mAgentWeb != null)
                         openBrowser(mAgentWeb.getWebCreator().get().getUrl());
                     return true;
+                case R.id.default_clean:
+                    toCleanAgentWebCache();
+                    return true;
                 default:
                     return false;
             }
 
         }
     };
+
+    private void toCleanAgentWebCache() {
+
+        if (this.mAgentWeb != null) {
+
+            //清理所有跟WebView相关的缓存
+            this.mAgentWeb.clearWebCache();
+            Toast.makeText(getActivity(), "已清理缓存", Toast.LENGTH_SHORT).show();
+
+            //清理 AgentWeb 所有缓存 ，包括AgentWeb 下载的文件，图片
+            //this.mAgentWeb.clearAgentWebCache();
+
+        }
+
+    }
 
 
     private void toCopy(Context context, String text) {
