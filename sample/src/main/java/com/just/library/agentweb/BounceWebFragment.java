@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.just.library.AgentWeb;
-import com.just.library.AgentWebUtils;
 import com.just.library.IWebLayout;
 
 /**
@@ -74,7 +73,8 @@ public class BounceWebFragment extends AgentWebFragment {
         frameLayout.setBackgroundColor(Color.parseColor("#272b2d"));
         FrameLayout.LayoutParams mFlp=new FrameLayout.LayoutParams(-2,-2);
         mFlp.gravity= Gravity.CENTER_HORIZONTAL;
-        mFlp.topMargin= AgentWebUtils.dp2px(frameLayout.getContext(),15);
+        final float scale = frameLayout.getContext().getResources().getDisplayMetrics().density;
+        mFlp.topMargin= (int) (15 * scale + 0.5f);
         frameLayout.addView(mTextView,0,mFlp);
     }
 

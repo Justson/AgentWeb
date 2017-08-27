@@ -16,7 +16,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -211,11 +210,7 @@ public class AgentWeb {
         return this;
     }
 
-    private AgentWeb clearAgentWebCache() {
-        clearWebCache();
-        AgentWebUtils.clearCacheFolder(new File(AgentWebUtils.getAgentWebFilePath(mActivity)), 0);
-        return this;
-    }
+
 
     public static AgentBuilder with(@NonNull Activity activity) {
         if (activity == null)

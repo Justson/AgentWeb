@@ -39,7 +39,7 @@ import static com.just.library.ActionActivity.KEY_FROM_INTENTION;
  * <b>@公司：</b> <br>
  * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
  * <b>@描述</b><br>
- * source CODE  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class DefaultChromeClient extends WebChromeClientProgressWrapper implements FileUploadPop<IFileUploadChooser> {

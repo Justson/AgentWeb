@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -54,7 +55,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
         hasAlipayLib = tag;
 
-        LogUtils.i(TAG, "static  hasAlipayLib:" + hasAlipayLib);
+        LogUtils.i(TAG, "hasAlipayLib:" + hasAlipayLib);
     }
 
     DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
@@ -284,6 +285,12 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
 
 
+    }
+
+
+    @Override
+    public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+        super.onReceivedHttpError(view, request, errorResponse);
     }
 
     @Override

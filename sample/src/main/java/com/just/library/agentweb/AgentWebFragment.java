@@ -30,7 +30,6 @@ import android.widget.Toast;
 
 import com.just.library.AgentWeb;
 import com.just.library.AgentWebSettings;
-import com.just.library.AgentWebUtils;
 import com.just.library.ChromeClientCallbackManager;
 import com.just.library.DefaultMsgConfig;
 import com.just.library.DownLoadResultListener;
@@ -256,8 +255,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
     private void openBrowser(String targetUrl) {
-        if (!TextUtils.isEmpty(targetUrl) && targetUrl.startsWith("file://")) {
-            AgentWebUtils.toastShowShort(this.getContext(), targetUrl + " 该链接无法使用浏览器打开。");
+        if (TextUtils.isEmpty(targetUrl) || targetUrl.startsWith("file://")) {
+            Toast.makeText(this.getContext(), targetUrl + " 该链接无法使用浏览器打开。", Toast.LENGTH_SHORT).show();
             return;
         }
         Intent intent = new Intent();
@@ -315,8 +314,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             this.mAgentWeb.clearWebCache();
             Toast.makeText(getActivity(), "已清理缓存", Toast.LENGTH_SHORT).show();
 
-            //清理 AgentWeb 所有缓存 ，包括AgentWeb 下载的文件，图片
-            //this.mAgentWeb.clearAgentWebCache();
+            //会清空所有 AgentWeb 硬盘缓存，包括 WebView 的缓存 , AgentWeb 下载的图片 ，视频 ，apk 等文件。
+//            AgentWebConfig.clearDiskCache(this.getContext());
 
         }
 

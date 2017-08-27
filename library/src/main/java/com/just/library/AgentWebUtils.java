@@ -79,18 +79,19 @@ import static com.just.library.AgentWebConfig.FILE_CACHE_PATH;
  * source CODE  https://github.com/Justson/AgentWeb
  */
 
+//该类对外是不开发的
 public class AgentWebUtils {
 
     private static final String TAG = AgentWebUtils.class.getSimpleName();
     private static Handler mHandler = null;
 
-    public static int px2dp(Context context, float pxValue) {
+    static int px2dp(Context context, float pxValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
-    public static int dp2px(Context context, float dipValue) {
+    static int dp2px(Context context, float dipValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
@@ -121,7 +122,7 @@ public class AgentWebUtils {
 
     }
 
-    public static String getAgentWebFilePath(Context context) {
+    static String getAgentWebFilePath(Context context) {
         if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH))
             return AGENTWEB_FILE_PATH;
         String dir = getDiskCacheDir(context);
@@ -136,7 +137,7 @@ public class AgentWebUtils {
 
     }
 
-    public static boolean checkWifi(Context context) {
+    static boolean checkWifi(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity == null) {
             return false;
@@ -145,7 +146,7 @@ public class AgentWebUtils {
         return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
-    public static boolean checkNetwork(Context context) {
+    static boolean checkNetwork(Context context) {
         ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity == null) {
             return false;
@@ -173,7 +174,7 @@ public class AgentWebUtils {
 
     }
 
-    public static int checkNetworkType(Context context) {
+    static int checkNetworkType(Context context) {
 
         int netType = 0;
         //连接管理对象
@@ -216,7 +217,7 @@ public class AgentWebUtils {
 
     }
 
-    public static long getAvailableStorage() {
+    static long getAvailableStorage() {
         try {
             StatFs stat = new StatFs(Environment.getExternalStorageDirectory().toString());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -230,7 +231,7 @@ public class AgentWebUtils {
     }
 
 
-    public static Uri getUriFromFile(Context context, File file) {
+    static Uri getUriFromFile(Context context, File file) {
         Uri uri = null;
 
 //        LogUtils.i("Info", "::" + context.getApplicationInfo().targetSdkVersion + "   INT:" + Build.VERSION.SDK_INT);
@@ -243,18 +244,18 @@ public class AgentWebUtils {
     }
 
 
-    public static Uri getUriFromFileForN(Context context, File file) {
+    static Uri getUriFromFileForN(Context context, File file) {
         Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file);
 //        LogUtils.i(TAG, "getUriFromFileForN:" + (context.getPackageName() + ".AgentWebFileProvider"+"   uri:"+fileUri));
         return fileUri;
     }
 
 
-    public static void setIntentDataAndType(Context context,
-                                            Intent intent,
-                                            String type,
-                                            File file,
-                                            boolean writeAble) {
+    static void setIntentDataAndType(Context context,
+                                     Intent intent,
+                                     String type,
+                                     File file,
+                                     boolean writeAble) {
         if (Build.VERSION.SDK_INT >= 24) {
             intent.setDataAndType(getUriFromFile(context, file), type);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -267,10 +268,10 @@ public class AgentWebUtils {
     }
 
 
-    public static void setIntentData(Context context,
-                                     Intent intent,
-                                     File file,
-                                     boolean writeAble) {
+    static void setIntentData(Context context,
+                              Intent intent,
+                              File file,
+                              boolean writeAble) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             intent.setData(getUriFromFile(context, file));
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -298,7 +299,7 @@ public class AgentWebUtils {
         return null;
     }
 
-    public static void grantPermissions(Context context, Intent intent, Uri uri, boolean writeAble) {
+    static void grantPermissions(Context context, Intent intent, Uri uri, boolean writeAble) {
 
         int flag = Intent.FLAG_GRANT_READ_URI_PERMISSION;
         if (writeAble) {
@@ -352,14 +353,14 @@ public class AgentWebUtils {
 
     private static WeakReference<Snackbar> snackbarWeakReference;
 
-    public static void show(View parent,
-                            CharSequence text,
-                            int duration,
-                            @ColorInt int textColor,
-                            @ColorInt int bgColor,
-                            CharSequence actionText,
-                            @ColorInt int actionTextColor,
-                            View.OnClickListener listener) {
+    static void show(View parent,
+                     CharSequence text,
+                     int duration,
+                     @ColorInt int textColor,
+                     @ColorInt int bgColor,
+                     CharSequence actionText,
+                     @ColorInt int actionTextColor,
+                     View.OnClickListener listener) {
         SpannableString spannableString = new SpannableString(text);
         ForegroundColorSpan colorSpan = new ForegroundColorSpan(textColor);
         spannableString.setSpan(colorSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -375,14 +376,14 @@ public class AgentWebUtils {
 
     }
 
-    public static void dismiss() {
+    static void dismiss() {
         if (snackbarWeakReference != null && snackbarWeakReference.get() != null) {
             snackbarWeakReference.get().dismiss();
             snackbarWeakReference = null;
         }
     }
 
-    public static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
+    static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
         LogUtils.i(TAG, "  methodName:" + methodName + "   method:" + method);
         boolean tag = false;
         if (currentObject == null)
@@ -405,7 +406,7 @@ public class AgentWebUtils {
     }
 
 
-    public static void clearAgentWebCache(Context context) {
+    static void clearAgentWebCache(Context context) {
         try {
             clearCacheFolder(new File(getAgentWebFilePath(context)), 0);
         } catch (Throwable throwable) {
@@ -413,13 +414,12 @@ public class AgentWebUtils {
         }
     }
 
-    public static void clearWebViewAllCache(Context context, WebView webView) {
+    static void clearWebViewAllCache(Context context, WebView webView) {
 
         try {
 
             AgentWebConfig.removeAllCookies(null);
             webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-            webView.getSettings().setJavaScriptEnabled(false);
             context.deleteDatabase("webviewCache.db");
             context.deleteDatabase("webview.db");
             webView.clearCache(true);
@@ -429,10 +429,12 @@ public class AgentWebUtils {
 
         } catch (Exception ignore) {
             //ignore.printStackTrace();
+            if (AgentWebConfig.DEBUG)
+                ignore.printStackTrace();
         }
     }
 
-    public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
+    static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
 
         if (permissions == null || permissions.length == 0)
             return null;
@@ -447,7 +449,7 @@ public class AgentWebUtils {
 
     }
 
-    public static void clearWebViewAllCache(Context context) {
+    static void clearWebViewAllCache(Context context) {
 
         try {
 
@@ -489,7 +491,7 @@ public class AgentWebUtils {
     }
 
 
-    public static void clearCache(final Context context, final int numDays) {
+    static void clearCache(final Context context, final int numDays) {
         Log.i("Info", String.format("Starting cache prune, deleting files older than %d days", numDays));
         int numDeletedFiles = clearCacheFolder(context.getCacheDir(), numDays);
         Log.i("Info", String.format("Cache pruning completed, %d files deleted", numDeletedFiles));
@@ -542,7 +544,7 @@ public class AgentWebUtils {
     }
 
     //必须执行在子线程, 会阻塞 直到文件转换完成;
-    public static Queue<FileParcel> convertFile(String[] paths) throws Exception {
+    static Queue<FileParcel> convertFile(String[] paths) throws Exception {
 
         if (paths == null || paths.length == 0)
             return null;
@@ -573,7 +575,7 @@ public class AgentWebUtils {
         return mQueue;
     }
 
-    public static File createImageFile(Context context) {
+    static File createImageFile(Context context) {
         File mFile = null;
         try {
 
@@ -642,7 +644,7 @@ public class AgentWebUtils {
 
 
     @TargetApi(19)
-    public static String getFileAbsolutePath(Activity context, Uri fileUri) {
+    static String getFileAbsolutePath(Activity context, Uri fileUri) {
 
         if (context == null || fileUri == null)
             return null;
@@ -696,7 +698,7 @@ public class AgentWebUtils {
         return null;
     }
 
-    public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
+    static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
         String[] projection = {MediaStore.Images.Media.DATA};
         try {
@@ -716,7 +718,7 @@ public class AgentWebUtils {
      * @param uri The Uri to check.
      * @return Whether the Uri authority is ExternalStorageProvider.
      */
-    public static boolean isExternalStorageDocument(Uri uri) {
+    static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
     }
 
@@ -724,7 +726,7 @@ public class AgentWebUtils {
      * @param uri The Uri to check.
      * @return Whether the Uri authority is DownloadsProvider.
      */
-    public static boolean isDownloadsDocument(Uri uri) {
+    static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
 
@@ -732,7 +734,7 @@ public class AgentWebUtils {
      * @param uri The Uri to check.
      * @return Whether the Uri authority is MediaProvider.
      */
-    public static boolean isMediaDocument(Uri uri) {
+    static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
     }
 
@@ -740,24 +742,24 @@ public class AgentWebUtils {
      * @param uri The Uri to check.
      * @return Whether the Uri authority is Google Photos.
      */
-    public static boolean isGooglePhotosUri(Uri uri) {
+    static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
     }
 
-    public static Intent getInstallApkIntentCompat(Context context, File file) {
+    static Intent getInstallApkIntentCompat(Context context, File file) {
 
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
         setIntentDataAndType(context, mIntent, "application/vnd.android.package-archive", file, false);
         return mIntent;
     }
 
-    public static Intent getCommonFileIntentCompat(Context context, File file) {
+    static Intent getCommonFileIntentCompat(Context context, File file) {
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
         setIntentDataAndType(context, mIntent, getMIMEType(file), file, false);
         return mIntent;
     }
 
-    public static Intent getIntentCaptureCompat(Context context, File file) {
+    static Intent getIntentCaptureCompat(Context context, File file) {
         Intent mIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         Uri mUri = getUriFromFile(context, file);
         mIntent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -766,7 +768,7 @@ public class AgentWebUtils {
     }
 
 
-    public static boolean isJson(String target) {
+    static boolean isJson(String target) {
         if (TextUtils.isEmpty(target))
             return false;
 
@@ -787,7 +789,7 @@ public class AgentWebUtils {
 
     }
 
-    public static String convertFileParceObjectsToJson(Collection<FileParcel> collection) {
+    static String convertFileParcelObjectsToJson(Collection<FileParcel> collection) {
 
         if (collection == null || collection.size() == 0)
             return null;
@@ -817,7 +819,7 @@ public class AgentWebUtils {
 
     }
 
-    public static boolean isMainProcess(Context context) {
+    static boolean isMainProcess(Context context) {
 
         ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
@@ -844,25 +846,25 @@ public class AgentWebUtils {
     }
 
 
-    public static boolean isUIThread() {
+    static boolean isUIThread() {
 
         return Looper.myLooper() == Looper.getMainLooper();
 
     }
 
-    public static boolean isEmptyCollection(Collection collection) {
+    static boolean isEmptyCollection(Collection collection) {
 
         return collection == null || collection.isEmpty();
     }
 
-    public static boolean isEmptyMap(Map map) {
+    static boolean isEmptyMap(Map map) {
 
         return map == null || map.isEmpty();
     }
 
     private static Toast mToast = null;
 
-    public static void toastShowShort(Context context, String msg) {
+    static void toastShowShort(Context context, String msg) {
 
         if (mToast == null) {
             mToast = Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_SHORT);
@@ -875,7 +877,7 @@ public class AgentWebUtils {
     }
 
 
-    public static void runInUiThread(Runnable runnable) {
+    static void runInUiThread(Runnable runnable) {
         if (mHandler == null)
             mHandler = new Handler(Looper.getMainLooper());
         mHandler.post(runnable);

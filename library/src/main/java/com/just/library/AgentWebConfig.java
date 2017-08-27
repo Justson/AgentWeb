@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 
 import java.io.File;
+
+import static com.just.library.AgentWebUtils.getAgentWebFilePath;
 
 /**
  * Created by cenxiaozhong on 2017/5/14.
@@ -18,7 +21,7 @@ import java.io.File;
 public class AgentWebConfig {
 
 
-    static final String AGENTWEB_CACHE_PATCH = File.separator+"agentweb-cache";
+    static final String AGENTWEB_CACHE_PATCH = File.separator + "agentweb-cache";
     static final String FILE_CACHE_PATH = "agentweb-cache";
     static String AGENTWEB_FILE_PATH;
     public static boolean DEBUG = true;
@@ -100,20 +103,23 @@ public class AgentWebConfig {
     }
 
 
-
-
     static synchronized void initCookiesManager(Context context) {
         if (!isInit) {
             createCookiesSyncInstance(context);
             isInit = true;
         }
     }
-
+    // WebView 的缓存路径
     public static String getCachePath(Context context) {
         return context.getCacheDir().getAbsolutePath() + AGENTWEB_CACHE_PATCH;
     }
+    //文件
+    public static String getExternalCachePath(Context context) {
+        return getAgentWebFilePath(context);
+    }
 
-     static String getDatabasesCachePath(Context context) {
+
+    static String getDatabasesCachePath(Context context) {
         return context.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
     }
 
@@ -149,6 +155,22 @@ public class AgentWebConfig {
 
             }
         });
+    }
+
+
+    public static synchronized void clearDiskCache(Context context) {
+
+        try {
+            AgentWebUtils.clearWebViewAllCache(context);
+            String path = getExternalCachePath(context);
+            if (!TextUtils.isEmpty(path)) {
+                File mFile = new File(path);
+                AgentWebUtils.clearCacheFolder(mFile, 0);
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
     }
 
 }

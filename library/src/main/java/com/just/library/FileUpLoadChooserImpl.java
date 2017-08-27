@@ -340,7 +340,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
             try {
                 Queue<FileParcel> mQueue = AgentWebUtils.convertFile(paths);
-                String result = AgentWebUtils.convertFileParceObjectsToJson(mQueue);
+                String result = AgentWebUtils.convertFileParcelObjectsToJson(mQueue);
                 LogUtils.i("Info", "result:" + result);
                 if (mJsChannelCallback != null)
                     mJsChannelCallback.call(result);
