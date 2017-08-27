@@ -297,7 +297,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                         openBrowser(mAgentWeb.getWebCreator().get().getUrl());
                     return true;
                 case R.id.default_clean:
-                    toCleanAgentWebCache();
+                    toCleanWebCache();
                     return true;
                 default:
                     return false;
@@ -306,17 +306,15 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
     };
 
-    private void toCleanAgentWebCache() {
+    private void toCleanWebCache() {
 
         if (this.mAgentWeb != null) {
 
-            //清理所有跟WebView相关的缓存
+            //清理所有跟WebView相关的缓存 ，数据库， 历史记录 等。
             this.mAgentWeb.clearWebCache();
             Toast.makeText(getActivity(), "已清理缓存", Toast.LENGTH_SHORT).show();
-
-            //会清空所有 AgentWeb 硬盘缓存，包括 WebView 的缓存 , AgentWeb 下载的图片 ，视频 ，apk 等文件。
+            //清空所有 AgentWeb 硬盘缓存，包括 WebView 的缓存 , AgentWeb 下载的图片 ，视频 ，apk 等文件。
 //            AgentWebConfig.clearDiskCache(this.getContext());
-
         }
 
     }
@@ -348,9 +346,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public void onDestroyView() {
-        //mAgentWeb.clearWebCache();
+        toCleanWebCache();
         mAgentWeb.getWebLifeCycle().onDestroy();
         super.onDestroyView();
-        //  mAgentWeb.destroy();
     }
 }

@@ -26,7 +26,6 @@ public class AgentWebConfig {
     static String AGENTWEB_FILE_PATH;
     public static boolean DEBUG = true;
     static final boolean isKikatOrBelowKikat = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
-    //    static final boolean isKikatOrBelowKikat= true;
     public static final int WEBVIEW_DEFAULT_TYPE = 1;
     public static final int WEBVIEW_AGENTWEB_SAFE_TYPE = 2;
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
@@ -42,7 +41,7 @@ public class AgentWebConfig {
 
     public static void removeExpiredCookies() {
         CookieManager mCookieManager = null;
-        if ((mCookieManager = CookieManager.getInstance()) != null) { //同步清除{
+        if ((mCookieManager = CookieManager.getInstance()) != null) { //同步清除
             mCookieManager.removeExpiredCookie();
             toSyncCookies();
         }
@@ -109,10 +108,12 @@ public class AgentWebConfig {
             isInit = true;
         }
     }
+
     // WebView 的缓存路径
     public static String getCachePath(Context context) {
         return context.getCacheDir().getAbsolutePath() + AGENTWEB_CACHE_PATCH;
     }
+
     //文件
     public static String getExternalCachePath(Context context) {
         return getAgentWebFilePath(context);
@@ -161,7 +162,8 @@ public class AgentWebConfig {
     public static synchronized void clearDiskCache(Context context) {
 
         try {
-            AgentWebUtils.clearWebViewAllCache(context);
+
+            AgentWebUtils.clearCacheFolder(new File(getCachePath(context)), 0);
             String path = getExternalCachePath(context);
             if (!TextUtils.isEmpty(path)) {
                 File mFile = new File(path);

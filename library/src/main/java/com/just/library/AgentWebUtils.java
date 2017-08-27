@@ -125,10 +125,11 @@ public class AgentWebUtils {
     static String getAgentWebFilePath(Context context) {
         if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH))
             return AGENTWEB_FILE_PATH;
-        String dir = getDiskCacheDir(context);
+        String dir = getDiskExternalCacheDir(context);
         File mFile = new File(dir, FILE_CACHE_PATH);
         try {
-            mFile.mkdirs();
+            if (!mFile.exists())
+                mFile.mkdirs();
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "create dir exception");
         }
@@ -155,14 +156,14 @@ public class AgentWebUtils {
         return info != null && info.isConnected();
     }
 
-    static File createFileByName(Context context, String name, boolean convert) throws IOException {
+    static File createFileByName(Context context, String name, boolean cover) throws IOException {
 
         String path = getAgentWebFilePath(context);
         if (TextUtils.isEmpty(path))
             return null;
         File mFile = new File(path, name);
         if (mFile.exists()) {
-            if (convert) {
+            if (cover) {
                 mFile.delete();
                 mFile.createNewFile();
             }
@@ -171,7 +172,6 @@ public class AgentWebUtils {
         }
 
         return mFile;
-
     }
 
     static int checkNetworkType(Context context) {
@@ -283,19 +283,11 @@ public class AgentWebUtils {
         }
     }
 
-    static String getDiskCacheDir(Context context) {
-        /*String cachePath = null;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            cachePath = context.getExternalCacheDir().getPath();
-            LogUtils.i(TAG, "cachepath:" + cachePath);
-        } else {
-            cachePath = context.getCacheDir().getPath();
-        }*/
+    static String getDiskExternalCacheDir(Context context) {
 
         File mFile = context.getExternalCacheDir();
         if (Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(mFile)))
-            return mFile.getPath();
+            return mFile.getAbsolutePath();
         return null;
     }
 
@@ -477,7 +469,7 @@ public class AgentWebUtils {
                     //then delete the files and subdirectories in this dir
                     //only empty directories can be deleted, so subdirs have been done first
                     if (child.lastModified() < new Date().getTime() - numDays * DateUtils.DAY_IN_MILLIS) {
-                        Log.i("Info", "getName:" + child.getName());
+                        Log.i(TAG, "file name:" + child.getName());
                         if (child.delete()) {
                             deletedFiles++;
                         }
@@ -571,7 +563,7 @@ public class AgentWebUtils {
         if (!((ThreadPoolExecutor) mExecutor).isShutdown())
             ((ThreadPoolExecutor) mExecutor).shutdownNow();
 
-        LogUtils.i("Info", "isShutDown:" + (((ThreadPoolExecutor) mExecutor).isShutdown()));
+        LogUtils.i(TAG, "convertFile isShutDown:" + (((ThreadPoolExecutor) mExecutor).isShutdown()));
         return mQueue;
     }
 
