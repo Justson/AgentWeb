@@ -39,7 +39,7 @@ Support | Simplicity | Support | Concise | Yes | Security | Support |
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.2.6'
+   compile 'com.just.agentweb:agentweb:2.0.0'
    ```
 * Maven
 	
@@ -47,7 +47,7 @@ Support | Simplicity | Support | Concise | Yes | Security | Support |
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.2.6</version>
+	  <version>2.0.0</version>
 	  <type>pom</type>
 	</dependency>
 	

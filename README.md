@@ -45,7 +45,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:1.2.6'
+   compile 'com.just.agentweb:agentweb:2.0.0'
    ```
 * Maven
 	
@@ -53,7 +53,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>1.2.6</version>
+	  <version>2.0.0</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -205,6 +205,20 @@ AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
 ```
 String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 ```
+* #### 权限拦截
+```
+protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
+
+        //AgentWeb 在触发某些敏感的 Action 时候会回调该方法， 比如定位触发 。
+        //例如 http//:www.taobao.com 该 Url 需要定位权限， 返回false ，如果版本大于等于23 ， agentWeb 会动态申请权限 ，true 该Url对应页面请求定位失败。
+        //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
+        @Override
+        public boolean intercept(String url, String[] permissions, String action) {
+            Log.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
+            return false;
+        }
+    };
+```
 
 * #### AgentWeb 所需要的权限
 ```
@@ -247,13 +261,10 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * v_1.2.0 全面支持全屏视频 。
 * v_1.1.2 完善功能 。
 
-## 下个版本功能预告
 
-* 支持动态权限申请
-* 废弃 `uploadFileResult` 方法 (走 `ActionActivity` 绕过该方法)
-* 加入权限控制
-* `FileChooser` 加入了拍照选择
-
+## 下个版本预告
+* 加入默认的错误页
+* 支持自定义错误页 
 
 ## 致谢
 * [SafeWebView](https://github.com/seven456/SafeWebView)
