@@ -47,6 +47,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private boolean cameraState = false;
     private PermissionInterceptor mPermissionInterceptor;
     private int FROM_INTENTION_CODE = 21;
+    
 
     public FileUpLoadChooserImpl(Builder builder) {
 
@@ -341,7 +342,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             try {
                 Queue<FileParcel> mQueue = AgentWebUtils.convertFile(paths);
                 String result = AgentWebUtils.convertFileParcelObjectsToJson(mQueue);
-                LogUtils.i("Info", "result:" + result);
+                LogUtils.i(TAG, "result:" + result);
                 if (mJsChannelCallback != null)
                     mJsChannelCallback.call(result);
 

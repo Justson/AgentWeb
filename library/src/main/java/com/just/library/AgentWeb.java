@@ -147,7 +147,7 @@ public class AgentWeb {
 
         mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat = new AgentWebJsInterfaceCompat(this, mActivity));
 
-        LogUtils.i("Info", "AgentWebConfig.isUseAgentWebView:" + AgentWebConfig.WEBVIEW_TYPE + "  mChromeClientCallbackManager:" + mChromeClientCallbackManager);
+        LogUtils.i(TAG, "AgentWebConfig.isUseAgentWebView:" + AgentWebConfig.WEBVIEW_TYPE + "  mChromeClientCallbackManager:" + mChromeClientCallbackManager);
         if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE) {
             this.mChromeClientCallbackManager.setAgentWebCompatInterface((ChromeClientCallbackManager.AgentWebCompatInterface) mWebCreator.get());
             this.mWebViewClientCallbackManager.setPageLifeCycleCallback((WebViewClientCallbackManager.PageLifeCycleCallback) mWebCreator.get());
@@ -202,7 +202,7 @@ public class AgentWeb {
     public AgentWeb clearWebCache() {
 
         if (this.getWebCreator().get() != null) {
-            Log.i("Info", "清空 webview 缓存");
+            Log.i(TAG, "清空 webview 缓存");
             AgentWebUtils.clearWebViewAllCache(mActivity, this.getWebCreator().get());
         } else {
             AgentWebUtils.clearWebViewAllCache(mActivity);
@@ -369,7 +369,7 @@ public class AgentWeb {
     public void destroyAndKill() {
         destroy();
         if (!AgentWebUtils.isMainProcess(mActivity)) {
-            LogUtils.i("Info", "退出进程");
+            LogUtils.i(TAG, "退出进程");
             System.exit(0);
         }
     }
@@ -386,7 +386,7 @@ public class AgentWeb {
 
         if (mIFileUploadChooser == null)
             mIFileUploadChooser = mAgentWebJsInterfaceCompat.pop();
-        LogUtils.i("Info", "file upload:" + mIFileUploadChooser);
+        LogUtils.i(TAG, "file upload:" + mIFileUploadChooser);
         if (mIFileUploadChooser != null)
             mIFileUploadChooser.fetchFilePathFromIntent(requestCode, resultCode, data);
 

@@ -22,7 +22,6 @@ public class EventHandlerImpl implements IEventHandler {
     }
 
     public EventHandlerImpl(WebView webView,EventInterceptor eventInterceptor) {
-        LogUtils.i("Info","EventInterceptor:"+eventInterceptor);
         this.mWebView = webView;
         this.mEventInterceptor = eventInterceptor;
     }

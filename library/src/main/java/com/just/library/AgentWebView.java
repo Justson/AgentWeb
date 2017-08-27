@@ -31,7 +31,7 @@ import java.util.Map;
  *
  */
 public class AgentWebView extends WebView  implements ChromeClientCallbackManager.AgentWebCompatInterface,WebViewClientCallbackManager.PageLifeCycleCallback{
-    private static final String TAG = "AgentWebView";
+    private static final String TAG = AgentWebView.class.getSimpleName();
     private Map<String, JsCallJava> mJsCallJavas;
     private Map<String, String> mInjectJavaScripts;
     private FixedOnReceivedTitle mFixedOnReceivedTitle;
@@ -69,11 +69,11 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR1){
             super.addJavascriptInterface(interfaceObj,interfaceName);
-            Log.i("Info","注入");
+            Log.i(TAG,"注入");
             return;
         }
 
-        LogUtils.i("Info","addJavascriptInterface:"+interfaceObj+"   interfaceName:"+interfaceName);
+        LogUtils.i(TAG,"addJavascriptInterface:"+interfaceObj+"   interfaceName:"+interfaceName);
         if (mJsCallJavas == null) {
             mJsCallJavas = new HashMap<String, JsCallJava>();
         }
@@ -105,7 +105,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
         if (mIsInited) {
             resetAccessibilityEnabled();
 //
-            LogUtils.i("Info","destroy web");
+            LogUtils.i(TAG,"destroy web");
             super.destroy();
         }
     }
@@ -217,7 +217,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
 
     @Override
     public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-        Log.i("Info","onJsPrompt:"+url+"  message:"+message+"  d:"+defaultValue+"  ");
+        Log.i(TAG,"onJsPrompt:"+url+"  message:"+message+"  d:"+defaultValue+"  ");
         if (mJsCallJavas != null && JsCallJava.isSafeWebViewCallMsg(message)) {
             JSONObject jsonObject = JsCallJava.getMsgJSONObject(message);
             String interfacedName = JsCallJava.getInterfacedName(jsonObject);

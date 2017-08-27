@@ -31,6 +31,7 @@ public class AgentWebConfig {
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
     static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
     private static boolean isInit = false;
+    private static final String TAG=AgentWebConfig.class.getSimpleName();
 
 
     //获取Cookie
@@ -96,7 +97,7 @@ public class AgentWebConfig {
         return new ValueCallback<Boolean>() {
             @Override
             public void onReceiveValue(Boolean ignore) {
-                LogUtils.i("Info", "removeExpiredCookies:" + ignore);
+                LogUtils.i(TAG, "removeExpiredCookies:" + ignore);
             }
         };
     }

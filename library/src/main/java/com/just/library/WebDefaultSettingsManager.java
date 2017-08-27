@@ -22,6 +22,7 @@ import android.webkit.WebViewClient;
 public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerManager {
 
     private android.webkit.WebSettings mWebSettings;
+    private static final String TAG=WebDefaultSettingsManager.class.getSimpleName();
 
     public static WebDefaultSettingsManager getInstance() {
         return new WebDefaultSettingsManager();
@@ -90,7 +91,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         //
         String dir = AgentWebConfig.getCachePath(webView.getContext());
 
-        LogUtils.i("Info", "dir:" + dir + "   appcache:" + AgentWebConfig.getCachePath(webView.getContext()));
+        LogUtils.i(TAG, "dir:" + dir + "   appcache:" + AgentWebConfig.getCachePath(webView.getContext()));
         //设置数据库路径  api19 已经废弃,这里只针对 webkit 起作用
         mWebSettings.setGeolocationDatabasePath(dir);
         mWebSettings.setDatabasePath(dir);

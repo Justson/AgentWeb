@@ -24,6 +24,7 @@ public class WebPools {
     private static WebPools mWebPools = null;
 
     private static final AtomicReference<WebPools> mAtomicReference = new AtomicReference<>();
+    private static final String TAG=WebPools.class.getSimpleName();
 
     private WebPools() {
         mWebViews = new LinkedBlockingQueue<>();
@@ -56,7 +57,7 @@ public class WebPools {
 
         WebView mWebView = mWebViews.poll();
 
-        LogUtils.i("Info","acquireWebViewInternal  webview:"+mWebView);
+        LogUtils.i(TAG,"acquireWebViewInternal  webview:"+mWebView);
         if (mWebView == null) {
             synchronized (lock) {
                 return new WebView(new MutableContextWrapper(activity));
@@ -77,12 +78,12 @@ public class WebPools {
 
                 MutableContextWrapper mContext = (MutableContextWrapper) webView.getContext();
                 mContext.setBaseContext(mContext.getApplicationContext());
-                LogUtils.i("Info","enqueue  webview:"+webView);
+                LogUtils.i(TAG,"enqueue  webview:"+webView);
                 mWebViews.offer(webView);
             }
             if(webView.getContext() instanceof  Activity){
 //            throw new RuntimeException("leaked");
-                LogUtils.i("Info","Abandon this webview  ， It will cause leak if enqueue !");
+                LogUtils.i(TAG,"Abandon this webview  ， It will cause leak if enqueue !");
             }
 
         }catch (Exception e){

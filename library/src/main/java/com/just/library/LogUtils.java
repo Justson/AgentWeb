@@ -8,38 +8,40 @@ import android.util.Log;
 
 public class LogUtils {
 
+    private static final String PREFIX = " agentweb ---> "; //
 
-    public static boolean isDebug() {
+    static boolean isDebug() {
         return AgentWebConfig.DEBUG;
     }
 
-    public static void i(String tag,String message){
+    static void i(String tag, String message) {
 
-        if(isDebug())
-            Log.i(tag,message);
+        if (isDebug())
+            Log.i(PREFIX.concat(tag), message);
     }
 
-    public static void v(String tag,String message){
+    static void v(String tag, String message) {
 
-        if(isDebug())
-            Log.v(tag,message);
+        if (isDebug())
+            Log.v(PREFIX.concat(tag), message);
 
     }
 
-    public static void safeCheckCrash(String tag, String msg, Throwable tr) {
+    static void safeCheckCrash(String tag, String msg, Throwable tr) {
         if (isDebug()) {
-            throw new RuntimeException(tag + " " + msg, tr);
+            throw new RuntimeException(PREFIX.concat(tag) + " " + msg, tr);
         } else {
-            Log.e(tag, msg, tr);
+            Log.e(PREFIX.concat(tag), msg, tr);
         }
     }
 
-    public static void e(String tag, String msg, Throwable tr) {
+    static void e(String tag, String msg, Throwable tr) {
         Log.e(tag, msg, tr);
     }
-    public static void e(String tag,String message){
 
-        if(BuildConfig.DEBUG)
-            Log.e(tag,message);
+    static void e(String tag, String message) {
+
+        if (BuildConfig.DEBUG)
+            Log.e(PREFIX.concat(tag), message);
     }
 }

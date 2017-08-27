@@ -21,6 +21,7 @@ public class WrapperWebViewClient extends WebViewClient {
 
 
     private WebViewClient mWebViewClient;
+    private static final String TAG=WrapperWebViewClient.class.getSimpleName();
     WrapperWebViewClient (WebViewClient client){
         this.mWebViewClient=client;
     }
@@ -39,7 +40,7 @@ public class WrapperWebViewClient extends WebViewClient {
 
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
-        LogUtils.i("Info","loading request");
+        LogUtils.i(TAG,"loading request");
         if(mWebViewClient!=null){
             return mWebViewClient.shouldOverrideUrlLoading(view,request);
         }

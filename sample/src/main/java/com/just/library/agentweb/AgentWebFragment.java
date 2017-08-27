@@ -33,7 +33,6 @@ import com.just.library.AgentWebSettings;
 import com.just.library.ChromeClientCallbackManager;
 import com.just.library.DefaultMsgConfig;
 import com.just.library.DownLoadResultListener;
-import com.just.library.LogUtils;
 import com.just.library.PermissionInterceptor;
 import com.just.library.WebDefaultSettingsManager;
 
@@ -98,7 +97,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
-        //优化
 
 
     }
@@ -111,7 +109,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
         @Override
         public boolean intercept(String url, String[] permissions, String action) {
-            LogUtils.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
+            Log.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
             return false;
         }
     };
@@ -175,7 +173,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         //
         @Override
         public boolean shouldOverrideUrlLoading(final WebView view, String url) {
-            LogUtils.i(TAG, "mWebViewClient shouldOverrideUrlLoading:" + url);
+            Log.i(TAG, "mWebViewClient shouldOverrideUrlLoading:" + url);
             //intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会打开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
             //例如优酷视频播放 ，intent://play?...package=com.youku.phone;end;
             //优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
@@ -346,7 +344,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public void onDestroyView() {
-        toCleanWebCache();
+//        toCleanWebCache();
         mAgentWeb.getWebLifeCycle().onDestroy();
         super.onDestroyView();
     }

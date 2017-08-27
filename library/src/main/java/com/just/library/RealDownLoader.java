@@ -43,6 +43,8 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private Notity mNotity;
 
     private static final int ERROR_LOAD = 406;
+    
+    private static final String TAG=RealDownLoader.class.getSimpleName();
 
 
     private AtomicBoolean atomic = new AtomicBoolean(false);
@@ -81,7 +83,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
         if (mDownLoadTask.getLength() - mDownLoadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
-            LogUtils.i("Info", " 空间不足");
+            LogUtils.i(TAG, " 空间不足");
             return false;
         }
 
@@ -115,7 +117,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
         } catch (Exception e) {
 
             this.e = e;//逃逸
-            LogUtils.i("Info", "doInBackground   Exception:" + e.getMessage());
+            LogUtils.i(TAG, "doInBackground   Exception:" + e.getMessage());
             // e.printStackTrace();
 
         }
@@ -166,7 +168,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
         try {
 
-            //LogUtils.i("Info", "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
+            //LogUtils.i(TAG, "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
             long c = System.currentTimeMillis();
             if (mNotity != null && c - time > 800) {
                 time = c;
@@ -192,7 +194,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
         try {
 
-            LogUtils.i("Info", "onPostExecute:" + integer);
+            LogUtils.i(TAG, "onPostExecute:" + integer);
             mObservable.deleteObserver(this);
             doCallback(integer);
             if (integer > 200) {
@@ -230,7 +232,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.i("Info", "e:" + e.getMessage());
+            LogUtils.i(TAG, "e:" + e.getMessage());
         }
 
 
@@ -275,7 +277,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
         intentCancel.putExtra("type", "type");
         intentCancel.putExtra("TAG", mDownLoadTask.getUrl());
         PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id << 3, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
-        LogUtils.i("Info", "id<<3:" + (id << 3));
+        LogUtils.i(TAG, "id<<3:" + (id << 3));
         return pendingIntentCancel;
     }
 
@@ -301,7 +303,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 bytes += n;
 
                 if (!checknet()) {
-                    LogUtils.i("Info", "network");
+                    LogUtils.i(TAG, "network");
                     return DownLoadMsg.NETWORK_ERROR_CONNECTION.CODE;
                 }
 
@@ -310,12 +312,12 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 } else if (previousBlockTime == -1) {
                     previousBlockTime = System.currentTimeMillis();
                 } else if ((System.currentTimeMillis() - previousBlockTime) > TIME_OUT) {
-                    LogUtils.i("Info", "timeout");
+                    LogUtils.i(TAG, "timeout");
                     return DownLoadMsg.TIME_OUT.CODE;
                 }
             }
 
-            LogUtils.i("Info", "atomic:" + atomic.get());
+            LogUtils.i(TAG, "atomic:" + atomic.get());
             if (atomic.get()) {
                 return DownLoadMsg.USER_CANCEL.CODE;
             }
@@ -335,7 +337,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     @Override
     public void update(Observable o, Object arg) {
 
-        //LogUtils.i("Info", "update Object    ... ");
+        //LogUtils.i(TAG, "update Object    ... ");
         String url = "";
         if (arg instanceof String && !TextUtils.isEmpty(url = (String) arg) && url.equals(mDownLoadTask.getUrl())) {
             toCancel();
@@ -373,7 +375,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
         public static String getMsgByCode(int code) {
-            LogUtils.i("Info", "  CODE:" + code);
+            LogUtils.i(TAG, "  CODE:" + code);
             switch (code) {
 
 
@@ -424,7 +426,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                     mMethod.setAccessible(true);
                     mMethod.invoke(mObservable, (Object[]) null);
                     mObservable.notifyObservers(url);
-                    LogUtils.i("Info", "size:" + mObservable.countObservers());
+                    LogUtils.i(TAG, "size:" + mObservable.countObservers());
                 } catch (Throwable ignore) {
 //                    ignore.printStackTrace();
                 }

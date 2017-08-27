@@ -18,6 +18,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
 
     private Activity mActivity;
     private WebView mWebView;
+    private static final String TAG=VideoImpl.class.getSimpleName();
 
     public VideoImpl(Activity mActivity, WebView webView) {
         this.mActivity = mActivity;
@@ -31,7 +32,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
     @Override
     public void onShowCustomView(View view, WebChromeClient.CustomViewCallback callback) {
 
-        LogUtils.i("Info", "onShowCustomView:" + view);
+        LogUtils.i(TAG, "onShowCustomView:" + view);
 
         Activity mActivity;
         if ((mActivity = this.mActivity) == null)
@@ -65,7 +66,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
     @Override
     public void onHideCustomView() {
 
-        LogUtils.i("Info", "onHideCustomView:" + moiveView);
+        LogUtils.i(TAG, "onHideCustomView:" + moiveView);
         if (moiveView == null)
             return;
         if (mActivity!=null&&mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
@@ -100,7 +101,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
     @Override
     public boolean event() {
 
-        LogUtils.i("Info", "event:" + isVideoState());
+        LogUtils.i(TAG, "event:" + isVideoState());
         if (isVideoState()) {
             onHideCustomView();
             return true;
