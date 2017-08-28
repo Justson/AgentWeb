@@ -79,7 +79,7 @@ import static com.just.library.AgentWebConfig.FILE_CACHE_PATH;
  * source CODE  https://github.com/Justson/AgentWeb
  */
 
-//该类对外是不开发的
+//该类对外是不开放的
 public class AgentWebUtils {
 
     private static final String TAG = AgentWebUtils.class.getSimpleName();

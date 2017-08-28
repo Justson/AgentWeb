@@ -50,8 +50,8 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.2.0'
     testCompile 'junit:junit:4.12'
-    compile project(':library')
-//    compile 'com.just.agentweb:agentweb:1.2.3'
+//    compile project(':library')
+    compile 'com.just.agentweb:agentweb:2.0.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
