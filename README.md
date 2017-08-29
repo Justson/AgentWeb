@@ -138,7 +138,7 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
     }
 ```
 
-* #### 文件上传处理
+* #### <del>文件上传处理<del>
 ```
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -252,6 +252,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 ```
 
 ## 更新日志
+* v_2.0.0 加入动态权限 ，拍照等功能 。
 * v_1.2.6 修复Android 4.4以下布局错乱 。
 * v_1.2.5 提示信息支持配置 。
 * v_1.2.4 支持传入 IWebLayout ，支持下拉回弹，下拉刷新效果 。
