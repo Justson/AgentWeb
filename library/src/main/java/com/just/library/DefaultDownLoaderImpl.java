@@ -235,7 +235,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                 filename = System.currentTimeMillis() + "";
             }
 
-            LogUtils.i("Info", "file:" + filename);
+            LogUtils.i(TAG, "file:" + filename);
             return AgentWebUtils.createFileByName(mContext,filename,false);
         } catch (Exception e) {
             e.printStackTrace();

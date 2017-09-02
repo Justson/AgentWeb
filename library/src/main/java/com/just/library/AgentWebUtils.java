@@ -616,7 +616,7 @@ public class AgentWebUtils {
                         os.write(b, 0, len);
                     }
                     mQueue.offer(new FileParcel(id, mFile.getAbsolutePath(), Base64.encodeToString(os.toByteArray(), Base64.DEFAULT)));
-                    LogUtils.i(TAG, "enqueu");
+                    LogUtils.i(TAG, "enqueue");
                 } else {
                     LogUtils.i(TAG, "File no exists");
                 }

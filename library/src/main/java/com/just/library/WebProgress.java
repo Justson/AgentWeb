@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
@@ -93,13 +92,10 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     @Override
     protected void onDraw(Canvas canvas) {
 
-     /*   Log.i("Info", "re:" + (currentProgress / 100 * Float.valueOf(this.getWidth())) + "  width:" + this.getWidth() + "  height:" + this.getHeight() + "  left:" + getLeft() + "  right:" + getRight() + "  b:" + this.getBottom() + " top:" + this.getTop());*/
-
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-//        super.dispatchDraw(canvas);
         canvas.drawRect(0, 0, currentProgress / 100 * Float.valueOf(this.getWidth()), this.getHeight(), mPaint);
     }
 

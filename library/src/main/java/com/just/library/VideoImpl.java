@@ -18,7 +18,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
 
     private Activity mActivity;
     private WebView mWebView;
-    private static final String TAG=VideoImpl.class.getSimpleName();
+    private static final String TAG = VideoImpl.class.getSimpleName();
 
     public VideoImpl(Activity mActivity, WebView webView) {
         this.mActivity = mActivity;
@@ -29,6 +29,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
     private View moiveView = null;
     private ViewGroup moiveParentView = null;
     private WebChromeClient.CustomViewCallback mCallback;
+
     @Override
     public void onShowCustomView(View view, WebChromeClient.CustomViewCallback callback) {
 
@@ -41,7 +42,15 @@ public class VideoImpl implements IVideo, EventInterceptor {
 
 //        mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        if (moiveView != null){
+
+      /*  LogUtils.i(TAG, "flags:" + (mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+        if ((mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) == 0) {
+
+        }
+        mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        LogUtils.i(TAG, "flags:" + (mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));*/
+        if (moiveView != null) {
             callback.onCustomViewHidden();
             return;
         }
@@ -55,7 +64,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
             moiveParentView.setBackgroundColor(Color.BLACK);
             mDecorView.addView(moiveParentView);
         }
-        this.mCallback=callback;
+        this.mCallback = callback;
         moiveParentView.addView(this.moiveView = view);
 
 
@@ -69,7 +78,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
         LogUtils.i(TAG, "onHideCustomView:" + moiveView);
         if (moiveView == null)
             return;
-        if (mActivity!=null&&mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+        if (mActivity != null && mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
             mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         /*WindowManager.LayoutParams attrs = mActivity.getWindow().getAttributes();
@@ -85,7 +94,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
         if (moiveParentView != null)
             moiveParentView.setVisibility(View.GONE);
 
-        if(this.mCallback!=null)
+        if (this.mCallback != null)
             mCallback.onCustomViewHidden();
         this.moiveView = null;
         if (mWebView != null)

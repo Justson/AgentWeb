@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
+    private static final String TAG=JsInterfaceHolderImpl.class.getSimpleName();
     static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
 
         return new JsInterfaceHolderImpl(webView,securityType);
@@ -66,7 +67,7 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
     }
 
     private JsInterfaceHolder addJavaObjectDirect(String k, Object v) {
-        Log.i("Info", "k" + k + "  v:" + v);
+        Log.i(TAG, "k" + k + "  v:" + v);
         this.mWebView.addJavascriptInterface(v, k);
         return this;
     }
