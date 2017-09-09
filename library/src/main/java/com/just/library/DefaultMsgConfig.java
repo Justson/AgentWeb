@@ -258,6 +258,10 @@ public final class DefaultMsgConfig {
                 }
             };
 
+            public void setMedias(String[] medias) {
+                this.medias = medias;
+            }
+
             public String[] getMedias() {
                 return medias;
             }
