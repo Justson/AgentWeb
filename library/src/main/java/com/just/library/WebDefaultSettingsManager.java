@@ -22,7 +22,7 @@ import android.webkit.WebViewClient;
 public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerManager {
 
     private android.webkit.WebSettings mWebSettings;
-    private static final String TAG=WebDefaultSettingsManager.class.getSimpleName();
+    private static final String TAG = WebDefaultSettingsManager.class.getSimpleName();
 
     public static WebDefaultSettingsManager getInstance() {
         return new WebDefaultSettingsManager();
@@ -54,13 +54,13 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
             mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
 
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //适配5.0不允许http和https混合使用情况
             mWebSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else if (Build.VERSION.SDK_INT >= 19) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else if (Build.VERSION.SDK_INT < 19) {
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
@@ -72,13 +72,17 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         mWebSettings.setSupportMultipleWindows(false);
         mWebSettings.setBlockNetworkImage(false);//是否阻塞加载网络图片  协议http or https
         mWebSettings.setAllowFileAccess(true); //允许加载本地文件html  file协议, 这可能会造成不安全 , 建议重写关闭
-        mWebSettings.setAllowFileAccessFromFileURLs(false); //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            mWebSettings.setAllowFileAccessFromFileURLs(false); //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
+        }
         mWebSettings.setAllowUniversalAccessFromFileURLs(false);//允许通过 file url 加载的 Javascript 可以访问其他的源，包括其他的文件和 http，https 等其他的源
         mWebSettings.setJavaScriptCanOpenWindowsAutomatically(true);
-        if (Build.VERSION.SDK_INT >=19)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
             mWebSettings.setLayoutAlgorithm(android.webkit.WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        else
+        } else {
             mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        }
         mWebSettings.setLoadWithOverviewMode(true);
         mWebSettings.setUseWideViewPort(true);
         mWebSettings.setDomStorageEnabled(true);

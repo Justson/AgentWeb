@@ -99,6 +99,11 @@ public class DefaultWebClient extends WrapperWebViewClient {
     }
 
     @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        return super.shouldInterceptRequest(view, request);
+    }
+
+    @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         LogUtils.i(TAG, "shouldOverrideUrlLoading --->  url:" + url);
         if (webClientHelper && handleNormalLinked(url)) {
