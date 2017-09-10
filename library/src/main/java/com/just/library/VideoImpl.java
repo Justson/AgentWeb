@@ -43,13 +43,14 @@ public class VideoImpl implements IVideo, EventInterceptor {
 //        mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-      /*  LogUtils.i(TAG, "flags:" + (mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+       /* LogUtils.i(TAG, "flags:" + (mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
         if ((mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) == 0) {
 
         }
         mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        LogUtils.i(TAG, "flags:" + (mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));*/
+        LogUtils.i(TAG, "flags:" + (mActivity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON));
+      mActivity.getWindow().setFlags();*/
         if (moiveView != null) {
             callback.onCustomViewHidden();
             return;

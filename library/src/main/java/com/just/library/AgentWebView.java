@@ -431,7 +431,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
                 && isAccessibilityEnabled()) {
             try {
                 try {
-                    URLEncoder.encode(String.valueOf(new URI(url)),null);
+                    URLEncoder.encode(String.valueOf(new URI(url)), "utf-8");
 //                    URLEncodedUtils.parse(new URI(url), null); // AccessibilityInjector.getAxsUrlParameterValue
                 } catch (IllegalArgumentException e) {
                     if ("bad parameter".equals(e.getMessage())) {
