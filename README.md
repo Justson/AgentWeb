@@ -14,22 +14,20 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 
 ## AgentWeb 功能
 1. 支持进度条以及自定义进度条
-2. 支持文件下载
-3. 支持文件下载断点续传
-4. 支持下载通知形式提示进度
-5. 简化 Javascript 通信 
-6. 支持 Android 4.4 Kitkat 以及其他版本文件上传
-7. 支持注入 Cookies
-8. 加强 Web 安全
-9. 支持全屏播放视频
-10. 兼容低版本 Js 安全通信
-11. 更省电 。
-12. 支持调起微信支付
-13. 支持调起支付宝（请参照sample）
-14. 默认支持定位
-15. 支持传入 WebLayout（下拉回弹效果）
-16. 支持自定义 WebView 
-17. 支持 JsBridge
+2. 支持文件下载以及文件下载断点续传
+3. 支持下载通知形式提示进度
+4. 简化 `Javascript` 通信 
+5. 支持 `Android 4.4 Kitkat` 以及其他版本文件上传
+6. 支持注入 `Cookies`
+7. 加强 `Web` 安全
+8. 支持全屏播放视频
+9. 兼容低版本 `Js` 安全通信
+10. 支持调起支付宝，微信支付
+11. 默认支持定位
+12. 支持传入 `WebLayout`（下拉回弹效果）
+13. 支持自定义 `WebView` 
+14. 支持 `JsBridge`
+
 
 ## 为什么要使用 AgentWeb ？
 
@@ -231,9 +229,17 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
 ```
 
+* #### AgentWeb 所依赖的库
+```
+    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
+    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
+    SUPPORT_LIB_VERSION=25.2.0(该值会更新)
+```
+
 ## 注意事项
 * 支付宝使用需要引入支付宝SDK ，并在项目中依赖 ， 微信支付不需要做任何操作。
 * 注意动态权限申请 。
+* `AgentWeb` 内部使用了 AlertDialog 需要依赖 `AppCompat` 主题 。 
 
 ## 混淆
 如果你的项目需要加入混淆 ， 请加入如下配置
