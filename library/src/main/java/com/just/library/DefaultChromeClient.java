@@ -116,7 +116,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         }
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null) {
+        if (mActivity == null||mActivity.isFinishing()) {
             result.cancel();
             return true;
         }
@@ -274,7 +274,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void showJsConfirm(String message, final JsResult result) {
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null) {
+        if (mActivity == null||mActivity.isFinishing()) {
             result.cancel();
             return;
         }
@@ -311,7 +311,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null) {
+        if (mActivity == null||mActivity.isFinishing()) {
             js.cancel();
             return;
         }
@@ -387,8 +387,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null)
+        if (mActivity == null||mActivity.isFinishing()){
+            filePathCallback.onReceiveValue(new Uri[]{});
             return;
+        }
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
         this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl.Builder()
                 .setWebView(webView)
@@ -437,8 +439,10 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private void createAndOpenCommonFileLoader(ValueCallback valueCallback) {
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null)
+        if (mActivity == null||mActivity.isFinishing()){
+            valueCallback.onReceiveValue(new Object());
             return;
+        }
         this.mIFileUploadChooser = new FileUpLoadChooserImpl.Builder()
                 .setWebView(this.mWebView)
                 .setActivity(mActivity)

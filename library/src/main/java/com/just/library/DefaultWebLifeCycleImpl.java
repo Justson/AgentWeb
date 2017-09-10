@@ -18,9 +18,9 @@ public class DefaultWebLifeCycleImpl implements WebLifeCycle {
     public void onResume() {
         if (this.mWebView != null) {
 
-            if (Build.VERSION.SDK_INT >= 11)
+            if (Build.VERSION.SDK_INT >= 11){
                 this.mWebView.onResume();
-
+            }
             this.mWebView.resumeTimers();
         }
 
@@ -31,9 +31,11 @@ public class DefaultWebLifeCycleImpl implements WebLifeCycle {
     public void onPause() {
 
         if (this.mWebView != null) {
-            this.mWebView.pauseTimers();
-            if (Build.VERSION.SDK_INT >= 11)
+
+            if (Build.VERSION.SDK_INT >= 11){
                 this.mWebView.onPause();
+            }
+            this.mWebView.pauseTimers();
         }
     }
 
