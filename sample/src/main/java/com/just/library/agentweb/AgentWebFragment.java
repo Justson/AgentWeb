@@ -79,17 +79,17 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
-                .setIndicatorColorWithHeight(-1, 2)//
-                .setAgentWebWebSettings(getSettings())//
-                .setWebViewClient(mWebViewClient)
-                .setWebChromeClient(mWebChromeClient)
-                .setPermissionInterceptor(mPermissionInterceptor)
-                .setReceivedTitleCallback(mCallback)
-                .setSecurityType(AgentWeb.SecurityType.strict)
-                .addDownLoadResultListener(mDownLoadResultListener)
-                .createAgentWeb()//
-                .ready()//
-                .go(getUrl());
+                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度-1为默认值，2单位为dp
+                .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings
+                .setWebViewClient(mWebViewClient)//WebViewClient ， 与WebView 一样
+                .setWebChromeClient(mWebChromeClient) //WebChromeClient
+                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截
+                .setReceivedTitleCallback(mCallback)//标题回调
+                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
+                .addDownLoadResultListener(mDownLoadResultListener) //下载回调
+                .createAgentWeb()//创建AgentWeb
+                .ready()//设置 WebSettings
+                .go(getUrl()); //跳到该页面
 
 
         initView(view);
@@ -255,6 +255,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     };
 
 
+    /**
+     * 打开浏览器
+     * @param targetUrl  外部浏览器打开的地址
+     */
     private void openBrowser(String targetUrl) {
         if (TextUtils.isEmpty(targetUrl) || targetUrl.startsWith("file://")) {
             Toast.makeText(this.getContext(), targetUrl + " 该链接无法使用浏览器打开。", Toast.LENGTH_SHORT).show();
@@ -269,6 +273,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     }
 
+    /**
+     * 显示更多菜单
+     * @param view  菜单依附在该View下面
+     */
     private void showPoPup(View view) {
         if (mPopupMenu == null) {
             mPopupMenu = new PopupMenu(this.getActivity(), view);
@@ -278,6 +286,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mPopupMenu.show();
     }
 
+    //菜单的事件处理
     private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
@@ -307,6 +316,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
     };
 
+    //清除 WebView 缓存
     private void toCleanWebCache() {
 
         if (this.mAgentWeb != null) {
@@ -321,6 +331,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
 
+    //复制字符串
     private void toCopy(Context context, String text) {
 
         ClipboardManager mClipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
