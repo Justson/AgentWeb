@@ -7,8 +7,8 @@ import android.webkit.WebView;
 
 
 /**
- * <b>@项目名：</b> Helmet<br>
- * <b>@包名：</b>com.ucmap.helmet<br>
+ * <b>@项目名：</b> <br>
+ * <b>@包名：</b><br>
  * <b>@创建者：</b> cxz --  just<br>
  * <b>@创建时间：</b> &{DATE}<br>
  * <b>@公司：</b> <br>
@@ -53,27 +53,5 @@ public class JsEntraceAccessImpl extends BaseJsEntraceAccess {
 
     }
 
-
-
-
-
-
-   /* private void safeCallJs(final String method, final ValueCallback<String>valueCallback, final String... params){
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                quickCallJs(method,valueCallback,params);
-            }
-        });
-    }
-    @Override
-    public void quickCallJs(String method, ValueCallback<String> callback, String... params) {
-       if(Thread.currentThread()!=Looper.getMainLooper().getThread()){
-           safeCallJs(method,callback,params);
-           return;
-       }
-        super.quickCallJs(method, callback, params);
-    }
-*/
 
 }

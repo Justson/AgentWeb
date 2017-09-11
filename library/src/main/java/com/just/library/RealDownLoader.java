@@ -397,7 +397,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
             }
         }
 
-        ;
 
 
     }
