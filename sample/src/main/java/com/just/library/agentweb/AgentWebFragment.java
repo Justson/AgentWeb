@@ -89,7 +89,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .createAgentWeb()//创建AgentWeb
                 .ready()//设置 WebSettings
-                .go(getUrl()); //跳到该页面
+                .go(getUrl()); //WebView载入该url地址的页面并显示。
 
 
         initView(view);
