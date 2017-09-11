@@ -184,6 +184,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             /*else if (isAlipay(view, url))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
                 return true;*/
 
+
             return false;
         }
 
