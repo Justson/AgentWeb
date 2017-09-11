@@ -54,7 +54,6 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         mPaint.setDither(true);
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
 
-        // context.getResources().getDisplayMetrics().
         targetWidth = context.getResources().getDisplayMetrics().widthPixels;
 
     }
@@ -175,7 +174,6 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         if (mValueAnimator != null && mValueAnimator.isStarted()) {
             mValueAnimator.cancel();
         }
-//        Log.i("Info", "currentProgress:" + currentProgress + "  value:" + v);
         currentProgress = currentProgress == 0f ? 0.00000001f : currentProgress;
         mValueAnimator = ValueAnimator.ofFloat(currentProgress, v);
         mValueAnimator.setInterpolator(new LinearInterpolator());
@@ -197,7 +195,6 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             float t = (float) animation.getAnimatedValue();
-//            Log.i("Info", "t:" + t);
             WebProgress.this.currentProgress = t;
             WebProgress.this.invalidate();
 
