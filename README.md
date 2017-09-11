@@ -65,7 +65,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 #### 为什么说它简洁易用吗 ？ 下面京东效果图 ， 只需一句话 ！
 
 ```
-mAgentWeb = AgentWeb.with(this)//传入Activity
+mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
                 .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams ,第一个参数和第二个参数应该对应。
                 .useDefaultIndicator()// 使用默认进度条
                 .defaultProgressBarColor() // 使用默认进度条颜色
@@ -236,10 +236,6 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
     SUPPORT_LIB_VERSION=25.2.0(该值会更新)
 ```
 
-## 注意事项
-* 支付宝使用需要引入支付宝SDK ，并在项目中依赖 ， 微信支付不需要做任何操作。
-* 注意动态权限申请 。
-* `AgentWeb` 内部使用了 AlertDialog 需要依赖 `AppCompat` 主题 。 
 
 ## 混淆
 如果你的项目需要加入混淆 ， 请加入如下配置
@@ -257,6 +253,16 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 -keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
 ```
 
+## 注意事项
+* 支付宝使用需要引入支付宝SDK ，并在项目中依赖 ， 微信支付不需要做任何操作。
+* `AgentWeb` 内部使用了 AlertDialog 需要依赖 `AppCompat` 主题 。 
+* `setAgentWebParent` 不支持  `ConstraintLayout` 。
+
+
+## 文档帮助
+* [Wiki](https://github.com/Justson/AgentWeb/wiki)(不全)
+* `Sample`(推荐，详细) 
+
 ## 更新日志
 * v_2.0.0 加入动态权限 ，拍照等功能 。
 * v_1.2.6 修复Android 4.4以下布局错乱 。
@@ -270,8 +276,8 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 
 
 ## 下个版本预告
-* 加入默认的错误页
-* 支持自定义错误页 
+* 加入默认的错误页 。
+* 支持自定义错误页 。
 
 ## 致谢
 * [SafeWebView](https://github.com/seven456/SafeWebView)
@@ -295,7 +301,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 [qq0group]: http://qm.qq.com/cgi-bin/qm/qr?k=KpyfInzI2nr-Lh4StG0oh68GpbcD0vMG
 
 
-### 最后如果该库对你有帮助不妨对右上角点点 Star 对我支持 ， 感谢万分 ! 当然我更喜欢你 Fork PR 成为项目贡献者 . [AgentWeb](https://github.com/Justson/AgentWeb)  
+### 最后如果该库对你有帮助不妨对右上角点点 Star 对我支持 ， 感谢万分 ! 当然我更喜欢你 Fork PR 成为项目贡献者 。 [AgentWeb](https://github.com/Justson/AgentWeb)  
 
 
 ## License
