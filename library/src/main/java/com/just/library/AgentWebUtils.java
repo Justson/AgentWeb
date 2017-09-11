@@ -528,7 +528,6 @@ public class AgentWebUtils {
             cursor.close();
         }
         if (filePath == null) {
-//            filePath="file:".concat(uri.getPath());
             filePath = uri.getPath();
 
         }

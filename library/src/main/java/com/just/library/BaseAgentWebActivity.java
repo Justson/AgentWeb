@@ -51,6 +51,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setWebChromeClient(getWebChromeClient())
                 .setWebViewClient(getWebViewClient())
                 .setWebView(getWebView())
+                .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebLayout(getWebLayout())
                 .addDownLoadResultListener(getDownLoadResultListener())
                 .setAgentWebSettings(getAgentWebSettings())
@@ -59,6 +60,8 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .ready()
                 .go(getUrl());
     }
+
+
 
 
     protected AgentWeb getAgentWeb() {
@@ -156,6 +159,9 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
     protected  @Nullable IWebLayout getWebLayout() {
+        return null;
+    }
+    protected PermissionInterceptor getPermissionInterceptor() {
         return null;
     }
 }

@@ -32,6 +32,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .setWebLayout(getWebLayout())
                 .setAgentWebWebSettings(getAgentWebSettings())//
                 .setWebViewClient(getWebViewClient())
+                .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebChromeClient(getWebChromeClient())
                 .setReceivedTitleCallback(getReceivedTitleCallback())
                 .setSecurityType(AgentWeb.SecurityType.strict)
@@ -41,9 +42,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .go(getUrl());
 
 
-
     }
-
 
 
 
@@ -128,6 +127,9 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     protected  @Nullable IWebLayout getWebLayout() {
+        return null;
+    }
+    protected PermissionInterceptor getPermissionInterceptor() {
         return null;
     }
 }
