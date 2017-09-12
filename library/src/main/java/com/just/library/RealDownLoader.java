@@ -40,7 +40,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private long mSpeed = 0;
 
     private static final int TIME_OUT = 30000000;
-    private Notity mNotity;
+    private Notify mNotify;
 
     private static final int ERROR_LOAD = 406;
     
@@ -170,14 +170,14 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
             //LogUtils.i(TAG, "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
             long c = System.currentTimeMillis();
-            if (mNotity != null && c - time > 800) {
+            if (mNotify != null && c - time > 800) {
                 time = c;
-                if (!mNotity.hasDeleteContent())
-                    mNotity.setDelecte(buildCancelContent(mDownLoadTask.getContext().getApplicationContext(), mDownLoadTask.getId()));
+                if (!mNotify.hasDeleteContent())
+                    mNotify.setDelecte(buildCancelContent(mDownLoadTask.getContext().getApplicationContext(), mDownLoadTask.getId()));
 
                 int mProgress = (int) ((tmp + loaded) / Float.valueOf(totals) * 100);
-                mNotity.setContentText(String.format(mDownLoadTask.getDownLoadMsgConfig().getLoading(), mProgress + "%"));
-                mNotity.setProgress(100, mProgress, false);
+                mNotify.setContentText(String.format(mDownLoadTask.getDownLoadMsgConfig().getLoading(), mProgress + "%"));
+                mNotify.setProgress(100, mProgress, false);
             }
 
         } catch (UnknownFormatConversionException e) {
@@ -199,15 +199,15 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
             doCallback(integer);
             if (integer > 200) {
 
-                if (mNotity != null)
-                    mNotity.cancel(mDownLoadTask.getId());
+                if (mNotify != null)
+                    mNotify.cancel(mDownLoadTask.getId());
                 return;
             }
 
             if (mDownLoadTask.isEnableIndicator()) {
 
-                if (mNotity != null)
-                    mNotity.cancel(mDownLoadTask.getId());
+                if (mNotify != null)
+                    mNotify.cancel(mDownLoadTask.getId());
 
 
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
@@ -219,7 +219,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
                         PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
                                 mDownLoadTask.getId() << 4, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mNotity.setProgressFinish(mDownLoadTask.getDownLoadMsgConfig().getClickOpen(), rightPendIntent);
+                        mNotify.setProgressFinish(mDownLoadTask.getDownLoadMsgConfig().getClickOpen(), rightPendIntent);
 //                        mDownLoadTask.getContext().startActivity(mIntent);
                     }
                     return;
@@ -264,10 +264,10 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                     0x33 * id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             int smallIcon = mDownLoadTask.getDrawableRes();
             String ticker = mDownLoadTask.getDownLoadMsgConfig().getTrickter();
-            mNotity = new Notity(mContext, id);
+            mNotify = new Notify(mContext, id);
 
-            mNotity.notify_progress(rightPendIntent, smallIcon, ticker, mDownLoadTask.getDownLoadMsgConfig().getFileDownLoad(), progressHint, false, false, false, buildCancelContent(mContext, id));
-            mNotity.sent();
+            mNotify.notify_progress(rightPendIntent, smallIcon, ticker, mDownLoadTask.getDownLoadMsgConfig().getFileDownLoad(), progressHint, false, false, false, buildCancelContent(mContext, id));
+            mNotify.sent();
         }
     }
 

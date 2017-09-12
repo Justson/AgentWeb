@@ -77,6 +77,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
                 .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度-1为默认值，2单位为dp
@@ -88,6 +89,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .openParallelDownload()//打开并行下载
+                .setNotifyIcon(R.mipmap.download)
                 .createAgentWeb()//创建AgentWeb
                 .ready()//设置 WebSettings
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
