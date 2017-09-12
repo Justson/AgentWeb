@@ -50,6 +50,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -874,4 +876,16 @@ public class AgentWebUtils {
         mHandler.post(runnable);
     }
 
+
+    static String md5(String str) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(str.getBytes());
+            return new BigInteger(1, md.digest()).toString(16);
+        } catch (Exception e) {
+            if (LogUtils.isDebug())
+                e.printStackTrace();
+        }
+        return "";
+    }
 }

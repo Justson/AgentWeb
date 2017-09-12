@@ -232,7 +232,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
             if (TextUtils.isEmpty(filename)) {
 
-                filename = System.currentTimeMillis() + "";
+                filename = AgentWebUtils.md5(url);
             }
 
             LogUtils.i(TAG, "file:" + filename);
