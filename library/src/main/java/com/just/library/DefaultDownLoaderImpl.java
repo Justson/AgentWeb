@@ -31,7 +31,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private boolean enableIndicator;
     private volatile static int NoticationID = 1;
     private List<DownLoadResultListener> mDownLoadResultListeners;
-    private LinkedList<String> mList = new LinkedList<>();
+    static LinkedList<String> mList = null;
     private WeakReference<Activity> mActivityWeakReference = null;
     private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = null;
     private static final String TAG = DefaultDownLoaderImpl.class.getSimpleName();
@@ -144,7 +144,10 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         }
 
-        if (mList.contains(url)) {
+        if(mList!=null){
+            LogUtils.i(TAG,"url:"+url+"  list:"+mList);
+        }
+        if (mList!=null&&mList.contains(url)) {
 
             AgentWebUtils.toastShowShort(mContext, mDownLoadMsgConfig.getTaskHasBeenExist());
             return;
@@ -200,6 +203,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
     private void performDownload(String url, long contentLength, File file) {
 
+        if (mList == null) {
+            mList = new LinkedList<>();
+        }
         mList.add(url);
         mList.add(file.getAbsolutePath());
         //并行下载.
@@ -236,7 +242,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             }
 
             LogUtils.i(TAG, "file:" + filename);
-            return AgentWebUtils.createFileByName(mContext,filename,false);
+            return AgentWebUtils.createFileByName(mContext, filename, false);
         } catch (Exception e) {
             e.printStackTrace();
         }
