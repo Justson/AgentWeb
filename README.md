@@ -122,7 +122,7 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
 
 * #### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
 ```
-@Override
+ @Override
     protected void onPause() {
         mAgentWeb.getWebLifeCycle().onPause();
         super.onPause();
@@ -134,6 +134,11 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
         mAgentWeb.getWebLifeCycle().onResume();
         super.onResume();
     }
+    @Override
+    public void onDestroyView() {
+        mAgentWeb.getWebLifeCycle().onDestroy();
+        super.onDestroyView();
+    }    
 ```
 
 * #### <del>文件上传处理<del>
