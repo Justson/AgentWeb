@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
@@ -31,7 +34,6 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private boolean enableIndicator;
     private volatile static int NoticationID = 1;
     private List<DownLoadResultListener> mDownLoadResultListeners;
-    static LinkedList<String> mList = null;
     private WeakReference<Activity> mActivityWeakReference = null;
     private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = null;
     private static final String TAG = DefaultDownLoaderImpl.class.getSimpleName();
@@ -39,15 +41,31 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private String url;
     private String contentDisposition;
     private long contentLength;
+    private AtomicBoolean isParallelDownload = new AtomicBoolean(false);
+    private int icon = -1;
 
-    DefaultDownLoaderImpl(Activity context, boolean isforce, boolean enableIndicator, List<DownLoadResultListener> downLoadResultListeners, DefaultMsgConfig.DownLoadMsgConfig msgConfig, PermissionInterceptor permissionInterceptor) {
-        mActivityWeakReference = new WeakReference<Activity>(context);
-        this.mContext = context.getApplicationContext();
-        this.isForce = isforce;
-        this.enableIndicator = enableIndicator;
-        this.mDownLoadResultListeners = downLoadResultListeners;
-        this.mDownLoadMsgConfig = msgConfig;
-        this.mPermissionListener = permissionInterceptor;
+
+    DefaultDownLoaderImpl(Builder builder) {
+        mActivityWeakReference = new WeakReference<Activity>(builder.mActivity);
+        this.mContext = builder.mActivity.getApplicationContext();
+        this.isForce = builder.isForce;
+        this.enableIndicator = builder.enableIndicator;
+        this.mDownLoadResultListeners = builder.mDownLoadResultListeners;
+        this.mDownLoadMsgConfig = builder.mDownLoadMsgConfig;
+        this.mPermissionListener = builder.mPermissionInterceptor;
+        isParallelDownload.set(builder.isParallelDownload);
+        icon = builder.icon;
+
+    }
+
+
+    public boolean isParallelDownload() {
+        return isParallelDownload.get();
+    }
+
+    public void setParallelDownload(boolean isOpen) {
+        isParallelDownload.set(isOpen);
+
     }
 
 
@@ -102,7 +120,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                     contentDisposition = null;
                     contentLength = -1;
                 } else {
-                    LogUtils.i(TAG, "储存权限获取失败~");
+                    LogUtils.e(TAG, "储存权限获取失败~");
                 }
 
             }
@@ -144,11 +162,8 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         }
 
-        if(mList!=null){
-            LogUtils.i(TAG,"url:"+url+"  list:"+mList);
-        }
-        if (mList!=null&&mList.contains(url)) {
 
+        if (ExecuteTasksMap.getInstance().contains(url)) {
             AgentWebUtils.toastShowShort(mContext, mDownLoadMsgConfig.getTaskHasBeenExist());
             return;
         }
@@ -203,15 +218,16 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
     private void performDownload(String url, long contentLength, File file) {
 
-        if (mList == null) {
-            mList = new LinkedList<>();
-        }
-        mList.add(url);
-        mList.add(file.getAbsolutePath());
+        ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
         //并行下载.
-        /*new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, R.mipmap.download)).executeOnExecutor(Executors.newCachedThreadPool(),(Void[])null);*/
-        //默认串行下载.
-        new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, R.mipmap.download)).execute();
+        if (isParallelDownload.get()) {
+            new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon==-1?R.mipmap.download:icon)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+        } else {
+            //默认串行下载.
+            new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon==-1?R.mipmap.download:icon)).execute();
+        }
+
+
     }
 
 
@@ -240,7 +256,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
                 filename = AgentWebUtils.md5(url);
             }
-
+            if (filename.length() > 32) {
+                filename = filename.substring(0, 32);
+            }
             LogUtils.i(TAG, "file:" + filename);
             return AgentWebUtils.createFileByName(mContext, filename, false);
         } catch (Exception e) {
@@ -254,7 +272,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     public void success(String path) {
 
 
-        removeTask(path);
+        ExecuteTasksMap.getInstance().removeTask(path);
 
         if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
             return;
@@ -268,7 +286,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     @Override
     public void error(String path, String resUrl, String cause, Throwable e) {
 
-        removeTask(path);
+        ExecuteTasksMap.getInstance().removeTask(path);
 
         if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
             AgentWebUtils.toastShowShort(mContext, mDownLoadMsgConfig.getDownLoadFail());
@@ -280,15 +298,125 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         }
     }
 
-    private synchronized void removeTask(String path) {
-        if (AgentWebUtils.isEmptyCollection(mList))
-            return;
 
-        int index = mList.indexOf(path);
-        if (index == -1)
-            return;
-        //LogUtils.i("Info", "index:" + index + "paths:" + mList + "   path:" + path);
-        mList.remove(index);
-        mList.remove(index - 1);
+    //静态缓存当前正在下载的任务url
+    public static class ExecuteTasksMap extends ReentrantLock {
+
+        private LinkedList<String> mTasks = null;
+
+        private ExecuteTasksMap() {
+            mTasks = new LinkedList();
+        }
+
+        private static ExecuteTasksMap sInstance = null;
+
+
+        public static ExecuteTasksMap getInstance() {
+
+
+            if (sInstance == null) {
+                synchronized (ExecuteTasksMap.class) {
+                    if (sInstance == null)
+                        sInstance = new ExecuteTasksMap();
+                }
+            }
+            return sInstance;
+        }
+
+        public void removeTask(String path) {
+
+            int index = mTasks.indexOf(path);
+            if (index == -1)
+                return;
+            try {
+                lock();
+                mTasks.remove(index);
+                mTasks.remove(index - 1);
+            } finally {
+                unlock();
+            }
+
+        }
+
+        public void addTask(String url, String path) {
+            try {
+                lock();
+                mTasks.add(url);
+                mTasks.add(path);
+            } finally {
+                unlock();
+            }
+
+        }
+
+        //加锁读
+        public boolean contains(String url) {
+
+            try {
+                lock();
+                return mTasks.contains(url);
+            } finally {
+                unlock();
+            }
+
+        }
+
+
+    }
+
+
+    public static class Builder {
+        private Activity mActivity;
+        private boolean isForce;
+        private boolean enableIndicator;
+        private List<DownLoadResultListener> mDownLoadResultListeners;
+        private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig;
+        private PermissionInterceptor mPermissionInterceptor;
+        private int icon = -1;
+        private boolean isParallelDownload = false;
+
+        public Builder setActivity(Activity activity) {
+            mActivity = activity;
+            return this;
+        }
+
+        public Builder setForce(boolean force) {
+            isForce = force;
+            return this;
+        }
+
+        public Builder setEnableIndicator(boolean enableIndicator) {
+            this.enableIndicator = enableIndicator;
+            return this;
+        }
+
+        public Builder setDownLoadResultListeners(List<DownLoadResultListener> downLoadResultListeners) {
+            this.mDownLoadResultListeners = downLoadResultListeners;
+            return this;
+        }
+
+        public Builder setDownLoadMsgConfig(DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig) {
+            mDownLoadMsgConfig = downLoadMsgConfig;
+            return this;
+        }
+
+        public Builder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+            mPermissionInterceptor = permissionInterceptor;
+            return this;
+        }
+
+        public Builder setIcon(int icon) {
+            this.icon = icon;
+            return this;
+        }
+
+        public Builder setParallelDownload(boolean parallelDownload) {
+            isParallelDownload = parallelDownload;
+            return this;
+        }
+
+        public DefaultDownLoaderImpl create() {
+            return new DefaultDownLoaderImpl(this);
+        }
     }
 }

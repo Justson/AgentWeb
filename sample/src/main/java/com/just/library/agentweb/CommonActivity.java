@@ -54,7 +54,7 @@ public class CommonActivity extends AppCompatActivity {
             /*下载文件*/
             case 1:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "https://h5.m.jd.com/active/download/download.html?channel=jd-msy1");
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://android.myapp.com/");
                 break;
             /*input标签上传文件*/
             case 2:

@@ -3,6 +3,7 @@ package com.just.library;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -95,7 +96,7 @@ public class AgentWeb {
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         this.webClientHelper = agentBuilder.webclientHelper;
         init();
-        setLoadListener(agentBuilder.mDownLoadResultListeners);
+        setDownloadListener(agentBuilder.mDownLoadResultListeners,agentBuilder.isParallelDownload,agentBuilder.icon);
     }
 
 
@@ -123,7 +124,7 @@ public class AgentWeb {
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper = agentBuilderFragment.webClientHelper;
         init();
-        setLoadListener(agentBuilderFragment.mDownLoadResultListeners);
+        setDownloadListener(agentBuilderFragment.mDownLoadResultListeners,agentBuilderFragment.isParallelDownload,agentBuilderFragment.icon);
     }
 
     private void init() {
@@ -306,18 +307,24 @@ public class AgentWeb {
     }
 
 
-    private void setLoadListener(List<DownLoadResultListener> downLoadResultListeners) {
+    private void setDownloadListener(List<DownLoadResultListener> downLoadResultListeners, boolean isParallelDl, int icon) {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl(mActivity, false, true, downLoadResultListeners, mDefaultMsgConfig.getDownLoadMsgConfig(), mPermissionInterceptor);
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl.Builder().setActivity(mActivity)
+                    .setEnableIndicator(true)//
+                    .setForce(false)//
+                    .setDownLoadResultListeners(downLoadResultListeners)//
+                    .setDownLoadMsgConfig(mDefaultMsgConfig.getDownLoadMsgConfig())//
+                    .setParallelDownload(isParallelDl)//
+                    .setIcon(icon)
+                    .create();
+
         }
     }
 
     private DownloadListener getLoadListener() {
         DownloadListener mDownloadListener = this.mDownloadListener;
-        if (mDownloadListener == null) {
-            setLoadListener(new ArrayList<DownLoadResultListener>());
-        }
+
         return mDownloadListener;
     }
 
@@ -413,12 +420,8 @@ public class AgentWeb {
         private WebCreator mWebCreator;
         private WebViewClientCallbackManager mWebViewClientCallbackManager = new WebViewClientCallbackManager();
         private SecurityType mSecurityType = SecurityType.default_check;
-
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
-
         private HttpHeaders headers = null;
-
-
         private ArrayMap<String, Object> mJavaObject = null;
         private int mIndicatorColorWithHeight = -1;
         private WebView mWebView;
@@ -426,6 +429,9 @@ public class AgentWeb {
         private ArrayList<DownLoadResultListener> mDownLoadResultListeners;
         private IWebLayout mWebLayout;
         private PermissionInterceptor mPermissionInterceptor;
+        private boolean isParallelDownload=false;
+        private int icon=-1;
+        private DownloadListener mDownloadListener = null;
 
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
@@ -482,7 +488,6 @@ public class AgentWeb {
         private void addHeader(String k, String v) {
             if (headers == null)
                 headers = HttpHeaders.create();
-            ;
             headers.additionalHttpHeader(k, v);
 
         }
@@ -629,6 +634,15 @@ public class AgentWeb {
             return this;
         }
 
+        public CommonAgentBuilder openParallelDownload(){
+            this.mAgentBuilder.isParallelDownload=true;
+            return this;
+        }
+        public CommonAgentBuilder setNotifyIcon(@DrawableRes int icon){
+            this.mAgentBuilder.icon=icon;
+            return this;
+        }
+
         public CommonAgentBuilder addDownLoadResultListener(DownLoadResultListener downLoadResultListener) {
 
             if (this.mAgentBuilder.mDownLoadResultListeners == null) {
@@ -710,6 +724,11 @@ public class AgentWeb {
         private List<DownLoadResultListener> mDownLoadResultListeners = null;
         private IWebLayout mWebLayout = null;
         private PermissionInterceptor mPermissionInterceptor = null;
+        private boolean isParallelDownload=false;
+        private int icon=-1;
+        private DownloadListener mDownloadListener = null;
+
+
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -844,6 +863,14 @@ public class AgentWeb {
             return this;
         }
 
+        public CommonBuilderForFragment openParallelDownload(){
+            this.mAgentBuilderFragment.isParallelDownload=true;
+            return this;
+        }
+        public CommonBuilderForFragment setNotifyIcon(@DrawableRes int icon){
+            this.mAgentBuilderFragment.icon=icon;
+            return this;
+        }
         public CommonBuilderForFragment setWebView(@Nullable WebView webView) {
             this.mAgentBuilderFragment.mWebView = webView;
             return this;
@@ -873,6 +900,9 @@ public class AgentWeb {
             this.mAgentBuilderFragment.mDownLoadResultListeners.add(downLoadResultListener);
             return this;
         }
+
+
+
     }
 
     private static final class PermissionInterceptorWrapper implements PermissionInterceptor {

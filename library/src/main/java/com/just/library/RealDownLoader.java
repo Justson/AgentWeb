@@ -22,8 +22,6 @@ import java.util.Observer;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.just.library.DefaultDownLoaderImpl.mList;
-
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
@@ -244,17 +242,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
         DownLoadResultListener mDownLoadResultListener = null;
         if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
             LogUtils.e(TAG,"activity has been destroy");
-
-            String path="";
-            if(mList!=null&& mList.contains(path=mDownLoadTask.getFile().getPath())){
-                synchronized (mList){
-                    int index = mList.indexOf(path);
-                    if (index == -1)
-                        return;
-                    mList.remove(index);
-                    mList.remove(index - 1);
-                }
-            }
+            DefaultDownLoaderImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
             return;
         }
         if (code > 200) {

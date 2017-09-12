@@ -87,6 +87,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setReceivedTitleCallback(mCallback)//标题回调
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
+                .openParallelDownload()//打开并行下载
                 .createAgentWeb()//创建AgentWeb
                 .ready()//设置 WebSettings
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
