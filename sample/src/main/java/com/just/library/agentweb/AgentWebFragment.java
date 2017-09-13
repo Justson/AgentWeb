@@ -79,7 +79,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
+                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件
                 .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度-1为默认值，2单位为dp
                 .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与WebView 一样
@@ -88,7 +88,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setReceivedTitleCallback(mCallback)//标题回调
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
-                .openParallelDownload()//打开并行下载
+                .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download)
                 .createAgentWeb()//创建AgentWeb
                 .ready()//设置 WebSettings
@@ -110,7 +110,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
 
         //AgentWeb 在触发某些敏感的 Action 时候会回调该方法， 比如定位触发 。
-        //例如 http//:www.taobao.com 该 Url 需要定位权限， 返回false ，如果版本大于等于23 ， agentWeb 会动态申请权限 ，true 该Url对应页面请求定位失败。
+        //例如 https//:www.baidu.com 该 Url 需要定位权限， 返回false ，如果版本大于等于23 ， agentWeb 会动态申请权限 ，true 该Url对应页面请求定位失败。
         //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
         @Override
         public boolean intercept(String url, String[] permissions, String action) {
@@ -150,7 +150,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void onReceivedTitle(WebView view, String title) {
             if (mTitleTextView != null && !TextUtils.isEmpty(title))
                 if (title.length() > 10)
-                    title = title.substring(0, 10) + "...";
+                    title = title.substring(0, 10).concat("...");
             mTitleTextView.setText(title);
 
         }

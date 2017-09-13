@@ -316,6 +316,7 @@ public class AgentWeb {
                     .setDownLoadResultListeners(downLoadResultListeners)//
                     .setDownLoadMsgConfig(mDefaultMsgConfig.getDownLoadMsgConfig())//
                     .setParallelDownload(isParallelDl)//
+                    .setPermissionInterceptor(this.mPermissionInterceptor)
                     .setIcon(icon)
                     .create();
 

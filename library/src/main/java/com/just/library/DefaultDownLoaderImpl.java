@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,7 +18,14 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -65,6 +71,11 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
     public void setParallelDownload(boolean isOpen) {
         isParallelDownload.set(isOpen);
+        if(isParallelDownload.get()){
+            ExecutorProvider.getInstance().open();
+        }else{
+            ExecutorProvider.getInstance().close();
+        }
 
     }
 
@@ -221,10 +232,10 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
         //并行下载.
         if (isParallelDownload.get()) {
-            new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon==-1?R.mipmap.download:icon)).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+            new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon == -1 ? R.mipmap.download : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
         } else {
             //默认串行下载.
-            new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon==-1?R.mipmap.download:icon)).execute();
+            new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon == -1 ? R.mipmap.download : icon)).execute();
         }
 
 
@@ -239,10 +250,10 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
                 int position = contentDisposition.indexOf("filename");
                 filename = contentDisposition.substring(position);
-                if(filename.contains("=")){
-                    filename=filename.replace("filename=","");
-                }else{
-                    filename.replace("filename","");
+                if (filename.contains("=")) {
+                    filename = filename.replace("filename=", "");
+                } else {
+                    filename.replace("filename", "");
                 }
             }
             if (TextUtils.isEmpty(filename) && !TextUtils.isEmpty(url) && !url.endsWith("/")) {
@@ -260,9 +271,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             if (TextUtils.isEmpty(filename)) {
                 filename = AgentWebUtils.md5(url);
             }
-            LogUtils.i(TAG,"name:"+filename);
+            LogUtils.i(TAG, "name:" + filename);
             if (filename.length() > 64) {
-                filename = filename.substring(filename.length()-64, filename.length());
+                filename = filename.substring(filename.length() - 64, filename.length());
             }
             LogUtils.i(TAG, "filename:" + filename);
             return AgentWebUtils.createFileByName(mContext, filename, false);
@@ -303,6 +314,69 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         }
     }
 
+    static class ExecutorProvider implements Provider<Executor> {
+
+
+        private final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+        private final int CORE_POOL_SIZE = (int) (Math.max(2, Math.min(CPU_COUNT - 1, 4)) * 1.5);
+        private final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+        private final int KEEP_ALIVE_SECONDS = 15;
+
+        private final ThreadFactory sThreadFactory = new ThreadFactory() {
+            private final AtomicInteger mCount = new AtomicInteger(1);
+            private SecurityManager securityManager = System.getSecurityManager();
+            private ThreadGroup group = securityManager != null ? securityManager.getThreadGroup() : Thread.currentThread().getThreadGroup();
+
+            public Thread newThread(Runnable r) {
+                Thread mThread = new Thread(group, r, "pool-agentweb-thread-" + mCount.getAndIncrement());
+                if (mThread.isDaemon()) {
+                    mThread.setDaemon(false);
+                }
+                mThread.setPriority(Thread.MIN_PRIORITY);
+                LogUtils.i(TAG, "Thread Name:" + mThread.getName());
+                LogUtils.i(TAG, "live:" + mThreadPoolExecutor.getActiveCount() + "    getCorePoolSize:" + mThreadPoolExecutor.getCorePoolSize() + "  getPoolSize:" + mThreadPoolExecutor.getPoolSize());
+                return mThread;
+            }
+        };
+
+        private static final BlockingQueue<Runnable> sPoolWorkQueue =
+                new LinkedBlockingQueue<Runnable>(128);
+        private  ThreadPoolExecutor mThreadPoolExecutor;
+
+        private ExecutorProvider() {
+            internalInit();
+        }
+        private void internalInit(){
+            mThreadPoolExecutor = new ThreadPoolExecutor(
+                    CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
+                    sPoolWorkQueue, sThreadFactory);
+            mThreadPoolExecutor.allowCoreThreadTimeOut(true);
+        }
+
+
+        public static ExecutorProvider getInstance() {
+            return InnerHolder.M_EXECUTOR_PROVIDER;
+        }
+
+        static class InnerHolder {
+            private static final ExecutorProvider M_EXECUTOR_PROVIDER = new ExecutorProvider();
+        }
+
+        @Override
+        public Executor provide() {
+            return mThreadPoolExecutor;
+        }
+        public void close(){
+
+            if(!mThreadPoolExecutor.isShutdown()){
+                mThreadPoolExecutor.shutdownNow();
+            }
+
+        }
+        public void open(){
+            internalInit();
+        }
+    }
 
     //静态缓存当前正在下载的任务url
     public static class ExecuteTasksMap extends ReentrantLock {
@@ -310,6 +384,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         private LinkedList<String> mTasks = null;
 
         private ExecuteTasksMap() {
+            super(false);
             mTasks = new LinkedList();
         }
 

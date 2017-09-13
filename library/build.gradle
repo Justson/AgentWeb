@@ -43,8 +43,8 @@ dependencies {
     })
 
     testCompile 'junit:junit:4.12'
-    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
-    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
+    provided "com.android.support:design:${SUPPORT_LIB_VERSION}"
+    provided "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     provided fileTree(include: ['*.jar'], dir: 'providedLibs')
 }
 publish {

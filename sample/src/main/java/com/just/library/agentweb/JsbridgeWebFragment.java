@@ -2,6 +2,7 @@ package com.just.library.agentweb;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -81,7 +82,7 @@ public class JsbridgeWebFragment extends AgentWebFragment {
         mBridgeWebView.callHandler("functionInJs", new Gson().toJson(user), new CallBackFunction() {
             @Override
             public void onCallBack(String data) {
-
+                Log.i(TAG,"data:"+data);
             }
         });
 
