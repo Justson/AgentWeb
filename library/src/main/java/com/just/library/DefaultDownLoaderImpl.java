@@ -69,14 +69,17 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         return isParallelDownload.get();
     }
 
+
     public void setParallelDownload(boolean isOpen) {
         isParallelDownload.set(isOpen);
-        if(isParallelDownload.get()){
+        /*if(isParallelDownload.get()){
             ExecutorProvider.getInstance().open();
         }else{
             ExecutorProvider.getInstance().close();
-        }
+        }*/
 
+        Thread mThread =Thread.currentThread();
+        mThread.suspend();
     }
 
 
@@ -89,8 +92,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
     private void onDownloadStartInternal(String url, String contentDisposition, String mimetype, long contentLength) {
 
-        if (mActivityWeakReference.get() == null)
+        if (mActivityWeakReference.get() == null||mActivityWeakReference.get().isFinishing()){
             return;
+        }
         LogUtils.i(TAG, "mime:" + mimetype);
         if (this.mPermissionListener != null) {
             if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
@@ -347,6 +351,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             internalInit();
         }
         private void internalInit(){
+            if(mThreadPoolExecutor!=null&&!mThreadPoolExecutor.isShutdown()){
+                mThreadPoolExecutor.shutdownNow();
+            }
             mThreadPoolExecutor = new ThreadPoolExecutor(
                     CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
                     sPoolWorkQueue, sThreadFactory);
@@ -366,16 +373,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         public Executor provide() {
             return mThreadPoolExecutor;
         }
-        public void close(){
 
-            if(!mThreadPoolExecutor.isShutdown()){
-                mThreadPoolExecutor.shutdownNow();
-            }
-
-        }
-        public void open(){
-            internalInit();
-        }
     }
 
     //静态缓存当前正在下载的任务url
