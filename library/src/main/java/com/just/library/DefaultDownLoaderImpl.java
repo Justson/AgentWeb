@@ -78,8 +78,6 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             ExecutorProvider.getInstance().close();
         }*/
 
-        Thread mThread =Thread.currentThread();
-        mThread.suspend();
     }
 
 
