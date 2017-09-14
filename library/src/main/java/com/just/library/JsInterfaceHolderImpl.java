@@ -67,7 +67,7 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
     }
 
     private JsInterfaceHolder addJavaObjectDirect(String k, Object v) {
-        Log.i(TAG, "k" + k + "  v:" + v);
+        LogUtils.i(TAG, "k:" + k + "  v:" + v);
         this.mWebView.addJavascriptInterface(v, k);
         return this;
     }

@@ -43,7 +43,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:2.0.0'
+   compile 'com.just.agentweb:agentweb:2.0.1'
    ```
 * Maven
 	
@@ -51,7 +51,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>2.0.0</version>
+	  <version>2.0.1</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -269,6 +269,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * `Sample`(推荐，详细) 
 
 ## 更新日志
+* v_2.0.1 支持并行下载 ， 修复 #114 #109 。
 * v_2.0.0 加入动态权限 ，拍照等功能 。
 * v_1.2.6 修复Android 4.4以下布局错乱 。
 * v_1.2.5 提示信息支持配置 。

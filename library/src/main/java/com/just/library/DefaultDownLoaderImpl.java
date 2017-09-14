@@ -90,7 +90,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
     private void onDownloadStartInternal(String url, String contentDisposition, String mimetype, long contentLength) {
 
-        if (mActivityWeakReference.get() == null||mActivityWeakReference.get().isFinishing()){
+        if (mActivityWeakReference.get() == null || mActivityWeakReference.get().isFinishing()) {
             return;
         }
         LogUtils.i(TAG, "mime:" + mimetype);
@@ -255,7 +255,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                 if (filename.contains("=")) {
                     filename = filename.replace("filename=", "");
                 } else {
-                    filename.replace("filename", "");
+                    filename = filename.replace("filename", "");
                 }
             }
             if (TextUtils.isEmpty(filename) && !TextUtils.isEmpty(url) && !url.endsWith("/")) {
@@ -343,13 +343,14 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         private static final BlockingQueue<Runnable> sPoolWorkQueue =
                 new LinkedBlockingQueue<Runnable>(128);
-        private  ThreadPoolExecutor mThreadPoolExecutor;
+        private ThreadPoolExecutor mThreadPoolExecutor;
 
         private ExecutorProvider() {
             internalInit();
         }
-        private void internalInit(){
-            if(mThreadPoolExecutor!=null&&!mThreadPoolExecutor.isShutdown()){
+
+        private void internalInit() {
+            if (mThreadPoolExecutor != null && !mThreadPoolExecutor.isShutdown()) {
                 mThreadPoolExecutor.shutdownNow();
             }
             mThreadPoolExecutor = new ThreadPoolExecutor(
