@@ -3,6 +3,7 @@ package com.just.library;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,17 @@ public class VideoImpl implements IVideo, EventInterceptor {
             mPair=new Pair<>(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,0);
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             flags.add(mPair);
+
+
+
         }
+
+        if((Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)&&(mWindow.getAttributes().flags&WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)==0){
+            mPair=new Pair<>(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,0);
+            mWindow.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+            flags.add(mPair);
+        }
+
 
         if (moiveView != null) {
             callback.onCustomViewHidden();

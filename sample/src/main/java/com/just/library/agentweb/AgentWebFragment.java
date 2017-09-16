@@ -274,6 +274,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         startActivity(intent);
 
 
+
     }
 
     /**
@@ -289,7 +290,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mPopupMenu.show();
     }
 
-    //菜单的事件处理
+    //菜单事件
     private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
