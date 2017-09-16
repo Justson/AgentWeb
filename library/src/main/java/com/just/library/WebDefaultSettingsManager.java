@@ -64,14 +64,13 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
-//        mWebSettings.setRenderPriority(android.webkit.AgentWebSettings.RenderPriority.HIGH);
         mWebSettings.setTextZoom(100);
         mWebSettings.setDatabaseEnabled(true);
         mWebSettings.setAppCacheEnabled(true);
         mWebSettings.setLoadsImagesAutomatically(true);
         mWebSettings.setSupportMultipleWindows(false);
         mWebSettings.setBlockNetworkImage(false);//是否阻塞加载网络图片  协议http or https
-        mWebSettings.setAllowFileAccess(true); //允许加载本地文件html  file协议, 这可能会造成不安全 , 建议重写关闭
+        mWebSettings.setAllowFileAccess(true); //允许加载本地文件html  file协议
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mWebSettings.setAllowFileAccessFromFileURLs(false); //通过 file url 加载的 Javascript 读取其他的本地文件 .建议关闭
         }

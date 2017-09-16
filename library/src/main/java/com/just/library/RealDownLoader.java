@@ -286,7 +286,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
     private int doDownLoad(InputStream in, RandomAccessFile out) throws IOException {
 
-        byte[] buffer = new byte[102400];
+        byte[] buffer = new byte[10240];
         BufferedInputStream bis = new BufferedInputStream(in, 1024 * 10);
         try {
 

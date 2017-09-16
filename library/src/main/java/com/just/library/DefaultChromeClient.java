@@ -142,6 +142,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     }
 
 
+
     @Override
     public void onReceivedIcon(WebView view, Bitmap icon) {
         super.onReceivedIcon(view, icon);
@@ -282,14 +283,14 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         if (confirmDialog == null)
             confirmDialog = new AlertDialog.Builder(mActivity)//
                     .setMessage(message)//
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(confirmDialog);
                             toCancelJsresult(cJsResult);
                         }
                     })//
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(confirmDialog);

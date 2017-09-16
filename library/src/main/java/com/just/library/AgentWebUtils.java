@@ -100,7 +100,7 @@ public class AgentWebUtils {
     }
 
 
-    public static final void clearWebView(WebView m) {
+     static final void clearWebView(WebView m) {
 
         if (m == null)
             return;
@@ -382,14 +382,10 @@ public class AgentWebUtils {
         boolean tag = false;
         if (currentObject == null)
             return tag;
-
         try {
-
             Class clazz = currentObject.getClass();
             Method mMethod = clazz.getMethod(methodName, clazzs);
             String gStr = mMethod.toGenericString();
-
-
             tag = !gStr.contains(method);
         } catch (Exception igonre) {
             igonre.printStackTrace();
@@ -492,13 +488,12 @@ public class AgentWebUtils {
     }
 
 
-    public static String[] uriToPath(Activity activity, Uri[] uris) {
+     static String[] uriToPath(Activity activity, Uri[] uris) {
 
         if (activity == null || uris == null || uris.length == 0) {
             return null;
         }
         try {
-
             String[] paths = new String[uris.length];
             int i = 0;
             for (Uri mUri : uris) {
@@ -507,7 +502,6 @@ public class AgentWebUtils {
             }
             return paths;
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
             if (LogUtils.isDebug())
                 throwable.printStackTrace();
         }

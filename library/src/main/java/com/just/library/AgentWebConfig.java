@@ -115,7 +115,7 @@ public class AgentWebConfig {
         return context.getCacheDir().getAbsolutePath() + AGENTWEB_CACHE_PATCH;
     }
 
-    //文件
+
     public static String getExternalCachePath(Context context) {
         return getAgentWebFilePath(context);
     }

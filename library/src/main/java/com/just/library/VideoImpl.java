@@ -66,6 +66,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
             mPair=new Pair<>(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,0);
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
             flags.add(mPair);
+
         }
 
 
