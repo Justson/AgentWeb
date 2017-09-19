@@ -201,7 +201,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private void showDialog(final String url, final long contentLength, final File file) {
 
         Activity mActivity;
-        if ((mActivity = mActivityWeakReference.get()) == null)
+        if ((mActivity = mActivityWeakReference.get()) == null || mActivity.isFinishing())
             return;
 
         AlertDialog mAlertDialog = null;
@@ -388,7 +388,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         private static ExecuteTasksMap sInstance = null;
 
 
-        public static ExecuteTasksMap getInstance() {
+        static ExecuteTasksMap getInstance() {
 
 
             if (sInstance == null) {
@@ -400,22 +400,25 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             return sInstance;
         }
 
-        public void removeTask(String path) {
+        void removeTask(String path) {
 
             int index = mTasks.indexOf(path);
             if (index == -1)
                 return;
             try {
                 lock();
-                mTasks.remove(index);
-                mTasks.remove(index - 1);
+                int position = -1;
+                if ((position = mTasks.indexOf(path)) == -1)
+                    return;
+                mTasks.remove(position);
+                mTasks.remove(position - 1);
             } finally {
                 unlock();
             }
 
         }
 
-        public void addTask(String url, String path) {
+        void addTask(String url, String path) {
             try {
                 lock();
                 mTasks.add(url);
@@ -427,7 +430,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         }
 
         //加锁读
-        public boolean contains(String url) {
+        boolean contains(String url) {
 
             try {
                 lock();
@@ -437,8 +440,6 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             }
 
         }
-
-
     }
 
 

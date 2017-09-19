@@ -116,7 +116,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
         } catch (Exception e) {
 
-            this.e = e;//逃逸
+            this.e = e;//发布
             LogUtils.i(TAG, "doInBackground   Exception:" + e.getMessage());
             // e.printStackTrace();
 
@@ -208,19 +208,14 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
                 if (mNotify != null)
                     mNotify.cancel(mDownLoadTask.getId());
-
-
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
                 try {
                     if (mIntent != null) {
                         if (!(mDownLoadTask.getContext() instanceof Activity))
                             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-
                         PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
                                 mDownLoadTask.getId() << 4, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                         mNotify.setProgressFinish(mDownLoadTask.getDownLoadMsgConfig().getClickOpen(), rightPendIntent);
-//                        mDownLoadTask.getContext().startActivity(mIntent);
                     }
                     return;
                 } catch (Throwable throwable) {
@@ -241,7 +236,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private void doCallback(Integer code) {
         DownLoadResultListener mDownLoadResultListener = null;
         if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
-            LogUtils.e(TAG,"activity has been destroy");
+            LogUtils.e(TAG,"DownLoadResultListener has been death");
             DefaultDownLoaderImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
             return;
         }
