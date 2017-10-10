@@ -767,8 +767,8 @@ public class AgentWebUtils {
                 new JSONObject(target);
 
             tag = true;
-        } catch (JSONException igonre) {
-//            igonre.printStackTrace();
+        } catch (JSONException ignore) {
+//            ignore.printStackTrace();
             tag = false;
         }
 

@@ -82,6 +82,7 @@ public class JsAgentWebFragment extends AgentWebFragment {
                             Log.i("Info","value:"+value);
                         }
                     },getJson(),"say:", " Hello! Agentweb");
+
                     break;
                 case R.id.four:
                     mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroidInteraction","你好Js");

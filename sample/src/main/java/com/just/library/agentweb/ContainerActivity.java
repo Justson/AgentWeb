@@ -18,6 +18,10 @@ public class ContainerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_common);
 
         Fragment mFragment=null;
-        getSupportFragmentManager().beginTransaction().add(R.id.container_framelayout,mFragment=EasyWebFragment.getInstance(new Bundle()),EasyWebFragment.class.getName()).show(mFragment).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container_framelayout,mFragment=EasyWebFragment.getInstance(new Bundle()),EasyWebFragment.class.getName())
+                .show(mFragment)
+                .commit();
     }
 }

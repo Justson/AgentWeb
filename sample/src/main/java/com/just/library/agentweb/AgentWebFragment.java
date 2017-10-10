@@ -104,6 +104,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
 
+        mAgentWeb.getWebCreator().get().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
 
     }
 
