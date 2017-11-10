@@ -49,4 +49,4 @@ captures/
 # Keystore files
 #*.jks
 app/keystore/
-sample/keystore/
+#sample/keystore/

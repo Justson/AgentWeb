@@ -98,11 +98,17 @@ public final class ActionActivity extends Activity {
                     "File Chooser"), REQUEST_CODE);
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "找不到文件选择器");
-            mFileDataListener.onFileDataResult(REQUEST_CODE, -1, null);
-            mFileDataListener = null;
-            finish();
+            fileDataActionOver(-1,null);
         }
 
+    }
+
+    private void fileDataActionOver(int resultCode , Intent data) {
+        if(mFileDataListener!=null){
+            mFileDataListener.onFileDataResult(REQUEST_CODE, resultCode, data);
+            mFileDataListener = null;
+        }
+        finish();
     }
 
     @Override
@@ -111,10 +117,7 @@ public final class ActionActivity extends Activity {
 
         LogUtils.i(TAG, "mFileDataListener:" + mFileDataListener);
         if (requestCode == REQUEST_CODE) {
-//            if (mFileDataListener != null)
-            mFileDataListener.onFileDataResult(requestCode, resultCode, mUri != null ? new Intent().putExtra(KEY_URI, mUri) : data);
-            mFileDataListener = null;
-            finish();
+            fileDataActionOver(resultCode, mUri != null ? new Intent().putExtra(KEY_URI, mUri) : data);
         }
     }
 
