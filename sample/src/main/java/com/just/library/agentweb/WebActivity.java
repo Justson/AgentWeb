@@ -1,7 +1,5 @@
 package com.just.library.agentweb;
 
-import android.content.Intent;
-
 /**
  * Created by cenxiaozhong on 2017/5/22.
  *  <p>
@@ -27,7 +25,6 @@ public class WebActivity extends BaseWebActivity {
         super.onResume();
 
 
-        Intent mIntent=new Intent();
 
         //测试Cookies
         /*try {

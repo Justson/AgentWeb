@@ -45,7 +45,6 @@ import com.just.library.WebDefaultSettingsManager;
 
 public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
-
     private ImageView mBackImageView;
     private View mLineView;
     private ImageView mFinishImageView;
@@ -99,9 +98,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
 
+
+
+
         DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
-
 
 
         mAgentWeb.getWebCreator().get().setOverScrollMode(WebView.OVER_SCROLL_NEVER);

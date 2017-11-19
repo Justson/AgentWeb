@@ -50,10 +50,10 @@ public class JsAgentWebFragment extends AgentWebFragment {
 
         }
 
-        view.findViewById(R.id.one).setOnClickListener(mOnClickListener);
-        view.findViewById(R.id.two).setOnClickListener(mOnClickListener);
-        view.findViewById(R.id.three).setOnClickListener(mOnClickListener);
-        view.findViewById(R.id.four).setOnClickListener(mOnClickListener);
+        view.findViewById(R.id.callJsNoParamsButton).setOnClickListener(mOnClickListener);
+        view.findViewById(R.id.callJsOneParamsButton).setOnClickListener(mOnClickListener);
+        view.findViewById(R.id.callJsMoreParamsButton).setOnClickListener(mOnClickListener);
+        view.findViewById(R.id.jsJavaCommunicationButton).setOnClickListener(mOnClickListener);
 
 
 
@@ -67,15 +67,15 @@ public class JsAgentWebFragment extends AgentWebFragment {
 
             switch (v.getId()){
 
-                case R.id.one:
+                case R.id.callJsNoParamsButton:
                     mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
                     break;
 
-                case R.id.two:
+                case R.id.callJsOneParamsButton:
                     mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroidParam","Hello ! Agentweb");
                     break;
 
-                case R.id.three:
+                case R.id.callJsMoreParamsButton:
                     mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroidMoreParams", new ValueCallback<String>() {
                         @Override
                         public void onReceiveValue(String value) {
@@ -84,7 +84,7 @@ public class JsAgentWebFragment extends AgentWebFragment {
                     },getJson(),"say:", " Hello! Agentweb");
 
                     break;
-                case R.id.four:
+                case R.id.jsJavaCommunicationButton:
                     mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroidInteraction","你好Js");
                     break;
             }
@@ -109,39 +109,5 @@ public class JsAgentWebFragment extends AgentWebFragment {
         return result;
     }
 
-    static class Student{
-        private int id;
-        private String name;
-        private String age;
 
-        public Student(int id, String name, String age) {
-            this.id = id;
-            this.name = name;
-            this.age = age;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getAge() {
-            return age;
-        }
-
-        public void setAge(String age) {
-            this.age = age;
-        }
-    }
 }

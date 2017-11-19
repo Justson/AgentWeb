@@ -3,11 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AgentWeb.iml" filepath="$PROJECT_DIR$/AgentWeb.iml" />
-      <module fileurl="file://$PROJECT_DIR$/agentWeb.iml" filepath="$PROJECT_DIR$/agentWeb.iml" />
       <module fileurl="file://$PROJECT_DIR$/agentweb/agentweb.iml" filepath="$PROJECT_DIR$/agentweb/agentweb.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
-      <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
     </modules>
   </component>
