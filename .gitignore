@@ -46,6 +46,7 @@ captures/
 *.iml
 .idea/workspace.xml
 
+local.properties
 # Keystore files
 #*.jks
 app/keystore/
