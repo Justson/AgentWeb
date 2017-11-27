@@ -111,6 +111,7 @@ Window.android.callAndroid () / / call the Java layer AndroidInterface class cal
 ```
 
 * #### Follow the Activity Or Fragment life cycle, the release of CPU more power.
+
 ```
 	@Override
     Protected void onPause () {
@@ -132,7 +133,7 @@ Window.android.callAndroid () / / call the Java layer AndroidInterface class cal
     Protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         MAgentWeb.uploadFileResult (requestCode, resultCode, data);
         Super.onActivityResult (```requestCode, resultCode, data);
-    }
+        }
 ```
 
 * #### full screen video playback
@@ -235,6 +236,12 @@ Thank you
 
 ## about me
 An Android developer located in Shenzhen, if you have a better job offer available to me, please contact Email: xiaozhongcen@gmail.com
+
+
+## Play reward
+If you like the design of AgentWeb, you can invite the author to have a cup of coffee.
+
+<a href="img/alipay.jpg"><img src="img/alipay.jpg" width="30%"/></a> <a href="img/wechat_pay.jpg"><img src="img/wechat_pay.jpg" width="30%"/></a> <a href="img/alipay.jpg"><img src="img/alipay.jpg" width="30%"/></a>
 
 
 [Licensesvg]: https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg
