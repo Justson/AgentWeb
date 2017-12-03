@@ -237,6 +237,7 @@ public final class DefaultMsgConfig {
         public static final class FileUploadMsgConfig implements Parcelable {
 
             private String[] medias = new String[]{"相机", "文件选择器"};
+            private String maxFileLengthLimit = "选择的文件不能大于%sMB";
 
             FileUploadMsgConfig() {
 
@@ -244,6 +245,7 @@ public final class DefaultMsgConfig {
 
             protected FileUploadMsgConfig(Parcel in) {
                 medias = in.createStringArray();
+                maxFileLengthLimit = in.readString();
             }
 
             public static final Creator<FileUploadMsgConfig> CREATOR = new Creator<FileUploadMsgConfig>() {
@@ -262,6 +264,14 @@ public final class DefaultMsgConfig {
                 this.medias = medias;
             }
 
+            public String getMaxFileLengthLimit() {
+                return maxFileLengthLimit;
+            }
+
+            public void setMaxFileLengthLimit(String maxFileLengthLimit) {
+                this.maxFileLengthLimit = maxFileLengthLimit;
+            }
+
             public String[] getMedias() {
                 return medias;
             }
@@ -274,6 +284,7 @@ public final class DefaultMsgConfig {
             @Override
             public void writeToParcel(Parcel dest, int flags) {
                 dest.writeStringArray(medias);
+                dest.writeString(maxFileLengthLimit);
             }
         }
     }

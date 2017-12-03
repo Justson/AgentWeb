@@ -38,7 +38,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private long used = 1;
     private long mTimeLast = 0;
     private long mSpeed = 0;
-
+    private Exception e;
     private static final int TIME_OUT = 30000000;
     private Notify mNotify;
 
@@ -58,13 +58,9 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
     RealDownLoader(DownLoadTask downLoadTask) {
-
-
         this.mDownLoadTask = downLoadTask;
         this.totals = mDownLoadTask.getLength();
         checkNullTask(downLoadTask);
-
-
     }
 
     private void checkNullTask(DownLoadTask downLoadTask) {
@@ -74,25 +70,21 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
         mObservable.addObserver(this);
         buildNotify(new Intent(), mDownLoadTask.getId(), mDownLoadTask.getDownLoadMsgConfig().getPreLoading());
     }
 
     private boolean checkDownLoaderCondition() {
 
-
         if (mDownLoadTask.getLength() - mDownLoadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
             LogUtils.i(TAG, " 空间不足");
             return false;
         }
-
         return true;
     }
 
     private boolean checknet() {
         if (!mDownLoadTask.isForce()) {
-
             return AgentWebUtils.checkWifi(mDownLoadTask.getContext());
         } else {
             return AgentWebUtils.checkNetwork(mDownLoadTask.getContext());
@@ -101,7 +93,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
     }
 
-    private Exception e;
+
 
     @Override
     protected Integer doInBackground(Void... params) {
@@ -134,20 +126,16 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
             mHttpURLConnection.addRequestProperty("Range", "bytes=" + (tmp = mDownLoadTask.getFile().length()) + "-");
         }
-
         try {
             mHttpURLConnection.connect();
             if (mHttpURLConnection.getResponseCode() != 200 && mHttpURLConnection.getResponseCode() != 206) {
-
                 return DownLoadMsg.NETWORK_ERROR_STATUS_CODE.CODE;
             }
-
             return doDownLoad(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownLoadTask.getFile()));
         } finally {
             if (mHttpURLConnection != null)
                 mHttpURLConnection.disconnect();
         }
-
 
     }
 
@@ -165,9 +153,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     @Override
     protected void onProgressUpdate(Integer... values) {
 
-
         try {
-
             //LogUtils.i(TAG, "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
             long c = System.currentTimeMillis();
             if (mNotify != null && c - time > 800) {
@@ -193,7 +179,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     protected void onPostExecute(Integer integer) {
 
         try {
-
             LogUtils.i(TAG, "onPostExecute:" + integer);
             mObservable.deleteObserver(this);
             doCallback(integer);
@@ -203,9 +188,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                     mNotify.cancel(mDownLoadTask.getId());
                 return;
             }
-
             if (mDownLoadTask.isEnableIndicator()) {
-
                 if (mNotify != null)
                     mNotify.cancel(mDownLoadTask.getId());
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
@@ -222,9 +205,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                     if (LogUtils.isDebug())
                         throwable.printStackTrace();
                 }
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             LogUtils.i(TAG, "e:" + e.getMessage());
@@ -313,7 +294,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                     return DownLoadMsg.TIME_OUT.CODE;
                 }
             }
-
             LogUtils.i(TAG, "atomic:" + atomic.get());
             if (atomic.get()) {
                 return DownLoadMsg.USER_CANCEL.CODE;
@@ -333,7 +313,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
     @Override
     public void update(Observable o, Object arg) {
-
         //LogUtils.i(TAG, "update Object    ... ");
         String url = "";
         if (arg instanceof String && !TextUtils.isEmpty(url = (String) arg) && url.equals(mDownLoadTask.getUrl())) {
@@ -361,9 +340,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
     enum DownLoadMsg {
-
         NETWORK_ERROR_CONNECTION(400), NETWORK_ERROR_STATUS_CODE(401), STORAGE_ERROR(402), TIME_OUT(403), USER_CANCEL(404), SUCCESSFULL(200);
-
         int CODE;
 
         DownLoadMsg(int e) {
@@ -403,19 +380,14 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
 
         public NotificationBroadcastReceiver() {
-
         }
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
-
             String action = intent.getAction();
-
             if (action.equals("com.agentweb.cancelled")) {
 
                 try {
-
                     String url = intent.getStringExtra("TAG");
                     Class<?> mClazz = mObservable.getClass();
                     Method mMethod = mClazz.getMethod("setChanged", (Class<?>[]) null);

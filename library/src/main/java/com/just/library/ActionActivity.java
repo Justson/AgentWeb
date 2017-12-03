@@ -50,17 +50,18 @@ public final class ActionActivity extends Activity {
         mPermissionListener = permissionListener;
     }
 
-    private void cancelAction(){
-        mFileDataListener=null;
-        mPermissionListener=null;
-        mRationaleListener=null;
+    private void cancelAction() {
+        mFileDataListener = null;
+        mPermissionListener = null;
+        mRationaleListener = null;
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         mAction = intent.getParcelableExtra(KEY_ACTION);
-        if(mAction==null){
+        if (mAction == null) {
             cancelAction();
             this.finish();
             return;
@@ -94,17 +95,18 @@ public final class ActionActivity extends Activity {
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
             i.addCategory(Intent.CATEGORY_OPENABLE);
             i.setType("*/*");
+//            i.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024 * 1024);
             this.startActivityForResult(Intent.createChooser(i,
                     "File Chooser"), REQUEST_CODE);
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "找不到文件选择器");
-            fileDataActionOver(-1,null);
+            fileDataActionOver(-1, null);
         }
 
     }
 
-    private void fileDataActionOver(int resultCode , Intent data) {
-        if(mFileDataListener!=null){
+    private void fileDataActionOver(int resultCode, Intent data) {
+        if (mFileDataListener != null) {
             mFileDataListener.onFileDataResult(REQUEST_CODE, resultCode, data);
             mFileDataListener = null;
         }

@@ -325,7 +325,6 @@ public class AgentWeb {
 
     private DownloadListener getLoadListener() {
         DownloadListener mDownloadListener = this.mDownloadListener;
-
         return mDownloadListener;
     }
 

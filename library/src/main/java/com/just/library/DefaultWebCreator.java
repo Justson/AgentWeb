@@ -179,7 +179,7 @@ public class DefaultWebCreator implements WebCreator {
         if (this.mWebView != null) {
             mWebView = this.mWebView;
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
-        } else if (AgentWebConfig.isKikatOrBelowKikat) {
+        } else if (AgentWebConfig.isKitkatOrBelowKitkat) {
             mWebView = new AgentWebView(mActivity);
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
         } else {

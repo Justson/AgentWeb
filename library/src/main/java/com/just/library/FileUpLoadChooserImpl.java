@@ -16,6 +16,7 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -47,7 +48,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private boolean cameraState = false;
     private PermissionInterceptor mPermissionInterceptor;
     private int FROM_INTENTION_CODE = 21;
-    
+
+
 
     public FileUpLoadChooserImpl(Builder builder) {
 
@@ -310,6 +312,21 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         String[] paths = null;
         if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
+            mJsChannelCallback.call(null);
+            return;
+        }
+
+        int sum = 0;
+        for (String path : paths) {
+            File mFile = new File(path);
+            if (!mFile.exists()) {
+                continue;
+            }
+            sum += mFile.length();
+        }
+
+        if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
+            AgentWebUtils.toastShowShort(mActivity, String.format(mFileUploadMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""));
             mJsChannelCallback.call(null);
             return;
         }

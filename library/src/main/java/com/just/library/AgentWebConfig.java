@@ -25,13 +25,18 @@ public class AgentWebConfig {
     static final String FILE_CACHE_PATH = "agentweb-cache";
     static String AGENTWEB_FILE_PATH;
     public static boolean DEBUG = false;
-    static final boolean isKikatOrBelowKikat = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
+    static final boolean isKitkatOrBelowKitkat = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
     public static final int WEBVIEW_DEFAULT_TYPE = 1;
     public static final int WEBVIEW_AGENTWEB_SAFE_TYPE = 2;
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
     static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
     private static boolean isInit = false;
     private static final String TAG=AgentWebConfig.class.getSimpleName();
+
+    /**
+     * 通过JS获取的文件大小， 这里限制最大为5MB ，太大会抛出 OutOfMemoryError
+     */
+    public static int MAX_FILE_LENGTH = 1024 * 1024 * 5;
 
 
     //获取Cookie
