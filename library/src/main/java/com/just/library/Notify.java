@@ -117,11 +117,11 @@ public class Notify {
     }
 
     public boolean hasDeleteContent(){
-        return cBuilder.mNotification.deleteIntent!=null;
+        return cBuilder.getNotification().deleteIntent!=null;
     }
 
     public void setDelecte(PendingIntent intent){
-        cBuilder.mNotification.deleteIntent = intent;
+        cBuilder.getNotification().deleteIntent = intent;
     }
 
     public void setProgressFinish(String content,PendingIntent pendingIntent){
