@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.ValueCallback;
@@ -18,6 +16,7 @@ import android.webkit.WebView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 
@@ -48,7 +47,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private boolean cameraState = false;
     private PermissionInterceptor mPermissionInterceptor;
     private int FROM_INTENTION_CODE = 21;
-
 
 
     public FileUpLoadChooserImpl(Builder builder) {
@@ -174,7 +172,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         List<String> deniedPermissions = new ArrayList<>();
 
-        if (ContextCompat.checkSelfPermission(mActivity, AgentWebPermissions.CAMERA[0]) != PackageManager.PERMISSION_GRANTED) {
+       /* if (ContextCompat.checkSelfPermission(mActivity, AgentWebPermissions.CAMERA[0]) != PackageManager.PERMISSION_GRANTED) {
             deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
         }
         for (int i = 0; i < AgentWebPermissions.STORAGE.length; i++) {
@@ -182,6 +180,12 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             if (ContextCompat.checkSelfPermission(mActivity, AgentWebPermissions.STORAGE[i]) != PackageManager.PERMISSION_GRANTED) {
                 deniedPermissions.add(AgentWebPermissions.STORAGE[i]);
             }
+        }*/
+        if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.CAMERA)) {
+            deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
+        }
+        if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.STORAGE)) {
+            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
         }
         return deniedPermissions;
     }
@@ -199,13 +203,13 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
 
             boolean tag = true;
-            for (int i = 0; i < permissions.length; i++) {
-
+            /*for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     tag = false;
                     break;
                 }
-            }
+            }*/
+            tag = AgentWebUtils.hasPermission(mActivity, Arrays.asList(permissions)) ? true : false;
             permissionResult(tag, extras.getInt(KEY_FROM_INTENTION));
 
         }

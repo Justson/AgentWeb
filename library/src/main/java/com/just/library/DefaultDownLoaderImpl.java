@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
@@ -16,6 +14,7 @@ import android.webkit.DownloadListener;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -144,11 +143,8 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         List<String> deniedPermissions = new ArrayList<>();
 
-        for (int i = 0; i < AgentWebPermissions.STORAGE.length; i++) {
-
-            if (ContextCompat.checkSelfPermission(mActivityWeakReference.get(), AgentWebPermissions.STORAGE[i]) != PackageManager.PERMISSION_GRANTED) {
-                deniedPermissions.add(AgentWebPermissions.STORAGE[i]);
-            }
+        if(!AgentWebUtils.hasPermission(mActivityWeakReference.get(),AgentWebPermissions.STORAGE)){
+            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
         }
         return deniedPermissions;
     }

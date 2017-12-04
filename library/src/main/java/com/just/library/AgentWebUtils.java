@@ -1,5 +1,6 @@
 package com.just.library;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -20,7 +21,9 @@ import android.os.StatFs;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.AppOpsManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.FileProvider;
@@ -54,6 +57,7 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -100,7 +104,7 @@ public class AgentWebUtils {
     }
 
 
-     static final void clearWebView(WebView m) {
+    static final void clearWebView(WebView m) {
 
         if (m == null)
             return;
@@ -182,7 +186,7 @@ public class AgentWebUtils {
         //连接管理对象
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         //获取NetworkInfo对象
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        @SuppressLint("MissingPermission") NetworkInfo networkInfo = manager.getActiveNetworkInfo();
         if (networkInfo == null)
             return netType;
         switch (networkInfo.getType()) {
@@ -424,20 +428,7 @@ public class AgentWebUtils {
         }
     }
 
-    static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
 
-        if (permissions == null || permissions.length == 0)
-            return null;
-        List<String> deniedPermissions = new ArrayList<>();
-        for (int i = 0; i < permissions.length; i++) {
-
-            if (ContextCompat.checkSelfPermission(activity, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
-                deniedPermissions.add(permissions[i]);
-            }
-        }
-        return deniedPermissions;
-
-    }
 
     static void clearWebViewAllCache(Context context) {
 
@@ -488,7 +479,7 @@ public class AgentWebUtils {
     }
 
 
-     static String[] uriToPath(Activity activity, Uri[] uris) {
+    static String[] uriToPath(Activity activity, Uri[] uris) {
 
         if (activity == null || uris == null || uris.length == 0) {
             return null;
@@ -863,6 +854,39 @@ public class AgentWebUtils {
 
     }
 
+    static boolean hasPermission(@NonNull Context context, @NonNull String... permissions) {
+        return hasPermission(context, Arrays.asList(permissions));
+    }
+
+    static boolean hasPermission(@NonNull Context context, @NonNull List<String> permissions) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        for (String permission : permissions) {
+            int result = ContextCompat.checkSelfPermission(context, permission);
+            if (result == PackageManager.PERMISSION_DENIED) return false;
+
+            String op = AppOpsManagerCompat.permissionToOp(permission);
+            if (TextUtils.isEmpty(op)) continue;
+            result = AppOpsManagerCompat.noteProxyOp(context, op, context.getPackageName());
+            if (result != AppOpsManagerCompat.MODE_ALLOWED) return false;
+
+        }
+        return true;
+    }
+
+    static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
+
+        if (permissions == null || permissions.length == 0)
+            return null;
+        List<String> deniedPermissions = new ArrayList<>();
+        for (int i = 0; i < permissions.length; i++) {
+
+            if (!hasPermission(activity,permissions[i])) {
+                deniedPermissions.add(permissions[i]);
+            }
+        }
+        return deniedPermissions;
+
+    }
 
     static void runInUiThread(Runnable runnable) {
         if (mHandler == null)
