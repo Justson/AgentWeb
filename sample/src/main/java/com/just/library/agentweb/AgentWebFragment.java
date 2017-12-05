@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.just.library.AgentWeb;
 import com.just.library.AgentWebSettings;
 import com.just.library.ChromeClientCallbackManager;
@@ -95,10 +96,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         initView(view);
-
-
-
-
 
 
         DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
@@ -174,6 +171,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+
+
             return shouldOverrideUrlLoading(view, request.getUrl() + "");
         }
 
@@ -181,6 +180,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         //
         @Override
         public boolean shouldOverrideUrlLoading(final WebView view, String url) {
+
+            Log.i(TAG, "view:" + new Gson().toJson(view.getHitTestResult()));
             Log.i(TAG, "mWebViewClient shouldOverrideUrlLoading:" + url);
             //intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会打开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
             //例如优酷视频播放 ，intent://play?...package=com.youku.phone;end;
@@ -263,7 +264,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     /**
      * 打开浏览器
-     * @param targetUrl  外部浏览器打开的地址
+     *
+     * @param targetUrl 外部浏览器打开的地址
      */
     private void openBrowser(String targetUrl) {
         if (TextUtils.isEmpty(targetUrl) || targetUrl.startsWith("file://")) {
@@ -277,12 +279,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         startActivity(intent);
 
 
-
     }
 
     /**
      * 显示更多菜单
-     * @param view  菜单依附在该View下面
+     *
+     * @param view 菜单依附在该View下面
      */
     private void showPoPup(View view) {
         if (mPopupMenu == null) {

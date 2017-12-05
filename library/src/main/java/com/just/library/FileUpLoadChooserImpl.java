@@ -172,15 +172,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         List<String> deniedPermissions = new ArrayList<>();
 
-       /* if (ContextCompat.checkSelfPermission(mActivity, AgentWebPermissions.CAMERA[0]) != PackageManager.PERMISSION_GRANTED) {
-            deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
-        }
-        for (int i = 0; i < AgentWebPermissions.STORAGE.length; i++) {
-
-            if (ContextCompat.checkSelfPermission(mActivity, AgentWebPermissions.STORAGE[i]) != PackageManager.PERMISSION_GRANTED) {
-                deniedPermissions.add(AgentWebPermissions.STORAGE[i]);
-            }
-        }*/
         if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.CAMERA)) {
             deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
         }
