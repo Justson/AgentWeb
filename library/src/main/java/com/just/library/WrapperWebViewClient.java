@@ -146,7 +146,6 @@ public class WrapperWebViewClient extends WebViewClient {
         }
         super.onReceivedHttpError(view,request,errorResponse);
 
-
     }
 
 

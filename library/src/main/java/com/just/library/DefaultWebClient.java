@@ -68,7 +68,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-        LogUtils.i(TAG, " DefaultWebClient shouldOverrideUrlLoading:"+request.getUrl());
+        LogUtils.i(TAG, " DefaultWebClient shouldOverrideUrlLoading:" + request.getUrl());
         if (webClientHelper && handleNormalLinked(request.getUrl() + "")) {
             return true;
         }
@@ -92,6 +92,10 @@ public class DefaultWebClient extends WrapperWebViewClient {
         if (webClientHelper && hasAlipayLib && isAlipay(view, request.getUrl() + ""))
             return true;
 
+        if (webClientHelper) {
+
+        }
+
         if (tag > 0)
             return false;
 
@@ -100,6 +104,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+
         return super.shouldInterceptRequest(view, request);
     }
 
@@ -312,5 +317,9 @@ public class DefaultWebClient extends WrapperWebViewClient {
             view.setInitialScale((int) (oldScale / newScale * 100));
         }
 
+    }
+
+    public interface SchemeHandler {
+        boolean handleScheme();
     }
 }

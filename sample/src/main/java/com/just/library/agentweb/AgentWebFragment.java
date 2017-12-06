@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -162,6 +163,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             //Log.i(TAG,"onProgressChanged:"+newProgress+"  view:"+view);
         }
     };
+    private Gson mGson = new Gson();
     protected WebViewClient mWebViewClient = new WebViewClient() {
 
         @Override
@@ -205,6 +207,20 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 pageNavigator(View.VISIBLE);
             }
 
+        }
+
+        @Override
+        public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+            super.onReceivedHttpError(view, request, errorResponse);
+
+            Log.i(TAG, "onReceivedHttpError:" + 3 + "  request:" + mGson.toJson(request) + "  errorResponse:" + mGson.toJson(errorResponse));
+        }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+
+            Log.i(TAG, "onReceivedError:" + 3 + "  request:" + description + "  errorResponse:" + failingUrl);
         }
     };
 

@@ -30,7 +30,7 @@ public class AgentWebConfig {
     public static final int WEBVIEW_AGENTWEB_SAFE_TYPE = 2;
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
     static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
-    private static boolean isInit = false;
+    private static volatile boolean isInit = false;
     private static final String TAG=AgentWebConfig.class.getSimpleName();
 
     /**

@@ -2,17 +2,22 @@ package com.just.library;
 
 import android.app.Activity;
 import android.content.ClipData;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -115,7 +120,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void openFileChooserInternal() {
 
-        if (mAlertDialog == null)
+       /* if (mAlertDialog == null)
             mAlertDialog = new AlertDialog.Builder(mActivity)//
                     .setSingleChoiceItems(mFileUploadMsgConfig.getMedias(), -1, new DialogInterface.OnClickListener() {
                         @Override
@@ -136,9 +141,46 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                             cancel();
                         }
                     }).create();
-        mAlertDialog.show();
+        mAlertDialog.show();*/
+       onFileChooserInternal();
 
 
+    }
+
+    private void onFileChooserInternal() {
+
+        BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(mActivity);
+        final String[] datas = new String[]{"相机", "选择文件"};
+        RecyclerView mRecyclerView = new RecyclerView(mActivity);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        mRecyclerView.setAdapter(new RecyclerView.Adapter<BottomSheetHolder>() {
+            @Override
+            public BottomSheetHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+                return new BottomSheetHolder(View.inflate(viewGroup.getContext(), android.R.layout.simple_list_item_1, null));
+            }
+
+            @Override
+            public void onBindViewHolder(BottomSheetHolder bottomSheetHolder, int i) {
+                bottomSheetHolder.mTextView.setText(datas[i]);
+            }
+
+            @Override
+            public int getItemCount() {
+                return 2;
+            }
+        });
+        mBottomSheetDialog.setContentView(mRecyclerView);
+        mBottomSheetDialog.show();
+
+    }
+
+    public static class BottomSheetHolder extends RecyclerView.ViewHolder {
+        TextView mTextView;
+
+        public BottomSheetHolder(View itemView) {
+            super(itemView);
+            mTextView = (TextView) itemView.findViewById(android.R.id.text1);
+        }
     }
 
     private void onCameraAction() {
