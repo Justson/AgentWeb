@@ -3,7 +3,6 @@ package com.just.library;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -32,16 +31,9 @@ import java.util.List;
 import static com.just.library.ActionActivity.KEY_FROM_INTENTION;
 
 /**
- * <b>@项目名：</b> agentweb<br>
- * <b>@包名：</b>com.just.library<br>
- * <b>@创建者：</b> cxz --  just<br>
- * <b>@创建时间：</b> &{DATE}<br>
- * <b>@公司：</b> <br>
- * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
- * <b>@描述</b><br>
+ * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb
  */
-
 public class DefaultChromeClient extends WebChromeClientProgressWrapper implements FileUploadPop<IFileUploadChooser> {
 
 
@@ -116,7 +108,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         }
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null||mActivity.isFinishing()) {
+        if (mActivity == null || mActivity.isFinishing()) {
             result.cancel();
             return true;
         }
@@ -132,15 +124,14 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
                     null);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            if(LogUtils.isDebug())
-                LogUtils.i(TAG,throwable.getMessage());
+            if (LogUtils.isDebug())
+                LogUtils.i(TAG, throwable.getMessage());
         }
 
         result.confirm();
 
         return true;
     }
-
 
 
     @Override
@@ -165,7 +156,6 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         }
         onGeolocationPermissionsShowPromptInternal(origin, callback);
     }
-
 
 
     private void onGeolocationPermissionsShowPromptInternal(String origin, GeolocationPermissions.Callback callback) {
@@ -205,13 +195,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
             if (extras.getInt(KEY_FROM_INTENTION) == FROM_CODE_INTENTION_LOCATION) {
-                boolean t = true;
-                for (int p : grantResults) {
+                boolean t = AgentWebUtils.hasPermission(mActivityWeakReference.get(),permissions);
+                /*for (int p : grantResults) {
                     if (p != PackageManager.PERMISSION_GRANTED) {
                         t = false;
                         break;
                     }
-                }
+                }*/
 
                 if (mCallback != null) {
                     if (t) {
@@ -261,7 +251,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             return super.onJsConfirm(view, url, message, result);
         }
         showJsConfirm(message, result);
-        return true; //
+        return true;
     }
 
 
@@ -275,12 +265,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void showJsConfirm(String message, final JsResult result) {
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null||mActivity.isFinishing()) {
+        if (mActivity == null || mActivity.isFinishing()) {
             result.cancel();
             return;
         }
 
-        if (confirmDialog == null)
+        if (confirmDialog == null) {
+
             confirmDialog = new AlertDialog.Builder(mActivity)//
                     .setMessage(message)//
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -299,6 +290,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
                         }
                     }).create();
+        }
+        confirmDialog.setMessage(message);
         this.cJsResult = result;
         confirmDialog.show();
 
@@ -312,7 +305,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null||mActivity.isFinishing()) {
+        if (mActivity == null || mActivity.isFinishing()) {
             js.cancel();
             return;
         }
@@ -388,7 +381,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null||mActivity.isFinishing()){
+        if (mActivity == null || mActivity.isFinishing()) {
             filePathCallback.onReceiveValue(new Uri[]{});
             return;
         }
@@ -440,7 +433,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
     private void createAndOpenCommonFileLoader(ValueCallback valueCallback) {
         Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null||mActivity.isFinishing()){
+        if (mActivity == null || mActivity.isFinishing()) {
             valueCallback.onReceiveValue(new Object());
             return;
         }

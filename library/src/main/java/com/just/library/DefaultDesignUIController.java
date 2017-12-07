@@ -4,6 +4,6 @@ package com.just.library;
  * Created by cenxiaozhong on 2017/12/8.
  */
 
-public class DefaultUIController {
+public class DefaultDesignUIController extends AgentWebUIController {
 
 }
