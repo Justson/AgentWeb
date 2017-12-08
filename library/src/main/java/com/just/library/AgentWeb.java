@@ -23,13 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 
-
 /**
  * FrameLayout--嵌套WebView,ProgressBar
  * https://github.com/Justson/AgentWeb
  * author just -- cxz
  */
-public class AgentWeb {
+public final class AgentWeb {
 
     private static final String TAG = AgentWeb.class.getSimpleName();
     private Activity mActivity;
@@ -69,6 +68,10 @@ public class AgentWeb {
         this.mViewGroup = agentBuilder.mViewGroup;
         this.enableProgress = agentBuilder.enableProgress;
         mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
+        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
+            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
+            mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilder.mAgentWebUIController);
+        }
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
@@ -87,7 +90,7 @@ public class AgentWeb {
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         this.webClientHelper = agentBuilder.webclientHelper;
         init();
-        setDownloadListener(agentBuilder.mDownLoadResultListeners,agentBuilder.isParallelDownload,agentBuilder.icon);
+        setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
 
@@ -100,6 +103,10 @@ public class AgentWeb {
         this.enableProgress = agentBuilderFragment.enableProgress;
         mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp, agentBuilderFragment.mWebView, agentBuilderFragment.mWebLayout) : agentBuilderFragment.mWebCreator;
         mIndicatorController = agentBuilderFragment.mIndicatorController;
+        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
+            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
+            mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilderFragment.mAgentWebUIController);
+        }
         this.mWebChromeClient = agentBuilderFragment.mWebChromeClient;
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
         mAgentWeb = this;
@@ -115,7 +122,7 @@ public class AgentWeb {
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper = agentBuilderFragment.webClientHelper;
         init();
-        setDownloadListener(agentBuilderFragment.mDownLoadResultListeners,agentBuilderFragment.isParallelDownload,agentBuilderFragment.icon);
+        setDownloadListener(agentBuilderFragment.mDownLoadResultListeners, agentBuilderFragment.isParallelDownload, agentBuilderFragment.icon);
     }
 
     private void init() {
@@ -201,7 +208,6 @@ public class AgentWeb {
         }
         return this;
     }
-
 
 
     public static AgentBuilder with(@NonNull Activity activity) {
@@ -420,9 +426,10 @@ public class AgentWeb {
         private ArrayList<DownLoadResultListener> mDownLoadResultListeners;
         private IWebLayout mWebLayout;
         private PermissionInterceptor mPermissionInterceptor;
-        private boolean isParallelDownload=false;
-        private int icon=-1;
+        private boolean isParallelDownload = false;
+        private int icon = -1;
         private DownloadListener mDownloadListener = null;
+        private AgentWebUIController mAgentWebUIController;
 
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
@@ -481,6 +488,10 @@ public class AgentWeb {
                 headers = HttpHeaders.create();
             headers.additionalHttpHeader(k, v);
 
+        }
+
+        public void setAgentWebUIController(AgentWebUIController agentWebUIController) {
+            this.mAgentWebUIController = agentWebUIController;
         }
 
 
@@ -625,12 +636,13 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder openParallelDownload(){
-            this.mAgentBuilder.isParallelDownload=true;
+        public CommonAgentBuilder openParallelDownload() {
+            this.mAgentBuilder.isParallelDownload = true;
             return this;
         }
-        public CommonAgentBuilder setNotifyIcon(@DrawableRes int icon){
-            this.mAgentBuilder.icon=icon;
+
+        public CommonAgentBuilder setNotifyIcon(@DrawableRes int icon) {
+            this.mAgentBuilder.icon = icon;
             return this;
         }
 
@@ -715,11 +727,10 @@ public class AgentWeb {
         private List<DownLoadResultListener> mDownLoadResultListeners = null;
         private IWebLayout mWebLayout = null;
         private PermissionInterceptor mPermissionInterceptor = null;
-        private boolean isParallelDownload=false;
-        private int icon=-1;
+        private boolean isParallelDownload = false;
+        private int icon = -1;
         private DownloadListener mDownloadListener = null;
-
-
+        private AgentWebUIController mAgentWebUIController;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -854,14 +865,16 @@ public class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment openParallelDownload(){
-            this.mAgentBuilderFragment.isParallelDownload=true;
+        public CommonBuilderForFragment openParallelDownload() {
+            this.mAgentBuilderFragment.isParallelDownload = true;
             return this;
         }
-        public CommonBuilderForFragment setNotifyIcon(@DrawableRes int icon){
-            this.mAgentBuilderFragment.icon=icon;
+
+        public CommonBuilderForFragment setNotifyIcon(@DrawableRes int icon) {
+            this.mAgentBuilderFragment.icon = icon;
             return this;
         }
+
         public CommonBuilderForFragment setWebView(@Nullable WebView webView) {
             this.mAgentBuilderFragment.mWebView = webView;
             return this;
@@ -892,6 +905,10 @@ public class AgentWeb {
             return this;
         }
 
+        public CommonBuilderForFragment setAgentWebUIController(AgentWebUIController agentWebUIController) {
+            this.mAgentBuilderFragment.mAgentWebUIController = agentWebUIController;
+            return this;
+        }
 
 
     }

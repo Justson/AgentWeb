@@ -429,7 +429,6 @@ public class AgentWebUtils {
     }
 
 
-
     static void clearWebViewAllCache(Context context) {
 
         try {
@@ -880,11 +879,31 @@ public class AgentWebUtils {
         List<String> deniedPermissions = new ArrayList<>();
         for (int i = 0; i < permissions.length; i++) {
 
-            if (!hasPermission(activity,permissions[i])) {
+            if (!hasPermission(activity, permissions[i])) {
                 deniedPermissions.add(permissions[i]);
             }
         }
         return deniedPermissions;
+
+    }
+
+
+    static AgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
+
+        ViewGroup mViewGroup = null;
+        if (!(webView.getParent() instanceof ViewGroup)) {
+            throw new IllegalStateException("please check webcreator's create was be call ?");
+        }
+        mViewGroup = (ViewGroup) webView.getParent();
+        AgentWebUIController mAgentWebUIController;
+        while (mViewGroup != null) {
+
+            if (mViewGroup.getId() == R.id.web_parent_layout_id) {
+                WebParentLayout mWebParentLayout = (WebParentLayout) mViewGroup;
+                return mWebParentLayout.provide();
+            }
+        }
+        throw new IllegalStateException("please check webcreator's create was be call ?");
 
     }
 

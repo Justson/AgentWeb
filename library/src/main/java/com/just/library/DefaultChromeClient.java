@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +54,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     private GeolocationPermissions.Callback mCallback = null;
     public static final int FROM_CODE_INTENTION = 0x18;
     public static final int FROM_CODE_INTENTION_LOCATION = FROM_CODE_INTENTION << 2;
+    private WeakReference<AgentWebUIController> mAgentWebUiController = null;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
@@ -72,6 +71,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         this.mChromeClientMsgCfg = chromeClientMsgCfg;
         this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
+        mAgentWebUiController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
     }
 
 
@@ -107,25 +107,8 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             return super.onJsAlert(view, url, message, result);
         }
 
-        Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null || mActivity.isFinishing()) {
-            result.cancel();
-            return true;
-        }
-        //
-        try {
-            AgentWebUtils.show(view,
-                    message,
-                    Snackbar.LENGTH_SHORT,
-                    Color.WHITE,
-                    mActivity.getResources().getColor(R.color.black),
-                    null,
-                    -1,
-                    null);
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            if (LogUtils.isDebug())
-                LogUtils.i(TAG, throwable.getMessage());
+        if (mAgentWebUiController.get() != null) {
+            mAgentWebUiController.get().onJsAlert(view, url, message);
         }
 
         result.confirm();
@@ -195,13 +178,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
             if (extras.getInt(KEY_FROM_INTENTION) == FROM_CODE_INTENTION_LOCATION) {
-                boolean t = AgentWebUtils.hasPermission(mActivityWeakReference.get(),permissions);
-                /*for (int p : grantResults) {
-                    if (p != PackageManager.PERMISSION_GRANTED) {
-                        t = false;
-                        break;
-                    }
-                }*/
+                boolean t = AgentWebUtils.hasPermission(mActivityWeakReference.get(), permissions);
 
                 if (mCallback != null) {
                     if (t) {

@@ -1,5 +1,10 @@
 package com.just.library;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.webkit.WebView;
 
 /**
@@ -9,15 +14,15 @@ import android.webkit.WebView;
 public class DefaultDesignUIController extends AgentWebUIController {
 
 
-    @Override
-    protected void onJsAlert(WebView view, String url, String message) {
+    protected AlertDialog confirmDialog;;
 
-        /*Activity mActivity = this.mActivityWeakReference.get();
+    @Override
+    public void onJsAlert(WebView view, String url, String message) {
+
+        Activity mActivity = this.mActivity;
         if (mActivity == null || mActivity.isFinishing()) {
-            result.cancel();
-            return true;
+            return ;
         }
-        //
         try {
             AgentWebUtils.show(view,
                     message,
@@ -31,7 +36,47 @@ public class DefaultDesignUIController extends AgentWebUIController {
             throwable.printStackTrace();
             if (LogUtils.isDebug())
                 LogUtils.i(TAG, throwable.getMessage());
-        }*/
+        }
+
+    }
+
+
+    @Override
+    public void onJsConfirm(WebView view, String url, String message) {
+        Activity mActivity = this.mActivity;
+        if (mActivity == null || mActivity.isFinishing()) {
+            return;
+        }
+
+        if (confirmDialog == null) {
+            confirmDialog = new AlertDialog.Builder(mActivity)//
+                    .setMessage(message)//
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            toDismissDialog(confirmDialog);
+                        }
+                    })//
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            toDismissDialog(confirmDialog);
+
+                        }
+                    }).create();
+        }
+        confirmDialog.setMessage(message);
+        confirmDialog.show();
+
+
+    }
+
+    @Override
+    public void onJsPrompt(WebView view, String url, String message, String defaultValue) {
+
+    }
+
+    private void toDismissDialog(AlertDialog confirmDialog) {
 
     }
 }

@@ -1,5 +1,6 @@
 package com.just.library;
 
+import android.app.Activity;
 import android.webkit.WebView;
 
 /**
@@ -8,7 +9,12 @@ import android.webkit.WebView;
  */
 public abstract class AgentWebUIController {
 
-    private static boolean hasDesignLib = false;
+    public static boolean hasDesignLib = false;
+    protected Activity mActivity;
+    protected WebParentLayout mWebParentLayout;
+    private volatile boolean isBindWebParent = false;
+    protected AgentWebUIController mAgentWebUIControllerDelegate;
+    protected String TAG = this.getClass().getSimpleName();
 
     static {
         try {
@@ -19,31 +25,37 @@ public abstract class AgentWebUIController {
         }
     }
 
-    protected AgentWebUIController mAgentWebUIControllerDelegate;
 
-    protected  AgentWebUIController create() {
+    protected AgentWebUIController create() {
         return hasDesignLib ? new DefaultDesignUIController() : new DefaultUIController();
     }
 
-    protected void onJsAlert(WebView view, String url, String message) {
-        getDelegate().onJsAlert(view, url, message);
-    }
+    public abstract void onJsAlert(WebView view, String url, String message);
 
 
-    protected void onJsConfirm(WebView view, String url, String message) {
-        getDelegate().onJsConfirm(view, url, message);
-    }
+    public abstract void onJsConfirm(WebView view, String url, String message);
 
 
-    public void onJsPrompt(WebView view, String url, String message, String defaultValue) {
-        getDelegate().onJsPrompt(view, url, message, defaultValue);
-    }
+    public abstract void onJsPrompt(WebView view, String url, String message, String defaultValue);
 
-    public AgentWebUIController getDelegate() {
+    protected AgentWebUIController getDelegate() {
         AgentWebUIController mAgentWebUIController = this.mAgentWebUIControllerDelegate;
         if (mAgentWebUIController == null) {
             this.mAgentWebUIControllerDelegate = mAgentWebUIController = create();
         }
         return mAgentWebUIController;
     }
+
+    synchronized void bindWebParent(WebParentLayout webParentLayout, Activity activity) {
+
+        if (!isBindWebParent) {
+            isBindWebParent = true;
+            this.mWebParentLayout = webParentLayout;
+            this.mActivity = activity;
+            getDelegate().bindWebParent(webParentLayout, activity);
+        }
+
+    }
+
+
 }
