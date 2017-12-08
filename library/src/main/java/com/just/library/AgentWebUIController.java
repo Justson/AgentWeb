@@ -4,7 +4,7 @@ import android.webkit.WebView;
 
 /**
  * Created by cenxiaozhong on 2017/12/6.
- * 该类统一控制了与用户交互的一些UI
+ * 该类统一控制了与用户交互的一些界面
  */
 public abstract class AgentWebUIController {
 
@@ -19,14 +19,13 @@ public abstract class AgentWebUIController {
         }
     }
 
-    private AgentWebUIController mAgentWebUIControllerDelegate;
+    protected AgentWebUIController mAgentWebUIControllerDelegate;
 
-    public AgentWebUIController create() {
+    protected  AgentWebUIController create() {
         return hasDesignLib ? new DefaultDesignUIController() : new DefaultUIController();
     }
 
     protected void onJsAlert(WebView view, String url, String message) {
-
         getDelegate().onJsAlert(view, url, message);
     }
 
