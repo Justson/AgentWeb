@@ -10,8 +10,8 @@ import android.webkit.WebView;
 public abstract class AgentWebUIController {
 
     public static boolean hasDesignLib = false;
-    protected Activity mActivity;
-    protected WebParentLayout mWebParentLayout;
+    private Activity mActivity;
+    private WebParentLayout mWebParentLayout;
     private volatile boolean isBindWebParent = false;
     protected AgentWebUIController mAgentWebUIControllerDelegate;
     protected String TAG = this.getClass().getSimpleName();
@@ -46,16 +46,18 @@ public abstract class AgentWebUIController {
         return mAgentWebUIController;
     }
 
-    synchronized void bindWebParent(WebParentLayout webParentLayout, Activity activity) {
+    synchronized final void bindWebParent(WebParentLayout webParentLayout, Activity activity) {
 
         if (!isBindWebParent) {
             isBindWebParent = true;
             this.mWebParentLayout = webParentLayout;
             this.mActivity = activity;
-            getDelegate().bindWebParent(webParentLayout, activity);
+            getDelegate().bindSupportWebParent(webParentLayout, activity);
         }
 
     }
+
+    abstract void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity);
 
 
 }

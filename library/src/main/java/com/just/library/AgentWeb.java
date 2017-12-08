@@ -68,10 +68,6 @@ public final class AgentWeb {
         this.mViewGroup = agentBuilder.mViewGroup;
         this.enableProgress = agentBuilder.enableProgress;
         mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
-        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
-            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
-            mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilder.mAgentWebUIController);
-        }
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
@@ -85,6 +81,10 @@ public final class AgentWeb {
         this.mWebViewClientCallbackManager = agentBuilder.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilder.mSecurityType;
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.headers);
+        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
+            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
+            mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilder.mAgentWebUIController);
+        }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
@@ -103,21 +103,22 @@ public final class AgentWeb {
         this.enableProgress = agentBuilderFragment.enableProgress;
         mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp, agentBuilderFragment.mWebView, agentBuilderFragment.mWebLayout) : agentBuilderFragment.mWebCreator;
         mIndicatorController = agentBuilderFragment.mIndicatorController;
-        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
-            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
-            mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilderFragment.mAgentWebUIController);
-        }
         this.mWebChromeClient = agentBuilderFragment.mWebChromeClient;
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
         mAgentWeb = this;
         this.mAgentWebSettings = agentBuilderFragment.mAgentWebSettings;
-        if (agentBuilderFragment.mJavaObject != null && agentBuilderFragment.mJavaObject.isEmpty())
+        if (agentBuilderFragment.mJavaObject != null && agentBuilderFragment.mJavaObject.isEmpty()) {
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilderFragment.mJavaObject);
+        }
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
         this.mPermissionInterceptor = agentBuilderFragment.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilderFragment.mPermissionInterceptor);
         this.mWebViewClientCallbackManager = agentBuilderFragment.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilderFragment.mSecurityType;
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilderFragment.mHttpHeaders);
+        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
+            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
+            mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilderFragment.mAgentWebUIController);
+        }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper = agentBuilderFragment.webClientHelper;

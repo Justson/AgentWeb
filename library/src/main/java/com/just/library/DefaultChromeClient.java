@@ -72,6 +72,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
         mAgentWebUiController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
+        LogUtils.i(TAG,"controller:"+mAgentWebUiController.get());
     }
 
 
@@ -103,9 +104,9 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
 
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsAlert", "public boolean " + ChromePath + ".onJsAlert", WebView.class, String.class, String.class, JsResult.class)) {
-
             return super.onJsAlert(view, url, message, result);
         }
+
 
         if (mAgentWebUiController.get() != null) {
             mAgentWebUiController.get().onJsAlert(view, url, message);
@@ -227,7 +228,13 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
             return super.onJsConfirm(view, url, message, result);
         }
-        showJsConfirm(message, result);
+
+
+        LogUtils.i(TAG,"mAgentWebUiController:"+mAgentWebUiController.get());
+        if(mAgentWebUiController.get()!=null){
+            mAgentWebUiController.get().onJsConfirm(view,url,message);
+        }
+//        showJsConfirm(message, result);
         return true;
     }
 

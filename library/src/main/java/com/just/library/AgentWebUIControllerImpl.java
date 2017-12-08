@@ -1,12 +1,13 @@
 package com.just.library;
 
+import android.app.Activity;
 import android.webkit.WebView;
 
 /**
  * Created by cenxiaozhong on 2017/12/6.
  * 该类统一控制了与用户交互的一些界面
  */
-public class AgentWebUIControllerImpl extends AgentWebUIController  {
+public class AgentWebUIControllerImpl extends AgentWebUIController {
 
 
     public static AgentWebUIController build() {
@@ -26,6 +27,11 @@ public class AgentWebUIControllerImpl extends AgentWebUIController  {
     @Override
     public void onJsPrompt(WebView view, String url, String message, String defaultValue) {
         getDelegate().onJsPrompt(view, url, message, defaultValue);
+    }
+
+    @Override
+    void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
+
     }
 
 

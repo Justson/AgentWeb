@@ -38,6 +38,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -898,9 +899,18 @@ public class AgentWebUtils {
         AgentWebUIController mAgentWebUIController;
         while (mViewGroup != null) {
 
+            LogUtils.i(TAG, "ViewGroup:" + mViewGroup);
             if (mViewGroup.getId() == R.id.web_parent_layout_id) {
                 WebParentLayout mWebParentLayout = (WebParentLayout) mViewGroup;
+                LogUtils.i(TAG, "found WebParentLayout");
                 return mWebParentLayout.provide();
+            } else {
+                ViewParent mViewParent = mViewGroup.getParent();
+                if (mViewParent instanceof ViewGroup) {
+                    mViewGroup = (ViewGroup) mViewParent;
+                } else {
+                    mViewGroup = null;
+                }
             }
         }
         throw new IllegalStateException("please check webcreator's create was be call ?");

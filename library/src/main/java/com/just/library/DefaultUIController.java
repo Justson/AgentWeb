@@ -1,5 +1,6 @@
 package com.just.library;
 
+import android.app.Activity;
 import android.webkit.WebView;
 
 /**
@@ -20,6 +21,11 @@ public class DefaultUIController extends AgentWebUIController {
 
     @Override
     public void onJsPrompt(WebView view, String url, String message, String defaultValue) {
+
+    }
+
+    @Override
+    void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
 
     }
 }

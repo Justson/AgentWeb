@@ -14,14 +14,14 @@ import android.webkit.WebView;
 public class DefaultDesignUIController extends AgentWebUIController {
 
 
-    protected AlertDialog confirmDialog;;
+    protected AlertDialog confirmDialog;
 
     @Override
     public void onJsAlert(WebView view, String url, String message) {
 
         Activity mActivity = this.mActivity;
         if (mActivity == null || mActivity.isFinishing()) {
-            return ;
+            return;
         }
         try {
             AgentWebUtils.show(view,
@@ -43,6 +43,8 @@ public class DefaultDesignUIController extends AgentWebUIController {
 
     @Override
     public void onJsConfirm(WebView view, String url, String message) {
+
+        LogUtils.i(TAG,"activity:"+mActivity.hashCode()+"  ");
         Activity mActivity = this.mActivity;
         if (mActivity == null || mActivity.isFinishing()) {
             return;
@@ -76,7 +78,17 @@ public class DefaultDesignUIController extends AgentWebUIController {
 
     }
 
+    private Activity mActivity=null;
+    private WebParentLayout mWebParentLayout;
+    @Override
+    void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
+        this.mActivity=activity;
+        this.mWebParentLayout=webParentLayout;
+    }
+
     private void toDismissDialog(AlertDialog confirmDialog) {
 
     }
+
+
 }
