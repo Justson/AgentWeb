@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.just.library.AgentWeb;
 import com.just.library.ChromeClientCallbackManager;
-import com.just.library.LogUtils;
+import com.just.library.DefaultWebClient;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
@@ -78,6 +78,10 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setWebViewClient(mWebViewClient)
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .setWebLayout(new WebLayout(this))
+                .openParallelDownload()//打开并行下载 , 默认串行下载
+                .setNotifyIcon(R.mipmap.download) //下载图标
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用
+                .interceptUnkownScheme() //拦截找不到相关页面的Scheme
                 .createAgentWeb()//
                 .ready()
                 .go(getUrl());

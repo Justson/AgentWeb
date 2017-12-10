@@ -91,9 +91,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .openParallelDownload()//打开并行下载 , 默认串行下载
-                .setNotifyIcon(R.mipmap.download)
-                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
-                .interceptUnkownScheme()
+                .setNotifyIcon(R.mipmap.download) //下载图标
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用
+                .interceptUnkownScheme() //拦截找不到相关页面的Scheme
                 .createAgentWeb()//创建AgentWeb
                 .ready()//设置 WebSettings
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
@@ -177,8 +177,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-
-
             return shouldOverrideUrlLoading(view, request.getUrl() + "");
         }
 

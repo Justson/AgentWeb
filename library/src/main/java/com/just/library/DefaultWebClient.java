@@ -45,7 +45,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
     private WeakReference<Activity> mWeakReference = null;
     private static final int CONSTANTS_ABNORMAL_BIG = 7;
     private WebViewClient mWebViewClient;
-    private boolean webClientHelper = false;
+    private boolean webClientHelper = true;
     private static final String WEBVIEWCLIENTPATH = "android.webkit.WebViewClient";
     public static final String INTENT_SCHEME = "intent://";
     public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
@@ -92,6 +92,8 @@ public class DefaultWebClient extends WrapperWebViewClient {
         this.webClientHelper = builder.webClientHelper;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.webView));
         isInterceptUnkownScheme = builder.isInterceptUnkownScheme;
+
+        LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType);
         if (builder.schemeHandleType <= 0) {
             schemeHandleType = ASK_USER_OPEN_OTHER_APP;
         } else {
@@ -115,6 +117,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
             return false;
         }
 
+        LogUtils.i(TAG, "helper:" + webClientHelper + "  isInterceptUnkownScheme:" + isInterceptUnkownScheme);
         if (webClientHelper && request.getUrl().toString().startsWith(INTENT_SCHEME)) { //
             handleIntentUrl(request.getUrl() + "");
             return true;
@@ -126,15 +129,16 @@ public class DefaultWebClient extends WrapperWebViewClient {
             startActivity(request.getUrl().toString());
             return true;
         }
-        if (webClientHelper && hasAlipayLib && isAlipay(view, request.getUrl() + ""))
+        if (webClientHelper && hasAlipayLib && isAlipay(view, request.getUrl() + "")) {
             return true;
+        }
 
         if (webClientHelper && queryActivies(request.getUrl().toString()) > 0 && handleOtherAppScheme(request.getUrl().toString())) {
             LogUtils.i(TAG, "intercept OtherAppScheme");
             return true;
         }
-        if (isInterceptUnkownScheme) {
-            LogUtils.i(TAG, "intercept isInterceptUnkownScheme");
+        if (webClientHelper && isInterceptUnkownScheme) {
+            LogUtils.i(TAG, "intercept InterceptUnkownScheme");
             return true;
         }
 
@@ -203,7 +207,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
             return false;
         }
 
-        if (webClientHelper && url.startsWith(INTENT_SCHEME)) { //拦截
+        if (webClientHelper && url.startsWith(INTENT_SCHEME)) {
             handleIntentUrl(url);
             return true;
         }
@@ -214,6 +218,15 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
         if (webClientHelper && hasAlipayLib && isAlipay(view, url))
             return true;
+
+        if (webClientHelper && queryActivies(url) > 0 && handleOtherAppScheme(url)) {
+            LogUtils.i(TAG, "intercept OtherAppScheme");
+            return true;
+        }
+        if (isInterceptUnkownScheme) {
+            LogUtils.i(TAG, "intercept InterceptUnkownScheme");
+            return true;
+        }
 
         if (tag > 0)
             return false;

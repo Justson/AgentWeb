@@ -58,7 +58,7 @@ public final class AgentWeb {
     private ILoader mILoader = null;
     private WebLifeCycle mWebLifeCycle;
     private IVideo mIVideo = null;
-    private boolean webClientHelper = false;
+    private boolean webClientHelper = true;
     private DefaultMsgConfig mDefaultMsgConfig;
     private PermissionInterceptor mPermissionInterceptor;
     private boolean isInterceptUnkownScheme = false;
@@ -357,6 +357,7 @@ public final class AgentWeb {
         if (!webClientHelper && AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
             return mWebViewClient;
         } else {
+            LogUtils.i(TAG,"isInterceptUnkownScheme:"+isInterceptUnkownScheme+"   openOtherAppWays:"+openOtherAppWays);
             return DefaultWebClient
                     .createBuilder()
                     .setActivity(this.mActivity)
@@ -367,6 +368,7 @@ public final class AgentWeb {
                     .setWebView(this.mWebCreator.get())
                     .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
                     .setSchemeHandleType(this.openOtherAppWays)
+                    .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
                     .build();
         }
 
