@@ -72,7 +72,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
         mAgentWebUiController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
-        LogUtils.i(TAG,"controller:"+mAgentWebUiController.get());
+        LogUtils.i(TAG, "controller:" + mAgentWebUiController.get());
     }
 
 
@@ -106,7 +106,6 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsAlert", "public boolean " + ChromePath + ".onJsAlert", WebView.class, String.class, String.class, JsResult.class)) {
             return super.onJsAlert(view, url, message, result);
         }
-
 
         if (mAgentWebUiController.get() != null) {
             mAgentWebUiController.get().onJsAlert(view, url, message);
@@ -212,9 +211,16 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
                 if (mChromeClientCallbackManager.getAgentWebCompatInterface().onJsPrompt(view, url, message, defaultValue, result))
                     return true;
             }
-            showJsPrompt(message, result, defaultValue);
+
+            if (this.mAgentWebUiController.get() != null) {
+                this.mAgentWebUiController.get().onJsPrompt(mWebView, url, message, defaultValue, result);
+            }
+//            showJsPrompt(message, result, defaultValue);
         } catch (Exception e) {
 //            e.printStackTrace();
+            if (LogUtils.isDebug()) {
+                e.printStackTrace();
+            }
         }
 
         return true;
@@ -223,16 +229,16 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
 
-        LogUtils.i(TAG, message);
+        LogUtils.i(TAG,"onJsConfirm:"+ message);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ChromePath + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
 
             return super.onJsConfirm(view, url, message, result);
         }
 
 
-        LogUtils.i(TAG,"mAgentWebUiController:"+mAgentWebUiController.get());
-        if(mAgentWebUiController.get()!=null){
-            mAgentWebUiController.get().onJsConfirm(view,url,message);
+        LogUtils.i(TAG, "mAgentWebUiController:" + mAgentWebUiController.get());
+        if (mAgentWebUiController.get() != null) {
+            mAgentWebUiController.get().onJsConfirm(view, url, message, result);
         }
 //        showJsConfirm(message, result);
         return true;
@@ -246,6 +252,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     }
 
 
+    @Deprecated
     private void showJsConfirm(String message, final JsResult result) {
 
         Activity mActivity = this.mActivityWeakReference.get();
@@ -286,6 +293,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
             result.cancel();
     }
 
+    @Deprecated
     private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
 
         Activity mActivity = this.mActivityWeakReference.get();
@@ -320,7 +328,6 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
         }
         this.pJsResult = js;
         promptDialog.show();
-
 
     }
 
@@ -466,12 +473,11 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
     @Override
     public void onHideCustomView() {
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ChromePath + ".onHideCustomView")) {
-            LogUtils.i(TAG, "onHide:" + true);
+            LogUtils.i(TAG, "onHideCustomView:" + true);
             super.onHideCustomView();
             return;
         }
 
-        LogUtils.i(TAG, "Video:" + mIVideo);
         if (mIVideo != null)
             mIVideo.onHideCustomView();
 

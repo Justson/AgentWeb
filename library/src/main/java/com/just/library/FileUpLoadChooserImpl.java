@@ -6,20 +6,17 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +49,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private boolean cameraState = false;
     private PermissionInterceptor mPermissionInterceptor;
     private int FROM_INTENTION_CODE = 21;
+    private WeakReference<AgentWebUIController> mAgentWebUIController = null;
 
 
     public FileUpLoadChooserImpl(Builder builder) {
@@ -66,6 +64,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
+        mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
     }
 
 
@@ -120,7 +119,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void openFileChooserInternal() {
 
-       /* if (mAlertDialog == null)
+        /*if (mAlertDialog == null)
             mAlertDialog = new AlertDialog.Builder(mActivity)//
                     .setSingleChoiceItems(mFileUploadMsgConfig.getMedias(), -1, new DialogInterface.OnClickListener() {
                         @Override
@@ -142,46 +141,38 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                         }
                     }).create();
         mAlertDialog.show();*/
-       onFileChooserInternal();
 
-
-    }
-
-    private void onFileChooserInternal() {
-
-        BottomSheetDialog mBottomSheetDialog = new BottomSheetDialog(mActivity);
-        final String[] datas = new String[]{"相机", "选择文件"};
-        RecyclerView mRecyclerView = new RecyclerView(mActivity);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        mRecyclerView.setAdapter(new RecyclerView.Adapter<BottomSheetHolder>() {
-            @Override
-            public BottomSheetHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                return new BottomSheetHolder(View.inflate(viewGroup.getContext(), android.R.layout.simple_list_item_1, null));
-            }
-
-            @Override
-            public void onBindViewHolder(BottomSheetHolder bottomSheetHolder, int i) {
-                bottomSheetHolder.mTextView.setText(datas[i]);
-            }
-
-            @Override
-            public int getItemCount() {
-                return 2;
-            }
-        });
-        mBottomSheetDialog.setContentView(mRecyclerView);
-        mBottomSheetDialog.show();
-
-    }
-
-    public static class BottomSheetHolder extends RecyclerView.ViewHolder {
-        TextView mTextView;
-
-        public BottomSheetHolder(View itemView) {
-            super(itemView);
-            mTextView = (TextView) itemView.findViewById(android.R.id.text1);
+        LogUtils.i(TAG, "controller:" + this.mAgentWebUIController.get());
+        if (this.mAgentWebUIController.get() != null) {
+            this.mAgentWebUIController
+                    .get()
+                    .showChooser(this.mWebView, mWebView.getUrl(), mFileUploadMsgConfig.getMedias(), getCallBack());
+            LogUtils.i(TAG, "open");
         }
+
     }
+
+
+    public Handler.Callback getCallBack() {
+        return new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                switch (msg.arg1) {
+                    case 0:
+                        cameraState = true;
+                        onCameraAction();
+
+                        break;
+                    case 1:
+                        cameraState = false;
+                        fileChooser();
+                        break;
+                }
+                return true;
+            }
+        };
+    }
+
 
     private void onCameraAction() {
 
@@ -312,8 +303,14 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
 
     private void handleBelowLData(Intent data) {
-        Uri mUri = data == null ? null : data.getData();
 
+
+        if (data == null) {
+            if (mUriValueCallback != null)
+                mUriValueCallback.onReceiveValue(Uri.EMPTY);
+            return;
+        }
+        Uri mUri = data.getData();
         LogUtils.i(TAG, "handleBelowLData  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
         if (mUriValueCallback != null)
             mUriValueCallback.onReceiveValue(mUri);
@@ -330,7 +327,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         if (!TextUtils.isEmpty(target)) {
             return datas = new Uri[]{Uri.parse(target)};
         }
-        ClipData mClipData = null;
+        ClipData mClipData = data.getClipData();
         if (mClipData != null && mClipData.getItemCount() > 0) {
             datas = new Uri[mClipData.getItemCount()];
             for (int i = 0; i < mClipData.getItemCount(); i++) {
@@ -483,5 +480,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             return new FileUpLoadChooserImpl(this);
         }
     }
+
 
 }

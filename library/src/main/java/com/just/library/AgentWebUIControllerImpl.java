@@ -1,6 +1,9 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.WebView;
 
 /**
@@ -20,17 +23,22 @@ public class AgentWebUIControllerImpl extends AgentWebUIController {
     }
 
     @Override
-    public void onJsConfirm(WebView view, String url, String message) {
-        getDelegate().onJsConfirm(view, url, message);
+    public void onJsConfirm(WebView view, String url, String message, JsResult jsResult) {
+        getDelegate().onJsConfirm(view, url, message, jsResult);
     }
 
     @Override
-    public void onJsPrompt(WebView view, String url, String message, String defaultValue) {
-        getDelegate().onJsPrompt(view, url, message, defaultValue);
+    public void showChooser(WebView view, String url, String[] ways, Handler.Callback callback) {
+        getDelegate().showChooser(view, url, ways, callback);
     }
 
     @Override
-    void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
+    public void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult) {
+        getDelegate().onJsPrompt(view, url, message, defaultValue, jsPromptResult);
+    }
+
+    @Override
+    protected void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
 
     }
 

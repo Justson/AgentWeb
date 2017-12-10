@@ -76,16 +76,8 @@ import static com.just.library.AgentWebConfig.AGENTWEB_FILE_PATH;
 import static com.just.library.AgentWebConfig.FILE_CACHE_PATH;
 
 /**
- * <b>@项目名：</b> agentweb<br>
- * <b>@包名：</b>com.just.library<br>
- * <b>@创建者：</b> cxz --  just<br>
- * <b>@创建时间：</b> &{DATE}<br>
- * <b>@公司：</b><br>
- * <b>@邮箱：</b> cenxiaozhong.qqcom@qq.com<br>
- * <b>@描述</b><br>
- * source CODE  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  */
-
 //该类对外是不开放的
 public class AgentWebUtils {
 
@@ -893,7 +885,7 @@ public class AgentWebUtils {
 
         ViewGroup mViewGroup = null;
         if (!(webView.getParent() instanceof ViewGroup)) {
-            throw new IllegalStateException("please check webcreator's create was be call ?");
+            throw new IllegalStateException("please check webcreator's create method was be called ?");
         }
         mViewGroup = (ViewGroup) webView.getParent();
         AgentWebUIController mAgentWebUIController;
@@ -913,7 +905,7 @@ public class AgentWebUtils {
                 }
             }
         }
-        throw new IllegalStateException("please check webcreator's create was be call ?");
+        throw new IllegalStateException("please check webcreator's create method was be called ?");
 
     }
 
