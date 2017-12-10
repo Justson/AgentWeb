@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Handler;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
@@ -46,19 +47,31 @@ public abstract class AgentWebUIController {
             isBindWebParent = true;
             this.mWebParentLayout = webParentLayout;
             this.mActivity = activity;
-            getDelegate().bindSupportWebParent(webParentLayout, activity);
+            bindSupportWebParent(webParentLayout, activity);
         }
+    }
 
+    protected void toDismissDialog(Dialog dialog) {
+        if (dialog != null && dialog.isShowing()) {
+            dialog.dismiss();
+        }
+    }
+
+    protected void toShowDialog(Dialog dialog) {
+        if (dialog != null && !dialog.isShowing()) {
+            dialog.show();
+        }
     }
 
     protected abstract void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity);
 
     public abstract void onJsAlert(WebView view, String url, String message);
 
-
     public abstract void onJsConfirm(WebView view, String url, String message, JsResult jsResult);
 
     public abstract void showChooser(WebView view, String url, String[] ways, Handler.Callback callback);
+
+    public abstract void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback);
 
     public abstract void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult);
 

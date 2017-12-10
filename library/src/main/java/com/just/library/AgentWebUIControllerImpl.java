@@ -33,13 +33,18 @@ public class AgentWebUIControllerImpl extends AgentWebUIController {
     }
 
     @Override
+    public void onForceDownloadAlert( String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback) {
+        getDelegate().onForceDownloadAlert( url, message, callback);
+    }
+
+    @Override
     public void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult) {
         getDelegate().onJsPrompt(view, url, message, defaultValue, jsPromptResult);
     }
 
     @Override
     protected void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
-
+        getDelegate().bindSupportWebParent(webParentLayout, activity);
     }
 
 

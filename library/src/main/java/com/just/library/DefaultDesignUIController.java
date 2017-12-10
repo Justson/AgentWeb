@@ -1,13 +1,11 @@
 package com.just.library;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -17,20 +15,16 @@ import android.view.ViewGroup;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebView;
-import android.widget.EditText;
 import android.widget.TextView;
 
 /**
  * Created by cenxiaozhong on 2017/12/8.
  */
 
-public class DefaultDesignUIController extends AgentWebUIController {
+public class DefaultDesignUIController extends DefaultUIController {
 
 
-    protected AlertDialog confirmDialog;
-    private JsPromptResult pJsResult = null;
-    private JsResult cJsResult = null;
-    private AlertDialog promptDialog = null;
+
     private BottomSheetDialog mBottomSheetDialog;
 
     @Override
@@ -64,9 +58,7 @@ public class DefaultDesignUIController extends AgentWebUIController {
 
     @Override
     public void onJsConfirm(WebView view, String url, String message, JsResult jsResult) {
-
-        onJsConfirmInternal(message, jsResult);
-
+        super.onJsConfirm(view,url,message, jsResult);
     }
 
     private static final int RECYCLERVIEW_ID = 0x1001;
@@ -74,6 +66,14 @@ public class DefaultDesignUIController extends AgentWebUIController {
     @Override
     public void showChooser(WebView view, String url, String[] ways, Handler.Callback callback) {
         showChooserInternal(view, url, ways, callback);
+    }
+
+    @Override
+    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, final Handler.Callback callback) {
+
+            super.onForceDownloadAlert(url,message,callback);
+
+
     }
 
     private void showChooserInternal(WebView view, String url, final String[] ways, Handler.Callback callback) {
@@ -99,7 +99,7 @@ public class DefaultDesignUIController extends AgentWebUIController {
         return new RecyclerView.Adapter<BottomSheetHolder>() {
             @Override
             public BottomSheetHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                return new BottomSheetHolder(mLayoutInflater.inflate( android.R.layout.simple_list_item_1, viewGroup,false));
+                return new BottomSheetHolder(mLayoutInflater.inflate(android.R.layout.simple_list_item_1, viewGroup, false));
             }
 
             @Override
@@ -140,102 +140,27 @@ public class DefaultDesignUIController extends AgentWebUIController {
     }
 
 
-    private void onJsConfirmInternal(String message, JsResult jsResult) {
-        LogUtils.i(TAG, "activity:" + mActivity.hashCode() + "  ");
-        Activity mActivity = this.mActivity;
-        if (mActivity == null || mActivity.isFinishing()) {
-            toCancelJsresult(jsResult);
-            return;
-        }
 
-        if (confirmDialog == null) {
-            confirmDialog = new AlertDialog.Builder(mActivity)//
-                    .setMessage(message)//
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(confirmDialog);
-                            toCancelJsresult(cJsResult);
-                        }
-                    })//
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(confirmDialog);
-                            if (cJsResult != null) {
-                                cJsResult.confirm();
-                            }
 
-                        }
-                    }).create();
-        }
-        confirmDialog.setMessage(message);
-        this.cJsResult = jsResult;
-        confirmDialog.show();
-    }
 
-    private void toCancelJsresult(JsResult result) {
-        if (result != null)
-            result.cancel();
-    }
 
     @Override
     public void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult) {
-
-        onJsPromptInternal(message, defaultValue, jsPromptResult);
+        super.onJsPrompt(view,url,message, defaultValue, jsPromptResult);
     }
 
-    private void onJsPromptInternal(String message, String defaultValue, JsPromptResult jsPromptResult) {
-        Activity mActivity = this.mActivity;
-        if (mActivity == null || mActivity.isFinishing()) {
-            jsPromptResult.cancel();
-            return;
-        }
-        if (promptDialog == null) {
 
-            final EditText et = new EditText(mActivity);
-            et.setText(defaultValue);
-            promptDialog = new AlertDialog.Builder(mActivity)//
-                    .setView(et)//
-                    .setTitle(message)
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(promptDialog);
-                            toCancelJsresult(pJsResult);
-                        }
-                    })//
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(promptDialog);
-
-                            if (pJsResult != null)
-                                pJsResult.confirm(et.getText().toString());
-
-                        }
-                    }).create();
-        }
-        this.pJsResult = jsPromptResult;
-        promptDialog.show();
-    }
 
     private Activity mActivity = null;
     private WebParentLayout mWebParentLayout;
     private LayoutInflater mLayoutInflater;
+
     @Override
     protected void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
+        super.bindSupportWebParent(webParentLayout,activity);
         this.mActivity = activity;
         this.mWebParentLayout = webParentLayout;
-        mLayoutInflater=LayoutInflater.from(mActivity);
-    }
-
-    private void toDismissDialog(AlertDialog confirmDialog) {
-
-        if (confirmDialog != null && confirmDialog.isShowing()) {
-            confirmDialog.dismiss();
-        }
-
+        mLayoutInflater = LayoutInflater.from(mActivity);
     }
 
 

@@ -2,12 +2,12 @@ package com.just.library;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
 
@@ -143,7 +143,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         List<String> deniedPermissions = new ArrayList<>();
 
-        if(!AgentWebUtils.hasPermission(mActivityWeakReference.get(),AgentWebPermissions.STORAGE)){
+        if (!AgentWebUtils.hasPermission(mActivityWeakReference.get(), AgentWebPermissions.STORAGE)) {
             deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
         }
         return deniedPermissions;
@@ -200,29 +200,22 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         if ((mActivity = mActivityWeakReference.get()) == null || mActivity.isFinishing())
             return;
 
-        AlertDialog mAlertDialog = null;
-        mAlertDialog = new AlertDialog.Builder(mActivity)//
-                .setTitle(mDownLoadMsgConfig.getTips())//
-                .setMessage(mDownLoadMsgConfig.getHoneycomblow())//
-                .setNegativeButton(mDownLoadMsgConfig.getDownLoad(), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
-                            dialog.dismiss();
-                        forceDown(url, contentLength, file);
-                    }
-                })//
-                .setPositiveButton(mDownLoadMsgConfig.getCancel(), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        WebParentLayout mWebParentLayout = (WebParentLayout) mActivity.findViewById(R.id.web_parent_layout_id);
+        AgentWebUIController mAgentWebUIController = mWebParentLayout.provide();
+        if(mAgentWebUIController!=null){
+            mAgentWebUIController.onForceDownloadAlert(url,mDownLoadMsgConfig,createCallback(url,contentLength,file));
+        }
 
-                        if (dialog != null)
-                            dialog.dismiss();
-                    }
-                }).create();
+    }
 
-        mAlertDialog.show();
-
+    private Handler.Callback createCallback(final String url, final long contentLength, final File file) {
+        return new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                forceDown(url,contentLength,file);
+                return true;
+            }
+        };
     }
 
     private void performDownload(String url, long contentLength, File file) {
