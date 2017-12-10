@@ -316,6 +316,7 @@ public final class AgentWeb {
                     .setParallelDownload(isParallelDl)//
                     .setPermissionInterceptor(this.mPermissionInterceptor)
                     .setIcon(icon)
+                    .setWebView(this.mWebCreator.get())
                     .create();
 
         }
