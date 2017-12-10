@@ -23,6 +23,11 @@ public class AgentWebUIControllerImplBase extends AgentWebUIController {
     }
 
     @Override
+    public void onAskOpenOtherApp(WebView view, String url, String message,String confirm,String title, Handler.Callback callback) {
+        getDelegate().onAskOpenOtherApp(view,url,message,confirm,title,callback);
+    }
+
+    @Override
     public void onJsConfirm(WebView view, String url, String message, JsResult jsResult) {
         getDelegate().onJsConfirm(view, url, message, jsResult);
     }

@@ -24,10 +24,38 @@ public class DefaultUIController extends AgentWebUIController {
     private AlertDialog promptDialog = null;
     private Activity mActivity;
     private WebParentLayout mWebParentLayout;
+    private AlertDialog askOpenOtherAppDialog = null;
 
     @Override
     public void onJsAlert(WebView view, String url, String message) {
         AgentWebUtils.toastShowShort(view.getContext().getApplicationContext(), message);
+    }
+
+
+    @Override
+    public void onAskOpenOtherApp(WebView view, String url, String message, String confirm, String title, final Handler.Callback callback) {
+
+        LogUtils.i(TAG, "onAskOpenOtherApp");
+        if (askOpenOtherAppDialog == null) {
+            askOpenOtherAppDialog = new AlertDialog
+                    .Builder(mActivity)//
+                    .setMessage(message)//
+                    .setTitle(title)
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            callback.handleMessage(Message.obtain(null, -1));
+                        }
+                    })//
+                    .setPositiveButton(confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            callback.handleMessage(Message.obtain(null, 1));
+                        }
+                    })
+                    .create();
+        }
+        askOpenOtherAppDialog.show();
     }
 
     @Override

@@ -67,6 +67,8 @@ public abstract class AgentWebUIController {
 
     public abstract void onJsAlert(WebView view, String url, String message);
 
+    public abstract void onAskOpenOtherApp(WebView view, String url, String message,String confirm,String title,Handler.Callback callback);
+
     public abstract void onJsConfirm(WebView view, String url, String message, JsResult jsResult);
 
     public abstract void showChooser(WebView view, String url, String[] ways, Handler.Callback callback);

@@ -432,6 +432,8 @@ public final class AgentWeb {
         private int icon = -1;
         private DownloadListener mDownloadListener = null;
         private AgentWebUIController mAgentWebUIController;
+        private DefaultWebClient.OpenOtherAppWays openOtherApp = null;
+        private boolean isInterceptUnkownScheme = false;
 
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
@@ -662,6 +664,16 @@ public final class AgentWeb {
             return this;
         }
 
+        public CommonAgentBuilder setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
+            this.mAgentBuilder.openOtherApp = openOtherAppWays;
+            return this;
+        }
+
+        public CommonAgentBuilder interceptUnkownScheme() {
+            this.mAgentBuilder.isInterceptUnkownScheme = true;
+            return this;
+        }
+
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -733,6 +745,8 @@ public final class AgentWeb {
         private int icon = -1;
         private DownloadListener mDownloadListener = null;
         private AgentWebUIController mAgentWebUIController;
+        private DefaultWebClient.OpenOtherAppWays openOtherApp = null;
+        private boolean isInterceptUnkownScheme = false;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -912,6 +926,15 @@ public final class AgentWeb {
             return this;
         }
 
+        public CommonBuilderForFragment setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
+            this.mAgentBuilderFragment.openOtherApp = openOtherAppWays;
+            return this;
+        }
+
+        public CommonBuilderForFragment interceptUnkownScheme() {
+            this.mAgentBuilderFragment.isInterceptUnkownScheme = true;
+            return this;
+        }
 
     }
 

@@ -361,11 +361,11 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     static class CovertFileThread extends Thread {
 
-        private JsChannelCallback mJsChannelCallback;
+        private WeakReference<JsChannelCallback> mJsChannelCallback;
         private String[] paths;
 
         private CovertFileThread(JsChannelCallback jsChannelCallback, String[] paths) {
-            this.mJsChannelCallback = jsChannelCallback;
+            this.mJsChannelCallback = new WeakReference<JsChannelCallback>(jsChannelCallback);
             this.paths = paths;
         }
 
@@ -377,8 +377,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                 Queue<FileParcel> mQueue = AgentWebUtils.convertFile(paths);
                 String result = AgentWebUtils.convertFileParcelObjectsToJson(mQueue);
                 LogUtils.i(TAG, "result:" + result);
-                if (mJsChannelCallback != null)
-                    mJsChannelCallback.call(result);
+                if (mJsChannelCallback != null && mJsChannelCallback.get() != null)
+                    mJsChannelCallback.get().call(result);
 
             } catch (Exception e) {
                 e.printStackTrace();

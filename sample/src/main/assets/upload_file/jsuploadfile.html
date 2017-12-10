@@ -55,7 +55,7 @@ bindEvent(window, 'load', function() {
     bindEvent(ip, 'click', function(e){
         // alert("我是" + this + "元素, 你点击了我!");
     
-            alert("js 调 android 成功");
+            alert("js 调 android 方法成功");
             if(window.agentWeb!=null && typeof(window.agentWeb)!="undefined"){
                 window.agentWeb.uploadFile();
             }else{
@@ -73,7 +73,7 @@ function uploadFileResult(objs){
 
     // console.log(message);
     //alert(objs);
-    alert("Android call js success");
+    alert("Android 调 js 方法成功");
 
     if(objs==null||typeof(objs)=="undefined"||objs.length==0){
 
