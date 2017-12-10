@@ -26,6 +26,7 @@ public class DefaultDesignUIController extends DefaultUIController {
 
 
     private BottomSheetDialog mBottomSheetDialog;
+    private static final int RECYCLERVIEW_ID = 0x1001;
 
     @Override
     public void onJsAlert(WebView view, String url, String message) {
@@ -61,7 +62,6 @@ public class DefaultDesignUIController extends DefaultUIController {
         super.onJsConfirm(view,url,message, jsResult);
     }
 
-    private static final int RECYCLERVIEW_ID = 0x1001;
 
     @Override
     public void showChooser(WebView view, String url, String[] ways, Handler.Callback callback) {
@@ -70,10 +70,7 @@ public class DefaultDesignUIController extends DefaultUIController {
 
     @Override
     public void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, final Handler.Callback callback) {
-
-            super.onForceDownloadAlert(url,message,callback);
-
-
+        super.onForceDownloadAlert(url,message,callback);
     }
 
     private void showChooserInternal(WebView view, String url, final String[] ways, Handler.Callback callback) {
@@ -138,10 +135,6 @@ public class DefaultDesignUIController extends DefaultUIController {
             mTextView = (TextView) itemView.findViewById(android.R.id.text1);
         }
     }
-
-
-
-
 
 
     @Override
