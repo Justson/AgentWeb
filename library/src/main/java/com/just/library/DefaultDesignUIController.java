@@ -1,6 +1,7 @@
 package com.just.library;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
@@ -72,7 +73,7 @@ public class DefaultDesignUIController extends DefaultUIController {
         super.onForceDownloadAlert(url, message, callback);
     }
 
-    private void showChooserInternal(WebView view, String url, final String[] ways, Handler.Callback callback) {
+    private void showChooserInternal(WebView view, String url, final String[] ways, final Handler.Callback callback) {
 
 
         LogUtils.i(TAG, "url:" + url + "  ways:" + ways[0]);
@@ -86,6 +87,14 @@ public class DefaultDesignUIController extends DefaultUIController {
         }
         mRecyclerView = (RecyclerView) mBottomSheetDialog.getDelegate().findViewById(RECYCLERVIEW_ID);
         mRecyclerView.setAdapter(getAdapter(ways, callback));
+        mBottomSheetDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if(callback!=null){
+                    callback.handleMessage(Message.obtain(null,-1));
+                }
+            }
+        });
         mBottomSheetDialog.show();
 
 
@@ -113,7 +122,7 @@ public class DefaultDesignUIController extends DefaultUIController {
                             mBottomSheetDialog.dismiss();
                         }
                         Message mMessage = Message.obtain();
-                        mMessage.arg1 = i;
+                        mMessage.what = i;
                         callback.handleMessage(mMessage);
                     }
                 });

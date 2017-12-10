@@ -86,7 +86,7 @@ public class DefaultUIController extends AgentWebUIController {
                         LogUtils.i(TAG, "which:" + which);
                         if (callback != null) {
                             Message mMessage = Message.obtain();
-                            mMessage.arg1 = which;
+                            mMessage.what = which;
                             callback.handleMessage(mMessage);
                         }
 
@@ -95,6 +95,9 @@ public class DefaultUIController extends AgentWebUIController {
                     @Override
                     public void onCancel(DialogInterface dialog) {
                         dialog.dismiss();
+                        if (callback != null) {
+                            callback.handleMessage(Message.obtain(null, -1));
+                        }
                     }
                 }).create();
         mAlertDialog.show();
@@ -127,7 +130,16 @@ public class DefaultUIController extends AgentWebUIController {
                             }
 
                         }
-                    }).create();
+                    })
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            dialog.dismiss();
+                            toCancelJsresult(cJsResult);
+                        }
+                    })
+                    .create();
+
         }
         confirmDialog.setMessage(message);
         this.cJsResult = jsResult;
@@ -164,7 +176,15 @@ public class DefaultUIController extends AgentWebUIController {
                                 pJsResult.confirm(et.getText().toString());
 
                         }
-                    }).create();
+                    })
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            dialog.dismiss();
+                            toCancelJsresult(pJsResult);
+                        }
+                    })
+                    .create();
         }
         this.pJsResult = jsPromptResult;
         promptDialog.show();

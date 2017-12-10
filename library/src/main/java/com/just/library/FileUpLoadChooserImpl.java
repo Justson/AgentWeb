@@ -119,28 +119,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void openFileChooserInternal() {
 
-        /*if (mAlertDialog == null)
-            mAlertDialog = new AlertDialog.Builder(mActivity)//
-                    .setSingleChoiceItems(mFileUploadMsgConfig.getMedias(), -1, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            mAlertDialog.dismiss();
-                            LogUtils.i(TAG, "which:" + which);
-                            if (which == 1) {
-                                cameraState = false;
-                                fileChooser();
-                            } else {
-                                cameraState = true;
-                                onCameraAction();
-                            }
-                        }
-                    }).setOnCancelListener(new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            cancel();
-                        }
-                    }).create();
-        mAlertDialog.show();*/
 
         LogUtils.i(TAG, "controller:" + this.mAgentWebUIController.get());
         if (this.mAgentWebUIController.get() != null) {
@@ -157,7 +135,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         return new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                switch (msg.arg1) {
+                switch (msg.what) {
                     case 0:
                         cameraState = true;
                         onCameraAction();
@@ -166,6 +144,9 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                     case 1:
                         cameraState = false;
                         fileChooser();
+                        break;
+                    default:
+                        cancel();
                         break;
                 }
                 return true;
