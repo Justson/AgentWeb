@@ -360,7 +360,9 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         }
 
         if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
-            AgentWebUtils.toastShowShort(mActivity, String.format(mFileUploadMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""));
+            if (mAgentWebUIController.get() != null) {
+                mAgentWebUIController.get().showMessage(String.format(mFileUploadMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
+            }
             mJsChannelCallback.call(null);
             return;
         }

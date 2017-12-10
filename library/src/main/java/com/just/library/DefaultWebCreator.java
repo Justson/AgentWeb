@@ -129,13 +129,13 @@ public class DefaultWebCreator implements WebCreator {
 
     private ViewGroup createGroupWithWeb() {
         Activity mActivity = this.mActivity;
-        FrameLayout mFrameLayout = new WebParentLayout(mActivity);
+        WebParentLayout mFrameLayout = new WebParentLayout(mActivity);
         mFrameLayout.setId(R.id.web_parent_layout_id);
         mFrameLayout.setBackgroundColor(Color.WHITE);
         View target=mIWebLayout==null?(this.mWebView= (WebView) web()):webLayout();
         FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
         mFrameLayout.addView(target, mLayoutParams);
-
+        mFrameLayout.bindWebView(this.mWebView);
         LogUtils.i(TAG, "    webView:" + (this.mWebView instanceof AgentWebView));
         if (isNeedDefaultProgress) {
             FrameLayout.LayoutParams lp = null;

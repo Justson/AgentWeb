@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="web_parent_layout_id" type="id"></item>
+    <item name="agentweb_webview_id" type="id"></item>
 </resources>

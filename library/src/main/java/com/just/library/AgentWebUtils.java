@@ -142,7 +142,7 @@ public class AgentWebUtils {
         if (connectivity == null) {
             return false;
         }
-        NetworkInfo info = connectivity.getActiveNetworkInfo();
+        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
         return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
@@ -151,7 +151,7 @@ public class AgentWebUtils {
         if (connectivity == null) {
             return false;
         }
-        NetworkInfo info = connectivity.getActiveNetworkInfo();
+        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
         return info != null && info.isConnected();
     }
 
@@ -844,6 +844,19 @@ public class AgentWebUtils {
         }
         mToast.show();
 
+    }
+
+    @Deprecated
+    static void getUIControllerAndShowMessage(Activity activity , String message , String from){
+
+        if(activity==null||activity.isFinishing()){
+            return;
+        }
+        WebParentLayout mWebParentLayout = (WebParentLayout) activity.findViewById(R.id.web_parent_layout_id);
+        AgentWebUIController mAgentWebUIController = mWebParentLayout.provide();
+        if(mAgentWebUIController!=null){
+            mAgentWebUIController.showMessage(message,from);
+        }
     }
 
     static boolean hasPermission(@NonNull Context context, @NonNull String... permissions) {

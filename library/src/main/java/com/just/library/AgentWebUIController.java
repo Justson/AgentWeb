@@ -75,5 +75,11 @@ public abstract class AgentWebUIController {
 
     public abstract void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult);
 
+    /**
+     * @param message 消息
+     * @param intent 意图 ，说明message的来源
+     */
+    public abstract void showMessage(String message, String intent);
+
 
 }

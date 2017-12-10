@@ -32,7 +32,7 @@ public class DefaultUIController extends AgentWebUIController {
 
     @Override
     public void onJsConfirm(WebView view, String url, String message, JsResult jsResult) {
-            onJsConfirmInternal(message,jsResult);
+        onJsConfirmInternal(message, jsResult);
     }
 
     @Override
@@ -169,16 +169,21 @@ public class DefaultUIController extends AgentWebUIController {
         this.pJsResult = jsPromptResult;
         promptDialog.show();
     }
+
     @Override
     public void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult) {
-        onJsPromptInternal(message,defaultValue,jsPromptResult);
+        onJsPromptInternal(message, defaultValue, jsPromptResult);
+    }
+
+    @Override
+    public void showMessage(String message, String from) {
+        AgentWebUtils.toastShowShort(mActivity.getApplicationContext(), message);
     }
 
     private void toCancelJsresult(JsResult result) {
         if (result != null)
             result.cancel();
     }
-
 
 
     @Override

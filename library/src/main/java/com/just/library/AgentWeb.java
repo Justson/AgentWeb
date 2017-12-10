@@ -83,7 +83,7 @@ public final class AgentWeb {
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.headers);
         if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
-            mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilder.mAgentWebUIController);
+            mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilder.mAgentWebUIController);
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
@@ -117,7 +117,7 @@ public final class AgentWeb {
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilderFragment.mHttpHeaders);
         if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
-            mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImpl.build() : agentBuilderFragment.mAgentWebUIController);
+            mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilderFragment.mAgentWebUIController);
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
@@ -491,7 +491,7 @@ public final class AgentWeb {
 
         }
 
-        public void setAgentWebUIController(AgentWebUIController agentWebUIController) {
+        public void setAgentWebUIController(@NonNull AgentWebUIControllerImplBase agentWebUIController) {
             this.mAgentWebUIController = agentWebUIController;
         }
 
@@ -906,7 +906,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setAgentWebUIController(AgentWebUIController agentWebUIController) {
+        public CommonBuilderForFragment setAgentWebUIController(@NonNull AgentWebUIControllerImplBase agentWebUIController) {
             this.mAgentBuilderFragment.mAgentWebUIController = agentWebUIController;
             return this;
         }

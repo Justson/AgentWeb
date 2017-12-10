@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
+import android.webkit.WebView;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -48,6 +49,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private long contentLength;
     private AtomicBoolean isParallelDownload = new AtomicBoolean(false);
     private int icon = -1;
+    private WeakReference<AgentWebUIController> mAgentWebUIController;
 
 
     DefaultDownLoaderImpl(Builder builder) {
@@ -60,6 +62,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         this.mPermissionListener = builder.mPermissionInterceptor;
         isParallelDownload.set(builder.isParallelDownload);
         icon = builder.icon;
+        this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
 
     }
 
@@ -173,7 +176,10 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
 
         if (ExecuteTasksMap.getInstance().contains(url)) {
-            AgentWebUtils.toastShowShort(mContext, mDownLoadMsgConfig.getTaskHasBeenExist());
+            if(mAgentWebUIController.get()!=null){
+                mAgentWebUIController.get().showMessage(
+                        mDownLoadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
+            }
             return;
         }
 
@@ -200,10 +206,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         if ((mActivity = mActivityWeakReference.get()) == null || mActivity.isFinishing())
             return;
 
-        WebParentLayout mWebParentLayout = (WebParentLayout) mActivity.findViewById(R.id.web_parent_layout_id);
-        AgentWebUIController mAgentWebUIController = mWebParentLayout.provide();
-        if(mAgentWebUIController!=null){
-            mAgentWebUIController.onForceDownloadAlert(url,mDownLoadMsgConfig,createCallback(url,contentLength,file));
+        AgentWebUIController mAgentWebUIController;
+        if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
+            mAgentWebUIController.onForceDownloadAlert(url, mDownLoadMsgConfig, createCallback(url, contentLength, file));
         }
 
     }
@@ -212,7 +217,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         return new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                forceDown(url,contentLength,file);
+                forceDown(url, contentLength, file);
                 return true;
             }
         };
@@ -296,7 +301,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         ExecuteTasksMap.getInstance().removeTask(path);
 
         if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
-            AgentWebUtils.toastShowShort(mContext, mDownLoadMsgConfig.getDownLoadFail());
+            if(mAgentWebUIController.get()!=null){
+                mAgentWebUIController.get().showMessage(mDownLoadMsgConfig.getDownLoadFail(), TAG.concat("|error"));
+            }
             return;
         }
 
@@ -441,6 +448,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         private PermissionInterceptor mPermissionInterceptor;
         private int icon = -1;
         private boolean isParallelDownload = false;
+        private WebView mWebView;
 
         public Builder setActivity(Activity activity) {
             mActivity = activity;
@@ -479,6 +487,11 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         public Builder setParallelDownload(boolean parallelDownload) {
             isParallelDownload = parallelDownload;
+            return this;
+        }
+
+        public Builder setWebView(WebView webView) {
+            this.mWebView = webView;
             return this;
         }
 

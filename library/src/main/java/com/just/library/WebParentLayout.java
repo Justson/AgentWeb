@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 
 /**
@@ -15,6 +16,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     private AgentWebUIController mAgentWebUIController = null;
     private String TAG=this.getClass().getSimpleName();
 
+    private WebView mWebView;
     public WebParentLayout(@NonNull Context context) {
         this(context, null);
     }
@@ -40,5 +42,13 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     @Override
     public AgentWebUIController provide() {
         return this.mAgentWebUIController;
+    }
+
+
+    void bindWebView(WebView view){
+        this.mWebView =view;
+    }
+    public WebView getWebView(){
+        return this.mWebView;
     }
 }

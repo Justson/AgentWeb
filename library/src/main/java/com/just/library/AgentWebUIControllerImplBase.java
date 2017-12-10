@@ -10,11 +10,11 @@ import android.webkit.WebView;
  * Created by cenxiaozhong on 2017/12/6.
  * 该类统一控制了与用户交互的一些界面
  */
-public class AgentWebUIControllerImpl extends AgentWebUIController {
+public class AgentWebUIControllerImplBase extends AgentWebUIController {
 
 
     public static AgentWebUIController build() {
-        return new AgentWebUIControllerImpl();
+        return new AgentWebUIControllerImplBase();
     }
 
     @Override
@@ -33,13 +33,19 @@ public class AgentWebUIControllerImpl extends AgentWebUIController {
     }
 
     @Override
-    public void onForceDownloadAlert( String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback) {
-        getDelegate().onForceDownloadAlert( url, message, callback);
+    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback) {
+        getDelegate().onForceDownloadAlert(url, message, callback);
     }
 
     @Override
     public void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult) {
         getDelegate().onJsPrompt(view, url, message, defaultValue, jsPromptResult);
+    }
+
+
+    @Override
+    public void showMessage(String message, String from) {
+        getDelegate().showMessage(message, from);
     }
 
     @Override

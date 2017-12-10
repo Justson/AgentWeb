@@ -24,7 +24,6 @@ import android.widget.TextView;
 public class DefaultDesignUIController extends DefaultUIController {
 
 
-
     private BottomSheetDialog mBottomSheetDialog;
     private static final int RECYCLERVIEW_ID = 0x1001;
 
@@ -59,7 +58,7 @@ public class DefaultDesignUIController extends DefaultUIController {
 
     @Override
     public void onJsConfirm(WebView view, String url, String message, JsResult jsResult) {
-        super.onJsConfirm(view,url,message, jsResult);
+        super.onJsConfirm(view, url, message, jsResult);
     }
 
 
@@ -70,7 +69,7 @@ public class DefaultDesignUIController extends DefaultUIController {
 
     @Override
     public void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, final Handler.Callback callback) {
-        super.onForceDownloadAlert(url,message,callback);
+        super.onForceDownloadAlert(url, message, callback);
     }
 
     private void showChooserInternal(WebView view, String url, final String[] ways, Handler.Callback callback) {
@@ -136,12 +135,10 @@ public class DefaultDesignUIController extends DefaultUIController {
         }
     }
 
-
     @Override
     public void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult) {
-        super.onJsPrompt(view,url,message, defaultValue, jsPromptResult);
+        super.onJsPrompt(view, url, message, defaultValue, jsPromptResult);
     }
-
 
 
     private Activity mActivity = null;
@@ -150,11 +147,14 @@ public class DefaultDesignUIController extends DefaultUIController {
 
     @Override
     protected void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
-        super.bindSupportWebParent(webParentLayout,activity);
+        super.bindSupportWebParent(webParentLayout, activity);
         this.mActivity = activity;
         this.mWebParentLayout = webParentLayout;
         mLayoutInflater = LayoutInflater.from(mActivity);
     }
 
-
+    @Override
+    public void showMessage(String message, String from) {
+        onJsAlertInternal(mWebParentLayout.getWebView(), message);
+    }
 }
