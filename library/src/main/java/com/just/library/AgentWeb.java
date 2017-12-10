@@ -61,7 +61,8 @@ public final class AgentWeb {
     private boolean webClientHelper = false;
     private DefaultMsgConfig mDefaultMsgConfig;
     private PermissionInterceptor mPermissionInterceptor;
-
+    private boolean isInterceptUnkownScheme = false;
+    private int openOtherAppWays = -1;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
@@ -89,6 +90,10 @@ public final class AgentWeb {
         this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         this.webClientHelper = agentBuilder.webclientHelper;
+        this.isInterceptUnkownScheme = agentBuilder.isInterceptUnkownScheme;
+        if (agentBuilder.openOtherApp != null) {
+            this.openOtherAppWays = agentBuilder.openOtherApp.code;
+        }
         init();
         setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
@@ -122,6 +127,10 @@ public final class AgentWeb {
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper = agentBuilderFragment.webClientHelper;
+        this.isInterceptUnkownScheme = agentBuilderFragment.isInterceptUnkownScheme;
+        if (agentBuilderFragment.openOtherApp != null) {
+            this.openOtherAppWays = agentBuilderFragment.openOtherApp.code;
+        }
         init();
         setDownloadListener(agentBuilderFragment.mDownLoadResultListeners, agentBuilderFragment.isParallelDownload, agentBuilderFragment.icon);
     }
@@ -348,7 +357,17 @@ public final class AgentWeb {
         if (!webClientHelper && AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
             return mWebViewClient;
         } else {
-            return new DefaultWebClient(mActivity, this.mWebViewClient, this.mWebViewClientCallbackManager, webClientHelper, mPermissionInterceptor, mWebCreator.get());
+            return DefaultWebClient
+                    .createBuilder()
+                    .setActivity(this.mActivity)
+                    .setClient(this.mWebViewClient)
+                    .setManager(this.mWebViewClientCallbackManager)
+                    .setWebClientHelper(this.webClientHelper)
+                    .setPermissionInterceptor(this.mPermissionInterceptor)
+                    .setWebView(this.mWebCreator.get())
+                    .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
+                    .setSchemeHandleType(this.openOtherAppWays)
+                    .build();
         }
 
     }

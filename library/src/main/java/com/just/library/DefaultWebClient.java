@@ -51,14 +51,14 @@ public class DefaultWebClient extends WrapperWebViewClient {
     public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
     private static final boolean hasAlipayLib;
     private static final String TAG = DefaultWebClient.class.getSimpleName();
-
     public static final int DERECT_OPEN_OTHER_APP = 1001;
     public static final int ASK_USER_OPEN_OTHER_APP = DERECT_OPEN_OTHER_APP >> 2;
     public static final int DISALLOW_OPEN_OTHER_APP = DERECT_OPEN_OTHER_APP >> 4;
-    public int scheme_handle_type = ASK_USER_OPEN_OTHER_APP;
-    private boolean is_intercept_unkown_scheme = true;
+    public int schemeHandleType = ASK_USER_OPEN_OTHER_APP;
+    private boolean isInterceptUnkownScheme = true;
     private WeakReference<AgentWebUIController> mAgentWebUIController = null;
     private WebView mWebView;
+    private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
 
     static {
         boolean tag = true;
@@ -72,7 +72,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
         LogUtils.i(TAG, "hasAlipayLib:" + hasAlipayLib);
     }
 
-
+    @Deprecated
     DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
         super(client);
         this.mWebView = webView;
@@ -91,8 +91,13 @@ public class DefaultWebClient extends WrapperWebViewClient {
         this.mWebViewClientCallbackManager = builder.manager;
         this.webClientHelper = builder.webClientHelper;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.webView));
-        is_intercept_unkown_scheme=builder.is_intercept_unkown_scheme;
-        scheme_handle_type=builder.scheme_handle_type;
+        isInterceptUnkownScheme = builder.isInterceptUnkownScheme;
+        if (builder.schemeHandleType <= 0) {
+            schemeHandleType = ASK_USER_OPEN_OTHER_APP;
+        } else {
+            schemeHandleType = builder.schemeHandleType;
+        }
+        this.mMsgCfg = builder.mCfg;
     }
 
     @Override
@@ -128,8 +133,8 @@ public class DefaultWebClient extends WrapperWebViewClient {
             LogUtils.i(TAG, "intercept OtherAppScheme");
             return true;
         }
-        if (is_intercept_unkown_scheme) {
-            LogUtils.i(TAG, "intercept is_intercept_unkown_scheme");
+        if (isInterceptUnkownScheme) {
+            LogUtils.i(TAG, "intercept isInterceptUnkownScheme");
             return true;
         }
 
@@ -141,8 +146,8 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     private boolean handleOtherAppScheme(String url) {
 
-        LogUtils.i(TAG, "scheme_handle_type:" + scheme_handle_type + "   :" + mAgentWebUIController.get() + " url:" + url);
-        switch (scheme_handle_type) {
+        LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
+        switch (schemeHandleType) {
 
             case DERECT_OPEN_OTHER_APP:
                 openOtherApp(url);
@@ -152,11 +157,9 @@ public class DefaultWebClient extends WrapperWebViewClient {
                     mAgentWebUIController.get()
                             .onAskOpenOtherApp(this.mWebView,
                                     mWebView.getUrl(),
-                                    "你需要离开"
-                                            + getApplicationName(mWebView.getContext())
-                                            + "前往其他应用吗?",
-                                    "离开",
-                                    "提示", getCallback(url));
+                                    String.format(mMsgCfg.getLeaveApp(), getApplicationName(mWebView.getContext())),
+                                    mMsgCfg.getConfirm(),
+                                    mMsgCfg.getTitle(), getCallback(url));
                 }
                 return true;
             default:
@@ -452,19 +455,26 @@ public class DefaultWebClient extends WrapperWebViewClient {
     }
 
 
-    public static class Builder{
+    public static Builder createBuilder() {
+        return new Builder();
+    }
 
-        //@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView
-
+    public static class Builder {
 
         private Activity activity;
         private WebViewClient client;
-        private  WebViewClientCallbackManager manager;
+        private WebViewClientCallbackManager manager;
         private boolean webClientHelper;
         private PermissionInterceptor permissionInterceptor;
         private WebView webView;
-        private boolean is_intercept_unkown_scheme;
-        private int scheme_handle_type;
+        private boolean isInterceptUnkownScheme;
+        private int schemeHandleType;
+        private DefaultMsgConfig.WebViewClientMsgCfg mCfg;
+
+        public Builder setCfg(DefaultMsgConfig.WebViewClientMsgCfg cfg) {
+            mCfg = cfg;
+            return this;
+        }
 
         public Builder setActivity(Activity activity) {
             this.activity = activity;
@@ -496,22 +506,27 @@ public class DefaultWebClient extends WrapperWebViewClient {
             return this;
         }
 
-        public Builder setIs_intercept_unkown_scheme(boolean is_intercept_unkown_scheme) {
-            this.is_intercept_unkown_scheme = is_intercept_unkown_scheme;
+        public Builder setInterceptUnkownScheme(boolean interceptUnkownScheme) {
+            this.isInterceptUnkownScheme = interceptUnkownScheme;
             return this;
         }
 
-        public Builder setScheme_handle_type(int scheme_handle_type) {
-            this.scheme_handle_type = scheme_handle_type;
+        public Builder setSchemeHandleType(int schemeHandleType) {
+            this.schemeHandleType = schemeHandleType;
             return this;
+        }
+
+        public DefaultWebClient build() {
+            return new DefaultWebClient(this);
         }
     }
 
-    static enum OpenOtherAppWays{
-        DERECT(DefaultWebClient.DERECT_OPEN_OTHER_APP),ASK(DefaultWebClient.ASK_USER_OPEN_OTHER_APP),DISALLOW(DefaultWebClient.DISALLOW_OPEN_OTHER_APP);
+    public static enum OpenOtherAppWays {
+        DERECT(DefaultWebClient.DERECT_OPEN_OTHER_APP), ASK(DefaultWebClient.ASK_USER_OPEN_OTHER_APP), DISALLOW(DefaultWebClient.DISALLOW_OPEN_OTHER_APP);
         int code;
-        OpenOtherAppWays(int code){
-            this.code=code;
+
+        OpenOtherAppWays(int code) {
+            this.code = code;
         }
     }
 }

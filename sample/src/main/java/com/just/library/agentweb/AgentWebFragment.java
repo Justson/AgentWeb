@@ -34,6 +34,7 @@ import com.just.library.AgentWeb;
 import com.just.library.AgentWebSettings;
 import com.just.library.ChromeClientCallbackManager;
 import com.just.library.DefaultMsgConfig;
+import com.just.library.DefaultWebClient;
 import com.just.library.DownLoadResultListener;
 import com.just.library.PermissionInterceptor;
 import com.just.library.WebDefaultSettingsManager;
@@ -91,6 +92,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download)
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
+                .interceptUnkownScheme()
                 .createAgentWeb()//创建AgentWeb
                 .ready()//设置 WebSettings
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
