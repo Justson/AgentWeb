@@ -222,7 +222,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
 
-            Log.i(TAG, "onReceivedError:" + 3 + "  request:" + description + "  errorResponse:" + failingUrl);
+            Log.i(TAG, "onReceivedError:" + errorCode + "  description:" + description + "  errorResponse:" + failingUrl);
         }
     };
 

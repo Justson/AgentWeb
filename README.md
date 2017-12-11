@@ -232,6 +232,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
 ```
 
 * #### AgentWeb 所依赖的库
