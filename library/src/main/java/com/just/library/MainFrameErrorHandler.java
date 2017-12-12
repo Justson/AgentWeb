@@ -5,4 +5,7 @@ package com.just.library;
  */
 
 public interface MainFrameErrorHandler {
+
+
+
 }

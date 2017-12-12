@@ -115,7 +115,7 @@ public class WrapperWebViewClient extends WebViewClient {
     }
 
 
-
+    @Deprecated
     public void onReceivedError(WebView view, int errorCode,
                                 String description, String failingUrl) {
 
