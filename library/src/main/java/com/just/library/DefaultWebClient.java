@@ -444,7 +444,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
     private Handler.Callback mCallback = null;
 
-    public Handler.Callback getCallback(final String url) {
+    private Handler.Callback getCallback(final String url) {
         if (this.mCallback != null) {
             return this.mCallback;
         }
