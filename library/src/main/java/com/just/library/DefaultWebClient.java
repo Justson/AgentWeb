@@ -164,7 +164,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
     }
 
-    public String getApplicationName(Context context) {
+    private String getApplicationName(Context context) {
         PackageManager packageManager = null;
         ApplicationInfo applicationInfo = null;
         try {
