@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
@@ -137,6 +138,9 @@ public class DefaultWebCreator implements WebCreator {
         mFrameLayout.addView(target, mLayoutParams);
         mFrameLayout.bindWebView(this.mWebView);
         LogUtils.i(TAG, "    webView:" + (this.mWebView instanceof AgentWebView));
+        ViewStub mViewStub=new ViewStub(mActivity);
+        mViewStub.setId(R.id.mainframe_error_viewsub_id);
+        mFrameLayout.addView(mViewStub,new FrameLayout.LayoutParams(-1,-1));
         if (isNeedDefaultProgress) {
             FrameLayout.LayoutParams lp = null;
             WebProgress mWebProgress = new WebProgress(mActivity);

@@ -2,6 +2,7 @@ package com.just.library;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -28,7 +29,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     public WebParentLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         if (!(context instanceof Activity)) {
-            throw new IllegalArgumentException("WebParentLayout context must be activity or activity sub class");
+            throw new IllegalArgumentException("WebParentLayout context must be activity or activity sub class .");
         }
     }
 
@@ -38,6 +39,9 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         this.mAgentWebUIController.bindWebParent(this, (Activity) getContext());
     }
 
+    public void showPagerMainFrameError(@LayoutRes int layoutRes){
+
+    }
 
     @Override
     public AgentWebUIController provide() {
@@ -46,7 +50,9 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 
 
     void bindWebView(WebView view){
-        this.mWebView =view;
+        if(this.mWebView==null){
+            this.mWebView =view;
+        }
     }
     public WebView getWebView(){
         return this.mWebView;

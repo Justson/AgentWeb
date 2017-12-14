@@ -2,4 +2,5 @@
 <resources>
     <item name="web_parent_layout_id" type="id"></item>
     <item name="agentweb_webview_id" type="id"></item>
+    <item name="mainframe_error_viewsub_id" type="id"></item>
 </resources>
