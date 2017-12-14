@@ -25,6 +25,7 @@ import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
     private WebView mWebView;
     private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
     private Handler.Callback mCallback = null;
+    private WebParentLayout mWebParentLayout;
 
     static {
         boolean tag = true;
@@ -96,6 +98,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
             schemeHandleType = builder.schemeHandleType;
         }
         this.mMsgCfg = builder.mCfg;
+        this.mWebParentLayout=AgentWebUtils.getWebParentLayoutByWebView(mWebView);
     }
 
     @Override
@@ -381,7 +384,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
         if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", WEBVIEWCLIENTPATH + ".onReceivedError", WebView.class, int.class, String.class, String.class)) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            return;
+//            return;
         }
         LogUtils.i(TAG, "onReceivedError：" + description + "  CODE:" + errorCode);
         onMainFrameError(view,errorCode,description,failingUrl);
@@ -393,7 +396,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 
         if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", WEBVIEWCLIENTPATH + ".onReceivedError", WebView.class, WebResourceRequest.class, WebResourceError.class)) {
             super.onReceivedError(view, request, error);
-            return;
+//            return;
         }
         if (request.isForMainFrame()) {
             onMainFrameError(view,
@@ -402,12 +405,25 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
         LogUtils.i(TAG, "onReceivedError:" + error.toString());
     }
+    private Method onMainFrameErrorMethod=null;
     //
     private void onMainFrameError(WebView view,int errorCode,String description,String failingUrl){
-
-        if(this.mWebViewClient!=null){
-            return;
+        LogUtils.i(TAG,"onMainFrameError:"+failingUrl);
+        WebParentLayout mWebParentLayout=AgentWebUtils.getWebParentLayoutByWebView(view);
+        if(this.mWebViewClient!=null&&webClientHelper){  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
+            Method mMethod=this.onMainFrameErrorMethod;
+            if (mMethod!=null||(this.onMainFrameErrorMethod=mMethod=AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", WebParentLayout.class, WebView.class, WebResourceRequest.class, WebResourceError.class))!=null) {
+                try {
+                    mMethod.invoke(mWebViewClient,mWebParentLayout,view,errorCode,description,failingUrl);
+                }catch (Throwable ignore){
+                    if(LogUtils.isDebug()){
+                        ignore.printStackTrace();
+                    }
+                }
+                return;
+            }
         }
+        mWebParentLayout.showPageMainFrameError(R.layout.agentweb_error_page);
 
     }
 
@@ -415,6 +431,10 @@ public class DefaultWebClient extends WrapperWebViewClient {
     public void onPageFinished(WebView view, String url) {
         if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClientCallbackManager.getPageLifeCycleCallback() != null) {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
+        }
+
+        if(this.mWebParentLayout!=null){
+            this.mWebParentLayout.onPageFinished(mWebView,url);
         }
         super.onPageFinished(view, url);
 

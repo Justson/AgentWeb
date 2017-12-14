@@ -392,6 +392,22 @@ public class AgentWebUtils {
         return tag;
     }
 
+    static Method isExistMethod(Object o, String methodName, Class... clazzs) {
+
+        if (null == o) {
+            return null;
+        }
+        try {
+            Class clazz = o.getClass();
+            return clazz.getMethod(methodName, clazz);
+        } catch (Throwable ignore) {
+            if (LogUtils.isDebug()) {
+                ignore.printStackTrace();
+            }
+        }
+        return null;
+
+    }
 
     static void clearAgentWebCache(Context context) {
         try {
@@ -847,15 +863,15 @@ public class AgentWebUtils {
     }
 
     @Deprecated
-    static void getUIControllerAndShowMessage(Activity activity , String message , String from){
+    static void getUIControllerAndShowMessage(Activity activity, String message, String from) {
 
-        if(activity==null||activity.isFinishing()){
+        if (activity == null || activity.isFinishing()) {
             return;
         }
         WebParentLayout mWebParentLayout = (WebParentLayout) activity.findViewById(R.id.web_parent_layout_id);
         AgentWebUIController mAgentWebUIController = mWebParentLayout.provide();
-        if(mAgentWebUIController!=null){
-            mAgentWebUIController.showMessage(message,from);
+        if (mAgentWebUIController != null) {
+            mAgentWebUIController.showMessage(message, from);
         }
     }
 
@@ -895,7 +911,11 @@ public class AgentWebUtils {
 
 
     static AgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
+        WebParentLayout mWebParentLayout = getWebParentLayoutByWebView(webView);
+        return mWebParentLayout.provide();
+    }
 
+    static WebParentLayout getWebParentLayoutByWebView(WebView webView) {
         ViewGroup mViewGroup = null;
         if (!(webView.getParent() instanceof ViewGroup)) {
             throw new IllegalStateException("please check webcreator's create method was be called ?");
@@ -908,7 +928,7 @@ public class AgentWebUtils {
             if (mViewGroup.getId() == R.id.web_parent_layout_id) {
                 WebParentLayout mWebParentLayout = (WebParentLayout) mViewGroup;
                 LogUtils.i(TAG, "found WebParentLayout");
-                return mWebParentLayout.provide();
+                return mWebParentLayout;
             } else {
                 ViewParent mViewParent = mViewGroup.getParent();
                 if (mViewParent instanceof ViewGroup) {
@@ -919,7 +939,6 @@ public class AgentWebUtils {
             }
         }
         throw new IllegalStateException("please check webcreator's create method was be called ?");
-
     }
 
     static void runInUiThread(Runnable runnable) {
