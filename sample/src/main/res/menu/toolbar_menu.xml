@@ -20,6 +20,12 @@
         android:title="清空缓存"
         android:visible="false"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/error_website"
+        android:title="显示错误页"
+        android:visible="true"
+        app:showAsAction="never"/>
     <item
         android:id="@+id/default_browser"
         android:title="在浏览器打开"

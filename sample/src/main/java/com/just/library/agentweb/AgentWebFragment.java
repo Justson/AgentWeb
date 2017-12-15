@@ -1,6 +1,7 @@
 package com.just.library.agentweb;
 
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -57,6 +58,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private ImageView mMoreImageView;
     private PopupMenu mPopupMenu;
     public static final String TAG = AgentWebFragment.class.getSimpleName();
+    private AlertDialog mInputWebSiteDialog;
 
     public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -147,7 +149,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         if (TextUtils.isEmpty(target = this.getArguments().getString(URL_KEY))) {
             target = "http://www.jd.com";
         }
-        return "http://www.jsdadsdad.com";
+        return target;
     }
 
     protected ChromeClientCallbackManager.ReceivedTitleCallback mCallback = new ChromeClientCallbackManager.ReceivedTitleCallback() {
@@ -336,12 +338,21 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 case R.id.default_clean:
                     toCleanWebCache();
                     return true;
+                case R.id.error_website:
+                    loadErrorWebSite();
+                    return true;
                 default:
                     return false;
             }
 
         }
     };
+    //这里用于测试错误页的显示
+    private void loadErrorWebSite() {
+        if(mAgentWeb!=null){
+            mAgentWeb.getLoader().loadUrl("http://unkownwebsite.me");
+        }
+    }
 
     //清除 WebView 缓存
     private void toCleanWebCache() {

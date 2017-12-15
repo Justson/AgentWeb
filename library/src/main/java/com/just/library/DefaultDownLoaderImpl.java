@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
@@ -176,7 +178,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
 
         if (ExecuteTasksMap.getInstance().contains(url)) {
-            if(mAgentWebUIController.get()!=null){
+            if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
                         mDownLoadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
             }
@@ -271,13 +273,48 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             if (filename.length() > 64) {
                 filename = filename.substring(filename.length() - 64, filename.length());
             }
-            LogUtils.i(TAG, "filename:" + filename);
+            LogUtils.i(TAG, "filename:" + filename+"   contentDisposition:"+contentDisposition);
             return AgentWebUtils.createFileByName(mContext, filename, false);
+
+
+           /* String fileName = getFileName(contentDisposition);
+            if (TextUtils.isEmpty(fileName)) {
+                fileName = url.substring(url.lastIndexOf('/') + 1);
+            }
+            if (fileName.startsWith("\"")) {
+                fileName = fileName.substring(1);
+            }
+            if (fileName.endsWith("\"")) {
+                fileName = fileName.substring(0, fileName.length() - 1);
+            }
+
+            if (TextUtils.isEmpty(fileName)) {
+                fileName = AgentWebUtils.md5(url);
+            }
+            LogUtils.i(TAG, "======> download file name:" + fileName);
+            if (fileName.length() > 64) {
+                fileName = fileName.substring(fileName.length() - 64, fileName.length());
+            }
+            LogUtils.i(TAG, "filename:" + fileName);
+            return AgentWebUtils.createFileByName(mContext, fileName, false);
+*/
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return null;
+    }
+
+    private String getFileName(String contentDisposition) {
+        if (TextUtils.isEmpty(contentDisposition)) {
+            return "";
+        }
+        Matcher m = Pattern.compile(".*filename=(.*)").matcher(contentDisposition.toLowerCase());
+        if (m.find()) {
+            return m.group(1);
+        } else {
+            return "";
+        }
     }
 
     @Override
@@ -290,7 +327,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             return;
         }
         for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
-            if(mDownLoadResultListener!=null){
+            if (mDownLoadResultListener != null) {
                 mDownLoadResultListener.success(path);
             }
         }
@@ -303,7 +340,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         ExecuteTasksMap.getInstance().removeTask(path);
 
         if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
-            if(mAgentWebUIController.get()!=null){
+            if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(mDownLoadMsgConfig.getDownLoadFail(), TAG.concat("|error"));
             }
             return;

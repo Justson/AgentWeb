@@ -43,8 +43,8 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private Notify mNotify;
 
     private static final int ERROR_LOAD = 406;
-    
-    private static final String TAG=RealDownLoader.class.getSimpleName();
+
+    private static final String TAG = RealDownLoader.class.getSimpleName();
 
 
     private AtomicBoolean atomic = new AtomicBoolean(false);
@@ -94,7 +94,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     }
 
 
-
     @Override
     protected Integer doInBackground(Void... params) {
         int result = ERROR_LOAD;
@@ -128,10 +127,11 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
         }
         try {
             mHttpURLConnection.connect();
-            if (mHttpURLConnection.getResponseCode() != 200 && mHttpURLConnection.getResponseCode() != 206) {
+            boolean isSeek = false;
+            if (mHttpURLConnection.getResponseCode() != 200 && mHttpURLConnection.getResponseCode() != 206 && (isSeek = true)) {
                 return DownLoadMsg.NETWORK_ERROR_STATUS_CODE.CODE;
             }
-            return doDownLoad(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownLoadTask.getFile()));
+            return doDownLoad(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownLoadTask.getFile()), isSeek);
         } finally {
             if (mHttpURLConnection != null)
                 mHttpURLConnection.disconnect();
@@ -217,7 +217,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     private void doCallback(Integer code) {
         DownLoadResultListener mDownLoadResultListener = null;
         if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
-            LogUtils.e(TAG,"DownLoadResultListener has been death");
+            LogUtils.e(TAG, "DownLoadResultListener has been death");
             DefaultDownLoaderImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
             return;
         }
@@ -260,13 +260,16 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     }
 
 
-    private int doDownLoad(InputStream in, RandomAccessFile out) throws IOException {
+    private int doDownLoad(InputStream in, RandomAccessFile out, boolean isSeek) throws IOException {
 
         byte[] buffer = new byte[10240];
         BufferedInputStream bis = new BufferedInputStream(in, 1024 * 10);
         try {
 
-            out.seek(out.length());
+            if (isSeek) {
+                LogUtils.i(TAG, "seek -- >" + isSeek + "  length:" + out.length());
+                out.seek(out.length());
+            }
 
             int bytes = 0;
             long previousBlockTime = -1;
@@ -370,7 +373,6 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
             }
         }
-
 
 
     }

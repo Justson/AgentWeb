@@ -116,6 +116,11 @@ public class CommonActivity extends AppCompatActivity {
                 ft.add(R.id.container_framelayout, mAgentWebFragment = SmartRefreshWebFragment.getInstance(mBundle = new Bundle()), SmartRefreshWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://www.163.com/");
                 break;
+                /*地图*/
+            case 13:
+                ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                mBundle.putString(AgentWebFragment.URL_KEY, "http://ditu.amap.com/?amapexchange=%2F");
+                break;
 
         }
         ft.commit();
