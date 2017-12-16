@@ -26,9 +26,8 @@ import com.just.agentweb.DefaultWebClient;
 /**
  * Created by cenxiaozhong on 2017/5/26.
  *
- * source CODE  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  *
- * <p>
  */
 
 public class BaseWebActivity extends AppCompatActivity {
@@ -76,10 +75,10 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
-                .composeWebViewClientBase(new SonicWebViewClient())
-                .composeWebViewClientBase(new SonicWebViewClient())
-                .composeWebViewClientBase(new SonicWebViewClient())
-                .composeWebChromeClientBase(new MiddleWareChromeClient())
+//                .composeWebViewClientBase(new SonicWebViewClient()) //测试 WebViewClient 中间件
+//                .composeWebViewClientBase(new SonicWebViewClient())//测试 WebViewClient 中间件
+//                .composeWebViewClientBase(new SonicWebViewClient())//测试 WebViewClient 中间件
+//                .composeWebChromeClientBase(new MiddleWareChromeClient())//测试 WareChromeClient 中间件
                 .setMainFrameErrorView(R.layout.agentweb_error_page,-1)
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .setWebLayout(new WebLayout(this))
