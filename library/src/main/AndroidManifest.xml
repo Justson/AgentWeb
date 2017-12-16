@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.just.library"
+          package="com.just.agentweb"
     >
 
     <application
@@ -9,7 +9,7 @@
         >
 
         <provider
-            android:name=".AgentWebFileProvider"
+            android:name="com.just.agentweb.AgentWebFileProvider"
             android:authorities="${applicationId}.AgentWebFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -18,7 +18,7 @@
                 android:resource="@xml/web_files_paths"/>
         </provider>
         <activity
-            android:name=".ActionActivity"
+            android:name="com.just.agentweb.ActionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="standard"
             android:screenOrientation="portrait"
@@ -29,7 +29,7 @@
         </activity>
 
 
-        <receiver android:name=".RealDownLoader$NotificationBroadcastReceiver"></receiver>
+        <receiver android:name="com.just.agentweb.RealDownLoader$NotificationBroadcastReceiver"></receiver>
     </application>
 
 </manifest>
