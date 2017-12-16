@@ -243,7 +243,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private File getFile(String contentDisposition, String url) {
 
         try {
-            String filename = "";
+           /* String filename = "";
             if (!TextUtils.isEmpty(contentDisposition) && contentDisposition.contains("filename") && !contentDisposition.endsWith("filename")) {
 
                 int position = contentDisposition.indexOf("filename");
@@ -274,10 +274,10 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                 filename = filename.substring(filename.length() - 64, filename.length());
             }
             LogUtils.i(TAG, "filename:" + filename+"   contentDisposition:"+contentDisposition);
-            return AgentWebUtils.createFileByName(mContext, filename, false);
+            return AgentWebUtils.createFileByName(mContext, filename, false);*/
 
 
-           /* String fileName = getFileName(contentDisposition);
+            String fileName = getFileName(contentDisposition);
             if (TextUtils.isEmpty(fileName)) {
                 fileName = url.substring(url.lastIndexOf('/') + 1);
             }
@@ -297,7 +297,6 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             }
             LogUtils.i(TAG, "filename:" + fileName);
             return AgentWebUtils.createFileByName(mContext, fileName, false);
-*/
         } catch (Exception e) {
             e.printStackTrace();
         }
