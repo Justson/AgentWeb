@@ -96,6 +96,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .composeWebViewClientBase(new SonicWebViewClient())
                 .composeWebViewClientBase(new SonicWebViewClient())
                 .composeWebChromeClientBase(new MiddleWareChromeClient())
+                .setMainFrameErrorView(R.layout.agentweb_error_page,-1)
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download) //下载图标
                 .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用

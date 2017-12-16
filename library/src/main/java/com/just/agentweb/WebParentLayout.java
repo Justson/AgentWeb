@@ -2,7 +2,8 @@ package com.just.agentweb;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -20,9 +21,13 @@ import android.widget.FrameLayout;
 public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIController> {
     private AgentWebUIController mAgentWebUIController = null;
     private String TAG = this.getClass().getSimpleName();
+    @LayoutRes
     private int errorLayoutRes;
+    @IdRes
+    private int clickId = -1;
     private View errorView;
     private WebView mWebView;
+
     public WebParentLayout(@NonNull Context context) {
         this(context, null);
     }
@@ -44,7 +49,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         this.mAgentWebUIController.bindWebParent(this, (Activity) getContext());
     }
 
-    public void showPageMainFrameError() {
+    void showPageMainFrameError() {
 
         View container = this.findViewById(R.id.mainframe_error_container_id);
         if (container != null) {
@@ -58,7 +63,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         ViewStub mViewStub = (ViewStub) this.findViewById(R.id.mainframe_error_viewsub_id);
         final FrameLayout mFrameLayout = new FrameLayout(getContext());
         mFrameLayout.setId(R.id.mainframe_error_container_id);
-        if(this.errorView==null){
+        if (this.errorView == null) {
             LayoutInflater mLayoutInflater = LayoutInflater.from(getContext());
             mLayoutInflater.inflate(errorLayoutRes, mFrameLayout, true);
             final int index = this.indexOfChild(mViewStub);
@@ -69,28 +74,54 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
             } else {
                 this.addView(mFrameLayout, index);
             }
-        }else{
+        } else {
             mFrameLayout.addView(errorView);
         }
 
         mFrameLayout.setVisibility(View.VISIBLE);
-        mFrameLayout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getWebView() != null) {
-                    getWebView().reload();
-                }
+        if (clickId != -1) {
+            mFrameLayout.findViewById(clickId)
+                    .setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (getWebView() != null) {
+                                getWebView().reload();
+                            }
+                        }
+                    });
+        } else {
 
-            }
-        });
+            mFrameLayout.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getWebView() != null) {
+                        getWebView().reload();
+                    }
+
+                }
+            });
+        }
     }
 
-    public void hidePageMainFrameError(){
-        View mView=null;
-        if((mView=this.findViewById(R.id.mainframe_error_container_id))!=null){
+    void hidePageMainFrameError() {
+        View mView = null;
+        if ((mView = this.findViewById(R.id.mainframe_error_container_id)) != null) {
             mView.setVisibility(View.GONE);
         }
     }
+
+    void setErrorView(@NonNull View errorView) {
+        this.errorView = errorView;
+    }
+
+    void setErrorLayoutRes(@LayoutRes int resLayout, @IdRes int id) {
+        this.clickId = id;
+        if (this.clickId <= 0) {
+            this.clickId = -1;
+        }
+        this.errorLayoutRes = resLayout;
+    }
+
     @Override
     public AgentWebUIController provide() {
         return this.mAgentWebUIController;
@@ -107,14 +138,5 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         return this.mWebView;
     }
 
-    @Override
-    public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-    }
-
-    @Override
-    public void onPageFinished(WebView view, String url) {
-        LogUtils.i(TAG,"webparentlayout onPageFinished:"+url);
-            hidePageMainFrameError();
-    }
 }

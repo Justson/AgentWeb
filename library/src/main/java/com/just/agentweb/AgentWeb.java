@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +13,7 @@ import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
@@ -125,6 +128,10 @@ public final class AgentWeb {
         if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
             mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilderFragment.mAgentWebUIController);
+            mWebParentLayout.hidePageMainFrameError();
+
+            mWebParentLayout.setErrorLayoutRes(agentBuilderFragment.errorLayout,agentBuilderFragment.reloadId);
+            mWebParentLayout.setErrorView(agentBuilderFragment.errorView);
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
@@ -829,6 +836,9 @@ public final class AgentWeb {
 
         private MiddleWareWebChromeBase mChromeMiddleWareHeader = null;
         private MiddleWareWebChromeBase mChromeMiddleWareTail = null;
+        private View errorView;
+        private int errorLayout;
+        private int reloadId;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -958,6 +968,16 @@ public final class AgentWeb {
                 this.mAgentBuilderFragment.mChromeMiddleWareTail.enq(middleWareWebChromeBase);
                 this.mAgentBuilderFragment.mChromeMiddleWareTail = middleWareWebChromeBase;
             }
+            return this;
+        }
+
+        public CommonBuilderForFragment setMainFrameErrorView(@NonNull View view){
+            this.mAgentBuilderFragment.errorView=view;
+            return this;
+        }
+        public CommonBuilderForFragment setMainFrameErrorView(@LayoutRes int errorLayout,@IdRes int reloadId){
+            this.mAgentBuilderFragment.errorLayout=errorLayout;
+            this.mAgentBuilderFragment.reloadId=reloadId;
             return this;
         }
 
