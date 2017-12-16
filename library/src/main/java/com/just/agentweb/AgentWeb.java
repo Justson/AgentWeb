@@ -89,6 +89,9 @@ public final class AgentWeb {
         if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
             mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilder.mAgentWebUIController);
+
+            mWebParentLayout.setErrorLayoutRes(agentBuilder.errorLayout,agentBuilder.reloadId);
+            mWebParentLayout.setErrorView(agentBuilder.errorView);
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
         this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
@@ -98,6 +101,8 @@ public final class AgentWeb {
         if (agentBuilder.openOtherApp != null) {
             this.openOtherAppWays = agentBuilder.openOtherApp.code;
         }
+        this.mMiddleWrareWebClientBaseHeader = agentBuilder.header;
+        this.mMiddleWareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
         init();
         setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
@@ -128,7 +133,6 @@ public final class AgentWeb {
         if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
             mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilderFragment.mAgentWebUIController);
-            mWebParentLayout.hidePageMainFrameError();
 
             mWebParentLayout.setErrorLayoutRes(agentBuilderFragment.errorLayout,agentBuilderFragment.reloadId);
             mWebParentLayout.setErrorView(agentBuilderFragment.errorView);
@@ -519,6 +523,15 @@ public final class AgentWeb {
         private DefaultWebClient.OpenOtherAppWays openOtherApp = null;
         private boolean isInterceptUnkownScheme = false;
 
+        private MiddleWareWebClientBase header;
+        private MiddleWareWebClientBase tail;
+
+        private MiddleWareWebChromeBase mChromeMiddleWareHeader = null;
+        private MiddleWareWebChromeBase mChromeMiddleWareTail = null;
+        private View errorView;
+        private int errorLayout;
+        private int reloadId;
+
         private void addJavaObject(String key, Object o) {
             if (mJavaObject == null)
                 mJavaObject = new ArrayMap<>();
@@ -758,6 +771,38 @@ public final class AgentWeb {
             return this;
         }
 
+        public CommonAgentBuilder composeWebViewClientBase(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
+
+            if (this.mAgentBuilder.header == null) {
+                this.mAgentBuilder.header = this.mAgentBuilder.tail = middleWrareWebClientBase;
+            } else {
+                this.mAgentBuilder.tail.enq(middleWrareWebClientBase);
+                this.mAgentBuilder.tail = middleWrareWebClientBase;
+            }
+            return this;
+        }
+
+        public CommonAgentBuilder composeWebChromeClientBase(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
+
+            if (this.mAgentBuilder.mChromeMiddleWareHeader == null) {
+                this.mAgentBuilder.mChromeMiddleWareHeader = this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
+            } else {
+                this.mAgentBuilder.mChromeMiddleWareTail.enq(middleWareWebChromeBase);
+                this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
+            }
+            return this;
+        }
+
+        public CommonAgentBuilder setMainFrameErrorView(@NonNull View view){
+            this.mAgentBuilder.errorView=view;
+            return this;
+        }
+        public CommonAgentBuilder setMainFrameErrorView(@LayoutRes int errorLayout,@IdRes int reloadId){
+            this.mAgentBuilder.errorLayout=errorLayout;
+            this.mAgentBuilder.reloadId=reloadId;
+            return this;
+        }
+
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -833,7 +878,6 @@ public final class AgentWeb {
         private boolean isInterceptUnkownScheme = false;
         private MiddleWareWebClientBase header;
         private MiddleWareWebClientBase tail;
-
         private MiddleWareWebChromeBase mChromeMiddleWareHeader = null;
         private MiddleWareWebChromeBase mChromeMiddleWareTail = null;
         private View errorView;

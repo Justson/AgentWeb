@@ -76,6 +76,11 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
+                .composeWebViewClientBase(new SonicWebViewClient())
+                .composeWebViewClientBase(new SonicWebViewClient())
+                .composeWebViewClientBase(new SonicWebViewClient())
+                .composeWebChromeClientBase(new MiddleWareChromeClient())
+                .setMainFrameErrorView(R.layout.agentweb_error_page,-1)
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .setWebLayout(new WebLayout(this))
                 .openParallelDownload()//打开并行下载 , 默认串行下载
