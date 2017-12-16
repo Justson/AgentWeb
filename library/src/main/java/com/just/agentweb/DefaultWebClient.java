@@ -28,6 +28,8 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * source code  https://github.com/Justson/AgentWeb
@@ -56,8 +58,8 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private WebView mWebView;
     private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
     private Handler.Callback mCallback = null;
-    private WebParentLayout mWebParentLayout;
     private Method onMainFrameErrorMethod = null;
+    private Set<String> mErrorUrls=new CopyOnWriteArraySet<>();
 
     static {
         boolean tag = true;
@@ -99,7 +101,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             schemeHandleType = builder.schemeHandleType;
         }
         this.mMsgCfg = builder.mCfg;
-        this.mWebParentLayout = AgentWebUtils.getWebParentLayoutByWebView(mWebView);
     }
 
     @Override
@@ -346,6 +347,9 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 return true;
             }
         } catch (Throwable ignore) {
+            if(AgentWebConfig.DEBUG){
+                ignore.printStackTrace();
+            }
 
         }
         return false;
@@ -362,6 +366,9 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 intent.setData(Uri.parse(url));
                 mActivity.startActivity(intent);
             } catch (ActivityNotFoundException ignored) {
+                if(AgentWebConfig.DEBUG){
+                    ignored.printStackTrace();
+                }
             }
             return true;
         }
@@ -410,12 +417,11 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     //
     private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
         LogUtils.i(TAG, "onMainFrameError:" + failingUrl);
-        WebParentLayout mWebParentLayout = AgentWebUtils.getWebParentLayoutByWebView(view);
         if (this.mWebViewClient != null && webClientHelper) {  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
             Method mMethod = this.onMainFrameErrorMethod;
             if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, WebResourceRequest.class, WebResourceError.class)) != null) {
                 try {
-                    mMethod.invoke(mWebViewClient, mWebParentLayout.provide(), view, errorCode, description, failingUrl);
+                    mMethod.invoke(mWebViewClient, mAgentWebUIController.get(), view, errorCode, description, failingUrl);
                 } catch (Throwable ignore) {
                     if (LogUtils.isDebug()) {
                         ignore.printStackTrace();
@@ -424,8 +430,12 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 return;
             }
         }
-        mWebParentLayout.showPageMainFrameError(R.layout.agentweb_error_page);
+        mErrorUrls.add(failingUrl);
+       if(mAgentWebUIController.get()!=null){
+            mAgentWebUIController.get().onMainFrameError(view,errorCode,description,failingUrl);
+       }
     }
+
 
     @Override
     public void onPageFinished(WebView view, String url) {
@@ -433,8 +443,11 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
         }
 
-        if (this.mWebParentLayout != null) {
-            this.mWebParentLayout.onPageFinished(mWebView, url);
+        if(!mErrorUrls.contains(url)){
+            if(mAgentWebUIController.get()!=null){
+                mAgentWebUIController.get().onShowMainFrame();
+            }
+            mErrorUrls.clear();
         }
         super.onPageFinished(view, url);
 

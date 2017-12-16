@@ -77,6 +77,9 @@ public abstract class AgentWebUIController {
 
     public abstract void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult);
 
+    public abstract void onMainFrameError(WebView view, int errorCode, String description, String failingUrl);
+
+    public abstract void onShowMainFrame();
     /**
      * @param message 消息
      * @param intent 意图 ，说明message的来源

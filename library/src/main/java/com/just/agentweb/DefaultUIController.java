@@ -224,6 +224,16 @@ public class DefaultUIController extends AgentWebUIController {
     }
 
     @Override
+    public void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
+
+    }
+
+    @Override
+    public void onShowMainFrame() {
+
+    }
+
+    @Override
     public void showMessage(String message, String from) {
         AgentWebUtils.toastShowShort(mActivity.getApplicationContext(), message);
     }

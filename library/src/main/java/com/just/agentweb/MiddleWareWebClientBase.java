@@ -33,7 +33,7 @@ public class MiddleWareWebClientBase extends WrapperWebViewClient {
         super.setWebViewClient(webViewClient);
 
     }
-    public MiddleWareWebClientBase enq(MiddleWareWebClientBase middleWrareWebClientBase){
+     MiddleWareWebClientBase enq(MiddleWareWebClientBase middleWrareWebClientBase){
         setWebViewClient(middleWrareWebClientBase);
         this.mMiddleWrareWebClientBase = middleWrareWebClientBase;
         return middleWrareWebClientBase;

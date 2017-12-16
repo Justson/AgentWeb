@@ -99,6 +99,7 @@ public final class AgentWeb {
         setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
+    private MiddleWareWebChromeBase mMiddleWareWebChromeBaseHeader;
 
     private AgentWeb(AgentBuilderFragment agentBuilderFragment) {
         TAG_TARGET = FRAGMENT_TAG;
@@ -133,6 +134,7 @@ public final class AgentWeb {
             this.openOtherAppWays = agentBuilderFragment.openOtherApp.code;
         }
         this.mMiddleWrareWebClientBaseHeader = agentBuilderFragment.header;
+        this.mMiddleWareWebChromeBaseHeader = agentBuilderFragment.mChromeMiddleWareHeader;
         init();
         setDownloadListener(agentBuilderFragment.mDownLoadResultListeners, agentBuilderFragment.isParallelDownload, agentBuilderFragment.icon);
     }
@@ -343,13 +345,62 @@ public final class AgentWeb {
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
 
-        return this.mTargetChromeClient = new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
+        DefaultChromeClient mDefaultChromeClient =
+                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
+
+        MiddleWareWebChromeBase header = this.mMiddleWareWebChromeBaseHeader;
+        if (header != null) {
+            MiddleWareWebChromeBase tail = header;
+            int count = 1;
+            MiddleWareWebChromeBase tmp = header;
+            while (tmp.next() != null) {
+                tail = tmp = tmp.next();
+                count++;
+            }
+            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
+            tail.setWebChromeClient(mDefaultChromeClient);
+            return this.mTargetChromeClient = header;
+        } else {
+            return this.mTargetChromeClient = mDefaultChromeClient;
+        }
     }
 
     private IVideo getIVideo() {
         return mIVideo == null ? new VideoImpl(mActivity, mWebCreator.get()) : mIVideo;
     }
 
+    private WebViewClient getWebViewClient() {
+
+        LogUtils.i(TAG, "getWebViewClient:" + this.mMiddleWrareWebClientBaseHeader);
+        DefaultWebClient mDefaultWebClient = DefaultWebClient
+                .createBuilder()
+                .setActivity(this.mActivity)
+                .setClient(this.mWebViewClient)
+                .setManager(this.mWebViewClientCallbackManager)
+                .setWebClientHelper(this.webClientHelper)
+                .setPermissionInterceptor(this.mPermissionInterceptor)
+                .setWebView(this.mWebCreator.get())
+                .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
+                .setSchemeHandleType(this.openOtherAppWays)
+                .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
+                .build();
+        MiddleWareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
+        if (header != null) {
+            MiddleWareWebClientBase tail = header;
+            int count = 1;
+            MiddleWareWebClientBase tmp = header;
+            while (tmp.next() != null) {
+                tail = tmp = tmp.next();
+                count++;
+            }
+            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
+            tail.setWebViewClient(mDefaultWebClient);
+            return header;
+        } else {
+            return mDefaultWebClient;
+        }
+
+    }
 
     public JsInterfaceHolder getJsInterfaceHolder() {
         return this.mJsInterfaceHolder;
@@ -376,40 +427,6 @@ public final class AgentWeb {
                     .build();
         }
 
-
-    }
-
-    private WebViewClient getWebViewClient() {
-
-        LogUtils.i(TAG,"getWebViewClient:"+this.mMiddleWrareWebClientBaseHeader);
-        DefaultWebClient mDefaultWebClient = DefaultWebClient
-                .createBuilder()
-                .setActivity(this.mActivity)
-                .setClient(this.mWebViewClient)
-                .setManager(this.mWebViewClientCallbackManager)
-                .setWebClientHelper(this.webClientHelper)
-                .setPermissionInterceptor(this.mPermissionInterceptor)
-                .setWebView(this.mWebCreator.get())
-                .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
-                .setSchemeHandleType(this.openOtherAppWays)
-                .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
-                .build();
-        MiddleWareWebClientBase header=this.mMiddleWrareWebClientBaseHeader;
-        if(header!=null){
-            MiddleWareWebClientBase tail = header;
-            int count=1;
-            MiddleWareWebClientBase tmp=header;
-            while (tmp.next() != null) {
-                tail = tmp = tmp.next();
-                count++;
-            }
-            LogUtils.i(TAG,"Middleware count:"+count);
-            tail.setWebViewClient(mDefaultWebClient);
-            LogUtils.i(TAG,"tail:"+tail);
-            return header;
-        }else{
-            return mDefaultWebClient;
-        }
 
     }
 
@@ -810,6 +827,9 @@ public final class AgentWeb {
         private MiddleWareWebClientBase header;
         private MiddleWareWebClientBase tail;
 
+        private MiddleWareWebChromeBase mChromeMiddleWareHeader = null;
+        private MiddleWareWebChromeBase mChromeMiddleWareTail = null;
+
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
             mActivity = activity;
@@ -921,11 +941,22 @@ public final class AgentWeb {
 
         public CommonBuilderForFragment composeWebViewClientBase(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
 
-            if(this.mAgentBuilderFragment.header==null){
-                this.mAgentBuilderFragment.header = this.mAgentBuilderFragment.tail= middleWrareWebClientBase;
-            }else{
+            if (this.mAgentBuilderFragment.header == null) {
+                this.mAgentBuilderFragment.header = this.mAgentBuilderFragment.tail = middleWrareWebClientBase;
+            } else {
                 this.mAgentBuilderFragment.tail.enq(middleWrareWebClientBase);
-                this.mAgentBuilderFragment.tail= middleWrareWebClientBase;
+                this.mAgentBuilderFragment.tail = middleWrareWebClientBase;
+            }
+            return this;
+        }
+
+        public CommonBuilderForFragment composeWebChromeClientBase(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
+
+            if (this.mAgentBuilderFragment.mChromeMiddleWareHeader == null) {
+                this.mAgentBuilderFragment.mChromeMiddleWareHeader = this.mAgentBuilderFragment.mChromeMiddleWareTail = middleWareWebChromeBase;
+            } else {
+                this.mAgentBuilderFragment.mChromeMiddleWareTail.enq(middleWareWebChromeBase);
+                this.mAgentBuilderFragment.mChromeMiddleWareTail = middleWareWebChromeBase;
             }
             return this;
         }
@@ -1027,7 +1058,6 @@ public final class AgentWeb {
             return mWeakReference.get().intercept(url, permissions, a);
         }
     }
-
 
 
 }

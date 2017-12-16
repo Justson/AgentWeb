@@ -76,7 +76,6 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
                         getWebView().reload();
                     }
 
-
                 }
             });
         }

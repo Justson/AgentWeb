@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion "26.0.2"
     defaultConfig {
-        applicationId "com.just.library.agentweb"
+        applicationId "com.just.agentweb.sample"
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1

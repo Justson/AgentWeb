@@ -47,6 +47,16 @@ public class AgentWebUIControllerImplBase extends AgentWebUIController {
         getDelegate().onJsPrompt(view, url, message, defaultValue, jsPromptResult);
     }
 
+    @Override
+    public void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
+        getDelegate().onMainFrameError(view,errorCode,description,failingUrl);
+    }
+
+    @Override
+    public void onShowMainFrame() {
+        getDelegate().onShowMainFrame();
+    }
+
 
     @Override
     public void showMessage(String message, String from) {
