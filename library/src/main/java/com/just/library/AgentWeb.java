@@ -63,6 +63,7 @@ public final class AgentWeb {
     private PermissionInterceptor mPermissionInterceptor;
     private boolean isInterceptUnkownScheme = false;
     private int openOtherAppWays = -1;
+    private MiddleWareWebClientBase mMiddleWrareWebClientBaseHeader;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
@@ -131,6 +132,7 @@ public final class AgentWeb {
         if (agentBuilderFragment.openOtherApp != null) {
             this.openOtherAppWays = agentBuilderFragment.openOtherApp.code;
         }
+        this.mMiddleWrareWebClientBaseHeader = agentBuilderFragment.header;
         init();
         setDownloadListener(agentBuilderFragment.mDownLoadResultListeners, agentBuilderFragment.isParallelDownload, agentBuilderFragment.icon);
     }
@@ -222,7 +224,7 @@ public final class AgentWeb {
 
     public static AgentBuilder with(@NonNull Activity activity) {
         if (activity == null)
-            throw new NullPointerException("activity can not null");
+            throw new NullPointerException("activity can not be null .");
         return new AgentBuilder(activity);
     }
 
@@ -231,7 +233,7 @@ public final class AgentWeb {
 
         Activity mActivity = null;
         if ((mActivity = fragment.getActivity()) == null)
-            throw new NullPointerException("activity can not null");
+            throw new NullPointerException("activity can not be null .");
         return new AgentBuilderFragment(mActivity, fragment);
     }
 
@@ -307,7 +309,7 @@ public final class AgentWeb {
         if (mWebListenerManager != null) {
             mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
             mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
-            mWebListenerManager.setWebViewClient(mWebCreator.get(), getClient());
+            mWebListenerManager.setWebViewClient(mWebCreator.get(), getWebViewClient());
         }
 
         return this;
@@ -353,11 +355,13 @@ public final class AgentWeb {
         return this.mJsInterfaceHolder;
     }
 
+    @Deprecated
     private WebViewClient getClient() {
+
         if (!webClientHelper && AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
             return mWebViewClient;
         } else {
-            LogUtils.i(TAG,"isInterceptUnkownScheme:"+isInterceptUnkownScheme+"   openOtherAppWays:"+openOtherAppWays);
+            LogUtils.i(TAG, "isInterceptUnkownScheme:" + isInterceptUnkownScheme + "   openOtherAppWays:" + openOtherAppWays);
             return DefaultWebClient
                     .createBuilder()
                     .setActivity(this.mActivity)
@@ -370,6 +374,41 @@ public final class AgentWeb {
                     .setSchemeHandleType(this.openOtherAppWays)
                     .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
                     .build();
+        }
+
+
+    }
+
+    private WebViewClient getWebViewClient() {
+
+        LogUtils.i(TAG,"getWebViewClient:"+this.mMiddleWrareWebClientBaseHeader);
+        DefaultWebClient mDefaultWebClient = DefaultWebClient
+                .createBuilder()
+                .setActivity(this.mActivity)
+                .setClient(this.mWebViewClient)
+                .setManager(this.mWebViewClientCallbackManager)
+                .setWebClientHelper(this.webClientHelper)
+                .setPermissionInterceptor(this.mPermissionInterceptor)
+                .setWebView(this.mWebCreator.get())
+                .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
+                .setSchemeHandleType(this.openOtherAppWays)
+                .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
+                .build();
+        MiddleWareWebClientBase header=this.mMiddleWrareWebClientBaseHeader;
+        if(header!=null){
+            MiddleWareWebClientBase tail = header;
+            int count=1;
+            MiddleWareWebClientBase tmp=header;
+            while (tmp.next() != null) {
+                tail = tmp = tmp.next();
+                count++;
+            }
+            LogUtils.i(TAG,"Middleware count:"+count);
+            tail.setWebViewClient(mDefaultWebClient);
+            LogUtils.i(TAG,"tail:"+tail);
+            return header;
+        }else{
+            return mDefaultWebClient;
         }
 
     }
@@ -768,6 +807,8 @@ public final class AgentWeb {
         private AgentWebUIController mAgentWebUIController;
         private DefaultWebClient.OpenOtherAppWays openOtherApp = null;
         private boolean isInterceptUnkownScheme = false;
+        private MiddleWareWebClientBase header;
+        private MiddleWareWebClientBase tail;
 
 
         public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
@@ -878,6 +919,17 @@ public final class AgentWeb {
             return this;
         }
 
+        public CommonBuilderForFragment composeWebViewClientBase(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
+
+            if(this.mAgentBuilderFragment.header==null){
+                this.mAgentBuilderFragment.header = this.mAgentBuilderFragment.tail= middleWrareWebClientBase;
+            }else{
+                this.mAgentBuilderFragment.tail.enq(middleWrareWebClientBase);
+                this.mAgentBuilderFragment.tail= middleWrareWebClientBase;
+            }
+            return this;
+        }
+
         public CommonBuilderForFragment setAgentWebWebSettings(@Nullable AgentWebSettings agentWebSettings) {
             this.mAgentBuilderFragment.mAgentWebSettings = agentWebSettings;
             return this;
@@ -973,6 +1025,22 @@ public final class AgentWeb {
                 return false;
             }
             return mWeakReference.get().intercept(url, permissions, a);
+        }
+    }
+
+    private static final class TailWebViewClientBase extends MiddleWareWebClientBase {
+
+        public TailWebViewClientBase() {
+            super(null);
+        }
+
+        public void bind(WebViewClient webViewClient) {
+            super.setWebViewClient(webViewClient);
+        }
+
+        @Override
+        public MiddleWareWebClientBase next() {
+            return super.next();
         }
     }
 

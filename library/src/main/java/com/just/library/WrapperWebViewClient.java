@@ -26,6 +26,9 @@ public class WrapperWebViewClient extends WebViewClient {
         this.mWebViewClient=client;
     }
 
+    void setWebViewClient(WebViewClient webViewClient){
+        this.mWebViewClient=webViewClient;
+    }
     @Deprecated
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
@@ -34,13 +37,13 @@ public class WrapperWebViewClient extends WebViewClient {
            return mWebViewClient.shouldOverrideUrlLoading(view,url);
         }
 
-        return false;
+        return super.shouldOverrideUrlLoading(view,  url) ;
     }
 
 
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
-        LogUtils.i(TAG,"loading request");
+//        LogUtils.i(TAG,"this:"+this+"   wrapper:"+this.mWebViewClient);
         if(mWebViewClient!=null){
             return mWebViewClient.shouldOverrideUrlLoading(view,request);
         }

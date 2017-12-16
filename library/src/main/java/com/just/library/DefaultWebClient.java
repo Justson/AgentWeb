@@ -33,7 +33,7 @@ import java.util.List;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultWebClient extends WrapperWebViewClient {
+public class DefaultWebClient extends MiddleWareWebClientBase {
 
     private WebViewClientCallbackManager mWebViewClientCallbackManager;
     private WeakReference<Activity> mWeakReference = null;
@@ -57,6 +57,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
     private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
     private Handler.Callback mCallback = null;
     private WebParentLayout mWebParentLayout;
+    private Method onMainFrameErrorMethod = null;
 
     static {
         boolean tag = true;
@@ -98,7 +99,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
             schemeHandleType = builder.schemeHandleType;
         }
         this.mMsgCfg = builder.mCfg;
-        this.mWebParentLayout=AgentWebUtils.getWebParentLayoutByWebView(mWebView);
+        this.mWebParentLayout = AgentWebUtils.getWebParentLayoutByWebView(mWebView);
     }
 
     @Override
@@ -387,7 +388,7 @@ public class DefaultWebClient extends WrapperWebViewClient {
 //            return;
         }
         LogUtils.i(TAG, "onReceivedError：" + description + "  CODE:" + errorCode);
-        onMainFrameError(view,errorCode,description,failingUrl);
+        onMainFrameError(view, errorCode, description, failingUrl);
     }
 
 
@@ -405,18 +406,18 @@ public class DefaultWebClient extends WrapperWebViewClient {
         }
         LogUtils.i(TAG, "onReceivedError:" + error.toString());
     }
-    private Method onMainFrameErrorMethod=null;
+
     //
-    private void onMainFrameError(WebView view,int errorCode,String description,String failingUrl){
-        LogUtils.i(TAG,"onMainFrameError:"+failingUrl);
-        WebParentLayout mWebParentLayout=AgentWebUtils.getWebParentLayoutByWebView(view);
-        if(this.mWebViewClient!=null&&webClientHelper){  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
-            Method mMethod=this.onMainFrameErrorMethod;
-            if (mMethod!=null||(this.onMainFrameErrorMethod=mMethod=AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", WebParentLayout.class, WebView.class, WebResourceRequest.class, WebResourceError.class))!=null) {
+    private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
+        LogUtils.i(TAG, "onMainFrameError:" + failingUrl);
+        WebParentLayout mWebParentLayout = AgentWebUtils.getWebParentLayoutByWebView(view);
+        if (this.mWebViewClient != null && webClientHelper) {  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
+            Method mMethod = this.onMainFrameErrorMethod;
+            if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, WebResourceRequest.class, WebResourceError.class)) != null) {
                 try {
-                    mMethod.invoke(mWebViewClient,mWebParentLayout,view,errorCode,description,failingUrl);
-                }catch (Throwable ignore){
-                    if(LogUtils.isDebug()){
+                    mMethod.invoke(mWebViewClient, mWebParentLayout.provide(), view, errorCode, description, failingUrl);
+                } catch (Throwable ignore) {
+                    if (LogUtils.isDebug()) {
                         ignore.printStackTrace();
                     }
                 }
@@ -424,7 +425,6 @@ public class DefaultWebClient extends WrapperWebViewClient {
             }
         }
         mWebParentLayout.showPageMainFrameError(R.layout.agentweb_error_page);
-
     }
 
     @Override
@@ -433,8 +433,8 @@ public class DefaultWebClient extends WrapperWebViewClient {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
         }
 
-        if(this.mWebParentLayout!=null){
-            this.mWebParentLayout.onPageFinished(mWebView,url);
+        if (this.mWebParentLayout != null) {
+            this.mWebParentLayout.onPageFinished(mWebView, url);
         }
         super.onPageFinished(view, url);
 

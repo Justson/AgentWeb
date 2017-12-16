@@ -92,6 +92,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setReceivedTitleCallback(mCallback)//标题回调
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
+                .composeWebViewClientBase(new SonicWebViewClient())
+                .composeWebViewClientBase(new SonicWebViewClient())
+                .composeWebViewClientBase(new SonicWebViewClient())
+                .composeWebViewClientBase(new MiddlewareWebViewClient())
+                .composeWebViewClientBase(new MiddlewareWebViewClient())
+                .composeWebViewClientBase(new MiddlewareWebViewClient())
+                .composeWebViewClientBase(new MiddlewareWebViewClient())
+                .composeWebViewClientBase(new MiddlewareWebViewClient())
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download) //下载图标
                 .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用

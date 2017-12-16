@@ -14,11 +14,12 @@ import android.webkit.WebView;
  *     source CODE  https://github.com/Justson/AgentWeb
  */
 
-public class ChromeClientProgress extends WebChromeClient {
+public class ChromeClientProgress extends WebChromeClientWrapper {
 
     private IndicatorController mIndicatorController = null;
 
-    public ChromeClientProgress(IndicatorController indicatorController) {
+    public ChromeClientProgress(IndicatorController indicatorController, WebChromeClient realWebChromeClient) {
+        super(realWebChromeClient);
         this.mIndicatorController = indicatorController;
     }
 

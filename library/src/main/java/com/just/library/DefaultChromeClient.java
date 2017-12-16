@@ -32,7 +32,7 @@ import static com.just.library.ActionActivity.KEY_FROM_INTENTION;
  * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb
  */
-public class DefaultChromeClient extends WebChromeClientProgressWrapper implements FileUploadPop<IFileUploadChooser> {
+public class DefaultChromeClient extends ChromeClientProgress implements FileUploadPop<IFileUploadChooser> {
 
 
     private WeakReference<Activity> mActivityWeakReference = null;
@@ -158,6 +158,7 @@ public class DefaultChromeClient extends WebChromeClientProgressWrapper implemen
 
         List<String> deniedPermissions = null;
         if ((deniedPermissions = AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.LOCATION)).isEmpty()) {
+            LogUtils.i(TAG,"onGeolocationPermissionsShowPromptInternal:"+true);
             callback.invoke(origin, true, false);
         } else {
 

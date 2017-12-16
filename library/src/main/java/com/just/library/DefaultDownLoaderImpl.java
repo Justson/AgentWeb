@@ -347,7 +347,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         }
 
         for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
-            mDownLoadResultListener.error(path, resUrl, cause, e);
+            if(mDownLoadResultListener!=null){
+                mDownLoadResultListener.error(path, resUrl, cause, e);
+            }
         }
     }
 
