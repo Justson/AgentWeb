@@ -10,7 +10,7 @@ import android.webkit.WebView;
  * Created by cenxiaozhong on 2017/12/6.
  * 该类统一控制了与用户交互的一些界面
  */
-public class AgentWebUIControllerImplBase extends AgentWebUIController {
+public  class AgentWebUIControllerImplBase extends AgentWebUIController {
 
 
     public static AgentWebUIController build() {

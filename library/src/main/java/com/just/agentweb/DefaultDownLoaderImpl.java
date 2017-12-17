@@ -297,8 +297,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             }
             LogUtils.i(TAG, "filename:" + fileName);
             return AgentWebUtils.createFileByName(mContext, fileName, false);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable e) {
+            if (LogUtils.isDebug())
+                e.printStackTrace();
         }
 
         return null;
@@ -346,7 +347,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         }
 
         for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
-            if(mDownLoadResultListener!=null){
+            if (mDownLoadResultListener != null) {
                 mDownLoadResultListener.error(path, resUrl, cause, e);
             }
         }

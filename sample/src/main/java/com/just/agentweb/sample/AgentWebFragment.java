@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettings;
+import com.just.agentweb.AgentWebUIControllerImplBase;
 import com.just.agentweb.ChromeClientCallbackManager;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
@@ -88,15 +89,16 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与WebView 一样
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
-                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截
+                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 3.0.0 加入
                 .setReceivedTitleCallback(mCallback)//标题回调
-                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
+                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 AgentWeb 3.0.0 加入
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
-//                .composeWebViewClientBase(new SonicWebViewClient())  //测试中间件
+//                .composeWebViewClientBase(new SonicWebViewClient())  //测试中间件  AgentWeb 3.0.0 加入
 //                .composeWebViewClientBase(new SonicWebViewClient())   //测试中间件
 //                .composeWebViewClientBase(new SonicWebViewClient())   //测试中间件
 //                .composeWebChromeClientBase(new MiddleWareChromeClient()) //测试中间件
-                .setMainFrameErrorView(R.layout.agentweb_error_page,-1)
+                .setAgentWebUIController(new AgentWebUIControllerImplBase())
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) // AgentWeb 3.0.0 加入
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download) //下载图标
                 .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用
@@ -352,9 +354,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
     };
+
     //这里用于测试错误页的显示
     private void loadErrorWebSite() {
-        if(mAgentWeb!=null){
+        if (mAgentWeb != null) {
             mAgentWeb.getLoader().loadUrl("http://unkownwebsite.me");
         }
     }
