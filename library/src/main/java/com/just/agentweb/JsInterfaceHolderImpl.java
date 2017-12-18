@@ -32,11 +32,13 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
 
         if(!checkSecurity()){
+            LogUtils.i(TAG,"The injected object is not safe, give up injection");
             return this;
         }
+        LogUtils.i(TAG,"inject set:"+maps.size());
+
         Set<Map.Entry<String, Object>> sets = maps.entrySet();
         for (Map.Entry<String, Object> mEntry : sets) {
-
 
             Object v = mEntry.getValue();
             boolean t = checkObject(v);

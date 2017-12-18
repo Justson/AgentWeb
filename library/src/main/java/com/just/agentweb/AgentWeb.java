@@ -80,8 +80,9 @@ public final class AgentWeb {
         this.mAgentWebSettings = agentBuilder.mAgentWebSettings;
         this.mIEventHandler = agentBuilder.mIEventHandler;
         TAG_TARGET = ACTIVITY_TAG;
-        if (agentBuilder.mJavaObject != null && agentBuilder.mJavaObject.isEmpty())
+        if (agentBuilder.mJavaObject != null && !agentBuilder.mJavaObject.isEmpty()){
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilder.mJavaObject);
+        }
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
         this.mWebViewClientCallbackManager = agentBuilder.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilder.mSecurityType;
@@ -122,8 +123,11 @@ public final class AgentWeb {
         this.mWebViewClient = agentBuilderFragment.mWebViewClient;
         mAgentWeb = this;
         this.mAgentWebSettings = agentBuilderFragment.mAgentWebSettings;
-        if (agentBuilderFragment.mJavaObject != null && agentBuilderFragment.mJavaObject.isEmpty()) {
+
+        if (agentBuilderFragment.mJavaObject != null && !agentBuilderFragment.mJavaObject.isEmpty()) {
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilderFragment.mJavaObject);
+            LogUtils.i(TAG,"mJavaObject size:"+this.mJavaObjects.size());
+
         }
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
         this.mPermissionInterceptor = agentBuilderFragment.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilderFragment.mPermissionInterceptor);
@@ -315,6 +319,7 @@ public final class AgentWeb {
         if (mJsInterfaceHolder == null) {
             mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get(), this.mSecurityType);
         }
+        LogUtils.i(TAG,"mJavaObjects:"+mJavaObjects.size());
         if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
             mJsInterfaceHolder.addJavaObjects(mJavaObjects);
         }
@@ -993,7 +998,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment composeWebViewClientBase(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
+        public CommonBuilderForFragment useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
 
             if (this.mAgentBuilderFragment.header == null) {
                 this.mAgentBuilderFragment.header = this.mAgentBuilderFragment.tail = middleWrareWebClientBase;
@@ -1004,7 +1009,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment composeWebChromeClientBase(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
+        public CommonBuilderForFragment useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
 
             if (this.mAgentBuilderFragment.mChromeMiddleWareHeader == null) {
                 this.mAgentBuilderFragment.mChromeMiddleWareHeader = this.mAgentBuilderFragment.mChromeMiddleWareTail = middleWareWebChromeBase;
