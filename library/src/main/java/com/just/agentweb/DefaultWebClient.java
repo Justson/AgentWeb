@@ -59,7 +59,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
     private Handler.Callback mCallback = null;
     private Method onMainFrameErrorMethod = null;
-    private Set<String> mErrorUrls=new CopyOnWriteArraySet<>();
+    private Set<String> mErrorUrls = new CopyOnWriteArraySet<>();
 
     static {
         boolean tag = true;
@@ -347,7 +347,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 return true;
             }
         } catch (Throwable ignore) {
-            if(AgentWebConfig.DEBUG){
+            if (AgentWebConfig.DEBUG) {
                 ignore.printStackTrace();
             }
 
@@ -366,7 +366,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 intent.setData(Uri.parse(url));
                 mActivity.startActivity(intent);
             } catch (ActivityNotFoundException ignored) {
-                if(AgentWebConfig.DEBUG){
+                if (AgentWebConfig.DEBUG) {
                     ignored.printStackTrace();
                 }
             }
@@ -431,9 +431,9 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             }
         }
         mErrorUrls.add(failingUrl);
-       if(mAgentWebUIController.get()!=null){
-            mAgentWebUIController.get().onMainFrameError(view,errorCode,description,failingUrl);
-       }
+        if (mAgentWebUIController.get() != null) {
+            mAgentWebUIController.get().onMainFrameError(view, errorCode, description, failingUrl);
+        }
     }
 
 
@@ -443,15 +443,17 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
         }
 
-        if(!mErrorUrls.contains(url)){
-            if(mAgentWebUIController.get()!=null){
+        LogUtils.i(TAG, "onPageFinished:" + mErrorUrls);
+        if (!mErrorUrls.contains(url)) {
+            if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().onShowMainFrame();
             }
+            mErrorUrls.clear();
+        }else{
             mErrorUrls.clear();
         }
         super.onPageFinished(view, url);
 
-        LogUtils.i(TAG, "onPageFinished");
     }
 
 

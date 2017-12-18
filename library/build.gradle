@@ -3,8 +3,8 @@ apply plugin: 'maven'
 apply plugin: 'com.novoda.bintray-release'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.2"
 
     defaultConfig {
         minSdkVersion 9
@@ -51,7 +51,7 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'agentweb'
-    version = '2.0.1'
+    version = '3.0.0-beta'
     description = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 }
