@@ -30,6 +30,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 
     public WebParentLayout(@NonNull Context context) {
         this(context, null);
+        LogUtils.i(TAG,"WebParentLayout");
     }
 
     public WebParentLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -41,6 +42,8 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         if (!(context instanceof Activity)) {
             throw new IllegalArgumentException("WebParentLayout context must be activity or activity sub class .");
         }
+        this.errorLayoutRes=R.layout.agentweb_error_page;
+        LogUtils.i(TAG,"errorLayoutRes:"+errorLayoutRes);
     }
 
     void bindController(AgentWebUIController agentWebUIController) {
@@ -65,6 +68,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         mFrameLayout.setId(R.id.mainframe_error_container_id);
         if (this.errorView == null) {
             LayoutInflater mLayoutInflater = LayoutInflater.from(getContext());
+            LogUtils.i(TAG,"errorLayoutRes:"+errorLayoutRes);
             mLayoutInflater.inflate(errorLayoutRes, mFrameLayout, true);
             final int index = this.indexOfChild(mViewStub);
             this.removeViewInLayout(mViewStub);
@@ -120,6 +124,9 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
             this.clickId = -1;
         }
         this.errorLayoutRes = resLayout;
+        if(this.errorLayoutRes<=0){
+            this.errorLayoutRes=R.layout.agentweb_error_page;
+        }
     }
 
     @Override

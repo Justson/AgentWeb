@@ -53,6 +53,8 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setWebView(getWebView())
                 .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebLayout(getWebLayout())
+                .interceptUnkownScheme()
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
                 .addDownLoadResultListener(getDownLoadResultListener())
                 .setAgentWebSettings(getAgentWebSettings())
                 .setSecutityType(AgentWeb.SecurityType.strict)

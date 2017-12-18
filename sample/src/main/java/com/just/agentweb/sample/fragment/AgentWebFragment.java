@@ -96,7 +96,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
-                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 3.0.0 加入
+                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.1 加入
                 .setReceivedTitleCallback(mCallback)//标题回调
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 AgentWeb 3.0.0 加入
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
