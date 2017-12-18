@@ -26,12 +26,14 @@
 #-keep public class * extends android.webkit.WebChromeClient{
 #*;
 #}
--keep class com.just.library.** {
+-keep class com.just.agentweb.** {
     *;
 }
--keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
+-keepclassmembers class com.just.agentweb.sample.common.AndroidInterface{ *; }
 -dontwarn com.just.library.**
 
+
+-keepclassmembers class com.just.agentweb.sample.common.SonicJavaScriptInterface{ *; }
 
 -dontshrink
 -dontpreverify

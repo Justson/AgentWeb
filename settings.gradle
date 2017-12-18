@@ -1,1 +1,1 @@
-include ':sample', ':library', ':agenweb-sonic'
+include ':sample', ':library'

@@ -53,7 +53,7 @@ dependencies {
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
     compile project(':library')
-//    compile 'com.just.agentweb:agentweb:2.0.1'
+    //    compile 'com.just.agentweb:agentweb:2.0.1'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
@@ -64,5 +64,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3.1'
     compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
     compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
-//    compile 'com.tencent.sonic:sdk:2.0.0-alpha'
+    compile 'com.tencent.sonic:sdk:2.0.0'
 }
