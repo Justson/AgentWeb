@@ -776,7 +776,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder composeWebViewClientBase(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
+        public CommonAgentBuilder useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
 
             if (this.mAgentBuilder.header == null) {
                 this.mAgentBuilder.header = this.mAgentBuilder.tail = middleWrareWebClientBase;
@@ -787,7 +787,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder composeWebChromeClientBase(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
+        public CommonAgentBuilder useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
 
             if (this.mAgentBuilder.mChromeMiddleWareHeader == null) {
                 this.mAgentBuilder.mChromeMiddleWareHeader = this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;

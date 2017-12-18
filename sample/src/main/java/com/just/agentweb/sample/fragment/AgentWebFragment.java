@@ -99,8 +99,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setReceivedTitleCallback(mCallback)//标题回调
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
-                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行可以删除
-                .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行可以删除
+                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除
+                .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download) //下载图标
