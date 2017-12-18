@@ -43,7 +43,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:2.0.1'
+   compile 'com.just.agentweb:agentweb:3.0.0-beta'
    ```
 * Maven
 	
@@ -51,7 +51,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>2.0.1</version>
+	  <version>3.0.0-beta</version>
 	  <type>pom</type>
 	</dependency>
 	

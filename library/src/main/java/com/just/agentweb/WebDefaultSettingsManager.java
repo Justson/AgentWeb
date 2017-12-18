@@ -103,7 +103,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         //缓存文件最大值
         mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
 
-        mWebSettings.setUserAgentString(getWebSettings().getUserAgentString().concat("agentweb/2.0.1"));
+        mWebSettings.setUserAgentString(getWebSettings().getUserAgentString().concat(" agentweb/3.0.0-beta "));
 
 
     }
