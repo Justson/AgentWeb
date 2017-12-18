@@ -98,16 +98,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.1 加入
                 .setReceivedTitleCallback(mCallback)//标题回调
-                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 AgentWeb 3.0.0 加入
+                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
-//                .composeWebViewClientBase(new SonicWebViewClient())  //测试中间件  AgentWeb 3.0.0 加入
-//                .composeWebViewClientBase(new SonicWebViewClient())   //测试中间件
-//                .composeWebViewClientBase(new SonicWebViewClient())   //测试中间件
-//                .composeWebChromeClientBase(new MiddleWareChromeClient()) //测试中间件
-                .setAgentWebUIController(new AgentWebUIControllerImplBase())
+                .setAgentWebUIController(new AgentWebUIControllerImplBase()) //AgentWebUIController 统一控制UI AgentWeb3.0.0 加入
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) // AgentWeb 3.0.0 加入
-                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除
-                .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除
+                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
+                .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download) //下载图标
