@@ -13,13 +13,13 @@ import com.tencent.sonic.sdk.SonicSessionConfig;
  * Created by cenxiaozhong on 2017/12/17.
  */
 
-public class Sonicimpl {
+public class SonicImpl {
 
     private SonicSession sonicSession;
     private Context mContext;
     private String url;
     private SonicSessionClientImpl sonicSessionClient;
-    public Sonicimpl(String url , Context context){
+    public SonicImpl(String url , Context context){
         this.url=url;
         this.mContext=context;
 

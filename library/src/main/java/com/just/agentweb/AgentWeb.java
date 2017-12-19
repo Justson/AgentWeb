@@ -362,8 +362,9 @@ public final class AgentWeb {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
 
         DefaultChromeClient mDefaultChromeClient =
-                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
+                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
 
+        LogUtils.i(TAG,"WebChromeClient:"+this.mWebChromeClient);
         MiddleWareWebChromeBase header = this.mMiddleWareWebChromeBaseHeader;
         if (header != null) {
             MiddleWareWebChromeBase tail = header;

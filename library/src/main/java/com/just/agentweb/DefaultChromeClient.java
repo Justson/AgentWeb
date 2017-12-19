@@ -32,7 +32,7 @@ import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
  * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb
  */
-public class DefaultChromeClient extends ChromeClientProgress implements FileUploadPop<IFileUploadChooser> {
+public class DefaultChromeClient extends MiddleWareWebChromeBase implements FileUploadPop<IFileUploadChooser> {
 
 
     private WeakReference<Activity> mActivityWeakReference = null;
@@ -55,6 +55,7 @@ public class DefaultChromeClient extends ChromeClientProgress implements FileUpl
     public static final int FROM_CODE_INTENTION = 0x18;
     public static final int FROM_CODE_INTENTION_LOCATION = FROM_CODE_INTENTION << 2;
     private WeakReference<AgentWebUIController> mAgentWebUiController = null;
+    private IndicatorController mIndicatorController;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
@@ -62,7 +63,8 @@ public class DefaultChromeClient extends ChromeClientProgress implements FileUpl
                         ChromeClientCallbackManager chromeClientCallbackManager,
                         @Nullable IVideo iVideo,
                         DefaultMsgConfig.ChromeClientMsgCfg chromeClientMsgCfg, PermissionInterceptor permissionInterceptor, WebView webView) {
-        super(indicatorController, chromeClient);
+        super(chromeClient);
+        this.mIndicatorController=indicatorController;
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
         mActivityWeakReference = new WeakReference<Activity>(activity);
@@ -79,6 +81,9 @@ public class DefaultChromeClient extends ChromeClientProgress implements FileUpl
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
+
+        if (mIndicatorController != null)
+            mIndicatorController.progress(view, newProgress);
 
         ChromeClientCallbackManager.AgentWebCompatInterface mAgentWebCompatInterface = null;
         if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && (mAgentWebCompatInterface = mChromeClientCallbackManager.getAgentWebCompatInterface()) != null) {

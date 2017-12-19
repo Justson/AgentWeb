@@ -179,7 +179,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //  super.onProgressChanged(view, newProgress);
-            //Log.i(TAG,"onProgressChanged:"+newProgress+"  view:"+view);
+            Log.i(TAG,"onProgressChanged:"+newProgress+"  view:"+view);
         }
     };
     private Gson mGson = new Gson();
