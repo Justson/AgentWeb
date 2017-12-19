@@ -274,7 +274,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 	* 加入 `MiddleWareWebChromeBase` 中间件 ，支持多个 `WebChromeClient`  。
 	* 加入 `MiddleWareWebClientBase`中间件 ， 支持多个 `WebViewClient`  。
 	* 加入了默认的错误页，并支持自定义错误页 。
-	* 加入 `AgentWebUIController` ，统一控制的UI 。
+	* 加入 `AgentWebUIController` ，统一控制UI 。
 	* 支持拦截未知的页面 。
 	* 支持调起其他应用 。 
 * v_2.0.1 更新
