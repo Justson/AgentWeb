@@ -96,7 +96,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
-                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.1 加入
+                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入
                 .setReceivedTitleCallback(mCallback)//标题回调
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
@@ -104,11 +104,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) // AgentWeb 3.0.0 加入
                 .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
                 .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //AgentWeb 3.0.0 加入
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download) //下载图标
-                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用
-                .interceptUnkownScheme() //拦截找不到相关页面的Scheme
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入
+                .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入
                 .createAgentWeb()//创建AgentWeb
                 .ready()//设置 WebSettings
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
