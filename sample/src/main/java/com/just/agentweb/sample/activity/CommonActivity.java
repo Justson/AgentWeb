@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.fragment.AgentWebFragment;
-import com.just.agentweb.sample.fragment.AgentWebSonicFragment;
+import com.just.agentweb.sample.fragment.VasSonicFragment;
 import com.just.agentweb.sample.fragment.BounceWebFragment;
 import com.just.agentweb.sample.fragment.CustomIndicatorFragment;
 import com.just.agentweb.sample.fragment.CustomSettingsFragment;
@@ -137,7 +137,7 @@ public class CommonActivity extends AppCompatActivity {
                 break;
                 /*首屏秒开*/
             case 14:
-                ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebSonicFragment.create(mBundle = new Bundle()), AgentWebFragment.class.getName());
+                ft.add(R.id.container_framelayout, mAgentWebFragment = VasSonicFragment.create(mBundle = new Bundle()), AgentWebFragment.class.getName());
                 mBundle.putLong(PARAM_CLICK_TIME,getIntent().getLongExtra(PARAM_CLICK_TIME,-1l));
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://mc.vip.qq.com/demo/indexv3");
                 break;

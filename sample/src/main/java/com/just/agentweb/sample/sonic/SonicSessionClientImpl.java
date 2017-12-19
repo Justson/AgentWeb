@@ -55,11 +55,6 @@ public class SonicSessionClientImpl extends SonicSessionClient {
         loadDataWithBaseUrl(baseUrl, data, mimeType, encoding, historyUrl);
     }
 
-    public void destroy() {
-        if(null!=mAgentWeb){
-            mAgentWeb.getWebLifeCycle().onDestroy();
-        }
 
-    }
 
 }

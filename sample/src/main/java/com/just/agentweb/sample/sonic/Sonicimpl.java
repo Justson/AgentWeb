@@ -13,18 +13,18 @@ import com.tencent.sonic.sdk.SonicSessionConfig;
  * Created by cenxiaozhong on 2017/12/17.
  */
 
-public class AgentWebSonic {
+public class Sonicimpl {
 
     private SonicSession sonicSession;
     private Context mContext;
-    private AgentWeb mAgentWeb;
     private String url;
-    public AgentWebSonic(String url , Context context){
+    private SonicSessionClientImpl sonicSessionClient;
+    public Sonicimpl(String url , Context context){
         this.url=url;
         this.mContext=context;
 
     }
-    SonicSessionClientImpl sonicSessionClient;
+    
     /**
      */
     public void onCreateSession() {
@@ -56,7 +56,7 @@ public class AgentWebSonic {
         return new SonicWebViewClient(sonicSession);
     }
 
-    public void go(AgentWeb agentWeb){
+    public void bindAgentWeb(AgentWeb agentWeb){
         if (sonicSessionClient != null) {
             sonicSessionClient.bindWebView(agentWeb);
             sonicSessionClient.clientReady();
