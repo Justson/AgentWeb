@@ -597,9 +597,7 @@ public final class AgentWeb {
 
         }
 
-        public void setAgentWebUIController(@NonNull AgentWebUIControllerImplBase agentWebUIController) {
-            this.mAgentWebUIController = agentWebUIController;
-        }
+
 
 
         private PreAgentWeb buildAgentWeb() {
@@ -809,6 +807,10 @@ public final class AgentWeb {
             return this;
         }
 
+        public CommonAgentBuilder setAgentWebUIController(@Nullable AgentWebUIControllerImplBase agentWebUIController) {
+            this.mAgentBuilder.mAgentWebUIController = agentWebUIController;
+            return this;
+        }
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -1095,7 +1097,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setAgentWebUIController(@NonNull AgentWebUIControllerImplBase agentWebUIController) {
+        public CommonBuilderForFragment setAgentWebUIController(@Nullable AgentWebUIControllerImplBase agentWebUIController) {
             this.mAgentBuilderFragment.mAgentWebUIController = agentWebUIController;
             return this;
         }

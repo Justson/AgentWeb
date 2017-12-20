@@ -23,6 +23,7 @@ public abstract class AgentWebUIController {
     static {
         try {
             Class.forName("android.support.design.widget.Snackbar");
+            Class.forName("android.support.design.widget.BottomSheetDialog");
             hasDesignLib = true;
         } catch (Throwable ignore) {
             hasDesignLib = false;
@@ -82,7 +83,7 @@ public abstract class AgentWebUIController {
     public abstract void onShowMainFrame();
     /**
      * @param message 消息
-     * @param intent 意图 ，说明message的来源
+     * @param intent 说明message的来源
      */
     public abstract void showMessage(String message, String intent);
 

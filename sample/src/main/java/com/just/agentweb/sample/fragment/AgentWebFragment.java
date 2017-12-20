@@ -41,10 +41,10 @@ import com.just.agentweb.MiddleWareWebChromeBase;
 import com.just.agentweb.MiddleWareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebDefaultSettingsManager;
-import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddleWareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
+import com.just.agentweb.sample.common.FragmentKeyDown;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
@@ -101,10 +101,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .setAgentWebUIController(new AgentWebUIControllerImplBase()) //AgentWebUIController 统一控制UI AgentWeb3.0.0 加入
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) // AgentWeb 3.0.0 加入
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的页面，参数2点击刷新控件ID AgentWeb 3.0.0 加入
                 .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
                 .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //AgentWeb 3.0.0 加入
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.mipmap.download) //下载图标
                 .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入
@@ -179,7 +178,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //  super.onProgressChanged(view, newProgress);
-            Log.i(TAG,"onProgressChanged:"+newProgress+"  view:"+view);
+            Log.i(TAG, "onProgressChanged:" + newProgress + "  view:" + view);
         }
     };
     private Gson mGson = new Gson();
@@ -417,10 +416,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     //
     protected MiddleWareWebClientBase getMiddleWareWebClient() {
-        return this.mWebClient=new MiddlewareWebViewClient();
+        return this.mWebClient = new MiddlewareWebViewClient();
     }
 
     protected MiddleWareWebChromeBase getMiddleWareWebChrome() {
-        return this.mMiddleWareWebChrome=new MiddleWareChromeClient();
+        return this.mMiddleWareWebChrome = new MiddleWareChromeClient();
     }
 }

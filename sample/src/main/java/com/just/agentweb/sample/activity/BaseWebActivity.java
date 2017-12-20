@@ -27,13 +27,11 @@ import com.just.agentweb.sample.widget.WebLayout;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
- *
+ * <p>
  * source code  https://github.com/Justson/AgentWeb
- *
  */
 
 public class BaseWebActivity extends AppCompatActivity {
-
 
 
     protected AgentWeb mAgentWeb;
@@ -71,17 +69,13 @@ public class BaseWebActivity extends AppCompatActivity {
         long p = System.currentTimeMillis();
 
         mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )//
+                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
                 .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
-//                .composeWebViewClientBase(new SonicWebViewClient()) //测试 WebViewClient 中间件
-//                .composeWebViewClientBase(new SonicWebViewClient())//测试 WebViewClient 中间件
-//                .composeWebViewClientBase(new SonicWebViewClient())//测试 WebViewClient 中间件
-//                .composeWebChromeClientBase(new MiddleWareChromeClient())//测试 WareChromeClient 中间件
-                .setMainFrameErrorView(R.layout.agentweb_error_page,-1)
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .setWebLayout(new WebLayout(this))
                 .openParallelDownload()//打开并行下载 , 默认串行下载
@@ -98,12 +92,9 @@ public class BaseWebActivity extends AppCompatActivity {
         Log.i("Info", "init used time:" + (n - p));
 
 
-
-
-
     }
 
-    private WebViewClient mWebViewClient=new WebViewClient(){
+    private WebViewClient mWebViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             return super.shouldOverrideUrlLoading(view, request);
@@ -111,18 +102,19 @@ public class BaseWebActivity extends AppCompatActivity {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-           //do you  work
-            Log.i("Info","BaseWebActivity onPageStarted");
+            //do you  work
+            Log.i("Info", "BaseWebActivity onPageStarted");
         }
     };
-    private WebChromeClient mWebChromeClient=new WebChromeClient(){
+    private WebChromeClient mWebChromeClient = new WebChromeClient() {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //do you work
 //            Log.i("Info","progress:"+newProgress);
         }
     };
-    public String getUrl(){
+
+    public String getUrl() {
 
         return "https://m.jd.com/";
     }

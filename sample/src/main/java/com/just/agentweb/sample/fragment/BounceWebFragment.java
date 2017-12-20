@@ -11,7 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.just.agentweb.AgentWeb;
+import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.IWebLayout;
+import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.widget.WebLayout;
 
 /**
@@ -49,6 +51,9 @@ public class BounceWebFragment extends AgentWebFragment {
                 .setWebLayout(getWebLayout())
                 .setSecurityType(AgentWeb.SecurityType.strict)
                 .addDownLoadResultListener(mDownLoadResultListener)
+                .interceptUnkownScheme()
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
+                .setMainFrameErrorView(R.layout.agentweb_error_page,-1)
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());
@@ -57,6 +62,7 @@ public class BounceWebFragment extends AgentWebFragment {
 
         addBGChild((FrameLayout) mAgentWeb.getWebCreator().getGroup()); // 得到 AgentWeb 最底层的控件
         initView(view);
+
 
     }
 

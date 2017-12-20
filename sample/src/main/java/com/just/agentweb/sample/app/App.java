@@ -1,8 +1,6 @@
 package com.just.agentweb.sample.app;
 
 import android.app.Application;
-import android.content.MutableContextWrapper;
-import android.webkit.WebView;
 
 import com.squareup.leakcanary.LeakCanary;
 
@@ -17,7 +15,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        WebView mWebView=new WebView(new MutableContextWrapper(this));
+        //提前初始化WebView
+//        WebView mWebView=new WebView(new MutableContextWrapper(this));
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.

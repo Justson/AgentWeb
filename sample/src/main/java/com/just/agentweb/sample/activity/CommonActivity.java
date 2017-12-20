@@ -133,7 +133,7 @@ public class CommonActivity extends AppCompatActivity {
                 /*地图*/
             case 13:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
-                mBundle.putString(AgentWebFragment.URL_KEY, "http://ditu.amap.com/?amapexchange=%2F");
+                mBundle.putString(AgentWebFragment.URL_KEY, "https://map.baidu.com/mobile/webapp/index/index/#index/index/foo=bar/vt=map");
                 break;
                 /*首屏秒开*/
             case 14:

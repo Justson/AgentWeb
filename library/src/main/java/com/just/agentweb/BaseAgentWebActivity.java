@@ -64,8 +64,6 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
 
-
-
     protected AgentWeb getAgentWeb() {
         return this.mAgentWeb;
     }
@@ -110,20 +108,22 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
 
-    protected @Nullable DownLoadResultListener getDownLoadResultListener() {
+    protected @Nullable
+    DownLoadResultListener getDownLoadResultListener() {
         return null;
     }
 
-    private @Nullable ChromeClientCallbackManager.ReceivedTitleCallback getReceivedTitleCallback() {
+    private @Nullable
+    ChromeClientCallbackManager.ReceivedTitleCallback getReceivedTitleCallback() {
         return new ChromeClientCallbackManager.ReceivedTitleCallback() {
             @Override
             public void onReceivedTitle(WebView view, String title) {
-                setTitle( view,title);
+                setTitle(view, title);
             }
         };
     }
 
-    protected void setTitle(WebView view,String title){
+    protected void setTitle(WebView view, String title) {
 
     }
 
@@ -133,17 +133,21 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
         return null;
     }
 
-    public @Nullable AgentWebSettings getAgentWebSettings() {
+    public @Nullable
+    AgentWebSettings getAgentWebSettings() {
         return WebDefaultSettingsManager.getInstance();
     }
 
-    protected abstract @NonNull ViewGroup getAgentWebParent();
+    protected abstract @NonNull
+    ViewGroup getAgentWebParent();
 
-    protected @Nullable WebChromeClient getWebChromeClient() {
+    protected @Nullable
+    WebChromeClient getWebChromeClient() {
         return null;
     }
 
-    protected @ColorInt int getIndicatorColor() {
+    protected @ColorInt
+    int getIndicatorColor() {
         return -1;
     }
 
@@ -151,18 +155,22 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
         return -1;
     }
 
-    protected @Nullable WebViewClient getWebViewClient() {
+    protected @Nullable
+    WebViewClient getWebViewClient() {
         return null;
     }
 
 
-    protected @Nullable WebView getWebView() {
+    protected @Nullable
+    WebView getWebView() {
         return null;
     }
 
-    protected  @Nullable IWebLayout getWebLayout() {
+    protected @Nullable
+    IWebLayout getWebLayout() {
         return null;
     }
+
     protected PermissionInterceptor getPermissionInterceptor() {
         return null;
     }
