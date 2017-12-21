@@ -24,6 +24,9 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
     protected AgentWeb mAgentWeb;
     private AgentWebUIControllerImplBase mAgentWebUIController;
+    private ErrorLayoutEntity mErrorLayoutEntity;
+    private MiddleWareWebChromeBase mMiddleWareWebChrome;
+    private MiddleWareWebClientBase mMiddleWareWebClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
     protected void buildAgentWeb() {
+        ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
@@ -56,9 +60,12 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setWebLayout(getWebLayout())
                 .setAgentWebUIController(getAgentWebUIController())
                 .interceptUnkownScheme()
-                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
+                .setOpenOtherAppWays(getOpenOtherAppWay())
+                .useMiddleWareWebChrome(getMiddleWareWebChrome())
+                .useMiddleWareWebClient(getMiddleWareWebClient())
                 .addDownLoadResultListener(getDownLoadResultListener())
                 .setAgentWebSettings(getAgentWebSettings())
+                .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
                 .setSecutityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()
@@ -66,8 +73,36 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
 
+    protected @NonNull
+    ErrorLayoutEntity getErrorLayoutEntity() {
+        if (this.mErrorLayoutEntity == null) {
+            this.mErrorLayoutEntity = new ErrorLayoutEntity();
+        }
+        return mErrorLayoutEntity;
+    }
+
     protected AgentWeb getAgentWeb() {
         return this.mAgentWeb;
+    }
+
+
+    protected static class ErrorLayoutEntity {
+        private int layoutRes = R.layout.agentweb_error_page;
+        private int reloadId;
+
+        public void setLayoutRes(int layoutRes) {
+            this.layoutRes = layoutRes;
+            if (layoutRes <= 0) {
+                layoutRes = -1;
+            }
+        }
+
+        public void setReloadId(int reloadId) {
+            this.reloadId = reloadId;
+            if (reloadId <= 0) {
+                reloadId = -1;
+            }
+        }
     }
 
     @Override
@@ -173,11 +208,25 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
         return null;
     }
 
-    protected PermissionInterceptor getPermissionInterceptor() {
+    protected @Nullable
+    PermissionInterceptor getPermissionInterceptor() {
         return null;
     }
 
-    public  @Nullable AgentWebUIControllerImplBase getAgentWebUIController() {
+    public @Nullable
+    AgentWebUIControllerImplBase getAgentWebUIController() {
         return null;
+    }
+
+    public @Nullable
+    DefaultWebClient.OpenOtherAppWays getOpenOtherAppWay() {
+        return null;
+    }
+    protected @NonNull MiddleWareWebChromeBase getMiddleWareWebChrome() {
+        return this.mMiddleWareWebChrome = new MiddleWareWebChromeBase();
+    }
+
+    protected @NonNull MiddleWareWebClientBase getMiddleWareWebClient() {
+        return this.mMiddleWareWebClient = new MiddleWareWebClientBase();
     }
 }

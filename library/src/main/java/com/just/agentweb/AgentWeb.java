@@ -751,7 +751,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder addDownLoadResultListener(DownLoadResultListener downLoadResultListener) {
+        public CommonAgentBuilder addDownLoadResultListener(@Nullable DownLoadResultListener downLoadResultListener) {
 
             if (this.mAgentBuilder.mDownLoadResultListeners == null) {
                 this.mAgentBuilder.mDownLoadResultListeners = new ArrayList<>();
@@ -760,12 +760,12 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+        public CommonAgentBuilder setPermissionInterceptor(@Nullable PermissionInterceptor permissionInterceptor) {
             this.mAgentBuilder.mPermissionInterceptor = permissionInterceptor;
             return this;
         }
 
-        public CommonAgentBuilder setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
+        public CommonAgentBuilder setOpenOtherAppWays(@Nullable DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
             this.mAgentBuilder.openOtherApp = openOtherAppWays;
             return this;
         }
@@ -776,7 +776,9 @@ public final class AgentWeb {
         }
 
         public CommonAgentBuilder useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
-
+            if(middleWrareWebClientBase==null){
+                return this;
+            }
             if (this.mAgentBuilder.header == null) {
                 this.mAgentBuilder.header = this.mAgentBuilder.tail = middleWrareWebClientBase;
             } else {
@@ -787,7 +789,9 @@ public final class AgentWeb {
         }
 
         public CommonAgentBuilder useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
-
+            if(middleWareWebChromeBase==null){
+                return this;
+            }
             if (this.mAgentBuilder.mChromeMiddleWareHeader == null) {
                 this.mAgentBuilder.mChromeMiddleWareHeader = this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
             } else {
@@ -1002,7 +1006,9 @@ public final class AgentWeb {
         }
 
         public CommonBuilderForFragment useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
-
+            if(middleWrareWebClientBase==null){
+                return this;
+            }
             if (this.mAgentBuilderFragment.header == null) {
                 this.mAgentBuilderFragment.header = this.mAgentBuilderFragment.tail = middleWrareWebClientBase;
             } else {
@@ -1013,7 +1019,9 @@ public final class AgentWeb {
         }
 
         public CommonBuilderForFragment useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
-
+            if(middleWareWebChromeBase==null){
+                return this;
+            }
             if (this.mAgentBuilderFragment.mChromeMiddleWareHeader == null) {
                 this.mAgentBuilderFragment.mChromeMiddleWareHeader = this.mAgentBuilderFragment.mChromeMiddleWareTail = middleWareWebChromeBase;
             } else {
@@ -1083,12 +1091,12 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+        public CommonBuilderForFragment setPermissionInterceptor(@Nullable PermissionInterceptor permissionInterceptor) {
             this.mAgentBuilderFragment.mPermissionInterceptor = permissionInterceptor;
             return this;
         }
 
-        public CommonBuilderForFragment addDownLoadResultListener(DownLoadResultListener downLoadResultListener) {
+        public CommonBuilderForFragment addDownLoadResultListener(@Nullable DownLoadResultListener downLoadResultListener) {
 
             if (this.mAgentBuilderFragment.mDownLoadResultListeners == null) {
                 this.mAgentBuilderFragment.mDownLoadResultListeners = new ArrayList<>();
@@ -1102,7 +1110,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
+        public CommonBuilderForFragment setOpenOtherAppWays(@Nullable DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
             this.mAgentBuilderFragment.openOtherApp = openOtherAppWays;
             return this;
         }
