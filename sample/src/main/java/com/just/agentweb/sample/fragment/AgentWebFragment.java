@@ -91,37 +91,35 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件
-                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度-1为默认值，高度为2，单位为dp
-                .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings
-                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致
+                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
+                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度-1为默认值，高度为2，单位为dp。
+                .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings。
+                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)了,会覆盖AgentWeb DefaultWebClient。
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
-                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入
-                .setReceivedTitleCallback(mCallback)//标题回调
-                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式
+                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
+                .setReceivedTitleCallback(mCallback)//标题回调。
+                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
-                .setAgentWebUIController(new AgentWebUIControllerImplBase()) //AgentWebUIController 统一控制UI AgentWeb3.0.0 加入
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的页面，参数2点击刷新控件ID AgentWeb 3.0.0 加入
-                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
-                .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入
-                .openParallelDownload()//打开并行下载 , 默认串行下载
-                .setNotifyIcon(R.mipmap.download) //下载图标
-                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入
-                .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入
-                .createAgentWeb()//创建AgentWeb
-                .ready()//设置 WebSettings
+                .setAgentWebUIController(new AgentWebUIControllerImplBase()) //AgentWebUIController 统一控制UI AgentWeb3.0.0 加入。
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的页面，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
+                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入。
+                .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入。
+                .openParallelDownload()//打开并行下载 , 默认串行下载。
+                .setNotifyIcon(R.mipmap.download) //下载通知图标。
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+                .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
+                .createAgentWeb()//创建AgentWeb。
+                .ready()//设置 WebSettings。
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
 
 
         initView(view);
-
 
         DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
 
         mAgentWeb.getWebCreator().get().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
-
 
     }
 
@@ -224,6 +222,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             }
 
         }
+
+        /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现。*/
+        /*public void onMainFrameError(AgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
+
+            Log.i(TAG, "AgentWebFragment onMainFrameError");
+            agentWebUIController.onMainFrameError(view,errorCode,description,failingUrl);
+
+        }*/
 
         @Override
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
@@ -363,7 +369,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     //这里用于测试错误页的显示
     private void loadErrorWebSite() {
         if (mAgentWeb != null) {
-            mAgentWeb.getLoader().loadUrl("http://unkownwebsite.me");
+            mAgentWeb.getLoader().loadUrl("http://www.unkownwebsiteblog.me");
         }
     }
 

@@ -132,6 +132,9 @@ public class DefaultWebCreator implements WebCreator {
         mFrameLayout.addView(target, mLayoutParams);
         mFrameLayout.bindWebView(this.mWebView);
         LogUtils.i(TAG, "    webView:" + (this.mWebView instanceof AgentWebView));
+        if(this.mWebView instanceof AgentWebView){
+            AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE;
+        }
         ViewStub mViewStub=new ViewStub(mActivity);
         mViewStub.setId(R.id.mainframe_error_viewsub_id);
         mFrameLayout.addView(mViewStub,new FrameLayout.LayoutParams(-1,-1));

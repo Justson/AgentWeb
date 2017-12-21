@@ -355,7 +355,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         return false;
     }
 
-
     private boolean handleNormalLinked(String url) {
         if (url.startsWith(WebView.SCHEME_TEL) || url.startsWith("sms:") || url.startsWith(WebView.SCHEME_MAILTO)) {
             try {
@@ -416,12 +415,13 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
     //
     private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
-        LogUtils.i(TAG, "onMainFrameError:" + failingUrl);
+        LogUtils.i(TAG, "onMainFrameError:" + failingUrl+"  mWebViewClient:"+mWebViewClient);
+        mErrorUrls.add(failingUrl);
         if (this.mWebViewClient != null && webClientHelper) {  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
             Method mMethod = this.onMainFrameErrorMethod;
-            if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, int.class, String.class,String.class)) != null) {
+            if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, int.class, String.class, String.class)) != null) {
                 try {
-                    mMethod.invoke(mWebViewClient, mAgentWebUIController.get(), view, errorCode, description, failingUrl);
+                    mMethod.invoke(this.mWebViewClient, mAgentWebUIController.get(), view, errorCode, description, failingUrl);
                 } catch (Throwable ignore) {
                     if (LogUtils.isDebug()) {
                         ignore.printStackTrace();
@@ -430,7 +430,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 return;
             }
         }
-        mErrorUrls.add(failingUrl);
         if (mAgentWebUIController.get() != null) {
             mAgentWebUIController.get().onMainFrameError(view, errorCode, description, failingUrl);
         }
@@ -448,8 +447,8 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().onShowMainFrame();
             }
-            mErrorUrls.clear();
-        }else{
+        }
+        if(!mErrorUrls.isEmpty()){
             mErrorUrls.clear();
         }
         super.onPageFinished(view, url);

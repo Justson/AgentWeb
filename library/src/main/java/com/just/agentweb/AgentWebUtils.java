@@ -385,7 +385,9 @@ public class AgentWebUtils {
             String gStr = mMethod.toGenericString();
             tag = !gStr.contains(method);
         } catch (Exception igonre) {
-            igonre.printStackTrace();
+            if (LogUtils.isDebug()) {
+                igonre.printStackTrace();
+            }
         }
 
         LogUtils.i(TAG, "isOverriedMethod:" + tag);
@@ -399,7 +401,9 @@ public class AgentWebUtils {
         }
         try {
             Class clazz = o.getClass();
-            return clazz.getMethod(methodName, clazz);
+            Method mMethod = clazz.getMethod(methodName, clazzs);
+            mMethod.setAccessible(true);
+            return mMethod;
         } catch (Throwable ignore) {
             if (LogUtils.isDebug()) {
                 ignore.printStackTrace();
