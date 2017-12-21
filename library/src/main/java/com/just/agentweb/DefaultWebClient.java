@@ -419,7 +419,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         LogUtils.i(TAG, "onMainFrameError:" + failingUrl);
         if (this.mWebViewClient != null && webClientHelper) {  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
             Method mMethod = this.onMainFrameErrorMethod;
-            if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, WebResourceRequest.class, WebResourceError.class)) != null) {
+            if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, int.class, String.class,String.class)) != null) {
                 try {
                     mMethod.invoke(mWebViewClient, mAgentWebUIController.get(), view, errorCode, description, failingUrl);
                 } catch (Throwable ignore) {
