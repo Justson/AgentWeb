@@ -80,7 +80,7 @@ public final class AgentWeb {
         this.mAgentWebSettings = agentBuilder.mAgentWebSettings;
         this.mIEventHandler = agentBuilder.mIEventHandler;
         TAG_TARGET = ACTIVITY_TAG;
-        if (agentBuilder.mJavaObject != null && !agentBuilder.mJavaObject.isEmpty()){
+        if (agentBuilder.mJavaObject != null && !agentBuilder.mJavaObject.isEmpty()) {
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilder.mJavaObject);
         }
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
@@ -91,7 +91,7 @@ public final class AgentWeb {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
             mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilder.mAgentWebUIController);
 
-            mWebParentLayout.setErrorLayoutRes(agentBuilder.errorLayout,agentBuilder.reloadId);
+            mWebParentLayout.setErrorLayoutRes(agentBuilder.errorLayout, agentBuilder.reloadId);
             mWebParentLayout.setErrorView(agentBuilder.errorView);
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
@@ -126,7 +126,7 @@ public final class AgentWeb {
 
         if (agentBuilderFragment.mJavaObject != null && !agentBuilderFragment.mJavaObject.isEmpty()) {
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilderFragment.mJavaObject);
-            LogUtils.i(TAG,"mJavaObject size:"+this.mJavaObjects.size());
+            LogUtils.i(TAG, "mJavaObject size:" + this.mJavaObjects.size());
 
         }
         this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
@@ -138,7 +138,7 @@ public final class AgentWeb {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
             mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilderFragment.mAgentWebUIController);
 
-            mWebParentLayout.setErrorLayoutRes(agentBuilderFragment.errorLayout,agentBuilderFragment.reloadId);
+            mWebParentLayout.setErrorLayoutRes(agentBuilderFragment.errorLayout, agentBuilderFragment.reloadId);
             mWebParentLayout.setErrorView(agentBuilderFragment.errorView);
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
@@ -319,7 +319,7 @@ public final class AgentWeb {
         if (mJsInterfaceHolder == null) {
             mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get(), this.mSecurityType);
         }
-        LogUtils.i(TAG,"mJavaObjects:"+mJavaObjects.size());
+        LogUtils.i(TAG, "mJavaObjects:" + mJavaObjects.size());
         if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
             mJsInterfaceHolder.addJavaObjects(mJavaObjects);
         }
@@ -364,7 +364,7 @@ public final class AgentWeb {
         DefaultChromeClient mDefaultChromeClient =
                 new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
 
-        LogUtils.i(TAG,"WebChromeClient:"+this.mWebChromeClient);
+        LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
         MiddleWareWebChromeBase header = this.mMiddleWareWebChromeBaseHeader;
         if (header != null) {
             MiddleWareWebChromeBase tail = header;
@@ -569,13 +569,13 @@ public final class AgentWeb {
         }
 
 
-        public ConfigIndicatorBuilder setAgentWebParent(ViewGroup viewGroup, ViewGroup.LayoutParams lp) {
+        public ConfigIndicatorBuilder setAgentWebParent(@Nullable ViewGroup viewGroup, @Nullable ViewGroup.LayoutParams lp) {
             this.mViewGroup = viewGroup;
             mLayoutParams = lp;
             return new ConfigIndicatorBuilder(this);
         }
 
-        public ConfigIndicatorBuilder setAgentWebParent(ViewGroup viewGroup, ViewGroup.LayoutParams lp, int position) {
+        public ConfigIndicatorBuilder setAgentWebParent(@Nullable ViewGroup viewGroup, @Nullable ViewGroup.LayoutParams lp, int position) {
             this.mViewGroup = viewGroup;
             mLayoutParams = lp;
             this.index = position;
@@ -596,8 +596,6 @@ public final class AgentWeb {
             headers.additionalHttpHeader(k, v);
 
         }
-
-
 
 
         private PreAgentWeb buildAgentWeb() {
@@ -631,7 +629,7 @@ public final class AgentWeb {
 
         public AgentWeb go(@Nullable String url) {
             if (!isReady) {
-//                throw new IllegalStateException(" please call ready before go  to finish all webview settings");  //i want to do this , but i cannot;
+//                throw new IllegalStateException(" please call ready before go to finish all webview settings");  //i want to do this , but i cannot;
                 ready();
             }
             return mAgentWeb.go(url);
@@ -716,7 +714,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder setSecutityType(@Nullable SecurityType secutityType) {
+        public CommonAgentBuilder setSecurityType(@NonNull SecurityType secutityType) {
             this.mAgentBuilder.mSecurityType = secutityType;
             return this;
         }
@@ -776,7 +774,7 @@ public final class AgentWeb {
         }
 
         public CommonAgentBuilder useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
-            if(middleWrareWebClientBase==null){
+            if (middleWrareWebClientBase == null) {
                 return this;
             }
             if (this.mAgentBuilder.header == null) {
@@ -789,7 +787,7 @@ public final class AgentWeb {
         }
 
         public CommonAgentBuilder useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
-            if(middleWareWebChromeBase==null){
+            if (middleWareWebChromeBase == null) {
                 return this;
             }
             if (this.mAgentBuilder.mChromeMiddleWareHeader == null) {
@@ -801,13 +799,14 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder setMainFrameErrorView(@NonNull View view){
-            this.mAgentBuilder.errorView=view;
+        public CommonAgentBuilder setMainFrameErrorView(@NonNull View view) {
+            this.mAgentBuilder.errorView = view;
             return this;
         }
-        public CommonAgentBuilder setMainFrameErrorView(@LayoutRes int errorLayout,@IdRes int reloadId){
-            this.mAgentBuilder.errorLayout=errorLayout;
-            this.mAgentBuilder.reloadId=reloadId;
+
+        public CommonAgentBuilder setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int reloadId) {
+            this.mAgentBuilder.errorLayout = errorLayout;
+            this.mAgentBuilder.reloadId = reloadId;
             return this;
         }
 
@@ -815,6 +814,7 @@ public final class AgentWeb {
             this.mAgentBuilder.mAgentWebUIController = agentWebUIController;
             return this;
         }
+
         public PreAgentWeb createAgentWeb() {
             return mAgentBuilder.buildAgentWeb();
         }
@@ -1006,7 +1006,7 @@ public final class AgentWeb {
         }
 
         public CommonBuilderForFragment useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
-            if(middleWrareWebClientBase==null){
+            if (middleWrareWebClientBase == null) {
                 return this;
             }
             if (this.mAgentBuilderFragment.header == null) {
@@ -1019,7 +1019,7 @@ public final class AgentWeb {
         }
 
         public CommonBuilderForFragment useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
-            if(middleWareWebChromeBase==null){
+            if (middleWareWebChromeBase == null) {
                 return this;
             }
             if (this.mAgentBuilderFragment.mChromeMiddleWareHeader == null) {
@@ -1031,13 +1031,14 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setMainFrameErrorView(@NonNull View view){
-            this.mAgentBuilderFragment.errorView=view;
+        public CommonBuilderForFragment setMainFrameErrorView(@NonNull View view) {
+            this.mAgentBuilderFragment.errorView = view;
             return this;
         }
-        public CommonBuilderForFragment setMainFrameErrorView(@LayoutRes int errorLayout,@IdRes int reloadId){
-            this.mAgentBuilderFragment.errorLayout=errorLayout;
-            this.mAgentBuilderFragment.reloadId=reloadId;
+
+        public CommonBuilderForFragment setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int reloadId) {
+            this.mAgentBuilderFragment.errorLayout = errorLayout;
+            this.mAgentBuilderFragment.reloadId = reloadId;
             return this;
         }
 
@@ -1060,7 +1061,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setSecurityType(SecurityType type) {
+        public CommonBuilderForFragment setSecurityType(@NonNull SecurityType type) {
             this.mAgentBuilderFragment.mSecurityType = type;
             return this;
         }

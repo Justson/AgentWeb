@@ -66,7 +66,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .addDownLoadResultListener(getDownLoadResultListener())
                 .setAgentWebSettings(getAgentWebSettings())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
-                .setSecutityType(AgentWeb.SecurityType.strict)
+                .setSecurityType(AgentWeb.SecurityType.strict)
                 .createAgentWeb()//
                 .ready()
                 .go(getUrl());

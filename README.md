@@ -263,7 +263,8 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * 支付宝使用需要引入支付宝SDK ，并在项目中依赖 ， 微信支付不需要做任何操作。
 * `AgentWeb` 内部使用了 AlertDialog 需要依赖 `AppCompat` 主题 。 
 * `setAgentWebParent` 不支持  `ConstraintLayout` 。
-* `mAgentWeb.getWebLifeCycle().onPause();`会暂停应用内所有`WebView`的计算能力 。
+* `mAgentWeb.getWebLifeCycle().onPause();`会暂停应用内所有`WebView` 。
+* `minSdkVersion` 低于等于16自定义`WebView`请注意 `JS` 之间通信安全。
 
 
 ## 文档帮助
