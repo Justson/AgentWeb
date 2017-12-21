@@ -401,7 +401,7 @@ public class AgentWebUtils {
         }
         try {
             Class clazz = o.getClass();
-            Method mMethod = clazz.getMethod(methodName, clazzs);
+            Method mMethod = clazz.getDeclaredMethod(methodName, clazzs);
             mMethod.setAccessible(true);
             return mMethod;
         } catch (Throwable ignore) {

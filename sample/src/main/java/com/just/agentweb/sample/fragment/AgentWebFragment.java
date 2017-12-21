@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettings;
+import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUIControllerImplBase;
 import com.just.agentweb.ChromeClientCallbackManager;
 import com.just.agentweb.DefaultMsgConfig;
@@ -179,7 +180,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             Log.i(TAG, "onProgressChanged:" + newProgress + "  view:" + view);
         }
     };
-    private Gson mGson = new Gson();
+    private Gson mGson = new Gson(); //用于方便打印测试
     protected WebViewClient mWebViewClient = new WebViewClient() {
 
         @Override
@@ -223,13 +224,13 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
 
-        /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现。*/
-        /*public void onMainFrameError(AgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
+        /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
+        public void onMainFrameError(AgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
 
             Log.i(TAG, "AgentWebFragment onMainFrameError");
             agentWebUIController.onMainFrameError(view,errorCode,description,failingUrl);
 
-        }*/
+        }
 
         @Override
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
