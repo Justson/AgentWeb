@@ -23,6 +23,7 @@ import android.webkit.WebViewClient;
 public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
     protected AgentWeb mAgentWeb;
+    private AgentWebUIControllerImplBase mAgentWebUIController;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setWebView(getWebView())
                 .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebLayout(getWebLayout())
+                .setAgentWebUIController(getAgentWebUIController())
                 .interceptUnkownScheme()
                 .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
                 .addDownLoadResultListener(getDownLoadResultListener())
@@ -172,6 +174,10 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
     protected PermissionInterceptor getPermissionInterceptor() {
+        return null;
+    }
+
+    public  @Nullable AgentWebUIControllerImplBase getAgentWebUIController() {
         return null;
     }
 }
