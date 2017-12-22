@@ -63,48 +63,58 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     }
 
     private void createErrorLayout() {
-        ViewStub mViewStub = (ViewStub) this.findViewById(R.id.mainframe_error_viewsub_id);
+
         final FrameLayout mFrameLayout = new FrameLayout(getContext());
         mFrameLayout.setId(R.id.mainframe_error_container_id);
         if (this.errorView == null) {
             LayoutInflater mLayoutInflater = LayoutInflater.from(getContext());
             LogUtils.i(TAG,"errorLayoutRes:"+errorLayoutRes);
             mLayoutInflater.inflate(errorLayoutRes, mFrameLayout, true);
-            final int index = this.indexOfChild(mViewStub);
-            this.removeViewInLayout(mViewStub);
-            final ViewGroup.LayoutParams layoutParams = getLayoutParams();
-            if (layoutParams != null) {
-                this.addView(mFrameLayout, index, layoutParams);
-            } else {
-                this.addView(mFrameLayout, index);
-            }
         } else {
             mFrameLayout.addView(errorView);
         }
 
+        ViewStub mViewStub = (ViewStub) this.findViewById(R.id.mainframe_error_viewsub_id);
+        final int index = this.indexOfChild(mViewStub);
+        this.removeViewInLayout(mViewStub);
+        final ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        if (layoutParams != null) {
+            this.addView(mFrameLayout, index, layoutParams);
+        } else {
+            this.addView(mFrameLayout, index);
+        }
+
         mFrameLayout.setVisibility(View.VISIBLE);
         if (clickId != -1) {
-            mFrameLayout.findViewById(clickId)
-                    .setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (getWebView() != null) {
-                                getWebView().reload();
-                            }
-                        }
-                    });
-        } else {
+           View clickView= mFrameLayout.findViewById(clickId);
+           if(clickView!=null){
+               clickView.setOnClickListener(new OnClickListener() {
+                   @Override
+                   public void onClick(View v) {
+                       if (getWebView() != null) {
+                           getWebView().reload();
+                       }
+                   }
+               });
+               return;
+           }else{
 
-            mFrameLayout.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (getWebView() != null) {
-                        getWebView().reload();
-                    }
+               if(LogUtils.isDebug()){
+                   LogUtils.i(TAG,"ClickView is null , cannot bind accurate view to refresh or reload , your clickId:"+clickId);
+               }
+           }
 
-                }
-            });
         }
+
+        mFrameLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getWebView() != null) {
+                    getWebView().reload();
+                }
+
+            }
+        });
     }
 
     void hidePageMainFrameError() {
