@@ -43,7 +43,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:3.0.0-beta'
+   compile 'com.just.agentweb:agentweb:3.0.0-rc'
    ```
 * Maven
 	
@@ -51,7 +51,7 @@ WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>3.0.0-beta</version>
+	  <version>3.0.0-rc</version>
 	  <type>pom</type>
 	</dependency>
 	
@@ -239,7 +239,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 ```
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
-    SUPPORT_LIB_VERSION=25.2.0(该值会更新)
+    SUPPORT_LIB_VERSION=27.0.2(该值会更新)
 ```
 
 
