@@ -3,6 +3,7 @@ package com.just.agentweb;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -177,7 +178,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         }
 
 
-        if (ExecuteTasksMap.getInstance().contains(url)||ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) { //该链接正在下载
+        if (ExecuteTasksMap.getInstance().contains(url) || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) { //该链接正在下载
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
                         mDownLoadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
@@ -243,59 +244,18 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private File getFile(String contentDisposition, String url) {
 
         try {
-           /* String filename = "";
-            if (!TextUtils.isEmpty(contentDisposition) && contentDisposition.contains("filename") && !contentDisposition.endsWith("filename")) {
-
-                int position = contentDisposition.indexOf("filename");
-                filename = contentDisposition.substring(position);
-                if (filename.contains("=")) {
-                    filename = filename.replace("filename=", "");
-                } else {
-                    filename = filename.replace("filename", "");
-                }
-            }
-            if (TextUtils.isEmpty(filename) && !TextUtils.isEmpty(url) && !url.endsWith("/")) {
-
-                int p = url.lastIndexOf("/");
-                if (p != -1)
-                    filename = url.substring(p + 1);
-                if (filename.contains("?")) {
-                    int index = filename.indexOf("?");
-                    filename = filename.substring(0, index);
-
-                }
-            }
-
-            if (TextUtils.isEmpty(filename)) {
-                filename = AgentWebUtils.md5(url);
-            }
-            LogUtils.i(TAG, "name:" + filename);
-            if (filename.length() > 64) {
-                filename = filename.substring(filename.length() - 64, filename.length());
-            }
-            LogUtils.i(TAG, "filename:" + filename+"   contentDisposition:"+contentDisposition);
-            return AgentWebUtils.createFileByName(mContext, filename, false);*/
-
 
             String fileName = getFileName(contentDisposition);
-            if (TextUtils.isEmpty(fileName)) {
-                fileName = url.substring(url.lastIndexOf('/') + 1);
+            if (TextUtils.isEmpty(fileName)&&!TextUtils.isEmpty(url)) {
+                Uri mUri = Uri.parse(url);
+                fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/')+1);
             }
-            if (fileName.startsWith("\"")) {
-                fileName = fileName.substring(1);
-            }
-            if (fileName.endsWith("\"")) {
-                fileName = fileName.substring(0, fileName.length() - 1);
-            }
-
-            if (TextUtils.isEmpty(fileName)) {
-                fileName = AgentWebUtils.md5(url);
-            }
-            LogUtils.i(TAG, "======> download file name:" + fileName);
             if (fileName.length() > 64) {
                 fileName = fileName.substring(fileName.length() - 64, fileName.length());
             }
-            LogUtils.i(TAG, "filename:" + fileName);
+            if (TextUtils.isEmpty(fileName)) {
+                fileName = AgentWebUtils.md5(url);
+            }
             return AgentWebUtils.createFileByName(mContext, fileName, false);
         } catch (Throwable e) {
             if (LogUtils.isDebug())

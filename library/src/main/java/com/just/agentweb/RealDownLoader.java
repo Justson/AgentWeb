@@ -207,7 +207,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
                 }
             }
         } catch (Exception e) {
-            if (LogUtils.isDebug()){
+            if (LogUtils.isDebug()) {
                 e.printStackTrace();
             }
         }
@@ -243,7 +243,9 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
             String ticker = mDownLoadTask.getDownLoadMsgConfig().getTrickter();
             mNotify = new Notify(mContext, id);
 
-            mNotify.notify_progress(rightPendIntent, smallIcon, ticker, mDownLoadTask.getDownLoadMsgConfig().getFileDownLoad(), progressHint, false, false, false, buildCancelContent(mContext, id));
+            String title = TextUtils.isEmpty(mDownLoadTask.getFile().getName()) ? mDownLoadTask.getDownLoadMsgConfig().getFileDownLoad() : mDownLoadTask.getFile().getName();
+
+            mNotify.notify_progress(rightPendIntent, smallIcon, ticker, title, progressHint, false, false, false, buildCancelContent(mContext, id));
             mNotify.sent();
         }
     }
