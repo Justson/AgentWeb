@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
@@ -21,6 +20,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.alipay.sdk.app.H5PayCallback;
 import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
 
@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
+ * Created by cenxiaozhong.
  * source code  https://github.com/Justson/AgentWeb
  */
 
@@ -45,6 +46,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private static final String WEBVIEWCLIENTPATH = "android.webkit.WebViewClient";
     public static final String INTENT_SCHEME = "intent://";
     public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
+    public static final String ALIPAYS_PAY_SCHEME = "alipays://";
     public static final String HTTP_SCHEME = "http://";
     public static final String HTTPS_SCHEME = "https://";
     private static final boolean hasAlipayLib;
@@ -68,7 +70,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         } catch (Throwable ignore) {
             tag = false;
         }
-        hasAlipayLib = tag;
+        hasAlipayLib = false;
 
         LogUtils.i(TAG, "hasAlipayLib:" + hasAlipayLib);
     }
@@ -112,37 +114,42 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             return true;
         }
 
-        if (request.getUrl().toString().toLowerCase().startsWith(HTTP_SCHEME) || request.getUrl().toString().toLowerCase().startsWith(HTTPS_SCHEME)) {
-            return false;
+        String url = request.getUrl().toString();
+
+        if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
+            return (webClientHelper && hasAlipayLib && isAlipay(view, url));
         }
 
         if (!webClientHelper) {
             return false;
         }
-        if (handleNormalLinked(request.getUrl() + "")) {
+        if (handleLinked(url)) {
             return true;
         }
 
         LogUtils.i(TAG, "helper:" + webClientHelper + "  isInterceptUnkownScheme:" + isInterceptUnkownScheme);
-        if (request.getUrl().toString().startsWith(INTENT_SCHEME)) { //
-            handleIntentUrl(request.getUrl() + "");
+
+        if (url.startsWith(INTENT_SCHEME)) { //
+            handleIntentUrl(url);
             return true;
         }
 
-        if (request.getUrl().toString().startsWith(WEBCHAT_PAY_SCHEME)) {
+        if (url.startsWith(WEBCHAT_PAY_SCHEME)) {//微信支付
             startActivity(request.getUrl().toString());
             return true;
         }
-        if (hasAlipayLib && isAlipay(view, request.getUrl() + "")) {
+
+        if (url.startsWith(ALIPAYS_PAY_SCHEME) && openOtherPage(url)) {
+            LogUtils.i(TAG, "alipays scheme open alipay ~~ ");
             return true;
         }
 
-        if (queryActivies(request.getUrl().toString()) > 0 && handleOtherAppScheme(request.getUrl().toString())) {
+        if (queryActivies(url) > 0 && handleOtherScheme(url)) {
             LogUtils.i(TAG, "intercept OtherAppScheme");
             return true;
         }
         if (isInterceptUnkownScheme) {
-            LogUtils.i(TAG, "intercept InterceptUnkownScheme");
+            LogUtils.i(TAG, "intercept InterceptUnkownScheme :" + request.getUrl());
             return true;
         }
 
@@ -152,13 +159,13 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         return super.shouldOverrideUrlLoading(view, request);
     }
 
-    private boolean handleOtherAppScheme(String url) {
+    private boolean handleOtherScheme(String url) {
 
         LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
         switch (schemeHandleType) {
 
             case DERECT_OPEN_OTHER_APP: //直接打开其他App
-                openOtherApp(url);
+                openOtherPage(url);
                 return true;
             case ASK_USER_OPEN_OTHER_APP:  //咨询用户是否打开其他App
                 if (mAgentWebUIController.get() != null) {
@@ -205,17 +212,17 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", WEBVIEWCLIENTPATH + ".shouldOverrideUrlLoading", WebView.class, String.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, url))) {
             return true;
         }
-        if (url.toLowerCase().startsWith(HTTP_SCHEME) || url.toLowerCase().startsWith(HTTPS_SCHEME)) {
-            return false;
+
+        if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
+            return (webClientHelper && hasAlipayLib && isAlipay(view, url));
         }
 
         if (!webClientHelper) {
             return false;
         }
-        if (handleNormalLinked(url)) { //电话 ， 邮箱 ， 短信
+        if (handleLinked(url)) { //电话 ， 邮箱 ， 短信
             return true;
         }
-
         if (url.startsWith(INTENT_SCHEME)) { //Intent scheme
             handleIntentUrl(url);
             return true;
@@ -225,16 +232,16 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             startActivity(url);
             return true;
         }
-        if (hasAlipayLib && isAlipay(view, url)) { //支付宝
+        if (url.startsWith(ALIPAYS_PAY_SCHEME) && openOtherPage(url)) {
             return true;
         }
 
-        if (queryActivies(url) > 0 && handleOtherAppScheme(url)) { //打开其他App
+        if (queryActivies(url) > 0 && handleOtherScheme(url)) { //打开Scheme 相对应的页面
             LogUtils.i(TAG, "intercept OtherAppScheme");
             return true;
         }
-        if (isInterceptUnkownScheme) { // 手机里面没有页面能匹配到该链接 ， 也就是无法处理的scheme返回True，默认拦截下来
-            LogUtils.i(TAG, "intercept InterceptUnkownScheme");
+        if (isInterceptUnkownScheme) { // 手机里面没有页面能匹配到该链接 ， 也就是无法处理的scheme返回True，拦截下来。
+            LogUtils.i(TAG, "intercept InterceptUnkownScheme : " + url);
             return true;
         }
 
@@ -271,7 +278,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             if (TextUtils.isEmpty(intentUrl) || !intentUrl.startsWith(INTENT_SCHEME))
                 return;
 
-            if (openOtherApp(intentUrl)) {
+            if (openOtherPage(intentUrl)) {
                 return;
             }
             /*intent=new Intent().setData(Uri.parse("market://details?id=" + intent.getPackage()));
@@ -297,7 +304,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
     }
 
-    private boolean openOtherApp(String intentUrl) {
+    private boolean openOtherPage(String intentUrl) {
         try {
             Intent intent;
             Activity mActivity = null;
@@ -323,39 +330,39 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private boolean isAlipay(final WebView view, String url) {
 
         try {
+
             Activity mActivity = null;
             if ((mActivity = mWeakReference.get()) == null)
                 return false;
+            /**
+             * 推荐采用的新的二合一接口(payInterceptorWithUrl),只需调用一次
+             */
             final PayTask task = new PayTask(mActivity);
-            final String ex = task.fetchOrderInfoFromH5PayUrl(url);
-            if (!TextUtils.isEmpty(ex)) {
-                AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-                    public void run() {
-                        final H5PayResultModel result = task.h5Pay(ex, true);
-                        if (!TextUtils.isEmpty(result.getReturnUrl())) {
-                            AgentWebUtils.runInUiThread(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    view.loadUrl(result.getReturnUrl());
-                                }
-                            });
-                        }
+            boolean isIntercepted = task.payInterceptorWithUrl(url, true, new H5PayCallback() {
+                @Override
+                public void onPayResult(final H5PayResultModel result) {
+                    final String url = result.getReturnUrl();
+                    if (!TextUtils.isEmpty(url)) {
+                        AgentWebUtils.runInUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                view.loadUrl(url);
+                            }
+                        });
                     }
-                });
-
-                return true;
-            }
+                }
+            });
+            LogUtils.i(TAG, "alipay-isIntercepted:" + isIntercepted + "  url:" + url);
+            return isIntercepted;
         } catch (Throwable ignore) {
             if (AgentWebConfig.DEBUG) {
                 ignore.printStackTrace();
             }
-
         }
         return false;
     }
 
-    private boolean handleNormalLinked(String url) {
+    private boolean handleLinked(String url) {
         if (url.startsWith(WebView.SCHEME_TEL) || url.startsWith("sms:") || url.startsWith(WebView.SCHEME_MAILTO)) {
             try {
                 Activity mActivity = null;
@@ -415,7 +422,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
     //
     private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
-        LogUtils.i(TAG, "onMainFrameError:" + failingUrl+"  mWebViewClient:"+mWebViewClient);
+        LogUtils.i(TAG, "onMainFrameError:" + failingUrl + "  mWebViewClient:" + mWebViewClient);
         mErrorUrls.add(failingUrl);
         if (this.mWebViewClient != null && webClientHelper) {  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
             Method mMethod = this.onMainFrameErrorMethod;
@@ -448,7 +455,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 mAgentWebUIController.get().onShowMainFrame();
             }
         }
-        if(!mErrorUrls.isEmpty()){
+        if (!mErrorUrls.isEmpty()) {
             mErrorUrls.clear();
         }
         super.onPageFinished(view, url);
@@ -519,7 +526,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
                     case 1:
-                        openOtherApp(url);
+                        openOtherPage(url);
                         break;
                 }
                 return true;

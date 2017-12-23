@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.just.agentweb.AgentWeb;
+import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.WebDefaultSettingsManager;
 import com.just.agentweb.sample.widget.CommonIndicator;
 import com.just.agentweb.sample.R;
@@ -45,6 +46,8 @@ public class CustomIndicatorFragment extends AgentWebFragment {
                 .setPermissionInterceptor(mPermissionInterceptor)
                 .setReceivedTitleCallback(mCallback)
                 .setSecurityType(AgentWeb.SecurityType.strict)
+                .interceptUnkownScheme()
+                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());

@@ -57,7 +57,7 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    compile files('libs/alipaySingle-20170510.jar')
+    compile files('libs/alipaysdk-20170922.jar')
     compile 'us.feras.mdv:markdownview:1.1.0'
     compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
     compile 'com.github.lzyzsd:jsbridge:1.0.4'
