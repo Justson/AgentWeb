@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettings;
-import com.just.agentweb.AgentWebUIControllerImplBase;
 import com.just.agentweb.ChromeClientCallbackManager;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
@@ -45,6 +44,7 @@ import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddleWareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
 import com.just.agentweb.sample.common.FragmentKeyDown;
+import com.just.agentweb.sample.common.UIController;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
@@ -98,7 +98,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setReceivedTitleCallback(mCallback)//标题回调。
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
-                .setAgentWebUIController(new AgentWebUIControllerImplBase()) //AgentWebUIController 统一控制UI AgentWeb3.0.0 加入。
+                .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的页面，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .useMiddleWareWebChrome(getMiddleWareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
@@ -286,7 +286,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
                 case R.id.iv_back:
 
-                    if (!mAgentWeb.back())
+                    if (!mAgentWeb.back())// true表示AgentWeb处理了该事件
                         AgentWebFragment.this.getActivity().finish();
 
                     break;
@@ -419,7 +419,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public void onDestroyView() {
-//        toCleanWebCache();
         mAgentWeb.getWebLifeCycle().onDestroy();
         super.onDestroyView();
     }
