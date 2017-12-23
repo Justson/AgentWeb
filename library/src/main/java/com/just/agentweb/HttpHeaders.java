@@ -6,6 +6,7 @@ import java.util.Map;
 
 /**
  * Created by cenxiaozhong on 2017/7/5.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public  class HttpHeaders {

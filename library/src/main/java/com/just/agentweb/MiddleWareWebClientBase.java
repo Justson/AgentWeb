@@ -4,6 +4,7 @@ import android.webkit.WebViewClient;
 
 /**
  * Created by cenxiaozhong on 2017/12/15.
+ *  https://github.com/Justson/AgentWeb
  */
 
 public class MiddleWareWebClientBase extends WrapperWebViewClient {

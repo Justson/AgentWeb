@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
+ *  https://github.com/Justson/AgentWeb
  */
 
 public class Notify {

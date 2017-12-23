@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         switch (position) {
 
             /*Activity agentWeb*/
-            case 0://使用常量更好
+            case 0://项目中请使用常量替代
 
                 startActivity(new Intent(this, WebActivity.class));
                 break;

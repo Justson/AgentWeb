@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class DownLoadTask implements Serializable {

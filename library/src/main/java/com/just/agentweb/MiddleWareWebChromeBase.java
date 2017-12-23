@@ -4,6 +4,7 @@ import android.webkit.WebChromeClient;
 
 /**
  * Created by cenxiaozhong on 2017/12/16.
+ *  https://github.com/Justson/AgentWeb
  */
 
 public class MiddleWareWebChromeBase extends WebChromeClientWrapper {

@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 /**
  * Created by cenxiaozhong on 2017/5/24.
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class FileParcel implements Parcelable {
