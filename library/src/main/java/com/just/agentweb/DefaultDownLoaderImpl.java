@@ -229,6 +229,10 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
     private void performDownload(String url, long contentLength, File file) {
 
         ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
+        if (mAgentWebUIController.get() != null) {
+            mAgentWebUIController.get()
+                    .showMessage(mDownLoadMsgConfig.getPreLoading()+":"+file.getName(), TAG.concat("|performDownload"));
+        }
         //并行下载.
         if (isParallelDownload.get()) {
             new RealDownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon == -1 ? R.mipmap.download : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
@@ -246,9 +250,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         try {
 
             String fileName = getFileName(contentDisposition);
-            if (TextUtils.isEmpty(fileName)&&!TextUtils.isEmpty(url)) {
+            if (TextUtils.isEmpty(fileName) && !TextUtils.isEmpty(url)) {
                 Uri mUri = Uri.parse(url);
-                fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/')+1);
+                fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/') + 1);
             }
             if (fileName.length() > 64) {
                 fileName = fileName.substring(fileName.length() - 64, fileName.length());

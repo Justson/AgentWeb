@@ -58,6 +58,7 @@ public final class DefaultMsgConfig {
 
         private String preLoading = "即将开始下载文件";
 
+
         public String getPreLoading() {
             return preLoading;
         }
