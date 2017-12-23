@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettings;
-import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUIControllerImplBase;
 import com.just.agentweb.ChromeClientCallbackManager;
 import com.just.agentweb.DefaultMsgConfig;
@@ -49,8 +48,6 @@ import com.just.agentweb.sample.common.FragmentKeyDown;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
- * <p>
- * <p>
  * source code  https://github.com/Justson/AgentWeb
  */
 
@@ -92,10 +89,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
-                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度-1为默认值，高度为2，单位为dp。
+                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
+                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
                 .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings。
-                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)了,会覆盖AgentWeb DefaultWebClient。
+                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
                 .setReceivedTitleCallback(mCallback)//标题回调。
@@ -103,8 +100,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .setAgentWebUIController(new AgentWebUIControllerImplBase()) //AgentWebUIController 统一控制UI AgentWeb3.0.0 加入。
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的页面，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
-                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入。
-                .useMiddleWareWebClient(getMiddleWareWebClient()) //如何不需要用到中间件这行请删除 AgentWeb 3.0.0 加入。
+                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
+                .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
                 .openParallelDownload()//打开并行下载 , 默认串行下载。
                 .setNotifyIcon(R.mipmap.download) //下载通知图标。
                 .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
@@ -119,8 +116,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
-
+        //AgentWeb 没有把WebView的功能全面覆盖 ，所有某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置
         mAgentWeb.getWebCreator().get().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
+        //mAgentWeb.getWebCreator().get()  获取WebView .
 
     }
 
@@ -132,18 +130,23 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
         @Override
         public boolean intercept(String url, String[] permissions, String action) {
-            Log.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
+            Log.i(TAG, "url:" + url + "  permission:" + mGson.toJson(permissions) + " action:" + action);
             return false;
         }
     };
 
 
+    /**
+     *  下载文件完成后，回调文件的绝对路径 ，DownLoadResultListener只会在触发文件下载回调 ， 如果文件存在，并且完整 ，
+     *  AgentWeb则默认打开它。
+     */
     protected DownLoadResultListener mDownLoadResultListener = new DownLoadResultListener() {
+        //下载成功
         @Override
         public void success(String path) {
             //do you work
         }
-
+        //下载失败
         @Override
         public void error(String path, String resUrl, String cause, Throwable e) {
             //do you work
@@ -225,12 +228,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
 
         /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
-        public void onMainFrameError(AgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
+       /* public void onMainFrameError(AgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
 
             Log.i(TAG, "AgentWebFragment onMainFrameError");
             agentWebUIController.onMainFrameError(view,errorCode,description,failingUrl);
 
-        }
+        }*/
 
         @Override
         public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
@@ -313,8 +316,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
-        Uri url = Uri.parse(targetUrl);
-        intent.setData(url);
+        Uri mUri = Uri.parse(targetUrl);
+        intent.setData(mUri);
         startActivity(intent);
 
 
@@ -399,13 +402,13 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public void onResume() {
-        mAgentWeb.getWebLifeCycle().onResume();
+        mAgentWeb.getWebLifeCycle().onResume();//恢复
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        mAgentWeb.getWebLifeCycle().onPause();
+        mAgentWeb.getWebLifeCycle().onPause(); //暂停应用内所有WebView ， 调用mWebView.resumeTimers(); 恢复。
         super.onPause();
     }
 

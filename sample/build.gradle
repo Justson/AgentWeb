@@ -52,8 +52,8 @@ dependencies {
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
-//    compile project(':library')
-        compile 'com.just.agentweb:agentweb:3.0.0-rc'
+    compile project(':library')
+//        compile 'com.just.agentweb:agentweb:3.0.0-rc'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'

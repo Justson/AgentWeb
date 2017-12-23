@@ -177,7 +177,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         }
 
 
-        if (ExecuteTasksMap.getInstance().contains(url)) {
+        if (ExecuteTasksMap.getInstance().contains(url)||ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) { //该链接正在下载
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
                         mDownLoadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
