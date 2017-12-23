@@ -6,27 +6,8 @@
 
 ## AgentWeb 介绍
 
-AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、 加强 Web 安全的库 。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
+AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、带有错误页、 加强 Web 安全的库  。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
 
-## 前言 
-WebView 可谓是每个应用必备的一个控件了 ，但是它不是一个完善的控件 ， 比如说自身就不支持下载和上传文件以及全屏视频等等 ， 在这些地方或多或少都会踩到坑 ，AgentWeb 就是为了帮用户减少没必要踩的坑 ， 让用户轻轻松松一句话就完成所有 Web 页面的渲染与交互 。   
-
-
-## AgentWeb 功能
-1. 支持进度条以及自定义进度条
-2. 支持文件下载以及文件下载断点续传
-3. 支持下载通知形式提示进度
-4. 简化 `Javascript` 通信 
-5. 支持 `Android 4.4 Kitkat` 以及其他版本文件上传
-6. 支持注入 `Cookies`
-7. 加强 `Web` 安全
-8. 支持全屏播放视频
-9. 兼容低版本 `Js` 安全通信
-10. 支持调起支付宝，微信支付
-11. 默认支持定位
-12. 支持传入 `WebLayout`（下拉回弹效果）
-13. 支持自定义 `WebView` 
-14. 支持 `JsBridge`
 
 
 ## 为什么要使用 AgentWeb ？
@@ -237,7 +218,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 
 * #### AgentWeb 所依赖的库
 ```
-    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
+    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"(3.0.0开始该库可选)
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     SUPPORT_LIB_VERSION=27.0.2(该值会更新)
 ```
@@ -264,7 +245,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * `AgentWeb` 内部使用了 AlertDialog 需要依赖 `AppCompat` 主题 。 
 * `setAgentWebParent` 不支持  `ConstraintLayout` 。
 * `mAgentWeb.getWebLifeCycle().onPause();`会暂停应用内所有`WebView` 。
-* `minSdkVersion` 低于等于16自定义`WebView`请注意 `JS` 之间通信安全。
+* `minSdkVersion` 低于等于16以下自定义`WebView`请注意与 `JS` 之间通信安全。
 
 
 ## 文档帮助
