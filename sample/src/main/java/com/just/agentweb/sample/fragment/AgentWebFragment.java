@@ -346,7 +346,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
                 case R.id.refresh:
                     if (mAgentWeb != null)
-                        mAgentWeb.getLoader().reload();
+                        mAgentWeb.getLoader().reload(); //刷新
                     return true;
 
                 case R.id.copy:
