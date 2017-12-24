@@ -63,8 +63,9 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private Handler.Callback mCallback = null;
     private Method onMainFrameErrorMethod = null;
     private Object mPayTask; //alipay
+    public static final String SCHEME_SMS = "sms:";
     private Set<String> mErrorUrls = new ArraySet<>();
-    private Set<String>mWaittingFinishSet=new ArraySet<>();
+    private Set<String> mWaittingFinishSet = new ArraySet<>();
 
     static {
         boolean tag = true;
@@ -370,8 +371,13 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         return false;
     }
 
+
+
     private boolean handleLinked(String url) {
-        if (url.startsWith(WebView.SCHEME_TEL) || url.startsWith("sms:") || url.startsWith(WebView.SCHEME_MAILTO)) {
+        if (url.startsWith(WebView.SCHEME_TEL)
+                || url.startsWith(SCHEME_SMS)
+                || url.startsWith(WebView.SCHEME_MAILTO)
+                || url.startsWith(WebView.SCHEME_GEO)) {
             try {
                 Activity mActivity = null;
                 if ((mActivity = mWeakReference.get()) == null)
@@ -396,7 +402,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view, url, favicon);
         }
 
-        if(!mWaittingFinishSet.contains(url)){
+        if (!mWaittingFinishSet.contains(url)) {
             mWaittingFinishSet.add(url);
         }
         super.onPageStarted(view, url, favicon);
@@ -465,13 +471,13 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         }
 
         LogUtils.i(TAG, "onPageFinished:" + mErrorUrls + "  contains:" + mErrorUrls.contains(url));
-        if (!mErrorUrls.contains(url)&&mWaittingFinishSet.contains(url)) {
+        if (!mErrorUrls.contains(url) && mWaittingFinishSet.contains(url)) {
             if (mAgentWebUIController.get() != null) {
                 LogUtils.i(TAG, "onPageFinished onShowMainFrame");
                 mAgentWebUIController.get().onShowMainFrame();
             }
         }
-        if(mWaittingFinishSet.contains(url)){
+        if (mWaittingFinishSet.contains(url)) {
             mWaittingFinishSet.remove(url);
         }
         if (!mErrorUrls.isEmpty()) {
