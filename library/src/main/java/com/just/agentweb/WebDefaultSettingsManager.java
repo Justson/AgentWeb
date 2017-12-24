@@ -18,6 +18,9 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
 
     private android.webkit.WebSettings mWebSettings;
     private static final String TAG = WebDefaultSettingsManager.class.getSimpleName();
+    public static final String USERAGENT_UC=" UCBrowser/11.6.4.950 ";
+    public static final String USERAGENT_QQ_BROWSER=" MQQBrowser/8.0 ";
+    public static final String USERAGENT_AGENTWEB=" agentweb/3.0.0-rc ";
 
     public static WebDefaultSettingsManager getInstance() {
         return new WebDefaultSettingsManager();
@@ -98,8 +101,14 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         //缓存文件最大值
         mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
 
-        mWebSettings.setUserAgentString(getWebSettings().getUserAgentString().concat(" agentweb/3.0.0-rc "));
+        mWebSettings.setUserAgentString(getWebSettings()
+                .getUserAgentString()
+                .concat(USERAGENT_AGENTWEB)
+                .concat(USERAGENT_UC)
+                .concat(USERAGENT_QQ_BROWSER));
 
+
+        LogUtils.i(TAG,"UserAgentString : "+mWebSettings.getUserAgentString());
 
 
     }

@@ -46,7 +46,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private static final String WEBVIEWCLIENTPATH = "android.webkit.WebViewClient";
     public static final String INTENT_SCHEME = "intent://";
     public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
-    public static final String ALIPAYS_PAY_SCHEME = "alipays://";
+    public static final String ALIPAYS_SCHEME = "alipays://";
     public static final String HTTP_SCHEME = "http://";
     public static final String HTTPS_SCHEME = "https://";
     private static final boolean hasAlipayLib;
@@ -70,7 +70,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         } catch (Throwable ignore) {
             tag = false;
         }
-        hasAlipayLib = false;
+        hasAlipayLib = tag;
 
         LogUtils.i(TAG, "hasAlipayLib:" + hasAlipayLib);
     }
@@ -135,11 +135,11 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         }
 
         if (url.startsWith(WEBCHAT_PAY_SCHEME)) {//微信支付
-            startActivity(request.getUrl().toString());
+            startActivity(url);
             return true;
         }
 
-        if (url.startsWith(ALIPAYS_PAY_SCHEME) && openOtherPage(url)) {
+        if (url.startsWith(ALIPAYS_SCHEME) && openOtherPage(url)) {
             LogUtils.i(TAG, "alipays scheme open alipay ~~ ");
             return true;
         }
@@ -232,7 +232,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             startActivity(url);
             return true;
         }
-        if (url.startsWith(ALIPAYS_PAY_SCHEME) && openOtherPage(url)) {
+        if (url.startsWith(ALIPAYS_SCHEME) && openOtherPage(url)) {//支付宝
             return true;
         }
 

@@ -6,7 +6,7 @@ import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by cenxiaozhong on 2017/5/23.
- *  source CODE  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class App extends Application {
