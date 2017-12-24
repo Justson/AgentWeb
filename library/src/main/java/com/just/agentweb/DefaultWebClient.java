@@ -25,6 +25,7 @@ import com.alipay.sdk.app.PayTask;
 import com.alipay.sdk.util.H5PayResultModel;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -61,6 +62,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
     private Handler.Callback mCallback = null;
     private Method onMainFrameErrorMethod = null;
+    private Object mPayTask; //alipay
     private Set<String> mErrorUrls = new CopyOnWriteArraySet<>();
 
     static {
@@ -337,7 +339,12 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             /**
              * 推荐采用的新的二合一接口(payInterceptorWithUrl),只需调用一次
              */
-            final PayTask task = new PayTask(mActivity);
+            if(mPayTask==null){
+                Class clazz = Class.forName("com.alipay.sdk.app.PayTask");
+                Constructor<?> mConstructor = clazz.getConstructor(Activity.class);
+                mPayTask = mConstructor.newInstance(mActivity);
+            }
+            final PayTask task = (PayTask) mPayTask;
             boolean isIntercepted = task.payInterceptorWithUrl(url, true, new H5PayCallback() {
                 @Override
                 public void onPayResult(final H5PayResultModel result) {
