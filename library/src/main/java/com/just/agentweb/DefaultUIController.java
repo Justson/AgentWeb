@@ -226,6 +226,7 @@ public class DefaultUIController extends AgentWebUIController {
     @Override
     public void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
 
+        LogUtils.i(TAG,"mWebParentLayout onMainFrameError:"+mWebParentLayout);
         if(mWebParentLayout!=null){
             mWebParentLayout.showPageMainFrameError();
         }

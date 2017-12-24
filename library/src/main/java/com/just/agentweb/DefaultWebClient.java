@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v4.util.ArraySet;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.webkit.WebResourceError;
@@ -30,7 +31,6 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Created by cenxiaozhong.
@@ -63,7 +63,8 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private Handler.Callback mCallback = null;
     private Method onMainFrameErrorMethod = null;
     private Object mPayTask; //alipay
-    private Set<String> mErrorUrls = new CopyOnWriteArraySet<>();
+    private Set<String> mErrorUrls = new ArraySet<>();
+    private Set<String>mWaittingFinishSet=new ArraySet<>();
 
     static {
         boolean tag = true;
@@ -339,7 +340,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             /**
              * 推荐采用的新的二合一接口(payInterceptorWithUrl),只需调用一次
              */
-            if(mPayTask==null){
+            if (mPayTask == null) {
                 Class clazz = Class.forName("com.alipay.sdk.app.PayTask");
                 Constructor<?> mConstructor = clazz.getConstructor(Activity.class);
                 mPayTask = mConstructor.newInstance(mActivity);
@@ -394,6 +395,10 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClientCallbackManager.getPageLifeCycleCallback() != null) {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view, url, favicon);
         }
+
+        if(!mWaittingFinishSet.contains(url)){
+            mWaittingFinishSet.add(url);
+        }
         super.onPageStarted(view, url, favicon);
 
     }
@@ -444,6 +449,9 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 return;
             }
         }
+        /*if(view.getVisibility()==View.VISIBLE){
+            view.setVisibility(View.GONE);
+        }*/
         if (mAgentWebUIController.get() != null) {
             mAgentWebUIController.get().onMainFrameError(view, errorCode, description, failingUrl);
         }
@@ -456,11 +464,15 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
         }
 
-        LogUtils.i(TAG, "onPageFinished:" + mErrorUrls);
-        if (!mErrorUrls.contains(url)) {
+        LogUtils.i(TAG, "onPageFinished:" + mErrorUrls + "  contains:" + mErrorUrls.contains(url));
+        if (!mErrorUrls.contains(url)&&mWaittingFinishSet.contains(url)) {
             if (mAgentWebUIController.get() != null) {
+                LogUtils.i(TAG, "onPageFinished onShowMainFrame");
                 mAgentWebUIController.get().onShowMainFrame();
             }
+        }
+        if(mWaittingFinishSet.contains(url)){
+            mWaittingFinishSet.remove(url);
         }
         if (!mErrorUrls.isEmpty()) {
             mErrorUrls.clear();
@@ -608,11 +620,11 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         }
     }
 
-    public static enum OpenOtherAppWays {
+    public static enum OpenOtherPageWays {
         DERECT(DefaultWebClient.DERECT_OPEN_OTHER_APP), ASK(DefaultWebClient.ASK_USER_OPEN_OTHER_APP), DISALLOW(DefaultWebClient.DISALLOW_OPEN_OTHER_APP);
         int code;
 
-        OpenOtherAppWays(int code) {
+        OpenOtherPageWays(int code) {
             this.code = code;
         }
     }

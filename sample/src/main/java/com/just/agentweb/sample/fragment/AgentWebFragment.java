@@ -104,7 +104,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
                 .openParallelDownload()//打开并行下载 , 默认串行下载。
                 .setNotifyIcon(R.mipmap.download) //下载通知图标。
-                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
                 .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
                 .createAgentWeb()//创建AgentWeb。
                 .ready()//设置 WebSettings。

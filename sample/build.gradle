@@ -5,7 +5,7 @@ android {
     buildToolsVersion "27.0.2"
     defaultConfig {
         applicationId "com.just.agentweb.sample"
-        minSdkVersion 17
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"

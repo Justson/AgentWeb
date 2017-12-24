@@ -41,7 +41,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebChromeClient(getWebChromeClient())
                 .interceptUnkownScheme()
-                .setOpenOtherAppWays(DefaultWebClient.OpenOtherAppWays.ASK)
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .setReceivedTitleCallback(getReceivedTitleCallback())
                 .setSecurityType(AgentWeb.SecurityType.strict)
                 .addDownLoadResultListener(getDownLoadResultListener())

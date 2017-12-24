@@ -99,8 +99,8 @@ public final class AgentWeb {
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
         this.webClientHelper = agentBuilder.webclientHelper;
         this.isInterceptUnkownScheme = agentBuilder.isInterceptUnkownScheme;
-        if (agentBuilder.openOtherApp != null) {
-            this.openOtherAppWays = agentBuilder.openOtherApp.code;
+        if (agentBuilder.openOtherPage != null) {
+            this.openOtherAppWays = agentBuilder.openOtherPage.code;
         }
         this.mMiddleWrareWebClientBaseHeader = agentBuilder.header;
         this.mMiddleWareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
@@ -145,8 +145,8 @@ public final class AgentWeb {
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper = agentBuilderFragment.webClientHelper;
         this.isInterceptUnkownScheme = agentBuilderFragment.isInterceptUnkownScheme;
-        if (agentBuilderFragment.openOtherApp != null) {
-            this.openOtherAppWays = agentBuilderFragment.openOtherApp.code;
+        if (agentBuilderFragment.openOtherPage != null) {
+            this.openOtherAppWays = agentBuilderFragment.openOtherPage.code;
         }
         this.mMiddleWrareWebClientBaseHeader = agentBuilderFragment.header;
         this.mMiddleWareWebChromeBaseHeader = agentBuilderFragment.mChromeMiddleWareHeader;
@@ -526,7 +526,7 @@ public final class AgentWeb {
         private int icon = -1;
         private DownloadListener mDownloadListener = null;
         private AgentWebUIController mAgentWebUIController;
-        private DefaultWebClient.OpenOtherAppWays openOtherApp = null;
+        private DefaultWebClient.OpenOtherPageWays openOtherPage = null;
         private boolean isInterceptUnkownScheme = false;
 
         private MiddleWareWebClientBase header;
@@ -763,8 +763,8 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonAgentBuilder setOpenOtherAppWays(@Nullable DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
-            this.mAgentBuilder.openOtherApp = openOtherAppWays;
+        public CommonAgentBuilder setOpenOtherPageWays(@Nullable DefaultWebClient.OpenOtherPageWays openOtherPageWays) {
+            this.mAgentBuilder.openOtherPage = openOtherPageWays;
             return this;
         }
 
@@ -886,7 +886,7 @@ public final class AgentWeb {
         private int icon = -1;
         private DownloadListener mDownloadListener = null;
         private AgentWebUIController mAgentWebUIController;
-        private DefaultWebClient.OpenOtherAppWays openOtherApp = null;
+        private DefaultWebClient.OpenOtherPageWays openOtherPage = null;
         private boolean isInterceptUnkownScheme = false;
         private MiddleWareWebClientBase header;
         private MiddleWareWebClientBase tail;
@@ -1111,8 +1111,8 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setOpenOtherAppWays(@Nullable DefaultWebClient.OpenOtherAppWays openOtherAppWays) {
-            this.mAgentBuilderFragment.openOtherApp = openOtherAppWays;
+        public CommonBuilderForFragment setOpenOtherPageWays(@Nullable DefaultWebClient.OpenOtherPageWays openOtherPageWays) {
+            this.mAgentBuilderFragment.openOtherPage = openOtherPageWays;
             return this;
         }
 

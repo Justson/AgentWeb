@@ -60,7 +60,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setWebLayout(getWebLayout())
                 .setAgentWebUIController(getAgentWebUIController())
                 .interceptUnkownScheme()
-                .setOpenOtherAppWays(getOpenOtherAppWay())
+                .setOpenOtherPageWays(getOpenOtherAppWay())
                 .useMiddleWareWebChrome(getMiddleWareWebChrome())
                 .useMiddleWareWebClient(getMiddleWareWebClient())
                 .addDownLoadResultListener(getDownLoadResultListener())
@@ -219,7 +219,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
     public @Nullable
-    DefaultWebClient.OpenOtherAppWays getOpenOtherAppWay() {
+    DefaultWebClient.OpenOtherPageWays getOpenOtherAppWay() {
         return null;
     }
     protected @NonNull MiddleWareWebChromeBase getMiddleWareWebChrome() {
