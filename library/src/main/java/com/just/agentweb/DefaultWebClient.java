@@ -285,21 +285,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             if (openOtherPage(intentUrl)) {
                 return;
             }
-            /*intent=new Intent().setData(Uri.parse("market://details?id=" + intent.getPackage()));
-            info=packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            LogUtils.i(TAG,"resolveInfo:"+info);
-            if (info != null) {  //跳到应用市场
-                mActivity.startActivity(intent);
-                return;
-            }
-
-            intent=new Intent().setData(Uri.parse("https://play.google.com/store/apps/details?id=" + intent.getPackage()));
-            info=packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-            LogUtils.i(TAG,"resolveInfo:"+info);
-            if (info != null) {  //跳到浏览器
-                mActivity.startActivity(intent);
-                return;
-            }*/
         } catch (Throwable e) {
             if (LogUtils.isDebug())
                 e.printStackTrace();
