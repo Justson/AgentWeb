@@ -1,10 +1,6 @@
 ![](./img/logo.png)
 
-[![License][licensesvg]][license]
-
-### [README of English](./README_ENGLISH.md)
-
-## AgentWeb 介绍
+## AgentWeb 介绍  [README of English](./README_ENGLISH.md)
 
 AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、带有错误页、权限拦截、支持多个 WebViewClient ，WebChromeClient、 加强 Web 安全的库  。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
 
@@ -232,12 +228,12 @@ mAgentWeb = AgentWeb.with(this)//
                 .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的页面，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .useMiddleWareWebChrome(getMiddleWareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
                 .openParallelDownload()//打开并行下载 , 默认串行下载。
                 .setNotifyIcon(R.mipmap.download) //下载通知图标。
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
                 .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
                 .createAgentWeb()//创建AgentWeb。
                 .ready()//设置 WebSettings。
@@ -355,7 +351,8 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 ### 最后如果该库对你有帮助不妨对右上角点点 Star 对我支持 ， 感谢万分 ! 当然我更喜欢你 Fork PR 成为项目贡献者 。 [AgentWeb](https://github.com/Justson/AgentWeb)  
 
 
-## License
+[![License][licensesvg]][license]
+## License 
 ```
 Copyright (C)  Justson(https://github.com/Justson/AgentWeb)
 
