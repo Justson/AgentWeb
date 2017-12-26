@@ -6,16 +6,16 @@
 
 ## AgentWeb 介绍
 
-AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、带有错误页、 加强 Web 安全的库  。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
+AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、带有错误页、权限拦截、支持多个 WebViewClient ，WebChromeClient、 加强 Web 安全的库  。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
 
 
 
 ## 为什么要使用 AgentWeb ？
 
-|     Web     |  文件下载  |  文件上传 |   Js 通信  |  断点续传  |   使用简易度 |  进度条      | 线程安全    |全屏视频|
-|:-----------:|:---------:|:---------|:---------|:---------|:----------- |:-----------|:-----------|:--------|
-| WebView     |  不支持    | 不支持		|  支持    |     不支持 |    麻烦      | 没有        | 不安全      |不支持|
-| AgentWeb	 |  支持		| 支持		|  更简洁   |   支持    |    简洁      | 有         |  安全       |支持|	
+|     Web     |  文件下载  |  文件上传 |   Js 通信  |   使用简易度 |  进度条      |全屏视频|
+|:-----------:|:---------:|:---------|:---------|:----------- |:-----------|:--------|
+| WebView     |  不支持    | 不支持		|  支持      |    麻烦      | 没有        |不支持|
+| AgentWeb	 |  支持		| 支持		|  更简洁    |    简洁      | 有         |支持|	
 
 ## 引入
 
@@ -102,7 +102,7 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
 ```
 
 * #### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
-```
+```java
  @Override
     protected void onPause() {
         mAgentWeb.getWebLifeCycle().onPause();
@@ -193,8 +193,7 @@ String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 ```
 protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
 
-        //AgentWeb 在触发某些敏感的 Action 时候会回调该方法， 比如定位触发 。
-        //例如 https//:www.baidu.com 该 Url 需要定位权限， 返回false ，如果版本大于等于23 ， agentWeb 会动态申请权限 ，true 该Url对应页面请求定位失败。
+        //AgentWeb 在触发某些敏感的权限时候会回调该方法， 比如定位触发 。
         //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
         @Override
         public boolean intercept(String url, String[] permissions, String action) {
