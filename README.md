@@ -12,10 +12,10 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 
 ## 为什么要使用 AgentWeb ？
 
-|     Web     |  文件下载  |  文件上传 |   Js 通信  |   使用简易度 |  进度条      |全屏视频|
-|:-----------:|:---------:|:---------|:---------|:----------- |:-----------|:--------|
-| WebView     |  不支持    | 不支持		|  支持      |    麻烦      | 没有        |不支持|
-| AgentWeb	 |  支持		| 支持		|  更简洁    |    简洁      | 有         |支持|	
+|     Web     |  文件下载  |  文件上传 |   Js 通信  |   使用简易度 |  进度条      |全屏视频| ......|
+|:-----------:|:---------:|:---------|:---------|:----------- |:-----------|:--------|:--------|
+| WebView     |  不支持    | 不支持		|  支持      |    麻烦      | 没有        |不支持|不支持|
+| AgentWeb	 |  支持		| 支持		|  更简洁    |    简洁      | 有         |支持|支持|	
 
 ## 引入
 
@@ -43,7 +43,7 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 [AgentWebX5](https://github.com/Justson/AgentWebX5)
 
 ## 使用
-#### 简洁易用
+#### 普通使用
 
 ```
 mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
@@ -106,7 +106,7 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
 ```java
  @Override
     protected void onPause() {
-        mAgentWeb.getWebLifeCycle().onPause();
+        mAgentWeb.getWebLifeCycle().onPause(); //暂停应用内所有 WebView ， 需谨慎。
         super.onPause();
 
     }
@@ -141,7 +141,7 @@ android:configChanges="orientation|screenSize"
 
 * #### 定位
 ```
-<!--AgentWeb 是默认启动定位的 ， 请在你的 AndroidManifest 文件里面加入如下权限 。-->
+<!--AgentWeb 是默认允许定位的 ，如果你需要该功能 ， 请在你的 AndroidManifest 文件里面加入如下权限 。-->
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 ```
@@ -175,6 +175,12 @@ private WebChromeClient mWebChromeClient=new WebChromeClient(){
         }
     };                
 ```
+* #### 返回上一页
+```java
+if (!mAgentWeb.back()){// true表示AgentWeb处理了该事件
+       AgentWebFragment.this.getActivity().finish();
+}
+```
 
 * #### 获取 WebView
 ```
@@ -184,6 +190,15 @@ private WebChromeClient mWebChromeClient=new WebChromeClient(){
 * #### 同步 Cookie
 ```
 AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
+```
+
+* #### MiddleWareWebChromeBase 支持多个 WebChromeClient
+```java
+//略，请查看 Sample
+```
+* #### MiddleWareWebClientBase 支持多个 WebViewClient
+```java
+//略，请查看 Sample
 ```
 
 * #### 查看 Cookies
@@ -204,6 +219,31 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
     };
 ```
 
+* #### AgentWeb 完整使用
+```java
+mAgentWeb = AgentWeb.with(this)//
+                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(-1,-1))//传入AgentWeb的父控件。
+                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
+                .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings。
+                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
+                .setWebChromeClient(mWebChromeClient) //WebChromeClient
+                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
+                .setReceivedTitleCallback(mCallback)//标题回调。
+                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
+                .addDownLoadResultListener(mDownLoadResultListener) //下载回调
+                .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的页面，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
+                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
+                .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
+                .openParallelDownload()//打开并行下载 , 默认串行下载。
+                .setNotifyIcon(R.mipmap.download) //下载通知图标。
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+                .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
+                .createAgentWeb()//创建AgentWeb。
+                .ready()//设置 WebSettings。
+                .go(getUrl()); //WebView载入该url地址的页面并显示。
+```
+
 * #### AgentWeb 所需要的权限
 ```
  	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
@@ -218,7 +258,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 
 * #### AgentWeb 所依赖的库
 ```
-    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"(3.0.0开始该库可选)
+    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"//(3.0.0开始该库可选)
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     SUPPORT_LIB_VERSION=27.0.2(该值会更新)
 ```
@@ -261,7 +301,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 	* 支持拦截未知的页面 。
 	* 支持调起其他应用 。 
 * v_2.0.1 更新
-	* 支持并行下载 ， 修复 #114 #109 
+	* 支持并行下载 ， 修复 #114 #109 。
 * v_2.0.0 更新
 	* 加入动态权限 。
 	* 拍照。 
