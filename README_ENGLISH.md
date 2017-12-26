@@ -1,37 +1,19 @@
 ![](./img/logo.png)
 
 
-
 ## Introduction to AgentWeb
 
-AgentWeb is a highly encapsulated Android WebView, easy to use, with a progress bar, support for file upload, download, simplify Javascript communication, chain calls, and enhance Web security library. Let's take a few lines of code into a small browser in your app. For more use please refer to the above sample. [Download AgentWeb] (./ agentweb.apk)
-
-## Preface
-WebView can be described as a control for each application, but it is not a perfect control, for example, do not support their own download and upload files and full-screen video, etc., in these places will be more or less stepped on the pit, AgentWeb Is to help users reduce the need to step on the pit, so that users simply a word to complete all the Web page rendering and interaction.
+AgentWeb is an Android WebView based, easy to use with progress bar to support file upload, download, streamline communication with Javascript, chained calls, with error pages, permission blocking, targeting, support for multiple WebViewClient, WebChromeClient, Web safe library. Let you integrate a few lines of code into a lightweight browser in your application. For more use, please refer to the above sample. [Download AgentWeb] (./ agentweb.apk)
 
 
-## AgentWeb functionality
-1. Support progress bar and custom progress bar
-2. Support for file downloads
-3. Support file download breakpoint resume
-4. Support download notification form prompt progress
-5. Simplify Javascript communication
-6. Support Android 4.4 Kitkat and other versions of the file upload
-7. Support for injecting Cookies
-8. Strengthen Web security
-9. Support full-screen video playback
-10. Compatible with low-version Js secure communication
-11. More power saving.
-12. Support the transfer of WeChat payment
-13. support transfer from Alipay (please refer to sample)
-14. The default support for positioning
+
 
 ## Why use AgentWeb?
 
-| Web | Download | File Upload | Js communication | HTTP | ease of use | progress bar | thread-safe | full-screen video |
-|: -----------: |: ---------: |: --------- |: --------- |: --------- |: ----------- |: ----------- |: ----------- | -------- |
-| WebView | Not supported | Not supported | Supported | Not supported | Trouble | No | Unsafe | Not supported |
-Support | Simplicity | Support | Concise | Yes | Security | Support |
+Web | File Download | File Upload | Js Communication | Ease of Use | Progress Bar | Full Screen Video | ...... |
+|:-----------:|:---------:|:---------|:---------|:----------- |:-----------|:--------|:--------|
+| WebView     |  Not supported   | Not supported		|  Support      |    trouble      | Not supported       |Not supported|Not supported|
+| AgentWeb	 |  Support		| Support		|  Simpler    |   Simple    | Available        |Support|Support|
 
 ## download
 
@@ -54,27 +36,31 @@ Support | Simplicity | Support | Concise | Yes | Security | Support |
 	```
 	
 ## use
-#### Why is it easy to use it? The following Jingdong renderings, just a word!
+#### Common use
 
 ```
-mAgentWeb = AgentWeb.with(this)//传入Activity
-                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams
-                .useDefaultIndicator()// 使用默认进度条
-                .defaultProgressBarColor() // 使用默认进度条颜色
-                .setReceivedTitleCallback(mCallback) //设置 Web 页面的 title 回调
+mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
+                .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//Incoming AgentWeb parent control, if the parent control is RelativeLayout, then the second parameter needs to be passed RelativeLayout.LayoutParams, the first parameter and the second parameter should correspond.
+                .useDefaultIndicator()// use the default progress bar
+                .defaultProgressBarColor() // Use default progress bar color
+                .setReceivedTitleCallback(mCallback) //Set the Web page title callback
                 .createAgentWeb()//
                 .ready()
                 .go("http://www.jd.com");
 
 ```
 
-There is no one Setting, and even WebChromeClient do not have to have a progress bar.
+
 
 
 ## renderings
-<a href="img/jd.png"> <img src = "img/jd.png" width = "30%" /> </a> <a href="img/wechat pay.png"> <img src = "img/wechat pay.png" width = "30%" /> </a> <a href="img/alipay.png"> <img src = "img/alipay.png" width = "30% "/> </a>
+<a href="img/img-function-list.png"><img src="img/img-function-list.png" width="30%"/></a> <a href="img/img-permission.png"><img src="img/img-permission.png" width="30%"/></a> <a href="img/img-sonic.png"><img src="img/img-sonic.png" width="30%"/></a>
 
-<a href="img/js.png"> <img src = "img/js.png" width = "30%" /> </a> <a href="img/custom setting.png"> <img Src = "img/custom setting.png" width = "30%" /> </a> <a href="img/video.png"> <img src = "img/video.png" width = "30% "/> </a>
+<a href="img/img-scheme.png"><img src="img/img-scheme.png" width="30%"/></a> <a href="img/img-download.png"><img src="img/img-download.png" width="30%"/></a> <a href="img/img-bounce.png"><img src="img/img-bounce.png" width="30%"/></a>
+
+<a href="img/jd.png"><img src="img/jd.png" width="30%"/></a> <a href="img/wechat pay.png"><img src="img/wechat pay.png" width="30%"/></a> <a href="img/alipay.png"><img src="img/alipay.png" width="30%"/></a>
+
+<a href="img/js.png"><img src="img/js.png" width="30%"/></a> <a href="img/custom setting.png"><img src="img/custom setting.png" width="30%"/></a> <a href="img/video.png"><img src="img/video.png" width="30%"/></a>
 
 
 
@@ -190,14 +176,55 @@ Private WebViewClient mWebViewClient = new WebViewClient () {
 AgentWebConfig.syncCookies ("http://www.jd.com", "ID = XXXX")
 ```
 
+* #### MiddleWareWebChromeBase supports multiple WebChromeClients
+```java
+// Slightly, please see Sample
+```
+* #### MiddleWareWebClientBase supports multiple WebViewClient
+```java
+// Slightly, please see Sample
+```
+
 * #### View Cookies
 ```
 String cookies = AgentWebConfig.getCookiesByUrl (targetUrl);
 ```
 
 
-## confused
-If your project needs to be confused, please add the following configuration
+* #### AgentWeb Complete use
+```java
+mAgentWeb = AgentWeb.with (this) //
+                .setAgentWebParent ((LinearLayout) view, new LinearLayout.LayoutParams (-1, -1)) // The AgentWeb parent passed in.
+                .setIndicatorColorWithHeight (-1, 2) / / Set the color and height of the progress bar, -1 is the default value, the height is 2, the unit is dp.
+                .setAgentWebWebSettings (getSettings ()) // Set AgentWebSettings.
+                .setWebViewClient (mWebViewClient) // WebViewClient, same as WebView, but do not get WebView calling setWebViewClient (xx) method, which will override AgentWeb DefaultWebClient and the corresponding middleware will also fail.
+                .setWebChromeClient (mWebChromeClient) // WebChromeClient
+                .setPermissionInterceptor (mPermissionInterceptor) / / permission to intercept 2.0.0 join.
+                .setReceivedTitleCallback (mCallback) // Title callback.
+                . SetSecurityType (AgentWeb.SecurityType.strict) / / strict mode Android 4.2.2 The following will give up the injection of the object, use AgentWebView did not affect.
+                .addDownLoadResultListener (mDownLoadResultListener) // Download callback
+                .setAgentWebUIController (new UIController (getActivity ())) // Custom UI AgentWeb3.0.0 join.
+                .setMainFrameErrorView (R.layout.agentweb_error_page, -1) / / Parameter 1 is the layout of the error display, parameter 2 Click refresh control ID -1 Click to refresh the entire layout Click AgentWeb 3.0.0 to join.
+                .useMiddleWareWebChrome (getMiddleWareWebChrome ()) // Set up WebChromeClient middleware, support multiple WebChromeClient, AgentWeb 3.0.0 join.
+                .useMiddleWareWebClient (getMiddleWareWebClient ()) / / Set WebViewClient middleware, support multiple WebViewClient, AgentWeb 3.0.0 join.
+                . OpenParallelDownload () / / open parallel download, the default serial download.
+                .setNotifyIcon (R.mipmap.download) // Download notification icon.
+                .setOpenOtherPageWays (DefaultWebClient.OpenOtherPageWays.ASK) / / open other pages, the pop-up query users to other applications AgentWeb 3.0.0 to join.
+                .interceptUnkownScheme () / / Interception Scheme AgentWeb 3.0.0 can not find the relevant page to join.
+                .createAgentWeb () // Create AgentWeb.
+                .ready () / / Set WebSettings.
+                .go (getUrl ()); // WebView Load and display the URL page.
+```
+
+## Precautions
+* Alipay need to use the introduction of Alipay SDK, and dependent on the project, WeChat payment do not need to do any operation.
+* AgentWeb‘s internal use of AlertDialog depends on the `AppCompat` theme.
+* `setAgentWebParent` does not support `ConstraintLayout`.
+* `mAgentWeb.getWebLifeCycle (). onPause ();` Will pause all `WebView` in the application.
+* `minSdkVersion` 16 or less Customize` WebView` Please be aware of communication safety with `JS`.
+
+## ProGuard rules
+If your project needs to be proguard , please add the following configuration
 
 ```
 -keep class com.just.library. ** {
@@ -206,37 +233,64 @@ If your project needs to be confused, please add the following configuration
 -dontwarn com.just.library. **
 
 ```
-Java injection class do not confuse, such as sample inside the AndroidInterface class, need Keep.
+Java injection class do not proguard, such as sample inside the AndroidInterface class, need Keep.
 
 ```
 -keepclassmembers class com.just.library.agentweb.AndroidInterface {*;}
 ```
 
-## Update log
-* V_1.2.5 Prompt information support settings
-* V_1.2.4 support incoming IWebLayout, you can complete the pull-down effect.
-* V_1.2.3 Added download result callback.
-* V_1.2.2 Fix known bugs.
-* V_1.2.1 support transferred from Alipay, WeChat payment.
-* V_1.2.0 full support full-screen video.
-* V_1.1.2 perfect function.
+## update log
+* v_3.0.0 update
+	* Add MiddlewareWebChromeBase middleware, support multiple WebChromeClient.
+	* Add `MiddleWareWebClientBase` middleware, support multiple` WebViewClient`.
+	* Added the default error page, and supports custom error page.
+	* Join `AgentWebUIController`, unified control UI.
+	* Support for blocking unknown pages.
+	* Support to tune other applications.
+* v_2.0.1 update
+	* Support for parallel download, repair # 114 # 109.
+* v_2.0.0 update
+	* Join dynamic rights.
+	* Take pictures.
+* v_1.2.6 update
+	* Fixed Android 4.4 following layout disordered.
+* v_1.2.5 Prompt message support configuration.
+	* Prompt message support configuration.
+* v_1.2.4 update
+	* Support incoming IWebLayout, support pull-down rebound, pull-down refresh effect.
+* v_1.2.3 update
+	* Added download result callback.
+* v_1.2.2 update
+	* Fixed known bug.
+* v_1.2.1 update
+	* Support tune Alipay, WeChat payment.
+* v_1.2.0 update
+	* Full support for full screen video.
+* v_1.1.2 update
+	* Improve the function .
 
 
 
-Thank you
-* [360 Daniel SafeWebView] (https://github.com/seven456/SafeWebView)
+## Thank you
+
+* [SafeWebView] (https://github.com/seven456/SafeWebView)
 
 * [WebView reference] (https://juejin.im/post/58a037df86b599006b3fade4)
 
 
 ## have questions or have better suggestions
-* [! [QQ0Group] [qq0groupsvg]] [qq0group]
+* [![QQ0Group][qq0groupsvg]][qq0group]
 * Welcome [Issues] (https://github.com/Justson/AgentWeb/issues)
 
 
 ## about me
 An Android developer located in Shenzhen, if you have a better job offer available to me, please contact Email: xiaozhongcen@gmail.com
 
+[licensesvg]: https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg
+[license]: https://github.com/Justson/AgentWeb/blob/master/LICENSE
+
+[qq0groupsvg]: https://img.shields.io/badge/QQ群-599471474-fba7f9.svg
+[qq0group]: http://qm.qq.com/cgi-bin/qm/qr?k=KpyfInzI2nr-Lh4StG0oh68GpbcD0vMG
 
 ## Play reward
 If you like the design of AgentWeb, you can invite the author to have a cup of coffee.
@@ -244,11 +298,9 @@ If you like the design of AgentWeb, you can invite the author to have a cup of c
 <a href="img/alipay.jpg"><img src="img/alipay.jpg" width="30%"/></a> <a href="img/wechat_pay.jpg"><img src="img/wechat_pay.jpg" width="30%"/></a> <a href="img/alipay.jpg"><img src="img/alipay.jpg" width="30%"/></a>
 
 
-[Licensesvg]: https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg
+[Licensesvg]:https://img.shields.io/badge/License-Apache--2.0-brightgreen.svg
 [License]: https://github.com/Justson/AgentWeb/blob/master/LICENSE
 
-[Qq0groupsvg]: https://img.shields.io/badge/QQ group -99471474-fba7f9.svg
-[Qq0group]: http://qm.qq.com/cgi-bin/qm/qr?k=KpyfInzI2nr-Lh4StG0oh68GpbcD0vMG
 
 
 ## AgentWeb
@@ -256,6 +308,8 @@ AgentWeb is a WebView completely out of the Act, from the Activity, Fragment xml
 
 #### Finally, if the library is helpful to you, I may be grateful to the top right corner of my support, thanks! Of course, I prefer you to become a contributor to Fork PR.   [AgentWeb] (https://github.com/Justson/ AgentWeb)
 
+
+[![License][licensesvg]][license]
 ## License
 ```
 Copyright (C)  Justson(https://github.com/Justson/AgentWeb)
