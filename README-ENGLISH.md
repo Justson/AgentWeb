@@ -113,13 +113,13 @@ Window.android.callAndroid () / / call the Java layer AndroidInterface class cal
     }
 ```
 
-* #### File upload processing
-```
+* #### <del>File upload processing</del>
+```java
     @Override
     Protected void onActivityResult (int requestCode, int resultCode, Intent data) {
         MAgentWeb.uploadFileResult (requestCode, resultCode, data);
-        Super.onActivityResult (```requestCode, resultCode, data);
-        }
+        Super.onActivityResult (requestCode, resultCode, data);
+ }
 ```
 
 * #### full screen video playback
@@ -273,14 +273,14 @@ Java injection class do not proguard, such as sample inside the AndroidInterface
 
 ## Thank you
 
-* [SafeWebView] (https://github.com/seven456/SafeWebView)
+* [SafeWebView](https://github.com/seven456/SafeWebView)
 
-* [WebView reference] (https://juejin.im/post/58a037df86b599006b3fade4)
+* [WebView reference](https://juejin.im/post/58a037df86b599006b3fade4)
 
 
 ## have questions or have better suggestions
 * [![QQ0Group][qq0groupsvg]][qq0group]
-* Welcome [Issues] (https://github.com/Justson/AgentWeb/issues)
+* Welcome [Issues](https://github.com/Justson/AgentWeb/issues)
 
 
 ## about me
