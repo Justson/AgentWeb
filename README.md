@@ -6,7 +6,7 @@
 
 ## AgentWeb 介绍
 
-AgentWeb 是一个高度封装的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、带有错误页、权限拦截、支持多个 WebViewClient ，WebChromeClient、 加强 Web 安全的库  。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
+AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化 Javascript 通信 、 链式调用 、带有错误页、权限拦截、支持多个 WebViewClient ，WebChromeClient、 加强 Web 安全的库  。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
 
 
 
