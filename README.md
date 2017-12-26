@@ -1,6 +1,6 @@
 ![](./img/logo.png)
 
-## AgentWeb 介绍  [README of English](./README_ENGLISH.md)
+## AgentWeb 介绍  [English](./README-ENGLISH.md)
 
 AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 、 支持文件上传 、 下载 、 简化与 Javascript 通信 、 链式调用 、带有错误页、权限拦截、定位 、 支持多个 WebViewClient ，WebChromeClient、 加强 Web 安全的库  。让你几行代码集成一个轻量级浏览器在你的应用 。更多使用请参照上面的 sample 。 [下载 AgentWeb ](./agentweb.apk)
 
