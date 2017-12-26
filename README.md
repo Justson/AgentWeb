@@ -43,7 +43,7 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 [AgentWebX5](https://github.com/Justson/AgentWebX5)
 
 ## 使用
-#### 为什么说它简洁易用吗 ？ 下面京东效果图 ， 只需一句话 ！
+#### 简洁易用
 
 ```
 mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
@@ -56,7 +56,6 @@ mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
                 .go("http://www.jd.com");
 
 ```
-
 
 
 ## 效果图 
@@ -284,9 +283,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 	* 完善功能 。
 
 
-## 下个版本预告
-* 加入默认的错误页 。
-* 支持自定义错误页 。
+
 
 ## 致谢
 * [SafeWebView](https://github.com/seven456/SafeWebView)
