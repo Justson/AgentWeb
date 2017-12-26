@@ -56,8 +56,6 @@ mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
                 .go("http://www.jd.com");
 
 ```
-里面没有一句 Setting ， 甚至连 WebChromeClient 都不用配置就有进度条 。 
-
 
 
 
