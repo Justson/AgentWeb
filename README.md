@@ -240,7 +240,7 @@ mAgentWeb = AgentWeb.with(this)//
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
 ```
 
-* #### AgentWeb 所需要的权限
+* #### AgentWeb 所需要的权限(在你工程中根据需求选择加入权限)
 ```
  	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
