@@ -25,20 +25,20 @@
 
   function callByAndroid(){
       console.log("callByAndroid")
-      alert("Js收到消息");
-      showElement("Js收到消息-->无参方法callByAndroid被调用");
+      alert("JS收到消息");
+      showElement("JS收到消息-->无参方法callByAndroid被调用");
   }
 
   function callByAndroidParam(msg1){
      console.log("callByAndroid_param")
-    alert("Js收到消息："+msg1);
-    showElement("Js收到消息-->方法callByAndroidParam被调用,参数:"+msg1);
+    alert("JS收到消息："+msg1);
+    showElement("JS收到消息-->方法callByAndroidParam被调用,参数:"+msg1);
 
   }
   function callByAndroidMoreParams(objs,msg2,msg3){
      
-     alert("Js收到消息："+"id:"+objs.id.toString()+" name:"+objs.name+" age:"+objs.age.toString()+msg2+msg3);
-    showElement("Js收到消息-->方法callByAndroidMoreParam被调用 , 参数1:"+objs+"  参数2:"+msg2+"  参数3:"+msg3);
+     alert("JS收到消息："+"id:"+objs.id.toString()+" name:"+objs.name+" age:"+objs.age.toString()+msg2+msg3);
+    showElement("JS收到消息-->方法callByAndroidMoreParam被调用 , 参数1:"+objs+"  参数2:"+msg2+"  参数3:"+msg3);
      return "ok";
   }
 

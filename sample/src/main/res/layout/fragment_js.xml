@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <Button
-        android:text="调用Js，多个参数方法"
+        android:text="调用JS，多个参数方法"
         android:textSize="14sp"
         android:id="@+id/callJsMoreParamsButton"
         android:textColor="@color/white"
