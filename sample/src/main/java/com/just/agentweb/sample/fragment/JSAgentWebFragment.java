@@ -21,15 +21,15 @@ import org.json.JSONObject;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class JsAgentWebFragment extends AgentWebFragment {
+public class JSAgentWebFragment extends AgentWebFragment {
 
-    public static final JsAgentWebFragment getInstance(Bundle bundle) {
+    public static final JSAgentWebFragment getInstance(Bundle bundle) {
 
-        JsAgentWebFragment mJsAgentWebFragment = new JsAgentWebFragment();
+        JSAgentWebFragment mJSAgentWebFragment = new JSAgentWebFragment();
         if (bundle != null)
-            mJsAgentWebFragment.setArguments(bundle);
+            mJSAgentWebFragment.setArguments(bundle);
 
-        return mJsAgentWebFragment;
+        return mJSAgentWebFragment;
 
     }
 
