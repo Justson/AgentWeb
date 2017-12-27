@@ -47,12 +47,10 @@ public class JsAgentWebFragment extends AgentWebFragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        Log.i("Info","add android:"+mAgentWeb);
         if(mAgentWeb!=null){
+            //注入对象
             mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this.getActivity()));
-
         }
-
         view.findViewById(R.id.callJsNoParamsButton).setOnClickListener(mOnClickListener);
         view.findViewById(R.id.callJsOneParamsButton).setOnClickListener(mOnClickListener);
         view.findViewById(R.id.callJsMoreParamsButton).setOnClickListener(mOnClickListener);

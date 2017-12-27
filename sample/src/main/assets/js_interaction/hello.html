@@ -46,15 +46,15 @@
 
     showElement(msg)
 
-    window.setTimeout(sendHelloToAndroid,3000);
+    window.setTimeout(sendHelloToAndroid,1000);
 
   }
 
 
   function showElement(msg){
       var div   =document.getElementById("div_box");  //获取div
-      var ele=document.createElement('h2');    //创建P元素节点
-      ele.innerHTML=msg;                //设置p节点的内容   
+      var ele=document.createElement('h2');    //创建h2元素节点
+      ele.innerHTML=msg;                //设置h2节点的内容
       div.appendChild(ele);                    //添加子节点ele
 
 
