@@ -113,6 +113,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         initView(view);
 
+
         DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
@@ -137,8 +138,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
     /**
-     *  下载文件完成后，回调文件的绝对路径 ，DownLoadResultListener只会在触发文件下载回调 ， 如果文件存在，并且完整 ，
-     *  AgentWeb则默认打开它。
+     * 下载文件完成后，回调文件的绝对路径 ，DownLoadResultListener只会在触发文件下载回调 ， 如果文件存在，并且完整 ，
+     * AgentWeb则默认打开它。
      */
     protected DownLoadResultListener mDownLoadResultListener = new DownLoadResultListener() {
         //下载成功
@@ -146,6 +147,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void success(String path) {
             //do you work
         }
+
         //下载失败
         @Override
         public void error(String path, String resUrl, String cause, Throwable e) {
@@ -323,6 +325,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     }
 
+
     /**
      * 显示更多菜单
      *
@@ -399,6 +402,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mClipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
 
     }
+
+    private boolean isFirst = true;
 
     @Override
     public void onResume() {

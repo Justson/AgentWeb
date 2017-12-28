@@ -149,7 +149,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         }
 
         if (queryActivies(url) > 0 && handleOtherScheme(url)) {
-            LogUtils.i(TAG, "intercept OtherAppScheme");
+            LogUtils.i(TAG, "intercept OtherPageScheme");
             return true;
         }
         if (isInterceptUnkownScheme) {
@@ -440,9 +440,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                 return;
             }
         }
-        /*if(view.getVisibility()==View.VISIBLE){
-            view.setVisibility(View.GONE);
-        }*/
         if (mAgentWebUIController.get() != null) {
             mAgentWebUIController.get().onMainFrameError(view, errorCode, description, failingUrl);
         }

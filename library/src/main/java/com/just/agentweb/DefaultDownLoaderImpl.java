@@ -254,7 +254,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                 Uri mUri = Uri.parse(url);
                 fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/') + 1);
             }
-            if (fileName.length() > 64) {
+            if (!TextUtils.isEmpty(fileName)&&fileName.length() > 64) {
                 fileName = fileName.substring(fileName.length() - 64, fileName.length());
             }
             if (TextUtils.isEmpty(fileName)) {

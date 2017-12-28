@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTitleTextView;
 
 
-    public static final String[] datas = new String[]{"Activity 使用 AgentWeb", "Fragment 使用 AgentWeb ", "文件下载", "input标签文件上传", "Js 通信文件上传,兼用Android 4.4Kitkat", "Js 通信","Video 视频全屏播放", "自定义进度条", "自定义设置","电话 ， 信息 ， 邮件","自定义 WebView","下拉回弹效果","支持 Jsbridge","继承 BaseAgentWebActivity","继承 BaseAgentWebFragment","SmartRefresh 下拉刷新","地图","VasSonic 首屏秒开"};
+    public static final String[] datas = new String[]{"Activity 使用 AgentWeb", "Fragment 使用 AgentWeb ", "文件下载", "input标签文件上传", "Js 通信文件上传,兼用Android 4.4Kitkat", "Js 通信","Video 视频全屏播放", "自定义进度条", "自定义设置","电话 ， 信息 ， 邮件","自定义 WebView","下拉回弹效果","Jsbridge 例子","继承 BaseAgentWebActivity","继承 BaseAgentWebFragment","SmartRefresh 下拉刷新","地图","VasSonic 首屏秒开"};
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override

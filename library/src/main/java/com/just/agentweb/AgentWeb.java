@@ -27,7 +27,6 @@ import java.util.Map;
 
 
 /**
- * FrameLayout--嵌套WebView,ProgressBar
  * https://github.com/Justson/AgentWeb
  * author just -- cxz
  */
@@ -67,6 +66,7 @@ public final class AgentWeb {
     private boolean isInterceptUnkownScheme = false;
     private int openOtherAppWays = -1;
     private MiddleWareWebClientBase mMiddleWrareWebClientBaseHeader;
+    private MiddleWareWebChromeBase mMiddleWareWebChromeBaseHeader;
 
     private AgentWeb(AgentBuilder agentBuilder) {
         this.mActivity = agentBuilder.mActivity;
@@ -108,7 +108,7 @@ public final class AgentWeb {
         setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
-    private MiddleWareWebChromeBase mMiddleWareWebChromeBaseHeader;
+
 
     private AgentWeb(AgentBuilderFragment agentBuilderFragment) {
         TAG_TARGET = FRAGMENT_TAG;
@@ -456,8 +456,9 @@ public final class AgentWeb {
     private AgentWeb go(String url) {
         this.getLoader().loadUrl(url);
         IndicatorController mIndicatorController = null;
-        if (!TextUtils.isEmpty(url) && (mIndicatorController = getIndicatorController()) != null && mIndicatorController.offerIndicator() != null)
+        if (!TextUtils.isEmpty(url) && (mIndicatorController = getIndicatorController()) != null && mIndicatorController.offerIndicator() != null) {
             getIndicatorController().offerIndicator().show();
+        }
         return this;
     }
 
@@ -862,7 +863,7 @@ public final class AgentWeb {
         private int index = -1;
         private BaseIndicatorView v;
         private IndicatorController mIndicatorController = null;
-        /*默认进度条是打开的*/
+        /*默认进度条是显示的*/
         private boolean enableProgress = true;
         private ViewGroup.LayoutParams mLayoutParams = null;
         private WebViewClient mWebViewClient;

@@ -533,7 +533,7 @@ public class AgentWebUtils {
         return filePath;
     }
 
-    //必须执行在子线程, 会阻塞 直到文件转换完成;
+    //必须执行在子线程, 会阻塞直到文件转换完成;
     static Queue<FileParcel> convertFile(String[] paths) throws Exception {
 
         if (paths == null || paths.length == 0)
