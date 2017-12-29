@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html style="width: 100%;height: 100%;margin: 0;padding: 0">
+
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -10,151 +11,116 @@
     <meta http-equiv="Pragma" content="no-cache">
     <link rel="stylesheet" type="text/css" href="./upload.css">
     <title>上传身份证</title>
-
     <script type="text/javascript" src="event.js"></script>
     <script language="javascript">
-    
+    /**
+     * 从 file 域获取 本地图片 url
+     * 
+     */
+    function getFileUrl(sourceId) {
+        var url;
+        console.log(navigator.userAgent);
+        if (navigator.userAgent.indexOf("MSIE") >= 1) { // IE
+            url = document.getElementById(sourceId).value;
+        } else if (navigator.userAgent.indexOf("Firefox") > 0) { // Firefox
+            url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+        } else if (navigator.userAgent.indexOf("Chrome") > 0) { // Chrome
+            url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
+        }
+        return url;
+    }
+
+    /**
+     * 将本地图片 显示到浏览器上
+     *
+     */
+    function preImg(sourceId, targetId) {
+        document.getElementById("uploadFile")
+        var url = getFileUrl(sourceId);
+        console.log(url);
+        var imgPre = document.getElementById(targetId);
+        imgPre.src = url;
+    }
 
 
 
-/**
-* 从 file 域获取 本地图片 url
-* 
-*/
-function getFileUrl(sourceId) {
-var url;
-console.log(navigator.userAgent);
-if (navigator.userAgent.indexOf("MSIE")>=1) { // IE
-url = document.getElementById(sourceId).value;
-} else if(navigator.userAgent.indexOf("Firefox")>0) { // Firefox
-url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
-} else if(navigator.userAgent.indexOf("Chrome")>0) { // Chrome
-url = window.URL.createObjectURL(document.getElementById(sourceId).files.item(0));
-}
-return url;
-}
-
-/**
-* 将本地图片 显示到浏览器上
-*
-*/
-function preImg(sourceId, targetId) {
-    document.getElementById("uploadFile")
-var url = getFileUrl(sourceId);
-console.log(url);
-var imgPre = document.getElementById(targetId);
-imgPre.src = url;
-}
+    bindEvent(window, 'load', function() {
+        var ip = document.getElementById("file_upload");
 
 
+        bindEvent(ip, 'click', function(e) {
+            // alert("我是" + this + "元素, 你点击了我!");
 
-bindEvent(window, 'load', function() {
-    var ip = document.getElementById("file_upload");
-    
-    
-    bindEvent(ip, 'click', function(e){
-        // alert("我是" + this + "元素, 你点击了我!");
-    
             alert("JS  调 Android 方法成功");
-            if(window.agentWeb!=null && typeof(window.agentWeb)!="undefined"){
+            if (window.agentWeb != null && typeof(window.agentWeb) != "undefined") {
                 window.agentWeb.uploadFile();
-            }else{
+            } else {
                 alert(typeof(window.agentWeb));
             }
+        });
+
+
+
+
     });
-    
-    
-    
-    
-});
 
-//这里返回来的是一个 Json 数组 //
-function uploadFileResult(objs){
+    //这里返回来的是一个 Json 数组 //
+    function uploadFileResult(objs) {
 
-    // console.log(message);
-    //alert(objs);
-    alert("Android 调 JS 方法成功");
+        // console.log(message);
+        //alert(objs);
+        alert("Android 调 JS 方法成功");
 
-    if(objs==null||typeof(objs)=="undefined"||objs.length==0){
+        if (objs == null || typeof(objs) == "undefined" || objs.length == 0) {
 
-        //alert("");
+            //alert("");
 
-    }else{
+        } else {
 
-       var img=document.getElementById("preview");
-        /*for(var i=0;i<objs.length;i++){  //
-        img.src="data:image/png;base64," + objs[i].fileBase64*/  
-         if(objs[0]==null||objs[0]=='undefined'||objs[0]==''||objs[0].fileBase64==null||objs[0].fileBase64=='undefined'){
+            var img = document.getElementById("preview");
+            /*for(var i=0;i<objs.length;i++){  //
+            img.src="data:image/png;base64," + objs[i].fileBase64*/
+            if (objs[0] == null || objs[0] == 'undefined' || objs[0] == '' || objs[0].fileBase64 == null || objs[0].fileBase64 == 'undefined') {
 
-         }else{
-           img.src="data:image/png;base64," + objs[0].fileBase64;  
-         }
-        
+            } else {
+                img.src = "data:image/png;base64," + objs[0].fileBase64;
+            }
+
+        }
+
+
+
+
     }
-    
-    
-    
-    
-}
-
-
     </script>
-
 </head>
-<body style="width: 100%;height: 100%;margin: 0;padding: 0">
+
+<body style="width: 100%;height: 100%;margin: 0;padding: 0; position: relative;">
+    <div style="position: absolute; left: 0 ;right: 0 ; top: 0 ; margin:0 auto;max-width: 750px;height: 100%">
         <div id="div_id" style="width: 100% ; height:100%;border: 1px ;background:#000000 ; margin: 0px;">
             <!-- 头部nav -->
             <div id="nav" style="width: 100%; height: 10%;background: #f9f9f9;padding-top: 0px ;position: absolute;padding: 0px">
-                
                 <div style="width: 200px;height: 100px; position:relative;left: 50%;top: 50%;margin-left: -100px;margin-top: -50px;overflow: hidden;">
-                    
-                     <font color="#000" ><h4 style="text-align:center;line-height: 50px;">请上传身份证</h4> </font>
-
+                    <font color="#000">
+                        <h4 style="text-align:center;line-height: 50px;">请上传身份证</h4> </font>
                 </div>
-
-
                 <div style="width: 100%;height: 1px;background: #c6c6c6;position: relative;margin-top: -50px;top: 99%">
-                    
-                     
                 </div>
-               
-               
             </div>
-
             <!-- body -->
             <div id="content" style="width: 100%; height: 90% ; background: #ebebeb ;position: absolute;top: 10%;">
-                 
+                <div style="margin: 0 auto;width: 80%;height: 80%;border:3px solid #41a0f2;margin-top: 50px;overflow: hidden;">
+                    <img id="preview" src="./id.png" style="display: block;margin: 0 auto;max-width: 60%;margin-top: 20px">
+                    </img>
 
-                 <div style="margin: 0 auto;width: 80%;height: 60%;border:3px solid #41a0f2;margin-top: 50px;overflow: hidden;">
-
-                     <img id="preview" src="./id.png" style="display: block;margin: 0 auto;height:40%;width: 60%;margin-top: 20px">
-                         
-                     </img>   
-                     <p class="fontBlue ta-c mt5" style="text-align: center;">上传身份证</p>
-          
-
-
+                    <p class="fontBlue ta-c mt5" style="text-align: center;">上传身份证</p>
                     <div id="file_upload" href="javascript:;" class="file" style="display: block;margin: 0 auto;width: 50%;height: 25px;text-align: center;line-height: 25px">
-
-                                选择文件
-                    <!-- <div  >
-                     
-                    <a  style="display: flex;justify-content: center;align-items: center;">选择文件</a>
-                    </div>  -->
-                        
+                        选择文件
                     </div>
-
-                 </div>
-                 <div>
-                     
-                 </div> 
-
-            </div>    
-
-
+                </div>
+            </div>
         </div>
-
-        
-
+    </div>
 </body>
+
 </html>
