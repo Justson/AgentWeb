@@ -248,7 +248,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         if (REQUEST_CODE != requestCode)
             return;
 
-        if (resultCode == Activity.RESULT_CANCELED) {
+        if (resultCode == Activity.RESULT_CANCELED || data == null) {
             cancel();
             return;
         }
