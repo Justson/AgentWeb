@@ -344,6 +344,9 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         int sum = 0;
         for (String path : paths) {
+            if(TextUtils.isEmpty(path)){
+                continue;
+            }
             File mFile = new File(path);
             if (!mFile.exists()) {
                 continue;

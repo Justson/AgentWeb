@@ -134,6 +134,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         LogUtils.i(TAG, "helper:" + webClientHelper + "  isInterceptUnkownScheme:" + isInterceptUnkownScheme);
 
         if (url.startsWith(INTENT_SCHEME)) { //
+            LogUtils.i(TAG,""+INTENT_SCHEME+"   intercept:"+true);
             handleIntentUrl(url);
             return true;
         }
