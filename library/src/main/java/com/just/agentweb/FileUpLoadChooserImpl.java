@@ -326,6 +326,16 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void convertFileAndCallBack(final Uri[] uris) {
 
+        /*try {
+            String[] paths = AgentWebUtils.uriToPath(mActivity, uris);
+            for (int i = 0; i < paths.length; i++) {
+                File mFile = new File(paths[i]);
+                LogUtils.i(TAG, "abs:" + mFile.getAbsolutePath() + " file length:" + mFile.length() + " uri:" + uris[i] + "  parse:" + Uri.fromFile(mFile)+" write:"+mFile.canWrite()+"   read:"+mFile.canRead()+"   isDirectory:"+mFile.isDirectory());
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }*/
+
         String[] paths = null;
         if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
             mJsChannelCallback.call(null);
