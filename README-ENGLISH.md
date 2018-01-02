@@ -21,7 +21,7 @@ Web | File Download | File Upload | Js Communication | Ease of Use | Progress Ba
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:3.0.0-beta'
+   compile 'com.just.agentweb:agentweb:3.0.0'
    ```
 * Maven
 	
@@ -29,7 +29,7 @@ Web | File Download | File Upload | Js Communication | Ease of Use | Progress Ba
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>3.0.0-beta</version>
+	  <version>3.0.0</version>
 	  <type>pom</type>
 	</dependency>
 	

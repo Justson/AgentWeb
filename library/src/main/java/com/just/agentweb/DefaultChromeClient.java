@@ -377,6 +377,8 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     private void openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
 
+        LogUtils.i(TAG,"fileChooserParams:"+fileChooserParams.getFilenameHint());
+
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             filePathCallback.onReceiveValue(new Uri[]{});

@@ -20,7 +20,7 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:3.0.0-rc'
+   compile 'com.just.agentweb:agentweb:3.0.0'
    ```
 * Maven
 	
@@ -28,7 +28,7 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>3.0.0-rc</version>
+	  <version>3.0.0</version>
 	  <type>pom</type>
 	</dependency>
 	
