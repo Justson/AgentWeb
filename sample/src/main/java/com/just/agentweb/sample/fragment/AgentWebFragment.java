@@ -46,6 +46,8 @@ import com.just.agentweb.sample.client.MiddlewareWebViewClient;
 import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.common.UIController;
 
+import java.util.HashMap;
+
 /**
  * Created by cenxiaozhong on 2017/5/15.
  * source code  https://github.com/Justson/AgentWeb
@@ -188,6 +190,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private Gson mGson = new Gson(); //用于方便打印测试
     protected WebViewClient mWebViewClient = new WebViewClient() {
 
+        private HashMap<String, Long> timer = new HashMap<>();
+
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
@@ -221,6 +225,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
             Log.i(TAG, "url:" + url + " onPageStarted  target:" + getUrl());
+            timer.put(url, System.currentTimeMillis());
             if (url.equals(getUrl())) {
                 pageNavigator(View.GONE);
             } else {
@@ -229,6 +234,21 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
 
+        //2972 1483|3005 1536|2868 1785| 2889 1523| 2912 1537|2941 1628|2925 1561|2864 1669|2953 1508|2932 1693|
+        //2926.1 1592.3
+
+        //2731 1749|1234 1808|2203 1230|1648 1752|
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+
+            if(timer.get(url)!=null){
+                long overTime = System.currentTimeMillis();
+                Long startTime = timer.get(url);
+                Log.i(TAG, "  page url:" + url + "  used time:" + (overTime - startTime));
+            }
+
+        }
         /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
        /* public void onMainFrameError(AgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
 

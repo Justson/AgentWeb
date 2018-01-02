@@ -34,9 +34,6 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 	
 	```
 
-## 腾讯X5
-如果你更喜欢腾讯X5内核 ，请切换到这个仓库
-[AgentWebX5](https://github.com/Justson/AgentWebX5)
 
 ## 使用
 #### 普通使用
