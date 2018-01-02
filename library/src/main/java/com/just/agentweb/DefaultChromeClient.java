@@ -370,11 +370,11 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
 
             return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
         }
-        openFileChooserAboveL(webView, filePathCallback, fileChooserParams);
-        return true;
+
+        return openFileChooserAboveL(webView, filePathCallback, fileChooserParams);
     }
 
-    private void openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+    private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
 
         LogUtils.i(TAG,"fileChooserParams:"+fileChooserParams.getFilenameHint());
@@ -382,7 +382,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             filePathCallback.onReceiveValue(new Uri[]{});
-            return;
+            return false;
         }
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
         this.mIFileUploadChooser = mIFileUploadChooser = new FileUpLoadChooserImpl.Builder()
@@ -394,6 +394,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
                 .setPermissionInterceptor(this.mPermissionInterceptor)
                 .build();
         mIFileUploadChooser.openFileChooser();
+        return true;
 
     }
 
@@ -405,7 +406,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             super.openFileChooser(uploadFile, acceptType, capture);
             return;
         }
-        createAndOpenCommonFileLoader(uploadFile);
+        createAndOpenCommonFileLoader(uploadFile,acceptType);
     }
 
     //  Android < 3.0
@@ -415,7 +416,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             return;
         }
         Log.i(TAG, "openFileChooser<3.0");
-        createAndOpenCommonFileLoader(valueCallback);
+        createAndOpenCommonFileLoader(valueCallback,"*/*");
     }
 
     //  Android  >= 3.0
@@ -426,11 +427,11 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             super.openFileChooser(valueCallback, acceptType);
             return;
         }
-        createAndOpenCommonFileLoader(valueCallback);
+        createAndOpenCommonFileLoader(valueCallback,"*/*");
     }
 
 
-    private void createAndOpenCommonFileLoader(ValueCallback valueCallback) {
+    private void createAndOpenCommonFileLoader(ValueCallback valueCallback,String mimeType) {
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             valueCallback.onReceiveValue(new Object());
@@ -442,6 +443,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
                 .setUriValueCallback(valueCallback)
                 .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
                 .setPermissionInterceptor(this.mPermissionInterceptor)
+                .setMimeType(mimeType)
                 .build();
         this.mIFileUploadChooser.openFileChooser();
 

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Queue;
 
 import static com.just.agentweb.ActionActivity.KEY_ACTION;
+import static com.just.agentweb.ActionActivity.KEY_FILE_CHOOSER_INTENT;
 import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
 import static com.just.agentweb.ActionActivity.KEY_URI;
 import static com.just.agentweb.ActionActivity.start;
@@ -51,7 +52,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private PermissionInterceptor mPermissionInterceptor;
     private int FROM_INTENTION_CODE = 21;
     private WeakReference<AgentWebUIController> mAgentWebUIController = null;
-
+    private String mimeType = "*/*";
 
     public FileUpLoadChooserImpl(Builder builder) {
 
@@ -65,6 +66,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
+        this.mimeType = mimeType;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
     }
 
@@ -103,7 +105,26 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         ActionActivity.Action mAction = new ActionActivity.Action();
         mAction.setAction(ActionActivity.Action.ACTION_FILE);
         ActionActivity.setFileDataListener(getFileDataListener());
-        mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction));
+        mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction)
+                .putExtra(KEY_FILE_CHOOSER_INTENT, getFilechooserIntent()));
+    }
+
+    private Intent getFilechooserIntent() {
+        Intent mIntent = null;
+        if (isL && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
+            return mIntent;
+        }
+
+        Intent i = new Intent();
+        i.setAction(Intent.ACTION_GET_CONTENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        if(TextUtils.isEmpty(this.mimeType)){
+            i.setType("*/*");
+        }else{
+            i.setType(this.mimeType);
+        }
+        i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return mIntent = Intent.createChooser(i, "");
     }
 
     private ActionActivity.FileDataListener getFileDataListener() {
@@ -344,7 +365,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         int sum = 0;
         for (String path : paths) {
-            if(TextUtils.isEmpty(path)){
+            if (TextUtils.isEmpty(path)) {
                 continue;
             }
             File mFile = new File(path);
@@ -417,6 +438,12 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
         private WebView mWebView;
         private PermissionInterceptor mPermissionInterceptor;
+        String mimeType = "*/*";
+
+        public Builder setMimeType(String mimeType) {
+            this.mimeType = mimeType;
+            return this;
+        }
 
         public Builder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
             mPermissionInterceptor = permissionInterceptor;

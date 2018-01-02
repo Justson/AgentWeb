@@ -27,6 +27,7 @@ public final class ActionActivity extends Activity {
     public static final String KEY_ACTION = "KEY_ACTION";
     public static final String KEY_URI = "KEY_URI";
     public static final String KEY_FROM_INTENTION = "KEY_FROM_INTENTION";
+    public static final String KEY_FILE_CHOOSER_INTENT = "KEY_FILE_CHOOSER_INTENT";
     private static RationaleListener mRationaleListener;
     private static PermissionListener mPermissionListener;
     private static FileDataListener mFileDataListener;
@@ -59,7 +60,7 @@ public final class ActionActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             return;
         }
         Intent intent = getIntent();
@@ -95,14 +96,20 @@ public final class ActionActivity extends Activity {
                 return;
             }
 
-            Intent i = new Intent();
-            i.setAction(Intent.ACTION_GET_CONTENT);
-            i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");
-            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//            i.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024 * 1024);
-            this.startActivityForResult(Intent.createChooser(i,
-                    ""), REQUEST_CODE);
+            Intent mIntent = getIntent().getParcelableExtra(KEY_FILE_CHOOSER_INTENT);
+            if (mIntent == null) {
+                cancelAction();
+                return;
+            }
+            this.startActivityForResult(mIntent, REQUEST_CODE);
+//            Intent i = new Intent();
+//            i.setAction(Intent.ACTION_GET_CONTENT);
+//            i.addCategory(Intent.CATEGORY_OPENABLE);
+//            i.setType("*/*");
+//            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+////            i.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024 * 1024);
+//            this.startActivityForResult(Intent.createChooser(i,
+//                    ""), REQUEST_CODE);
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "找不到文件选择器");
             fileDataActionOver(-1, null);
