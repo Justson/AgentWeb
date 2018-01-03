@@ -126,7 +126,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     protected @Nullable
     String getUrl() {
-        return "https://github.com/Justson/AgentWeb";
+        return "";
     }
 
     @Override
