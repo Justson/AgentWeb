@@ -24,6 +24,7 @@ import android.webkit.WebView;
 import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
@@ -377,7 +378,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
 
-        LogUtils.i(TAG,"fileChooserParams:"+fileChooserParams.getFilenameHint());
+        LogUtils.i(TAG,"fileChooserParams:"+fileChooserParams.getAcceptTypes()+"  getTitle:"+fileChooserParams.getTitle()+" accept:"+ Arrays.toString(fileChooserParams.getAcceptTypes())+"  :"+fileChooserParams.isCaptureEnabled()+"  "+fileChooserParams.getFilenameHint()+"  intent:"+fileChooserParams.createIntent().toString());
 
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {

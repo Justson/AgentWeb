@@ -39,7 +39,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private ValueCallback<Uri> mUriValueCallback;
     private ValueCallback<Uri[]> mUriValueCallbacks;
     public static final int REQUEST_CODE = 0x254;
-    private boolean isL = false;
+    private boolean isAboveL = false;
     private WebChromeClient.FileChooserParams mFileChooserParams;
     private JsChannelCallback mJsChannelCallback;
     private boolean jsChannel = false;
@@ -52,21 +52,21 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private PermissionInterceptor mPermissionInterceptor;
     private int FROM_INTENTION_CODE = 21;
     private WeakReference<AgentWebUIController> mAgentWebUIController = null;
-    private String mimeType = "*/*";
+    private String acceptType = "*/*";
 
     public FileUpLoadChooserImpl(Builder builder) {
 
         this.mActivity = builder.mActivity;
         this.mUriValueCallback = builder.mUriValueCallback;
         this.mUriValueCallbacks = builder.mUriValueCallbacks;
-        this.isL = builder.isL;
+        this.isAboveL = builder.isL;
         this.jsChannel = builder.jsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
         this.mJsChannelCallback = builder.mJsChannelCallback;
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
-        this.mimeType = mimeType;
+        this.acceptType = acceptType;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
     }
 
@@ -111,17 +111,17 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private Intent getFilechooserIntent() {
         Intent mIntent = null;
-        if (isL && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
+        if (isAboveL && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
             return mIntent;
         }
 
         Intent i = new Intent();
         i.setAction(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
-        if(TextUtils.isEmpty(this.mimeType)){
+        if (TextUtils.isEmpty(this.acceptType)) {
             i.setType("*/*");
-        }else{
-            i.setType(this.mimeType);
+        } else {
+            i.setType(this.acceptType);
         }
         i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         return mIntent = Intent.createChooser(i, "");
@@ -142,7 +142,31 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private void openFileChooserInternal() {
 
 
-        LogUtils.i(TAG, "controller:" + this.mAgentWebUIController.get());
+        // 是否直接打开文件选择器
+        if (this.isAboveL && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
+            boolean needCamera = false;
+            String[] types = this.mFileChooserParams.getAcceptTypes();
+            for (String typeTmp : types) {
+
+                if (TextUtils.isEmpty(typeTmp)) {
+                    continue;
+                }
+                if (typeTmp.startsWith("*") || typeTmp.startsWith("image")) {
+                    needCamera = true;
+                    break;
+                }
+            }
+            if (!needCamera) {
+                touchOffFileChooserAction();
+                return;
+            }
+        }
+        if (!TextUtils.isEmpty(this.acceptType) && !this.acceptType.startsWith("*") && !this.acceptType.startsWith("image")) {
+            touchOffFileChooserAction();
+            return;
+        }
+
+        LogUtils.i(TAG, "controller:" + this.mAgentWebUIController.get() + "   acceptType:" + acceptType);
         if (this.mAgentWebUIController.get() != null) {
             this.mAgentWebUIController
                     .get()
@@ -276,7 +300,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         if (resultCode == Activity.RESULT_OK) {
 
-            if (isL)
+            if (isAboveL)
                 handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
             else if (jsChannel)
                 convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
