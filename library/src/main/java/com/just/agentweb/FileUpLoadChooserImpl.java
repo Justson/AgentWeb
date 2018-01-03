@@ -66,7 +66,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
-        this.acceptType = acceptType;
+        this.acceptType = builder.acceptType;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
     }
 
@@ -462,10 +462,10 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
         private WebView mWebView;
         private PermissionInterceptor mPermissionInterceptor;
-        String mimeType = "*/*";
+        String acceptType = "*/*";
 
-        public Builder setMimeType(String mimeType) {
-            this.mimeType = mimeType;
+        public Builder setAcceptType(String acceptType) {
+            this.acceptType = acceptType;
             return this;
         }
 

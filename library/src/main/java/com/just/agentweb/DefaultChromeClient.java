@@ -444,7 +444,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
                 .setUriValueCallback(valueCallback)
                 .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
                 .setPermissionInterceptor(this.mPermissionInterceptor)
-                .setMimeType(mimeType)
+                .setAcceptType(mimeType)
                 .build();
         this.mIFileUploadChooser.openFileChooser();
 
