@@ -68,7 +68,7 @@ public abstract class AgentWebUIController {
 
     public abstract void onJsAlert(WebView view, String url, String message);
 
-    public abstract void onAskOpenOtherApp(WebView view, String url, String message,String confirm,String title,Handler.Callback callback);
+    public abstract void onAskOpenOtherApp(WebView view, String url, String message, String confirm, String title, Handler.Callback callback);
 
     public abstract void onJsConfirm(WebView view, String url, String message, JsResult jsResult);
 
@@ -81,9 +81,14 @@ public abstract class AgentWebUIController {
     public abstract void onMainFrameError(WebView view, int errorCode, String description, String failingUrl);
 
     public abstract void onShowMainFrame();
+
+    public abstract void onLoading(String msg, Handler.Callback callback);
+
+    public abstract void cancelLoading();
+
     /**
      * @param message 消息
-     * @param intent 说明message的来源
+     * @param intent  说明message的来源
      */
     public abstract void showMessage(String message, String intent);
 
