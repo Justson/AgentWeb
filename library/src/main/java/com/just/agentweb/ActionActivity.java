@@ -181,7 +181,9 @@ public final class ActionActivity extends Activity {
             this.startActivityForResult(intent, REQUEST_CODE);
         } catch (Throwable ignore) {
             LogUtils.i(TAG, "找不到系统相机");
-            mFileDataListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+            if (mFileDataListener != null){
+                mFileDataListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+            }
             mFileDataListener = null;
             if (LogUtils.isDebug())
                 ignore.printStackTrace();
