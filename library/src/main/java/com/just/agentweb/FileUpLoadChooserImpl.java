@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -53,6 +55,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private int FROM_INTENTION_CODE = 21;
     private WeakReference<AgentWebUIController> mAgentWebUIController = null;
     private String acceptType = "*/*";
+    public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
     public FileUpLoadChooserImpl(Builder builder) {
 
@@ -254,12 +257,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
 
             boolean tag = true;
-            /*for (int i = 0; i < permissions.length; i++) {
-                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                    tag = false;
-                    break;
-                }
-            }*/
             tag = AgentWebUtils.hasPermission(mActivity, Arrays.asList(permissions)) ? true : false;
             permissionResult(tag, extras.getInt(KEY_FROM_INTENTION));
 
@@ -290,28 +287,56 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     public void fetchFilePathFromIntent(int requestCode, int resultCode, Intent data) {
 
         LogUtils.i(TAG, "request:" + requestCode + "  result:" + resultCode + "  data:" + data);
-        if (REQUEST_CODE != requestCode)
+        if (REQUEST_CODE != requestCode) {
             return;
+        }
 
+        //用户已经取消
         if (resultCode == Activity.RESULT_CANCELED || data == null) {
             cancel();
             return;
         }
 
-        if (resultCode == Activity.RESULT_OK) {
-
-            if (isAboveL)
-                handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
-            else if (jsChannel)
-                convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
-            else {
-                if (cameraState && mUriValueCallback != null)
-                    mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
-                else
-                    handleBelowLData(data);
-            }
-
+        if (resultCode != Activity.RESULT_OK) {
+            cancel();
+            return;
         }
+
+        //通过JS获取文件
+        if (jsChannel) {
+            convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
+            return;
+        }
+
+        //5.0以上系统通过input标签获取文件
+        if (isAboveL) {
+            handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), cameraState);
+            return;
+        }
+
+
+        //4.4以下系统通过input标签获取文件
+        if (mUriValueCallback == null) {
+            cancel();
+            return;
+        }
+
+        if (cameraState) {
+            mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
+        } else {
+            handleBelowLData(data);
+        }
+
+        /*if (isAboveL)
+            handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
+        else if (jsChannel)
+            convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
+        else {
+            if (cameraState && mUriValueCallback != null)
+                mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
+            else
+                handleBelowLData(data);
+        }*/
 
 
     }
@@ -375,7 +400,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             String[] paths = AgentWebUtils.uriToPath(mActivity, uris);
             for (int i = 0; i < paths.length; i++) {
                 File mFile = new File(paths[i]);
-                LogUtils.i(TAG, "abs:" + mFile.getAbsolutePath() + " file length:" + mFile.length() + " uri:" + uris[i] + "  parse:" + Uri.fromFile(mFile)+" write:"+mFile.canWrite()+"   read:"+mFile.canRead()+"   isDirectory:"+mFile.isDirectory());
+                LogUtils.i(TAG, "abs:" + mFile.getAbsolutePath() + " file length:" + mFile.length() + " uri:" + uris[i] + "  parse:" + Uri.fromFile(mFile) + " write:" + mFile.canWrite() + "   read:" + mFile.canRead() + "   isDirectory:" + mFile.isDirectory());
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
@@ -411,10 +436,116 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     }
 
-    private void handleAboveL(Uri[] datas) {
-        if (mUriValueCallbacks == null)
+    /**
+     * 经过多次的测试，在小米 MIUI ， 华为 ，多部分为 Android 6.0 左右系统相机获取到的文件
+     * length为0 ，导致前端 ，获取到的文件， 作预览的时候不正常 ，等待5S左右文件又正常了 ， 所以这里做了阻塞等待处理，
+     * @param datas
+     * @param isCamera
+     */
+    private void handleAboveL(final Uri[] datas, boolean isCamera) {
+        if (mUriValueCallbacks == null) {
             return;
-        mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
+        }
+        if (!isCamera) {
+            mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
+            return;
+        }
+
+        if (mAgentWebUIController.get() == null) {
+            mUriValueCallbacks.onReceiveValue(null);
+            return;
+        }
+        String[] paths = AgentWebUtils.uriToPath(mActivity, datas);
+        if (paths == null || paths.length == 0) {
+            mUriValueCallbacks.onReceiveValue(null);
+            return;
+        }
+        final String path = paths[0];
+        mAgentWebUIController.get().onLoading(mFileUploadMsgConfig.getLoading(), null);
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas,mAgentWebUIController)));
+
+    }
+
+    private static final class AboveLCallback implements Handler.Callback {
+        private ValueCallback<Uri[]> mValueCallback;
+        private Uri[] mUris;
+        private WeakReference<AgentWebUIController> controller;
+
+        private AboveLCallback(ValueCallback<Uri[]> valueCallbacks, Uri[] uris, WeakReference<AgentWebUIController> controller) {
+            this.mValueCallback = valueCallbacks;
+            this.mUris = uris;
+            this.controller = controller;
+        }
+
+        @Override
+        public boolean handleMessage(final Message msg) {
+
+            AgentWebUtils.runInUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    AboveLCallback.this.safeHandleMessage(msg);
+                }
+            });
+            return false;
+        }
+
+        private void safeHandleMessage(Message msg) {
+            if (mValueCallback != null) {
+                mValueCallback.onReceiveValue(mUris);
+            }
+            if (controller != null && controller.get() != null) {
+                controller.get().cancelLoading();
+            }
+        }
+    }
+
+    private static final class WaitPhotoRunnable implements Runnable {
+        private String path;
+        private Handler.Callback mCallback;
+
+        private WaitPhotoRunnable(String path, Handler.Callback callback) {
+            this.path = path;
+            this.mCallback = callback;
+        }
+
+        @Override
+        public void run() {
+
+
+            if (TextUtils.isEmpty(path) || !new File(path).exists()) {
+                if (mCallback != null) {
+                    mCallback.handleMessage(Message.obtain(null, -1));
+                }
+                return;
+            }
+            int ms = 0;
+
+            while (ms <= MAX_WAIT_PHOTO_MS) {
+
+                ms += 300;
+                SystemClock.sleep(300);
+                File mFile = new File(path);
+                if (mFile.length() > 0) {
+
+                    if (mCallback != null) {
+                        mCallback.handleMessage(Message.obtain(null, 1));
+                        mCallback = null;
+                    }
+                    break;
+                }
+
+            }
+
+            if (ms > MAX_WAIT_PHOTO_MS) {
+                LogUtils.i(TAG,"WaitPhotoRunnable finish!");
+                if (mCallback != null) {
+                    mCallback.handleMessage(Message.obtain(null, -1));
+                }
+            }
+            mCallback = null;
+            path = null;
+
+        }
     }
 
 

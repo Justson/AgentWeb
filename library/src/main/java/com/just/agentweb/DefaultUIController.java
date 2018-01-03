@@ -1,6 +1,7 @@
 package com.just.agentweb;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
@@ -25,6 +26,7 @@ public class DefaultUIController extends AgentWebUIController {
     private Activity mActivity;
     private WebParentLayout mWebParentLayout;
     private AlertDialog askOpenOtherAppDialog = null;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public void onJsAlert(WebView view, String url, String message) {
@@ -226,17 +228,40 @@ public class DefaultUIController extends AgentWebUIController {
     @Override
     public void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
 
-        LogUtils.i(TAG,"mWebParentLayout onMainFrameError:"+mWebParentLayout);
-        if(mWebParentLayout!=null){
+        LogUtils.i(TAG, "mWebParentLayout onMainFrameError:" + mWebParentLayout);
+        if (mWebParentLayout != null) {
             mWebParentLayout.showPageMainFrameError();
         }
     }
 
     @Override
     public void onShowMainFrame() {
-            if(mWebParentLayout!=null){
-                mWebParentLayout.hidePageMainFrameError();
-            }
+        if (mWebParentLayout != null) {
+            mWebParentLayout.hidePageMainFrameError();
+        }
+    }
+
+    @Override
+    public void onLoading(String msg, Handler.Callback callback) {
+
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(mActivity);
+        }
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setMessage(msg);
+        mProgressDialog.show();
+
+    }
+
+    @Override
+    public void cancelLoading() {
+
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+
+        mProgressDialog = null;
     }
 
     @Override

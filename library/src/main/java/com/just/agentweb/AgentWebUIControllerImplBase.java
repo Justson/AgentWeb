@@ -57,6 +57,16 @@ public  class AgentWebUIControllerImplBase extends AgentWebUIController {
         getDelegate().onShowMainFrame();
     }
 
+    @Override
+    public void onLoading(String msg, Handler.Callback callback) {
+        getDelegate().onLoading(msg,callback);
+    }
+
+    @Override
+    public void cancelLoading() {
+        getDelegate().cancelLoading();
+    }
+
 
     @Override
     public void showMessage(String message, String from) {

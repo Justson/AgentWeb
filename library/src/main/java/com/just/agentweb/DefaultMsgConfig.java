@@ -245,6 +245,15 @@ public final class DefaultMsgConfig {
 
             private String[] medias = new String[]{"相机", "文件选择器"};
             private String maxFileLengthLimit = "选择的文件不能大于%sMB";
+            private String loading="加载中 ...";
+
+            public String getLoading() {
+                return loading;
+            }
+
+            public void setLoading(String loading) {
+                this.loading = loading;
+            }
 
             FileUploadMsgConfig() {
 
@@ -253,6 +262,7 @@ public final class DefaultMsgConfig {
             protected FileUploadMsgConfig(Parcel in) {
                 medias = in.createStringArray();
                 maxFileLengthLimit = in.readString();
+                loading=in.readString();
             }
 
             public static final Creator<FileUploadMsgConfig> CREATOR = new Creator<FileUploadMsgConfig>() {
@@ -292,6 +302,7 @@ public final class DefaultMsgConfig {
             public void writeToParcel(Parcel dest, int flags) {
                 dest.writeStringArray(medias);
                 dest.writeString(maxFileLengthLimit);
+                dest.writeString(loading);
             }
         }
     }
