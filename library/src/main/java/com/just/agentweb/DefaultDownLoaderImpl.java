@@ -111,9 +111,9 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             if ((mList = checkNeedPermission()).isEmpty()) {
                 preDownload(url, contentDisposition, contentLength);
             } else {
-                ActionActivity.Action mAction = new ActionActivity.Action();
+                Action mAction = new Action();
                 mAction.setPermissions(AgentWebPermissions.STORAGE);
-                mAction.setAction(ActionActivity.Action.ACTION_PERMISSION);
+                mAction.setAction(Action.ACTION_PERMISSION);
                 ActionActivity.setPermissionListener(getPermissionListener());
                 this.url = url;
                 this.contentDisposition = contentDisposition;

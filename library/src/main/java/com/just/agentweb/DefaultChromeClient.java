@@ -65,7 +65,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
                         @Nullable IVideo iVideo,
                         DefaultMsgConfig.ChromeClientMsgCfg chromeClientMsgCfg, PermissionInterceptor permissionInterceptor, WebView webView) {
         super(chromeClient);
-        this.mIndicatorController=indicatorController;
+        this.mIndicatorController = indicatorController;
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
         mActivityWeakReference = new WeakReference<Activity>(activity);
@@ -164,11 +164,11 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
 
         List<String> deniedPermissions = null;
         if ((deniedPermissions = AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.LOCATION)).isEmpty()) {
-            LogUtils.i(TAG,"onGeolocationPermissionsShowPromptInternal:"+true);
+            LogUtils.i(TAG, "onGeolocationPermissionsShowPromptInternal:" + true);
             callback.invoke(origin, true, false);
         } else {
 
-            ActionActivity.Action mAction = ActionActivity.Action.createPermissionsAction(deniedPermissions.toArray(new String[]{}));
+            Action mAction = Action.createPermissionsAction(deniedPermissions.toArray(new String[]{}));
             mAction.setFromIntention(FROM_CODE_INTENTION_LOCATION);
             ActionActivity.setPermissionListener(mPermissionListener);
             this.mCallback = callback;
@@ -236,7 +236,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
 
-        LogUtils.i(TAG,"onJsConfirm:"+ message);
+        LogUtils.i(TAG, "onJsConfirm:" + message);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ChromePath + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
 
             return super.onJsConfirm(view, url, message, result);
@@ -378,7 +378,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
 
-        LogUtils.i(TAG,"fileChooserParams:"+fileChooserParams.getAcceptTypes()+"  getTitle:"+fileChooserParams.getTitle()+" accept:"+ Arrays.toString(fileChooserParams.getAcceptTypes())+"  :"+fileChooserParams.isCaptureEnabled()+"  "+fileChooserParams.getFilenameHint()+"  intent:"+fileChooserParams.createIntent().toString());
+        LogUtils.i(TAG, "fileChooserParams:" + fileChooserParams.getAcceptTypes() + "  getTitle:" + fileChooserParams.getTitle() + " accept:" + Arrays.toString(fileChooserParams.getAcceptTypes()) + " length:" + fileChooserParams.getAcceptTypes().length + "  :" + fileChooserParams.isCaptureEnabled() + "  " + fileChooserParams.getFilenameHint() + "  intent:" + fileChooserParams.createIntent().toString());
 
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
@@ -407,7 +407,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             super.openFileChooser(uploadFile, acceptType, capture);
             return;
         }
-        createAndOpenCommonFileLoader(uploadFile,acceptType);
+        createAndOpenCommonFileLoader(uploadFile, acceptType);
     }
 
     //  Android < 3.0
@@ -417,7 +417,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             return;
         }
         Log.i(TAG, "openFileChooser<3.0");
-        createAndOpenCommonFileLoader(valueCallback,"*/*");
+        createAndOpenCommonFileLoader(valueCallback, "*/*");
     }
 
     //  Android  >= 3.0
@@ -428,11 +428,11 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             super.openFileChooser(valueCallback, acceptType);
             return;
         }
-        createAndOpenCommonFileLoader(valueCallback,"*/*");
+        createAndOpenCommonFileLoader(valueCallback, "*/*");
     }
 
 
-    private void createAndOpenCommonFileLoader(ValueCallback valueCallback,String mimeType) {
+    private void createAndOpenCommonFileLoader(ValueCallback valueCallback, String mimeType) {
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             valueCallback.onReceiveValue(new Object());

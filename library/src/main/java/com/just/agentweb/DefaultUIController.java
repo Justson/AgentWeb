@@ -242,7 +242,7 @@ public class DefaultUIController extends AgentWebUIController {
     }
 
     @Override
-    public void onLoading(String msg, Handler.Callback callback) {
+    public void onLoading(String msg) {
 
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(mActivity);

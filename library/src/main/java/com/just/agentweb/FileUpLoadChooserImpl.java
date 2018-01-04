@@ -95,7 +95,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         if (AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.STORAGE).isEmpty()) {
             touchOffFileChooserAction();
         } else {
-            ActionActivity.Action mAction = ActionActivity.Action.createPermissionsAction(AgentWebPermissions.STORAGE);
+            Action mAction = Action.createPermissionsAction(AgentWebPermissions.STORAGE);
             mAction.setFromIntention(FROM_INTENTION_CODE >> 2);
             ActionActivity.setPermissionListener(mPermissionListener);
             ActionActivity.start(mActivity, mAction);
@@ -105,8 +105,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
     private void touchOffFileChooserAction() {
-        ActionActivity.Action mAction = new ActionActivity.Action();
-        mAction.setAction(ActionActivity.Action.ACTION_FILE);
+        Action mAction = new Action();
+        mAction.setAction(Action.ACTION_FILE);
         ActionActivity.setFileDataListener(getFileDataListener());
         mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction)
                 .putExtra(KEY_FILE_CHOOSER_INTENT, getFilechooserIntent()));
@@ -151,6 +151,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             String[] types = this.mFileChooserParams.getAcceptTypes();
             for (String typeTmp : types) {
 
+                LogUtils.i(TAG,"typeTmp:"+typeTmp);
                 if (TextUtils.isEmpty(typeTmp)) {
                     continue;
                 }
@@ -217,10 +218,10 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         }
 
-        ActionActivity.Action mAction = new ActionActivity.Action();
+        Action mAction = new Action();
         List<String> deniedPermissions = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(deniedPermissions = checkNeedPermission()).isEmpty()) {
-            mAction.setAction(ActionActivity.Action.ACTION_PERMISSION);
+            mAction.setAction(Action.ACTION_PERMISSION);
             mAction.setPermissions(deniedPermissions.toArray(new String[]{}));
             mAction.setFromIntention(FROM_INTENTION_CODE >> 3);
             ActionActivity.setPermissionListener(this.mPermissionListener);
@@ -245,8 +246,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
     private void openCameraAction() {
-        ActionActivity.Action mAction = new ActionActivity.Action();
-        mAction.setAction(ActionActivity.Action.ACTION_CAMERA);
+        Action mAction = new Action();
+        mAction.setAction(Action.ACTION_CAMERA);
         ActionActivity.setFileDataListener(this.getFileDataListener());
         ActionActivity.start(mActivity, mAction);
     }
@@ -439,6 +440,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     /**
      * 经过多次的测试，在小米 MIUI ， 华为 ，多部分为 Android 6.0 左右系统相机获取到的文件
      * length为0 ，导致前端 ，获取到的文件， 作预览的时候不正常 ，等待5S左右文件又正常了 ， 所以这里做了阻塞等待处理，
+     *
      * @param datas
      * @param isCamera
      */
@@ -461,8 +463,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             return;
         }
         final String path = paths[0];
-        mAgentWebUIController.get().onLoading(mFileUploadMsgConfig.getLoading(), null);
-        AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas,mAgentWebUIController)));
+        mAgentWebUIController.get().onLoading(mFileUploadMsgConfig.getLoading());
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas, mAgentWebUIController)));
 
     }
 
@@ -537,7 +539,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             }
 
             if (ms > MAX_WAIT_PHOTO_MS) {
-                LogUtils.i(TAG,"WaitPhotoRunnable finish!");
+                LogUtils.i(TAG, "WaitPhotoRunnable finish!");
                 if (mCallback != null) {
                     mCallback.handleMessage(Message.obtain(null, -1));
                 }

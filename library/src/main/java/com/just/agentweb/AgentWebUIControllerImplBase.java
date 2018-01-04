@@ -58,8 +58,8 @@ public  class AgentWebUIControllerImplBase extends AgentWebUIController {
     }
 
     @Override
-    public void onLoading(String msg, Handler.Callback callback) {
-        getDelegate().onLoading(msg,callback);
+    public void onLoading(String msg) {
+        getDelegate().onLoading(msg);
     }
 
     @Override

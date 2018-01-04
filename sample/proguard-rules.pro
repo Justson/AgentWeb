@@ -30,7 +30,7 @@
     *;
 }
 -keepclassmembers class com.just.agentweb.sample.common.AndroidInterface{ *; }
--dontwarn com.just.library.**
+-dontwarn com.just.agentweb.**
 
 
 -keepclassmembers class com.just.agentweb.sample.common.SonicJavaScriptInterface{ *; }
