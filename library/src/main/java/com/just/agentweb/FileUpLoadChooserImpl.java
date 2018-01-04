@@ -115,6 +115,9 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private Intent getFilechooserIntent() {
         Intent mIntent = null;
         if (isAboveL && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
+            if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
+                mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            }
             return mIntent;
         }
 
@@ -151,11 +154,11 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             String[] types = this.mFileChooserParams.getAcceptTypes();
             for (String typeTmp : types) {
 
-                LogUtils.i(TAG,"typeTmp:"+typeTmp);
+                LogUtils.i(TAG, "typeTmp:" + typeTmp);
                 if (TextUtils.isEmpty(typeTmp)) {
                     continue;
                 }
-                if (typeTmp.startsWith("*") || typeTmp.startsWith("image")) {
+                if (typeTmp.contains("*/") || typeTmp.contains("image/")) {
                     needCamera = true;
                     break;
                 }
