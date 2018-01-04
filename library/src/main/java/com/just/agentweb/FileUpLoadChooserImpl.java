@@ -115,9 +115,10 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private Intent getFilechooserIntent() {
         Intent mIntent = null;
         if (isAboveL && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
-            if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
+            //多选
+            /*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
                 mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            }
+            }*/
             return mIntent;
         }
 
@@ -168,7 +169,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
                 return;
             }
         }
-        if (!TextUtils.isEmpty(this.acceptType) && !this.acceptType.startsWith("*") && !this.acceptType.startsWith("image")) {
+        if (!TextUtils.isEmpty(this.acceptType) && !this.acceptType.contains("*/") && !this.acceptType.contains("image/")) {
             touchOffFileChooserAction();
             return;
         }

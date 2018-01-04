@@ -99,17 +99,12 @@ public final class ActionActivity extends Activity {
                 return;
             }
             this.startActivityForResult(mIntent, REQUEST_CODE);
-//            Intent i = new Intent();
-//            i.setAction(Intent.ACTION_GET_CONTENT);
-//            i.addCategory(Intent.CATEGORY_OPENABLE);
-//            i.setType("*/*");
-//            i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-////            i.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024 * 1024);
-//            this.startActivityForResult(Intent.createChooser(i,
-//                    ""), REQUEST_CODE);
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "找不到文件选择器");
             fileDataActionOver(-1, null);
+            if(LogUtils.isDebug()){
+                throwable.printStackTrace();
+            }
         }
 
     }
