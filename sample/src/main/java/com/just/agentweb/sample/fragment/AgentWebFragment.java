@@ -92,7 +92,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
-                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
+                .setIndicatorColorWithHeight(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
                 .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings。
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient

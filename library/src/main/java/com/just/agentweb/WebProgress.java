@@ -2,6 +2,8 @@ package com.just.agentweb;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,11 +12,10 @@ import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.FrameLayout;
 
 /**
- *
  * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb .
  */
@@ -23,12 +24,38 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
     private int mColor;
     private Paint mPaint;
-    private ValueAnimator mValueAnimator;
-    private int targetWidth = 0;
+    private Animator mAnimator;
+    /**
+     * 控件的宽度
+     */
+    private int mTargetWidth = 0;
+
+    /**
+     * 默认匀速动画最大的时长
+     */
+    public static final int MAX_UNIFORM_SPEED_DURATION = 8 * 1000;
+    /**
+     * 默认匀速后加速动画最大时长
+     */
+    public static final int MAX_ACCELERATE_SPEED_DURATION = 1000;
+    /**
+     * 结束动画时长 ， Fade out 。
+     */
+    public static final int DO_END_ANIMATION_DURATION = 800;
+
+    /**
+     * 当前匀速动画最大的时长
+     */
+    private static int CURRENT_MAX_UNIFORM_SPEED_DURATION = MAX_UNIFORM_SPEED_DURATION;
+    /**
+     * 当前匀速后加速动画最大时长
+     */
+    private static int CURRENT_MAX_ACCELERATE_SPEED_DURATION = MAX_ACCELERATE_SPEED_DURATION;
 
     public WebProgress(Context context) {
         this(context, null);
     }
+
     public WebProgress(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -50,8 +77,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         mPaint.setDither(true);
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
 
-        targetWidth = context.getResources().getDisplayMetrics().widthPixels;
-
+        mTargetWidth = context.getResources().getDisplayMetrics().widthPixels;
 
 
     }
@@ -98,11 +124,10 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
     public void show() {
 
-        LogUtils.i("WebProgress", "show  -- >:" + getVisibility());
         if (getVisibility() == View.GONE) {
             this.setVisibility(View.VISIBLE);
             currentProgress = 0f;
-            startAnim(-1, true);
+            startAnim(false);
         }
 
     }
@@ -110,17 +135,31 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        this.targetWidth = getMeasuredWidth();
-        LogUtils.i("WebProgress", "" + targetWidth);
+        this.mTargetWidth = getMeasuredWidth();
+        int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
+        if (mTargetWidth >= screenWidth) {
+            CURRENT_MAX_ACCELERATE_SPEED_DURATION = MAX_ACCELERATE_SPEED_DURATION;
+            CURRENT_MAX_UNIFORM_SPEED_DURATION = MAX_UNIFORM_SPEED_DURATION;
+        } else {
+            //取比值
+            float rate = this.mTargetWidth / Float.valueOf(screenWidth);
+            CURRENT_MAX_UNIFORM_SPEED_DURATION = (int) (MAX_UNIFORM_SPEED_DURATION * rate);
+            CURRENT_MAX_ACCELERATE_SPEED_DURATION = (int) (MAX_ACCELERATE_SPEED_DURATION * rate);
+
+        }
+
+        LogUtils.i("WebProgress", "CURRENT_MAX_UNIFORM_SPEED_DURATION" + CURRENT_MAX_UNIFORM_SPEED_DURATION);
     }
 
     public void setProgress(float progress) {
         if (getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
-        if (progress < 90f)
+        if (progress < 95f)
             return;
-        startAnim(progress, false);
+        if (TAG != FINISH) {
+            startAnim(true);
+        }
     }
 
     public void hide() {
@@ -136,54 +175,59 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
     private float target = 0f;
 
-    private float weightDuration(float value, float current) {
 
-        if (value > 70 && value < 85) {
-            return 1.5f;
-        } else if (value > 85) {
-            return 0.8f;
-        }
-        return small(value, current);
-    }
-
-    private float small(float value, float current) {
-        float poor = Math.abs(value - current);
-        if (poor < 25) {
-            return 4f;
-        } else if (poor > 25 && poor < 50) {
-            return 3f;
-        } else {
-            return 2f;
-        }
-    }
-
-    private void startAnim(float value, boolean isAuto) {
+    private void startAnim(boolean isFinished) {
 
 
-        if (target == value)
-            return;
-
-        if (value < currentProgress && value != -1)
-            return;
-
-        float v = (isAuto) ? 90f : value;
+        float v = isFinished ? 100 : 95;
 
 
-        if (mValueAnimator != null && mValueAnimator.isStarted()) {
-            mValueAnimator.cancel();
+        if (mAnimator != null && mAnimator.isStarted()) {
+            mAnimator.cancel();
         }
         currentProgress = currentProgress == 0f ? 0.00000001f : currentProgress;
-        mValueAnimator = ValueAnimator.ofFloat(currentProgress, v);
-        mValueAnimator.setInterpolator(new LinearInterpolator());
 
-        long duration = (long) Math.abs((v / 100f * targetWidth) - (currentProgress / 100f * targetWidth));
+        LogUtils.i("WebProgress", "currentProgress:" + currentProgress + " v:" + v + "  :" + (1f - currentProgress));
+        if (!isFinished) {
+            ValueAnimator mAnimator = ValueAnimator.ofFloat(currentProgress, v);
+            float residue = 1f - currentProgress / 100 - 0.05f;
+            mAnimator.setInterpolator(new LinearInterpolator());
+            mAnimator.setDuration((long) (residue * CURRENT_MAX_UNIFORM_SPEED_DURATION));
+            mAnimator.addUpdateListener(mAnimatorUpdateListener);
+            mAnimator.start();
+            this.mAnimator=mAnimator;
+        } else {
+
+            ValueAnimator segment95Animator = null;
+            if (currentProgress < 95f) {
+                segment95Animator = ValueAnimator.ofFloat(currentProgress, 95);
+                float residue = 1f - currentProgress / 100f - 0.05f;
+                segment95Animator.setInterpolator(new LinearInterpolator());
+                segment95Animator.setDuration((long) (residue * CURRENT_MAX_ACCELERATE_SPEED_DURATION));
+                segment95Animator.setInterpolator(new DecelerateInterpolator());
+                segment95Animator.addUpdateListener(mAnimatorUpdateListener);
+            }
 
 
-        /*默认每个像素8毫秒*/
-        mValueAnimator.setDuration(isAuto ? duration * 4 : (long) (duration * weightDuration(v, currentProgress)));
-        mValueAnimator.addUpdateListener(mAnimatorUpdateListener);
-        mValueAnimator.addListener(mAnimatorListenerAdapter);
-        mValueAnimator.start();
+            ObjectAnimator mObjectAnimator = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
+            mObjectAnimator.setDuration(DO_END_ANIMATION_DURATION);
+            ValueAnimator mValueAnimatorEnd = ValueAnimator.ofFloat(95f, 100f);
+            mValueAnimatorEnd.setDuration(DO_END_ANIMATION_DURATION);
+            mValueAnimatorEnd.addUpdateListener(mAnimatorUpdateListener);
+
+            AnimatorSet mAnimatorSet = new AnimatorSet();
+            mAnimatorSet.playTogether(mObjectAnimator, mValueAnimatorEnd);
+
+            if(segment95Animator!=null){
+                AnimatorSet mAnimatorSet1 = new AnimatorSet();
+                mAnimatorSet1.play(mAnimatorSet).after(segment95Animator);
+                mAnimatorSet=mAnimatorSet1;
+            }
+            mAnimatorSet.addListener(mAnimatorListenerAdapter);
+            mAnimatorSet.start();
+            mAnimator =mAnimatorSet;
+        }
+
         TAG = STARTED;
         target = v;
 
@@ -210,6 +254,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         if (TAG == FINISH && currentProgress == 100f) {
             setVisibility(GONE);
             currentProgress = 0f;
+            this.setAlpha(1f);
         }
         TAG = UN_START;
     }
@@ -217,8 +262,8 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     @Override
     public void reset() {
         currentProgress = 0;
-        if (mValueAnimator != null && mValueAnimator.isStarted())
-            mValueAnimator.cancel();
+        if (mAnimator != null && mAnimator.isStarted())
+            mAnimator.cancel();
     }
 
     @Override
@@ -229,7 +274,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
 
     @Override
-    public FrameLayout.LayoutParams offerLayoutParams() {
-        return new FrameLayout.LayoutParams(-1, AgentWebUtils.dp2px(getContext(), 2));
+    public LayoutParams offerLayoutParams() {
+        return new LayoutParams(-1, AgentWebUtils.dp2px(getContext(), 2));
     }
 }
