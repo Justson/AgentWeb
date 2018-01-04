@@ -2,6 +2,7 @@ package com.just.agentweb;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -30,7 +31,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 
     public WebParentLayout(@NonNull Context context) {
         this(context, null);
-        LogUtils.i(TAG,"WebParentLayout");
+        LogUtils.i(TAG, "WebParentLayout");
     }
 
     public WebParentLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -42,8 +43,8 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         if (!(context instanceof Activity)) {
             throw new IllegalArgumentException("WebParentLayout context must be activity or activity sub class .");
         }
-        this.errorLayoutRes=R.layout.agentweb_error_page;
-        LogUtils.i(TAG,"errorLayoutRes:"+errorLayoutRes);
+        this.errorLayoutRes = R.layout.agentweb_error_page;
+        LogUtils.i(TAG, "errorLayoutRes:" + errorLayoutRes);
     }
 
     void bindController(AgentWebUIController agentWebUIController) {
@@ -65,10 +66,11 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     private void createErrorLayout() {
 
         final FrameLayout mFrameLayout = new FrameLayout(getContext());
+        mFrameLayout.setBackgroundColor(Color.WHITE);
         mFrameLayout.setId(R.id.mainframe_error_container_id);
         if (this.errorView == null) {
             LayoutInflater mLayoutInflater = LayoutInflater.from(getContext());
-            LogUtils.i(TAG,"errorLayoutRes:"+errorLayoutRes);
+            LogUtils.i(TAG, "errorLayoutRes:" + errorLayoutRes);
             mLayoutInflater.inflate(errorLayoutRes, mFrameLayout, true);
         } else {
             mFrameLayout.addView(errorView);
@@ -86,23 +88,23 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 
         mFrameLayout.setVisibility(View.VISIBLE);
         if (clickId != -1) {
-           View clickView= mFrameLayout.findViewById(clickId);
-           if(clickView!=null){
-               clickView.setOnClickListener(new OnClickListener() {
-                   @Override
-                   public void onClick(View v) {
-                       if (getWebView() != null) {
-                           getWebView().reload();
-                       }
-                   }
-               });
-               return;
-           }else{
+            View clickView = mFrameLayout.findViewById(clickId);
+            if (clickView != null) {
+                clickView.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (getWebView() != null) {
+                            getWebView().reload();
+                        }
+                    }
+                });
+                return;
+            } else {
 
-               if(LogUtils.isDebug()){
-                   LogUtils.i(TAG,"ClickView is null , cannot bind accurate view to refresh or reload , your clickId:"+clickId);
-               }
-           }
+                if (LogUtils.isDebug()) {
+                    LogUtils.i(TAG, "ClickView is null , cannot bind accurate view to refresh or reload , your clickId:" + clickId);
+                }
+            }
 
         }
 
@@ -134,8 +136,8 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
             this.clickId = -1;
         }
         this.errorLayoutRes = resLayout;
-        if(this.errorLayoutRes<=0){
-            this.errorLayoutRes=R.layout.agentweb_error_page;
+        if (this.errorLayoutRes <= 0) {
+            this.errorLayoutRes = R.layout.agentweb_error_page;
         }
     }
 

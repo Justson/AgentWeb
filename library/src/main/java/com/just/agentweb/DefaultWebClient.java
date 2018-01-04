@@ -164,6 +164,11 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         return super.shouldOverrideUrlLoading(view, request);
     }
 
+    @Override
+    public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+        return super.shouldInterceptRequest(view, url);
+    }
+
     private boolean handleOtherScheme(String url) {
 
         LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
@@ -204,6 +209,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+        LogUtils.i(TAG,"shouldInterceptRequest:"+request.getUrl().toString());
         return super.shouldInterceptRequest(view, request);
     }
 
