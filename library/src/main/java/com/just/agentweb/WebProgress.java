@@ -255,7 +255,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         super.onDetachedFromWindow();
 
         /**
-         * animator couse leak , if not cancel;
+         * animator cause leak , if not cancel;
          */
         if (mAnimator != null && mAnimator.isStarted()) {
             mAnimator.cancel();
