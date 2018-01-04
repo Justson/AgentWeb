@@ -82,7 +82,7 @@ public abstract class AgentWebUIController {
 
     public abstract void onShowMainFrame();
 
-    public abstract void onLoading(String msg, Handler.Callback callback);
+    public abstract void onLoading(String msg);
 
     public abstract void cancelLoading();
 
