@@ -286,6 +286,10 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * `Sample`(推荐，详细) 
 
 ## 更新日志
+* v_3.1.0 更新
+	* `WebProgress` 进度条动画更细腻。
+	* 修复部分机型拍照文件大小为0情况。
+	* 更新了`FileUpLoadChooserImpl`。
 * v_3.0.0 更新
 	* 加入 `MiddleWareWebChromeBase` 中间件 ，支持多个 `WebChromeClient`  。
 	* 加入 `MiddleWareWebClientBase`中间件 ， 支持多个 `WebViewClient`  。
