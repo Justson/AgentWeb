@@ -29,8 +29,8 @@
 -keep class com.just.agentweb.** {
     *;
 }
--keepclassmembers class com.just.agentweb.sample.common.AndroidInterface{ *; }
 -dontwarn com.just.agentweb.**
+-keepclassmembers class com.just.agentweb.sample.common.AndroidInterface{ *; }
 
 
 -keepclassmembers class com.just.agentweb.sample.common.SonicJavaScriptInterface{ *; }
