@@ -33,6 +33,15 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 	</dependency>
 	
 	```
+	
+## Alpha 版
+
+* Gradle
+
+	```
+	compile 'com.just.agentweb:agentweb:3.1.0-alpha'
+	```
+	
 
 
 ## 使用
