@@ -88,7 +88,6 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         mWebSettings.setDefaultFontSize(16);
         mWebSettings.setMinimumFontSize(12);//设置 WebView 支持的最小字体大小，默认为 8
         mWebSettings.setGeolocationEnabled(true);
-
         //
         String dir = AgentWebConfig.getCachePath(webView.getContext());
 

@@ -195,7 +195,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
             mAnimator.setDuration((long) (residue * CURRENT_MAX_UNIFORM_SPEED_DURATION));
             mAnimator.addUpdateListener(mAnimatorUpdateListener);
             mAnimator.start();
-            this.mAnimator=mAnimator;
+            this.mAnimator = mAnimator;
         } else {
 
             ValueAnimator segment95Animator = null;
@@ -218,14 +218,14 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
             AnimatorSet mAnimatorSet = new AnimatorSet();
             mAnimatorSet.playTogether(mObjectAnimator, mValueAnimatorEnd);
 
-            if(segment95Animator!=null){
+            if (segment95Animator != null) {
                 AnimatorSet mAnimatorSet1 = new AnimatorSet();
                 mAnimatorSet1.play(mAnimatorSet).after(segment95Animator);
-                mAnimatorSet=mAnimatorSet1;
+                mAnimatorSet = mAnimatorSet1;
             }
             mAnimatorSet.addListener(mAnimatorListenerAdapter);
             mAnimatorSet.start();
-            mAnimator =mAnimatorSet;
+            mAnimator = mAnimatorSet;
         }
 
         TAG = STARTED;
@@ -249,6 +249,19 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
             doEnd();
         }
     };
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
+        /**
+         * animator couse leak , if not cancel;
+         */
+        if (mAnimator != null && mAnimator.isStarted()) {
+            mAnimator.cancel();
+            mAnimator = null;
+        }
+    }
 
     private void doEnd() {
         if (TAG == FINISH && currentProgress == 100f) {

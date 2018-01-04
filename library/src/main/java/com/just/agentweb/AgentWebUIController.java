@@ -66,6 +66,12 @@ public abstract class AgentWebUIController {
 
     protected abstract void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity);
 
+    /**
+     * onJsAlert
+     * @param view
+     * @param url
+     * @param message
+     */
     public abstract void onJsAlert(WebView view, String url, String message);
 
     public abstract void onAskOpenOtherApp(WebView view, String url, String message, String confirm, String title, Handler.Callback callback);
