@@ -227,10 +227,10 @@ mAgentWeb = AgentWeb.with (this) //
 If your project needs to be proguard , please add the following configuration
 
 ```
--keep class com.just.library. ** {
-    *;
+-keep class com.just.agentweb.** {
+    *;
 }
--dontwarn com.just.library. **
+-dontwarn com.just.agentweb.**
 
 ```
 Java injection class do not proguard, such as sample inside the AndroidInterface class, need Keep.

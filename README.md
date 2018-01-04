@@ -270,10 +270,10 @@ mAgentWeb = AgentWeb.with(this)//
 如果你的项目需要加入混淆 ， 请加入如下配置
 
 ```
--keep class com.just.library.** {
+-keep class com.just.agentweb.** {
     *;
 }
--dontwarn com.just.library.**
+-dontwarn com.just.agentweb.**
 
 ```
 Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 需要 Keep 。
