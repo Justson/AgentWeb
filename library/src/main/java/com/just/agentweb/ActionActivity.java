@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.io.File;
+import java.util.List;
 
 import static android.provider.MediaStore.EXTRA_OUTPUT;
 import static com.just.agentweb.FileUpLoadChooserImpl.REQUEST_CODE;
@@ -58,6 +59,7 @@ public final class ActionActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
+            LogUtils.i(TAG, "savedInstanceState:" + savedInstanceState);
             return;
         }
         Intent intent = getIntent();
@@ -102,7 +104,7 @@ public final class ActionActivity extends Activity {
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "找不到文件选择器");
             fileDataActionOver(-1, null);
-            if(LogUtils.isDebug()){
+            if (LogUtils.isDebug()) {
                 throwable.printStackTrace();
             }
         }
@@ -128,9 +130,11 @@ public final class ActionActivity extends Activity {
     }
 
     private void permission(Action action) {
-        String[] permissions = action.getPermissions();
 
-        if (permissions == null) {
+
+        List<String> permissions = action.getPermissions();
+        LogUtils.i(TAG, "permission:" + action.getPermissions());
+        if (AgentWebUtils.isEmptyCollection(permissions)) {
             mPermissionListener = null;
             mRationaleListener = null;
             finish();
@@ -150,7 +154,9 @@ public final class ActionActivity extends Activity {
         }
 
         if (mPermissionListener != null)
-            requestPermissions(permissions, 1);
+            requestPermissions(permissions.toArray(new String[]{}), 1);
+
+        LogUtils.i(TAG, "request permission send");
     }
 
     private Uri mUri;
@@ -173,7 +179,7 @@ public final class ActionActivity extends Activity {
             this.startActivityForResult(intent, REQUEST_CODE);
         } catch (Throwable ignore) {
             LogUtils.i(TAG, "找不到系统相机");
-            if (mFileDataListener != null){
+            if (mFileDataListener != null) {
                 mFileDataListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
             }
             mFileDataListener = null;
@@ -187,6 +193,7 @@ public final class ActionActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        LogUtils.i(TAG, "onRequestPermissionsResult");
         if (mPermissionListener != null) {
             Bundle mBundle = new Bundle();
             mBundle.putInt(KEY_FROM_INTENTION, mAction.getFromIntention());

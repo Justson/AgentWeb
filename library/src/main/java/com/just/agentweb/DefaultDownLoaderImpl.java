@@ -111,9 +111,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             if ((mList = checkNeedPermission()).isEmpty()) {
                 preDownload(url, contentDisposition, contentLength);
             } else {
-                Action mAction = new Action();
-                mAction.setPermissions(AgentWebPermissions.STORAGE);
-                mAction.setAction(Action.ACTION_PERMISSION);
+                Action mAction = Action.createPermissionsAction(mList.toArray(new String[]{}));
                 ActionActivity.setPermissionListener(getPermissionListener());
                 this.url = url;
                 this.contentDisposition = contentDisposition;
@@ -231,7 +229,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
         if (mAgentWebUIController.get() != null) {
             mAgentWebUIController.get()
-                    .showMessage(mDownLoadMsgConfig.getPreLoading()+":"+file.getName(), TAG.concat("|performDownload"));
+                    .showMessage(mDownLoadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
         }
         //并行下载.
         if (isParallelDownload.get()) {
@@ -254,7 +252,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
                 Uri mUri = Uri.parse(url);
                 fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/') + 1);
             }
-            if (!TextUtils.isEmpty(fileName)&&fileName.length() > 64) {
+            if (!TextUtils.isEmpty(fileName) && fileName.length() > 64) {
                 fileName = fileName.substring(fileName.length() - 64, fileName.length());
             }
             if (TextUtils.isEmpty(fileName)) {

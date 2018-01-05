@@ -21,7 +21,6 @@
             android:name="com.just.agentweb.ActionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="standard"
-            android:screenOrientation="portrait"
             android:theme="@style/actionActivity"
             android:exported="false"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden">
