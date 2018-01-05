@@ -20,7 +20,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
     private static final String TAG = WebDefaultSettingsManager.class.getSimpleName();
     public static final String USERAGENT_UC=" UCBrowser/11.6.4.950 ";
     public static final String USERAGENT_QQ_BROWSER=" MQQBrowser/8.0 ";
-    public static final String USERAGENT_AGENTWEB=" agentweb/3.1.0-alpha ";
+    public static final String USERAGENT_AGENTWEB=" agentweb/3.1.0-beta ";
 
     public static WebDefaultSettingsManager getInstance() {
         return new WebDefaultSettingsManager();

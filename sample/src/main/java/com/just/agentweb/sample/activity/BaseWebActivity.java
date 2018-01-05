@@ -72,6 +72,7 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
                 .defaultProgressBarColor()
+//                .setIndicatorColorWithHeight(-1, 3)
                 .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)

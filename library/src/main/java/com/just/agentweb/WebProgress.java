@@ -68,6 +68,12 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     public static final int UN_START = 0;
     public static final int STARTED = 1;
     public static final int FINISH = 2;
+
+    /**
+     * 默认的高度
+     */
+    public static int WEB_PROGRESS_DEFAULT_HEIGHT = 3;
+
     public WebProgress(Context context) {
         this(context, null);
     }
@@ -94,7 +100,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
 
         mTargetWidth = context.getResources().getDisplayMetrics().widthPixels;
-
+        WEB_PROGRESS_DEFAULT_HEIGHT = AgentWebUtils.dp2px(context, 3);
 
     }
 
@@ -120,7 +126,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
             w = w <= getContext().getResources().getDisplayMetrics().widthPixels ? w : getContext().getResources().getDisplayMetrics().widthPixels;
         }
         if (hMode == MeasureSpec.AT_MOST) {
-            h = AgentWebUtils.dp2px(this.getContext(), 2);
+            h = WEB_PROGRESS_DEFAULT_HEIGHT;
         }
         this.setMeasuredDimension(w, h);
 
@@ -181,8 +187,6 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
     public void hide() {
         TAG = FINISH;
     }
-
-
 
 
     private float target = 0f;
@@ -300,6 +304,6 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
     @Override
     public LayoutParams offerLayoutParams() {
-        return new LayoutParams(-1, AgentWebUtils.dp2px(getContext(), 2));
+        return new LayoutParams(-1, WEB_PROGRESS_DEFAULT_HEIGHT);
     }
 }
