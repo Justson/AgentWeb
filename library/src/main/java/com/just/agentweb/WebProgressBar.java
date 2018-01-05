@@ -20,7 +20,7 @@ import android.view.animation.LinearInterpolator;
  * source code  https://github.com/Justson/AgentWeb .
  */
 
-public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
+public class WebProgressBar extends BaseIndicatorView implements BaseProgressSpec {
 
     /**
      * 进度条颜色
@@ -74,15 +74,15 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
      */
     public static int WEB_PROGRESS_DEFAULT_HEIGHT = 3;
 
-    public WebProgress(Context context) {
+    public WebProgressBar(Context context) {
         this(context, null);
     }
 
-    public WebProgress(Context context, @Nullable AttributeSet attrs) {
+    public WebProgressBar(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WebProgress(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WebProgressBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
         init(context, attrs, defStyleAttr);
@@ -253,8 +253,8 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             float t = (float) animation.getAnimatedValue();
-            WebProgress.this.currentProgress = t;
-            WebProgress.this.invalidate();
+            WebProgressBar.this.currentProgress = t;
+            WebProgressBar.this.invalidate();
 
         }
     };

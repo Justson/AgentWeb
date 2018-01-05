@@ -141,16 +141,16 @@ public class DefaultWebCreator implements WebCreator {
         mFrameLayout.addView(mViewStub,new FrameLayout.LayoutParams(-1,-1));
         if (isNeedDefaultProgress) {
             FrameLayout.LayoutParams lp = null;
-            WebProgress mWebProgress = new WebProgress(mActivity);
+            WebProgressBar mWebProgressBar = new WebProgressBar(mActivity);
             if (height_dp > 0)
                 lp = new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, height_dp));
             else
-                lp = mWebProgress.offerLayoutParams();
+                lp = mWebProgressBar.offerLayoutParams();
             if (color != -1)
-                mWebProgress.setColor(color);
+                mWebProgressBar.setColor(color);
             lp.gravity = Gravity.TOP;
-            mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgress), lp);
-            mWebProgress.setVisibility(View.GONE);
+            mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgressBar), lp);
+            mWebProgressBar.setVisibility(View.GONE);
         } else if (!isNeedDefaultProgress && progressView != null) {
             mFrameLayout.addView((View) (this.mBaseProgressSpec = (BaseProgressSpec) progressView), progressView.offerLayoutParams());
             progressView.setVisibility(View.GONE);
