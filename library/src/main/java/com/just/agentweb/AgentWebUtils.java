@@ -7,6 +7,7 @@ import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
@@ -912,6 +913,21 @@ public class AgentWebUtils {
     static AgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
         WebParentLayout mWebParentLayout = getWebParentLayoutByWebView(webView);
         return mWebParentLayout.provide();
+    }
+
+    //获取应用的名称
+    static String getApplicationName(Context context) {
+        PackageManager packageManager = null;
+        ApplicationInfo applicationInfo = null;
+        try {
+            packageManager = context.getApplicationContext().getPackageManager();
+            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            applicationInfo = null;
+        }
+        String applicationName =
+                (String) packageManager.getApplicationLabel(applicationInfo);
+        return applicationName;
     }
 
     static WebParentLayout getWebParentLayoutByWebView(WebView webView) {

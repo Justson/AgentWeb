@@ -80,6 +80,12 @@ public abstract class AgentWebUIController {
 
     public abstract void showChooser(WebView view, String url, String[] ways, Handler.Callback callback);
 
+    /**
+     * 强制下载弹窗
+     * @param url 当前下载地址。
+     * @param message 对话信息
+     * @param callback 用户操作回调回调
+     */
     public abstract void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback);
 
     public abstract void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult);

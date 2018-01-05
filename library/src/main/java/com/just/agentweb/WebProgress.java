@@ -22,8 +22,17 @@ import android.view.animation.LinearInterpolator;
 
 public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
 
+    /**
+     * 进度条颜色
+     */
     private int mColor;
+    /**
+     * 进度条的画笔
+     */
     private Paint mPaint;
+    /**
+     * 进度条动画
+     */
     private Animator mAnimator;
     /**
      * 控件的宽度
@@ -52,6 +61,13 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
      */
     private static int CURRENT_MAX_ACCELERATE_SPEED_DURATION = MAX_ACCELERATE_SPEED_DURATION;
 
+    /**
+     * 标志当前进度条的状态
+     */
+    private int TAG = 0;
+    public static final int UN_START = 0;
+    public static final int STARTED = 1;
+    public static final int FINISH = 2;
     public WebProgress(Context context) {
         this(context, null);
     }
@@ -166,11 +182,7 @@ public class WebProgress extends BaseIndicatorView implements BaseProgressSpec {
         TAG = FINISH;
     }
 
-    private int TAG = 0;
 
-    public static final int UN_START = 0;
-    public static final int STARTED = 1;
-    public static final int FINISH = 2;
 
 
     private float target = 0f;

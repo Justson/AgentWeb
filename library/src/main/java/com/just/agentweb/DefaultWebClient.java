@@ -2,9 +2,7 @@ package com.just.agentweb;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -134,7 +132,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         LogUtils.i(TAG, "helper:" + webClientHelper + "  isInterceptUnkownScheme:" + isInterceptUnkownScheme);
 
         if (url.startsWith(INTENT_SCHEME)) { // intent
-            LogUtils.i(TAG,""+INTENT_SCHEME+"   intercept:"+true);
+            LogUtils.i(TAG, "" + INTENT_SCHEME + "   intercept:" + true);
             handleIntentUrl(url);
             return true;
         }
@@ -182,7 +180,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
                     mAgentWebUIController.get()
                             .onAskOpenOtherApp(this.mWebView,
                                     mWebView.getUrl(),
-                                    String.format(mMsgCfg.getLeaveApp(), getApplicationName(mWebView.getContext())),
+                                    String.format(mMsgCfg.getLeaveApp(), AgentWebUtils.getApplicationName(mWebView.getContext())),
                                     mMsgCfg.getConfirm(),
                                     mMsgCfg.getTitle(), getCallback(url));
                 }
@@ -192,24 +190,10 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         }
     }
 
-    //获取应用的名称
-    private String getApplicationName(Context context) {
-        PackageManager packageManager = null;
-        ApplicationInfo applicationInfo = null;
-        try {
-            packageManager = context.getApplicationContext().getPackageManager();
-            applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            applicationInfo = null;
-        }
-        String applicationName =
-                (String) packageManager.getApplicationLabel(applicationInfo);
-        return applicationName;
-    }
 
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-        LogUtils.i(TAG,"shouldInterceptRequest:"+request.getUrl().toString());
+        LogUtils.i(TAG, "shouldInterceptRequest:" + request.getUrl().toString());
         return super.shouldInterceptRequest(view, request);
     }
 
@@ -362,7 +346,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         }
         return false;
     }
-
 
 
     private boolean handleLinked(String url) {

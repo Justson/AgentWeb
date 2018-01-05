@@ -33,6 +33,8 @@ public class AgentWebConfig {
     private static volatile boolean isInit = false;
     private static final String TAG = AgentWebConfig.class.getSimpleName();
 
+    public static final String AGENTWEB_VERSION = "agentweb/3.1.0";
+
     /**
      * 通过JS获取的文件大小， 这里限制最大为5MB ，太大会抛出 OutOfMemoryError
      */

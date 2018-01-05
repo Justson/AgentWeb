@@ -19,7 +19,6 @@ public interface ILoader {
     void loadDataWithBaseURL(String baseUrl, String data,
                              String mimeType, String encoding, String historyUrl);
 
-
     void postUrl(String url ,byte[] params);
 
     HttpHeaders getHttpHeaders();

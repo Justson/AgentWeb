@@ -1,16 +1,20 @@
 package com.just.agentweb;
 
-import android.app.Activity;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+import static com.just.agentweb.AgentWebConfig.AGENTWEB_VERSION;
+
 /**
  * Created by cenxiaozhong on 2017/5/13.
- *  https://github.com/Justson/AgentWeb
+ * https://github.com/Justson/AgentWeb
  */
 
 public class Notify {
@@ -23,27 +27,36 @@ public class Notify {
     private NotificationCompat.Builder cBuilder;
     private Notification.Builder nBuilder;
     private Context mContext;
+    private String mChannelId = "";
+
     public Notify(Context context, int ID) {
         this.NOTIFICATION_ID = ID;
         mContext = context;
         // 获取系统服务来初始化对象
         nm = (NotificationManager) mContext
-                .getSystemService(Activity.NOTIFICATION_SERVICE);
-        cBuilder = new NotificationCompat.Builder(mContext);
-    }
+                .getSystemService(NOTIFICATION_SERVICE);
+        cBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId, AgentWebUtils.getApplicationName(context), NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.createNotificationChannel(mNotificationChannel);
+        }
+    }
 
 
     public void notify_progress(PendingIntent pendingIntent, int smallIcon,
                                 String ticker, String title, String content, boolean sound, boolean vibrate, boolean lights, PendingIntent pendingIntentCancel) {
 
-        setCompatBuilder(pendingIntent, smallIcon, ticker, title, content, sound, vibrate, lights,pendingIntentCancel);
+        setCompatBuilder(pendingIntent, smallIcon, ticker, title, content, sound, vibrate, lights, pendingIntentCancel);
 
     }
 
     /**
      * 设置在顶部通知栏中的各种信息
-     *  @param pendingIntent
+     *
+     * @param pendingIntent
      * @param smallIcon
      * @param ticker
      * @param pendingIntentCancel
@@ -64,6 +77,7 @@ public class Notify {
         cBuilder.setContentTitle(title);// 设置通知中心的标题
         cBuilder.setContentText(content);// 设置通知中心中的内容
         cBuilder.setWhen(System.currentTimeMillis());
+
 
 		/*
          * 将AutoCancel设为true后，当你点击通知栏的notification后，它会自动被取消消失,
@@ -89,9 +103,6 @@ public class Notify {
         cBuilder.setDeleteIntent(pendingIntentCancel);
 
 
-
-
-
         if (sound) {
             defaults |= Notification.DEFAULT_SOUND;
         }
@@ -103,42 +114,42 @@ public class Notify {
         }
 
 
-
         cBuilder.setDefaults(defaults);
     }
 
-    public void setProgress(int maxprogress,int currentprogress, boolean exc){
-        cBuilder.setProgress(maxprogress,currentprogress,exc);
+    public void setProgress(int maxprogress, int currentprogress, boolean exc) {
+        cBuilder.setProgress(maxprogress, currentprogress, exc);
         sent();
     }
 
-    public void setContentText(String text){
+    public void setContentText(String text) {
 
         cBuilder.setContentText(text);
     }
 
-    public boolean hasDeleteContent(){
-        return cBuilder.getNotification().deleteIntent!=null;
+    public boolean hasDeleteContent() {
+        return cBuilder.getNotification().deleteIntent != null;
     }
 
-    public void setDelecte(PendingIntent intent){
+    public void setDelecte(PendingIntent intent) {
         cBuilder.getNotification().deleteIntent = intent;
     }
 
-    public void setProgressFinish(String content,PendingIntent pendingIntent){
+    public void setProgressFinish(String content, PendingIntent pendingIntent) {
         cBuilder.setContentText(content);
-        cBuilder.setProgress(100,100,false);
+        cBuilder.setProgress(100, 100, false);
         cBuilder.setContentIntent(pendingIntent);
         sent();
     }
+
     /**
      * 发送通知
      */
-     void sent() {
+    void sent() {
 
 
         notification = cBuilder.build();
-         //LogUtils.i("Info","send:"+NOTIFICATION_ID+"  nocation:"+notification+"  ");
+        //LogUtils.i("Info","send:"+NOTIFICATION_ID+"  nocation:"+notification+"  ");
         // 发送该通知
         nm.notify(NOTIFICATION_ID, notification);
     }
@@ -154,7 +165,7 @@ public class Notify {
 
     }
 
-    public void cancel(int id){
+    public void cancel(int id) {
         nm.cancel(id);
     }
 }
