@@ -79,7 +79,7 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setSecurityType(AgentWeb.SecurityType.strict)
                 .setWebLayout(new WebLayout(this))
                 .openParallelDownload()//打开并行下载 , 默认串行下载
-                .setNotifyIcon(R.mipmap.download) //下载图标
+                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载图标
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，弹窗咨询用户是否前往其他应用
                 .interceptUnkownScheme() //拦截找不到相关页面的Scheme
                 .createAgentWeb()//

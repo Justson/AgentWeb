@@ -27,6 +27,9 @@ public class DefaultDesignUIController extends DefaultUIController {
 
     private BottomSheetDialog mBottomSheetDialog;
     private static final int RECYCLERVIEW_ID = 0x1001;
+    private Activity mActivity = null;
+    private WebParentLayout mWebParentLayout;
+    private LayoutInflater mLayoutInflater;
 
     @Override
     public void onJsAlert(WebView view, String url, String message) {
@@ -150,9 +153,7 @@ public class DefaultDesignUIController extends DefaultUIController {
     }
 
 
-    private Activity mActivity = null;
-    private WebParentLayout mWebParentLayout;
-    private LayoutInflater mLayoutInflater;
+
 
     @Override
     protected void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {

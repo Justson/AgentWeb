@@ -238,7 +238,7 @@ mAgentWeb = AgentWeb.with(this)//
                 .useMiddleWareWebChrome(getMiddleWareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
                 .openParallelDownload()//打开并行下载 , 默认串行下载。
-                .setNotifyIcon(R.mipmap.download) //下载通知图标。
+                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载通知图标。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
                 .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
                 .createAgentWeb()//创建AgentWeb。
