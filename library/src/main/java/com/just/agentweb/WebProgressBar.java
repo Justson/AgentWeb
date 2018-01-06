@@ -44,22 +44,22 @@ public class WebProgressBar extends BaseIndicatorView implements BaseProgressSpe
      */
     public static final int MAX_UNIFORM_SPEED_DURATION = 8 * 1000;
     /**
-     * 默认匀速后加速动画最大时长
+     * 默认加速后减速动画最大时长
      */
-    public static final int MAX_ACCELERATE_SPEED_DURATION = 1000;
+    public static final int MAX_DECELERATE_SPEED_DURATION = 800;
     /**
      * 结束动画时长 ， Fade out 。
      */
-    public static final int DO_END_ANIMATION_DURATION = 800;
+    public static final int DO_END_ANIMATION_DURATION = 600;
 
     /**
      * 当前匀速动画最大的时长
      */
     private static int CURRENT_MAX_UNIFORM_SPEED_DURATION = MAX_UNIFORM_SPEED_DURATION;
     /**
-     * 当前匀速后加速动画最大时长
+     * 当前加速后减速动画最大时长
      */
-    private static int CURRENT_MAX_ACCELERATE_SPEED_DURATION = MAX_ACCELERATE_SPEED_DURATION;
+    private static int CURRENT_MAX_DECELERATE_SPEED_DURATION = MAX_DECELERATE_SPEED_DURATION;
 
     /**
      * 标志当前进度条的状态
@@ -160,13 +160,13 @@ public class WebProgressBar extends BaseIndicatorView implements BaseProgressSpe
         this.mTargetWidth = getMeasuredWidth();
         int screenWidth = getContext().getResources().getDisplayMetrics().widthPixels;
         if (mTargetWidth >= screenWidth) {
-            CURRENT_MAX_ACCELERATE_SPEED_DURATION = MAX_ACCELERATE_SPEED_DURATION;
+            CURRENT_MAX_DECELERATE_SPEED_DURATION = MAX_DECELERATE_SPEED_DURATION;
             CURRENT_MAX_UNIFORM_SPEED_DURATION = MAX_UNIFORM_SPEED_DURATION;
         } else {
             //取比值
             float rate = this.mTargetWidth / Float.valueOf(screenWidth);
             CURRENT_MAX_UNIFORM_SPEED_DURATION = (int) (MAX_UNIFORM_SPEED_DURATION * rate);
-            CURRENT_MAX_ACCELERATE_SPEED_DURATION = (int) (MAX_ACCELERATE_SPEED_DURATION * rate);
+            CURRENT_MAX_DECELERATE_SPEED_DURATION = (int) (MAX_DECELERATE_SPEED_DURATION * rate);
 
         }
 
@@ -219,7 +219,7 @@ public class WebProgressBar extends BaseIndicatorView implements BaseProgressSpe
                 segment95Animator = ValueAnimator.ofFloat(currentProgress, 95);
                 float residue = 1f - currentProgress / 100f - 0.05f;
                 segment95Animator.setInterpolator(new LinearInterpolator());
-                segment95Animator.setDuration((long) (residue * CURRENT_MAX_ACCELERATE_SPEED_DURATION));
+                segment95Animator.setDuration((long) (residue * CURRENT_MAX_DECELERATE_SPEED_DURATION));
                 segment95Animator.setInterpolator(new DecelerateInterpolator());
                 segment95Animator.addUpdateListener(mAnimatorUpdateListener);
             }
