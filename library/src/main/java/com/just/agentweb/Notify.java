@@ -158,13 +158,6 @@ public class Notify {
     /**
      * 根据id清除通知
      */
-    public void clear() {
-        // 取消通知
-        nm.cancelAll();
-
-
-    }
-
     public void cancel(int id) {
         nm.cancel(id);
     }

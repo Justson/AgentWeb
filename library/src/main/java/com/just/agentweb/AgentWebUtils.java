@@ -320,18 +320,14 @@ public class AgentWebUtils {
                 end.equals("jpeg") || end.equals("bmp")) {
             type = "image/*";
         } else if (end.equals("apk")) {
-        /* android.permission.INSTALL_PACKAGES */
             type = "application/vnd.android.package-archive";
-        }
-//      else if(end.equals("pptx")||end.equals("ppt")){
-//        type = "application/vnd.ms-powerpoint";
-//      }else if(end.equals("docx")||end.equals("doc")){
-//        type = "application/vnd.ms-word";
-//      }else if(end.equals("xlsx")||end.equals("xls")){
-//        type = "application/vnd.ms-excel";
-//      }
-        else {
-//        /*如果无法直接打开，就跳出软件列表给用户选择 */
+        } else if (end.equals("pptx") || end.equals("ppt")) {
+            type = "application/vnd.ms-powerpoint";
+        } else if (end.equals("docx") || end.equals("doc")) {
+            type = "application/vnd.ms-word";
+        } else if (end.equals("xlsx") || end.equals("xls")) {
+            type = "application/vnd.ms-excel";
+        } else {
             type = "*/*";
         }
         return type;

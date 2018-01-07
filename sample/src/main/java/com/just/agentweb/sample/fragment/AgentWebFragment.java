@@ -63,6 +63,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public static final String URL_KEY = "url_key";
     private ImageView mMoreImageView;
     private PopupMenu mPopupMenu;
+    private Gson mGson = new Gson(); //用于方便打印测试
     public static final String TAG = AgentWebFragment.class.getSimpleName();
 
     private MiddleWareWebClientBase mWebClient;
@@ -161,11 +162,15 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         return WebDefaultSettingsManager.getInstance();
     }
 
+    /**
+     * 页面空白，请检查scheme是否加上， scheme://host:port/path?query 。
+     * @return url
+     */
     public String getUrl() {
         String target = "";
 
         if (TextUtils.isEmpty(target = this.getArguments().getString(URL_KEY))) {
-            target = "http://www.jd.com";
+            target = "http://www.jd.com/";
         }
         return target;
     }
@@ -187,7 +192,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             Log.i(TAG, "onProgressChanged:" + newProgress + "  view:" + view);
         }
     };
-    private Gson mGson = new Gson(); //用于方便打印测试
+
     protected WebViewClient mWebViewClient = new WebViewClient() {
 
         private HashMap<String, Long> timer = new HashMap<>();
