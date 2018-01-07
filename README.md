@@ -8,7 +8,7 @@ AgentWeb 是一个基于的 Android WebView ，简单易用 ， 带有进度条 
 ## AgentWeb Sample APK 文件下载
 AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面链接下载体验。
 
-* [Github 仓库里APK 文件](./agentweb.apk)
+* [GitHub 仓库里APK 文件](./agentweb.apk)
 * [Google Play](https://play.google.com/store/apps/details?id=com.just.agentweb.sample) 
 
 ## 为什么要使用 AgentWeb ？
