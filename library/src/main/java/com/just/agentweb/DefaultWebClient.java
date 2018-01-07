@@ -53,7 +53,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     public static final int DERECT_OPEN_OTHER_APP = 1001;
     public static final int ASK_USER_OPEN_OTHER_APP = DERECT_OPEN_OTHER_APP >> 2;
     public static final int DISALLOW_OPEN_OTHER_APP = DERECT_OPEN_OTHER_APP >> 4;
-    public int schemeHandleType = ASK_USER_OPEN_OTHER_APP;
+    private int schemeHandleType = ASK_USER_OPEN_OTHER_APP;
     private boolean isInterceptUnkownScheme = true;
     private WeakReference<AgentWebUIController> mAgentWebUIController = null;
     private WebView mWebView;
