@@ -51,3 +51,5 @@ local.properties
 #*.jks
 app/keystore/
 #sample/keystore/
+library/src/main/res/mipmap-xxhdpi/
+sample/sampledata/

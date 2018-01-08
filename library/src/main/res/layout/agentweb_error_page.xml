@@ -13,6 +13,7 @@
         android:text="出错啦! 点击空白处刷新 ~"
         android:textSize="22sp"
         android:gravity="center"
+        android:textColor="#696969"
         />
 
 </LinearLayout>

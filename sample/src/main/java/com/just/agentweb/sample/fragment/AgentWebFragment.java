@@ -124,6 +124,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mAgentWeb.getWebCreator().get().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
         //mAgentWeb.getWebCreator().get()  获取WebView .
 
+
+
+
     }
 
 
@@ -282,7 +285,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        mAgentWeb.uploadFileResult(requestCode, resultCode, data); //2.0.0开始 废弃该api ，没有api代替 ,使用 ActionActivity 绕过该方法 ,降低使用门槛
+//        mAgentWeb.uploadFileResult(requestCode, resultCode, data); //2.0.0开始 废弃该api ，没有api代替 ,使用 ActionActivity 绕过该方法 ,降低使用门槛
     }
 
     protected void initView(View view) {
@@ -428,7 +431,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     }
 
-    private boolean isFirst = true;
 
     @Override
     public void onResume() {
