@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements Observer {
+public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Observer {
 
     private DownLoadTask mDownLoadTask;
     private long loaded = 0;
@@ -44,7 +44,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
 
     private static final int ERROR_LOAD = 406;
 
-    private static final String TAG = RealDownLoader.class.getSimpleName();
+    private static final String TAG = DownLoader.class.getSimpleName();
 
 
     private AtomicBoolean atomic = new AtomicBoolean(false);
@@ -57,7 +57,7 @@ public class RealDownLoader extends AsyncTask<Void, Integer, Integer> implements
     };
 
 
-    RealDownLoader(DownLoadTask downLoadTask) {
+    DownLoader(DownLoadTask downLoadTask) {
         this.mDownLoadTask = downLoadTask;
         this.totals = mDownLoadTask.getLength();
         checkNullTask(downLoadTask);

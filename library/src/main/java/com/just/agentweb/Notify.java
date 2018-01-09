@@ -25,7 +25,6 @@ public class Notify {
     private NotificationManager nm;
     private Notification notification;
     private NotificationCompat.Builder cBuilder;
-    private Notification.Builder nBuilder;
     private Context mContext;
     private String mChannelId = "";
 
@@ -35,13 +34,14 @@ public class Notify {
         // 获取系统服务来初始化对象
         nm = (NotificationManager) mContext
                 .getSystemService(NOTIFICATION_SERVICE);
-        cBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
+            cBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
             NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId, AgentWebUtils.getApplicationName(context), NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
             mNotificationManager.createNotificationChannel(mNotificationChannel);
+        } else {
+            cBuilder = new NotificationCompat.Builder(mContext);
         }
     }
 

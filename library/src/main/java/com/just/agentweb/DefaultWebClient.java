@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.util.ArraySet;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.webkit.HttpAuthHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -165,6 +166,11 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         return super.shouldInterceptRequest(view, url);
+    }
+
+    @Override
+    public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
+        super.onReceivedHttpAuthRequest(view, handler, host, realm);
     }
 
     private boolean handleOtherScheme(String url) {

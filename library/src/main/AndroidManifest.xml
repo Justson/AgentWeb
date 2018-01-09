@@ -28,7 +28,7 @@
         </activity>
 
 
-        <receiver android:name="com.just.agentweb.RealDownLoader$NotificationBroadcastReceiver"></receiver>
+        <receiver android:name="com.just.agentweb.DownLoader$NotificationBroadcastReceiver"></receiver>
     </application>
 
 </manifest>
