@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v4.util.ArraySet;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.webkit.HttpAuthHandler;
@@ -28,6 +27,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -63,8 +63,8 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private Method onMainFrameErrorMethod = null;
     private Object mPayTask; //alipay
     public static final String SCHEME_SMS = "sms:";
-    private Set<String> mErrorUrls = new ArraySet<>();
-    private Set<String> mWaittingFinishSet = new ArraySet<>();
+    private Set<String> mErrorUrlsSet = new HashSet<>();
+    private Set<String> mWaittingFinishSet = new HashSet<>();
 
     static {
         boolean tag = true;
@@ -422,7 +422,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     //
     private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
         LogUtils.i(TAG, "onMainFrameError:" + failingUrl + "  mWebViewClient:" + mWebViewClient);
-        mErrorUrls.add(failingUrl);
+        mErrorUrlsSet.add(failingUrl);
         if (this.mWebViewClient != null && webClientHelper) {  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
             Method mMethod = this.onMainFrameErrorMethod;
             if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, int.class, String.class, String.class)) != null) {
@@ -448,8 +448,8 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
             mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
         }
 
-        LogUtils.i(TAG, "onPageFinished:" + mErrorUrls + "  contains:" + mErrorUrls.contains(url));
-        if (!mErrorUrls.contains(url) && mWaittingFinishSet.contains(url)) {
+        LogUtils.i(TAG, "onPageFinished:" + mErrorUrlsSet + "  contains:" + mErrorUrlsSet.contains(url));
+        if (!mErrorUrlsSet.contains(url) && mWaittingFinishSet.contains(url)) {
             if (mAgentWebUIController.get() != null) {
                 LogUtils.i(TAG, "onPageFinished onShowMainFrame");
                 mAgentWebUIController.get().onShowMainFrame();
@@ -458,8 +458,8 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         if (mWaittingFinishSet.contains(url)) {
             mWaittingFinishSet.remove(url);
         }
-        if (!mErrorUrls.isEmpty()) {
-            mErrorUrls.clear();
+        if (!mErrorUrlsSet.isEmpty()) {
+            mErrorUrlsSet.clear();
         }
         super.onPageFinished(view, url);
 
