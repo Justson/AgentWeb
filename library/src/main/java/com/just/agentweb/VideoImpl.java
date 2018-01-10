@@ -57,16 +57,12 @@ public class VideoImpl implements IVideo, EventInterceptor {
             mPair=new Pair<>(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,0);
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             flags.add(mPair);
-
-
-
         }
 
         if((Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)&&(mWindow.getAttributes().flags&WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED)==0){
             mPair=new Pair<>(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,0);
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
             flags.add(mPair);
-
         }
 
 
@@ -86,8 +82,6 @@ public class VideoImpl implements IVideo, EventInterceptor {
         }
         this.mCallback = callback;
         moiveParentView.addView(this.moiveView = view);
-
-
         moiveParentView.setVisibility(View.VISIBLE);
 
     }
@@ -114,14 +108,17 @@ public class VideoImpl implements IVideo, EventInterceptor {
             moiveParentView.removeView(moiveView);
 
         }
-        if (moiveParentView != null)
+        if (moiveParentView != null){
             moiveParentView.setVisibility(View.GONE);
+        }
 
-        if (this.mCallback != null)
+        if (this.mCallback != null){
             mCallback.onCustomViewHidden();
+        }
         this.moiveView = null;
-        if (mWebView != null)
+        if (mWebView != null){
             mWebView.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -133,7 +130,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
     @Override
     public boolean event() {
 
-        LogUtils.i(TAG, "event:" + isVideoState());
+        LogUtils.i(TAG, "isVideoState:" + isVideoState());
         if (isVideoState()) {
             onHideCustomView();
             return true;
