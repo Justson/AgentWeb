@@ -428,7 +428,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             super.openFileChooser(valueCallback, acceptType);
             return;
         }
-        createAndOpenCommonFileLoader(valueCallback, "*/*");
+        createAndOpenCommonFileLoader(valueCallback, acceptType);
     }
 
 
