@@ -19,6 +19,7 @@ import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,26 +67,34 @@ public final class AgentWeb {
     private int openOtherAppWays = -1;
     private MiddleWareWebClientBase mMiddleWrareWebClientBaseHeader;
     private MiddleWareWebChromeBase mMiddleWareWebChromeBaseHeader;
+    private EventInterceptor mEventInterceptor;
+
+
 
     private AgentWeb(AgentBuilder agentBuilder) {
+        TAG_TARGET = FRAGMENT_TAG;
         this.mActivity = agentBuilder.mActivity;
+        this.mFragment = agentBuilder.mFragment;
         this.mViewGroup = agentBuilder.mViewGroup;
+        this.mIEventHandler = agentBuilder.mIEventHandler;
         this.enableProgress = agentBuilder.enableProgress;
-        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.mIndicatorColorWithHeight, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
+        mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.height_dp, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
         this.mWebViewClient = agentBuilder.mWebViewClient;
         mAgentWeb = this;
         this.mAgentWebSettings = agentBuilder.mAgentWebSettings;
-        this.mIEventHandler = agentBuilder.mIEventHandler;
-        TAG_TARGET = ACTIVITY_TAG;
+
         if (agentBuilder.mJavaObject != null && !agentBuilder.mJavaObject.isEmpty()) {
             this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilder.mJavaObject);
+            LogUtils.i(TAG, "mJavaObject size:" + this.mJavaObjects.size());
+
         }
         this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
+        this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
         this.mWebViewClientCallbackManager = agentBuilder.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilder.mSecurityType;
-        this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.headers);
+        this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.mHttpHeaders);
         if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
             mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilder.mAgentWebUIController);
@@ -94,9 +103,8 @@ public final class AgentWeb {
             mWebParentLayout.setErrorView(agentBuilder.errorView);
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
-        this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, mSecurityType);
-        this.webClientHelper = agentBuilder.webclientHelper;
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
+        this.webClientHelper = agentBuilder.webClientHelper;
         this.isInterceptUnkownScheme = agentBuilder.isInterceptUnkownScheme;
         if (agentBuilder.openOtherPage != null) {
             this.openOtherAppWays = agentBuilder.openOtherPage.code;
@@ -105,52 +113,6 @@ public final class AgentWeb {
         this.mMiddleWareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
         init();
         setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
-    }
-
-
-
-    private AgentWeb(AgentBuilderFragment agentBuilderFragment) {
-        TAG_TARGET = FRAGMENT_TAG;
-        this.mActivity = agentBuilderFragment.mActivity;
-        this.mFragment = agentBuilderFragment.mFragment;
-        this.mViewGroup = agentBuilderFragment.mViewGroup;
-        this.mIEventHandler = agentBuilderFragment.mIEventHandler;
-        this.enableProgress = agentBuilderFragment.enableProgress;
-        mWebCreator = agentBuilderFragment.mWebCreator == null ? configWebCreator(agentBuilderFragment.v, agentBuilderFragment.index, agentBuilderFragment.mLayoutParams, agentBuilderFragment.mIndicatorColor, agentBuilderFragment.height_dp, agentBuilderFragment.mWebView, agentBuilderFragment.mWebLayout) : agentBuilderFragment.mWebCreator;
-        mIndicatorController = agentBuilderFragment.mIndicatorController;
-        this.mWebChromeClient = agentBuilderFragment.mWebChromeClient;
-        this.mWebViewClient = agentBuilderFragment.mWebViewClient;
-        mAgentWeb = this;
-        this.mAgentWebSettings = agentBuilderFragment.mAgentWebSettings;
-
-        if (agentBuilderFragment.mJavaObject != null && !agentBuilderFragment.mJavaObject.isEmpty()) {
-            this.mJavaObjects.putAll((Map<? extends String, ?>) agentBuilderFragment.mJavaObject);
-            LogUtils.i(TAG, "mJavaObject size:" + this.mJavaObjects.size());
-
-        }
-        this.mChromeClientCallbackManager = agentBuilderFragment.mChromeClientCallbackManager;
-        this.mPermissionInterceptor = agentBuilderFragment.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilderFragment.mPermissionInterceptor);
-        this.mWebViewClientCallbackManager = agentBuilderFragment.mWebViewClientCallbackManager;
-        this.mSecurityType = agentBuilderFragment.mSecurityType;
-        this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilderFragment.mHttpHeaders);
-        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
-            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
-            mWebParentLayout.bindController(agentBuilderFragment.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilderFragment.mAgentWebUIController);
-
-            mWebParentLayout.setErrorLayoutRes(agentBuilderFragment.errorLayout, agentBuilderFragment.reloadId);
-            mWebParentLayout.setErrorView(agentBuilderFragment.errorView);
-        }
-        this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
-        this.webClientHelper = agentBuilderFragment.webClientHelper;
-        this.isInterceptUnkownScheme = agentBuilderFragment.isInterceptUnkownScheme;
-        if (agentBuilderFragment.openOtherPage != null) {
-            this.openOtherAppWays = agentBuilderFragment.openOtherPage.code;
-        }
-        this.mMiddleWrareWebClientBaseHeader = agentBuilderFragment.header;
-        this.mMiddleWareWebChromeBaseHeader = agentBuilderFragment.mChromeMiddleWareHeader;
-        init();
-        setDownloadListener(agentBuilderFragment.mDownLoadResultListeners, agentBuilderFragment.isParallelDownload, agentBuilderFragment.icon);
     }
 
     private void init() {
@@ -244,16 +206,16 @@ public final class AgentWeb {
         return new AgentBuilder(activity);
     }
 
-    public static AgentBuilderFragment with(@NonNull Fragment fragment) {
+    public static AgentBuilder with(@NonNull Fragment fragment) {
 
 
         Activity mActivity = null;
         if ((mActivity = fragment.getActivity()) == null)
             throw new NullPointerException("activity can not be null .");
-        return new AgentBuilderFragment(mActivity, fragment);
+        return new AgentBuilder(mActivity, fragment);
     }
 
-    private EventInterceptor mEventInterceptor;
+
 
     private EventInterceptor getInterceptor() {
 
@@ -495,121 +457,6 @@ public final class AgentWeb {
     }
 
 
-    public static class AgentBuilder {
-
-        private Activity mActivity;
-        private ViewGroup mViewGroup;
-        private boolean isNeedProgress;
-        private int index = -1;
-        private BaseIndicatorView v;
-        private IndicatorController mIndicatorController = null;
-        /*默认进度条是打开的*/
-        private boolean enableProgress = true;
-        private ViewGroup.LayoutParams mLayoutParams = null;
-        private WebViewClient mWebViewClient;
-        private WebChromeClient mWebChromeClient;
-        private int mIndicatorColor = -1;
-        private AgentWebSettings mAgentWebSettings;
-        private WebCreator mWebCreator;
-        private WebViewClientCallbackManager mWebViewClientCallbackManager = new WebViewClientCallbackManager();
-        private SecurityType mSecurityType = SecurityType.default_check;
-        private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
-        private HttpHeaders headers = null;
-        private ArrayMap<String, Object> mJavaObject = null;
-        private int mIndicatorColorWithHeight = -1;
-        private WebView mWebView;
-        private boolean webclientHelper = true;
-        private ArrayList<DownLoadResultListener> mDownLoadResultListeners;
-        private IWebLayout mWebLayout;
-        private PermissionInterceptor mPermissionInterceptor;
-        private boolean isParallelDownload = false;
-        private int icon = -1;
-        private DownloadListener mDownloadListener = null;
-        private AgentWebUIController mAgentWebUIController;
-        private DefaultWebClient.OpenOtherPageWays openOtherPage = null;
-        private boolean isInterceptUnkownScheme = false;
-
-        private MiddleWareWebClientBase header;
-        private MiddleWareWebClientBase tail;
-
-        private MiddleWareWebChromeBase mChromeMiddleWareHeader = null;
-        private MiddleWareWebChromeBase mChromeMiddleWareTail = null;
-        private View errorView;
-        private int errorLayout;
-        private int reloadId;
-
-        private void addJavaObject(String key, Object o) {
-            if (mJavaObject == null)
-                mJavaObject = new ArrayMap<>();
-            mJavaObject.put(key, o);
-        }
-
-
-        private void setIndicatorColor(int indicatorColor) {
-            mIndicatorColor = indicatorColor;
-        }
-
-        private AgentBuilder(Activity activity) {
-            this.mActivity = activity;
-        }
-
-        private AgentBuilder enableProgress() {
-            this.enableProgress = true;
-            return this;
-        }
-
-        private AgentBuilder closeProgress() {
-            this.enableProgress = false;
-            return this;
-        }
-
-
-        private AgentBuilder(WebCreator webCreator) {
-            this.mWebCreator = webCreator;
-        }
-
-
-        public ConfigIndicatorBuilder setAgentWebParent(@Nullable ViewGroup viewGroup, @Nullable ViewGroup.LayoutParams lp) {
-            this.mViewGroup = viewGroup;
-            mLayoutParams = lp;
-            return new ConfigIndicatorBuilder(this);
-        }
-
-        public ConfigIndicatorBuilder setAgentWebParent(@Nullable ViewGroup viewGroup, @Nullable ViewGroup.LayoutParams lp, int position) {
-            this.mViewGroup = viewGroup;
-            mLayoutParams = lp;
-            this.index = position;
-            return new ConfigIndicatorBuilder(this);
-        }
-
-        public ConfigIndicatorBuilder createContentViewTag() {
-
-            this.mViewGroup = null;
-            this.mLayoutParams = null;
-            return new ConfigIndicatorBuilder(this);
-        }
-
-
-        private void addHeader(String k, String v) {
-            if (headers == null)
-                headers = HttpHeaders.create();
-            headers.additionalHttpHeader(k, v);
-
-        }
-
-
-        private PreAgentWeb buildAgentWeb() {
-            return new PreAgentWeb(HookManager.hookAgentWeb(new AgentWeb(this), this));
-        }
-
-        private IEventHandler mIEventHandler;
-
-
-        public void setIndicatorColorWithHeight(int indicatorColorWithHeight) {
-            mIndicatorColorWithHeight = indicatorColorWithHeight;
-        }
-    }
-
     public static class PreAgentWeb {
         private AgentWeb mAgentWeb;
         private boolean isReady = false;
@@ -638,222 +485,13 @@ public final class AgentWeb {
 
     }
 
-    public static class ConfigIndicatorBuilder {
-
-        private AgentBuilder mAgentBuilder;
-
-        private ConfigIndicatorBuilder(AgentBuilder agentBuilder) {
-            this.mAgentBuilder = agentBuilder;
-        }
-
-        public IndicatorBuilder useDefaultIndicator() {
-            this.mAgentBuilder.isNeedProgress = true;
-            mAgentBuilder.enableProgress();
-            return new IndicatorBuilder(mAgentBuilder);
-        }
-
-        public CommonAgentBuilder customProgress(BaseIndicatorView view) {
-            this.mAgentBuilder.v = view;
-
-            mAgentBuilder.isNeedProgress = false;
-            return new CommonAgentBuilder(mAgentBuilder);
-        }
-
-        public CommonAgentBuilder closeProgressBar() {
-            mAgentBuilder.closeProgress();
-            return new CommonAgentBuilder(mAgentBuilder);
-        }
-
-
-    }
-
-    public static final class CommonAgentBuilder {
-        private AgentBuilder mAgentBuilder;
-
-
-        private CommonAgentBuilder(AgentBuilder agentBuilder) {
-            this.mAgentBuilder = agentBuilder;
-
-        }
-
-        public CommonAgentBuilder setWebViewClient(@Nullable WebViewClient webViewClient) {
-            this.mAgentBuilder.mWebViewClient = webViewClient;
-            return this;
-        }
-
-
-        public CommonAgentBuilder setWebChromeClient(@Nullable WebChromeClient webChromeClient) {
-            this.mAgentBuilder.mWebChromeClient = webChromeClient;
-            return this;
-        }
-
-        public CommonAgentBuilder setEventHandler(@Nullable IEventHandler iEventHandler) {
-            this.mAgentBuilder.mIEventHandler = iEventHandler;
-            return this;
-        }
-
-        public CommonAgentBuilder setAgentWebSettings(@Nullable AgentWebSettings agentWebSettings) {
-            this.mAgentBuilder.mAgentWebSettings = agentWebSettings;
-            return this;
-        }
-
-
-        public CommonAgentBuilder(@Nullable IndicatorController indicatorController) {
-            this.mAgentBuilder.mIndicatorController = indicatorController;
-        }
-
-
-        public CommonAgentBuilder addJavascriptInterface(String name, Object o) {
-            mAgentBuilder.addJavaObject(name, o);
-            return this;
-        }
-
-
-        public CommonAgentBuilder setReceivedTitleCallback(@Nullable ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback) {
-            this.mAgentBuilder.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
-            return this;
-        }
-
-        public CommonAgentBuilder setSecurityType(@NonNull SecurityType secutityType) {
-            this.mAgentBuilder.mSecurityType = secutityType;
-            return this;
-        }
-
-        public CommonAgentBuilder setWebView(@Nullable WebView webView) {
-            this.mAgentBuilder.mWebView = webView;
-            return this;
-        }
-
-        public CommonAgentBuilder setWebLayout(@NonNull IWebLayout webLayout) {
-            this.mAgentBuilder.mWebLayout = webLayout;
-            return this;
-        }
-
-        public CommonAgentBuilder additionalHttpHeader(String k, String v) {
-            this.mAgentBuilder.addHeader(k, v);
-            return this;
-        }
-
-        public CommonAgentBuilder closeWebViewClientHelper() {
-            mAgentBuilder.webclientHelper = false;
-            return this;
-        }
-
-        public CommonAgentBuilder openParallelDownload() {
-            this.mAgentBuilder.isParallelDownload = true;
-            return this;
-        }
-
-        public CommonAgentBuilder setNotifyIcon(@DrawableRes int icon) {
-            this.mAgentBuilder.icon = icon;
-            return this;
-        }
-
-        public CommonAgentBuilder addDownLoadResultListener(@Nullable DownLoadResultListener downLoadResultListener) {
-
-            if (this.mAgentBuilder.mDownLoadResultListeners == null) {
-                this.mAgentBuilder.mDownLoadResultListeners = new ArrayList<>();
-            }
-            this.mAgentBuilder.mDownLoadResultListeners.add(downLoadResultListener);
-            return this;
-        }
-
-        public CommonAgentBuilder setPermissionInterceptor(@Nullable PermissionInterceptor permissionInterceptor) {
-            this.mAgentBuilder.mPermissionInterceptor = permissionInterceptor;
-            return this;
-        }
-
-        public CommonAgentBuilder setOpenOtherPageWays(@Nullable DefaultWebClient.OpenOtherPageWays openOtherPageWays) {
-            this.mAgentBuilder.openOtherPage = openOtherPageWays;
-            return this;
-        }
-
-        public CommonAgentBuilder interceptUnkownScheme() {
-            this.mAgentBuilder.isInterceptUnkownScheme = true;
-            return this;
-        }
-
-        public CommonAgentBuilder useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
-            if (middleWrareWebClientBase == null) {
-                return this;
-            }
-            if (this.mAgentBuilder.header == null) {
-                this.mAgentBuilder.header = this.mAgentBuilder.tail = middleWrareWebClientBase;
-            } else {
-                this.mAgentBuilder.tail.enq(middleWrareWebClientBase);
-                this.mAgentBuilder.tail = middleWrareWebClientBase;
-            }
-            return this;
-        }
-
-        public CommonAgentBuilder useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
-            if (middleWareWebChromeBase == null) {
-                return this;
-            }
-            if (this.mAgentBuilder.mChromeMiddleWareHeader == null) {
-                this.mAgentBuilder.mChromeMiddleWareHeader = this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
-            } else {
-                this.mAgentBuilder.mChromeMiddleWareTail.enq(middleWareWebChromeBase);
-                this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
-            }
-            return this;
-        }
-
-        public CommonAgentBuilder setMainFrameErrorView(@NonNull View view) {
-            this.mAgentBuilder.errorView = view;
-            return this;
-        }
-
-        public CommonAgentBuilder setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int reloadId) {
-            this.mAgentBuilder.errorLayout = errorLayout;
-            this.mAgentBuilder.reloadId = reloadId;
-            return this;
-        }
-
-        public CommonAgentBuilder setAgentWebUIController(@Nullable AgentWebUIControllerImplBase agentWebUIController) {
-            this.mAgentBuilder.mAgentWebUIController = agentWebUIController;
-            return this;
-        }
-
-        public PreAgentWeb createAgentWeb() {
-            return mAgentBuilder.buildAgentWeb();
-        }
-
-    }
 
     public static enum SecurityType {
         default_check, strict;
     }
 
-    public static class IndicatorBuilder {
 
-        private AgentBuilder mAgentBuilder = null;
-
-        private IndicatorBuilder(AgentBuilder builder) {
-            this.mAgentBuilder = builder;
-        }
-
-        public CommonAgentBuilder setIndicatorColor(int color) {
-            mAgentBuilder.setIndicatorColor(color);
-            return new CommonAgentBuilder(mAgentBuilder);
-        }
-
-        public CommonAgentBuilder defaultProgressBarColor() {
-            mAgentBuilder.setIndicatorColor(-1);
-            return new CommonAgentBuilder(mAgentBuilder);
-        }
-
-        public CommonAgentBuilder setIndicatorColorWithHeight(@ColorInt int color, int height_dp) {
-            mAgentBuilder.setIndicatorColor(color);
-            mAgentBuilder.setIndicatorColorWithHeight(height_dp);
-            return new CommonAgentBuilder(mAgentBuilder);
-        }
-
-
-    }
-
-
-    public static final class AgentBuilderFragment {
+    public static final class AgentBuilder {
         private Activity mActivity;
         private Fragment mFragment;
 
@@ -895,12 +533,20 @@ public final class AgentWeb {
         private View errorView;
         private int errorLayout;
         private int reloadId;
+        private int tag = -1;
 
 
-        public AgentBuilderFragment(@NonNull Activity activity, @NonNull Fragment fragment) {
+        public AgentBuilder(@NonNull Activity activity, @NonNull Fragment fragment) {
             mActivity = activity;
             mFragment = fragment;
+            tag = 1;
         }
+
+        public AgentBuilder(@NonNull Activity activity) {
+            mActivity = activity;
+            tag = 0;
+        }
+
 
         public IndicatorBuilderForFragment setAgentWebParent(@NonNull ViewGroup v, @NonNull ViewGroup.LayoutParams lp) {
             this.mViewGroup = v;
@@ -930,78 +576,78 @@ public final class AgentWeb {
     }
 
     public static class IndicatorBuilderForFragment {
-        AgentBuilderFragment agentBuilderFragment = null;
+        AgentBuilder mAgentBuilder = null;
 
-        public IndicatorBuilderForFragment(AgentBuilderFragment agentBuilderFragment) {
-            this.agentBuilderFragment = agentBuilderFragment;
+        public IndicatorBuilderForFragment(AgentBuilder agentBuilder) {
+            this.mAgentBuilder = agentBuilder;
         }
 
         public CommonBuilderForFragment useDefaultIndicator(int color) {
-            this.agentBuilderFragment.enableProgress = true;
-            this.agentBuilderFragment.mIndicatorColor = color;
-            return new CommonBuilderForFragment(agentBuilderFragment);
+            this.mAgentBuilder.enableProgress = true;
+            this.mAgentBuilder.mIndicatorColor = color;
+            return new CommonBuilderForFragment(mAgentBuilder);
         }
 
         public CommonBuilderForFragment useDefaultIndicator() {
-            this.agentBuilderFragment.enableProgress = true;
-            return new CommonBuilderForFragment(agentBuilderFragment);
+            this.mAgentBuilder.enableProgress = true;
+            return new CommonBuilderForFragment(mAgentBuilder);
         }
 
         public CommonBuilderForFragment closeDefaultIndicator() {
-            this.agentBuilderFragment.enableProgress = false;
-            this.agentBuilderFragment.mIndicatorColor = -1;
-            this.agentBuilderFragment.height_dp = -1;
-            return new CommonBuilderForFragment(agentBuilderFragment);
+            this.mAgentBuilder.enableProgress = false;
+            this.mAgentBuilder.mIndicatorColor = -1;
+            this.mAgentBuilder.height_dp = -1;
+            return new CommonBuilderForFragment(mAgentBuilder);
         }
 
         public CommonBuilderForFragment setCustomIndicator(@NonNull BaseIndicatorView v) {
             if (v != null) {
-                this.agentBuilderFragment.enableProgress = true;
-                this.agentBuilderFragment.v = v;
-                this.agentBuilderFragment.isNeedDefaultProgress = false;
+                this.mAgentBuilder.enableProgress = true;
+                this.mAgentBuilder.v = v;
+                this.mAgentBuilder.isNeedDefaultProgress = false;
             } else {
-                this.agentBuilderFragment.enableProgress = true;
-                this.agentBuilderFragment.isNeedDefaultProgress = true;
+                this.mAgentBuilder.enableProgress = true;
+                this.mAgentBuilder.isNeedDefaultProgress = true;
             }
 
-            return new CommonBuilderForFragment(agentBuilderFragment);
+            return new CommonBuilderForFragment(mAgentBuilder);
         }
 
         public CommonBuilderForFragment setIndicatorColorWithHeight(@ColorInt int color, int height_dp) {
-            this.agentBuilderFragment.mIndicatorColor = color;
-            this.agentBuilderFragment.height_dp = height_dp;
-            return new CommonBuilderForFragment(this.agentBuilderFragment);
+            this.mAgentBuilder.mIndicatorColor = color;
+            this.mAgentBuilder.height_dp = height_dp;
+            return new CommonBuilderForFragment(this.mAgentBuilder);
         }
 
     }
 
 
     public static class CommonBuilderForFragment {
-        private AgentBuilderFragment mAgentBuilderFragment;
+        private AgentBuilder mAgentBuilder;
 
-        public CommonBuilderForFragment(AgentBuilderFragment agentBuilderFragment) {
-            this.mAgentBuilderFragment = agentBuilderFragment;
+        public CommonBuilderForFragment(AgentBuilder agentBuilder) {
+            this.mAgentBuilder = agentBuilder;
         }
 
         public CommonBuilderForFragment setEventHanadler(@Nullable IEventHandler iEventHandler) {
-            mAgentBuilderFragment.mIEventHandler = iEventHandler;
+            mAgentBuilder.mIEventHandler = iEventHandler;
             return this;
         }
 
         public CommonBuilderForFragment closeWebViewClientHelper() {
-            mAgentBuilderFragment.webClientHelper = false;
+            mAgentBuilder.webClientHelper = false;
             return this;
         }
 
 
         public CommonBuilderForFragment setWebChromeClient(@Nullable WebChromeClient webChromeClient) {
-            this.mAgentBuilderFragment.mWebChromeClient = webChromeClient;
+            this.mAgentBuilder.mWebChromeClient = webChromeClient;
             return this;
 
         }
 
         public CommonBuilderForFragment setWebViewClient(@Nullable WebViewClient webChromeClient) {
-            this.mAgentBuilderFragment.mWebViewClient = webChromeClient;
+            this.mAgentBuilder.mWebViewClient = webChromeClient;
             return this;
         }
 
@@ -1009,11 +655,11 @@ public final class AgentWeb {
             if (middleWrareWebClientBase == null) {
                 return this;
             }
-            if (this.mAgentBuilderFragment.header == null) {
-                this.mAgentBuilderFragment.header = this.mAgentBuilderFragment.tail = middleWrareWebClientBase;
+            if (this.mAgentBuilder.header == null) {
+                this.mAgentBuilder.header = this.mAgentBuilder.tail = middleWrareWebClientBase;
             } else {
-                this.mAgentBuilderFragment.tail.enq(middleWrareWebClientBase);
-                this.mAgentBuilderFragment.tail = middleWrareWebClientBase;
+                this.mAgentBuilder.tail.enq(middleWrareWebClientBase);
+                this.mAgentBuilder.tail = middleWrareWebClientBase;
             }
             return this;
         }
@@ -1022,102 +668,102 @@ public final class AgentWeb {
             if (middleWareWebChromeBase == null) {
                 return this;
             }
-            if (this.mAgentBuilderFragment.mChromeMiddleWareHeader == null) {
-                this.mAgentBuilderFragment.mChromeMiddleWareHeader = this.mAgentBuilderFragment.mChromeMiddleWareTail = middleWareWebChromeBase;
+            if (this.mAgentBuilder.mChromeMiddleWareHeader == null) {
+                this.mAgentBuilder.mChromeMiddleWareHeader = this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
             } else {
-                this.mAgentBuilderFragment.mChromeMiddleWareTail.enq(middleWareWebChromeBase);
-                this.mAgentBuilderFragment.mChromeMiddleWareTail = middleWareWebChromeBase;
+                this.mAgentBuilder.mChromeMiddleWareTail.enq(middleWareWebChromeBase);
+                this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
             }
             return this;
         }
 
         public CommonBuilderForFragment setMainFrameErrorView(@NonNull View view) {
-            this.mAgentBuilderFragment.errorView = view;
+            this.mAgentBuilder.errorView = view;
             return this;
         }
 
         public CommonBuilderForFragment setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int reloadId) {
-            this.mAgentBuilderFragment.errorLayout = errorLayout;
-            this.mAgentBuilderFragment.reloadId = reloadId;
+            this.mAgentBuilder.errorLayout = errorLayout;
+            this.mAgentBuilder.reloadId = reloadId;
             return this;
         }
 
         public CommonBuilderForFragment setAgentWebWebSettings(@Nullable AgentWebSettings agentWebSettings) {
-            this.mAgentBuilderFragment.mAgentWebSettings = agentWebSettings;
+            this.mAgentBuilder.mAgentWebSettings = agentWebSettings;
             return this;
         }
 
         public PreAgentWeb createAgentWeb() {
-            return this.mAgentBuilderFragment.buildAgentWeb();
+            return this.mAgentBuilder.buildAgentWeb();
         }
 
         public CommonBuilderForFragment setReceivedTitleCallback(@Nullable ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback) {
-            this.mAgentBuilderFragment.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
+            this.mAgentBuilder.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
             return this;
         }
 
         public CommonBuilderForFragment addJavascriptInterface(@NonNull String name, @NonNull Object o) {
-            this.mAgentBuilderFragment.addJavaObject(name, o);
+            this.mAgentBuilder.addJavaObject(name, o);
             return this;
         }
 
         public CommonBuilderForFragment setSecurityType(@NonNull SecurityType type) {
-            this.mAgentBuilderFragment.mSecurityType = type;
+            this.mAgentBuilder.mSecurityType = type;
             return this;
         }
 
         public CommonBuilderForFragment openParallelDownload() {
-            this.mAgentBuilderFragment.isParallelDownload = true;
+            this.mAgentBuilder.isParallelDownload = true;
             return this;
         }
 
         public CommonBuilderForFragment setNotifyIcon(@DrawableRes int icon) {
-            this.mAgentBuilderFragment.icon = icon;
+            this.mAgentBuilder.icon = icon;
             return this;
         }
 
         public CommonBuilderForFragment setWebView(@Nullable WebView webView) {
-            this.mAgentBuilderFragment.mWebView = webView;
+            this.mAgentBuilder.mWebView = webView;
             return this;
         }
 
         public CommonBuilderForFragment setWebLayout(@Nullable IWebLayout iWebLayout) {
-            this.mAgentBuilderFragment.mWebLayout = iWebLayout;
+            this.mAgentBuilder.mWebLayout = iWebLayout;
             return this;
         }
 
         public CommonBuilderForFragment additionalHttpHeader(String k, String v) {
-            this.mAgentBuilderFragment.addHeader(k, v);
+            this.mAgentBuilder.addHeader(k, v);
 
             return this;
         }
 
         public CommonBuilderForFragment setPermissionInterceptor(@Nullable PermissionInterceptor permissionInterceptor) {
-            this.mAgentBuilderFragment.mPermissionInterceptor = permissionInterceptor;
+            this.mAgentBuilder.mPermissionInterceptor = permissionInterceptor;
             return this;
         }
 
         public CommonBuilderForFragment addDownLoadResultListener(@Nullable DownLoadResultListener downLoadResultListener) {
 
-            if (this.mAgentBuilderFragment.mDownLoadResultListeners == null) {
-                this.mAgentBuilderFragment.mDownLoadResultListeners = new ArrayList<>();
+            if (this.mAgentBuilder.mDownLoadResultListeners == null) {
+                this.mAgentBuilder.mDownLoadResultListeners = new ArrayList<>();
             }
-            this.mAgentBuilderFragment.mDownLoadResultListeners.add(downLoadResultListener);
+            this.mAgentBuilder.mDownLoadResultListeners.add(downLoadResultListener);
             return this;
         }
 
         public CommonBuilderForFragment setAgentWebUIController(@Nullable AgentWebUIControllerImplBase agentWebUIController) {
-            this.mAgentBuilderFragment.mAgentWebUIController = agentWebUIController;
+            this.mAgentBuilder.mAgentWebUIController = agentWebUIController;
             return this;
         }
 
         public CommonBuilderForFragment setOpenOtherPageWays(@Nullable DefaultWebClient.OpenOtherPageWays openOtherPageWays) {
-            this.mAgentBuilderFragment.openOtherPage = openOtherPageWays;
+            this.mAgentBuilder.openOtherPage = openOtherPageWays;
             return this;
         }
 
         public CommonBuilderForFragment interceptUnkownScheme() {
-            this.mAgentBuilderFragment.isInterceptUnkownScheme = true;
+            this.mAgentBuilder.isInterceptUnkownScheme = true;
             return this;
         }
 

@@ -7,11 +7,8 @@ package com.just.agentweb;
 public class HookManager {
 
 
-    public static AgentWeb hookAgentWeb(AgentWeb agentWeb, AgentWeb.AgentBuilder agentBuilder) {
-        return agentWeb;
-    }
 
-    public static AgentWeb hookAgentWeb(AgentWeb agentWeb, AgentWeb.AgentBuilderFragment agentBuilder) {
+    public static AgentWeb hookAgentWeb(AgentWeb agentWeb, AgentWeb.AgentBuilder agentBuilder) {
         return agentWeb;
     }
 
