@@ -25,7 +25,7 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:3.0.0'
+   compile 'com.just.agentweb:agentweb:3.1.0'
    ```
 * Maven
 	
@@ -33,19 +33,12 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>3.0.0</version>
+	  <version>3.1.0</version>
 	  <type>pom</type>
 	</dependency>
 	
 	```
 	
-## Beta 版
-
-* Gradle
-
-	```
-	compile 'com.just.agentweb:agentweb:3.1.0-beta'
-	```
 	
 
 
