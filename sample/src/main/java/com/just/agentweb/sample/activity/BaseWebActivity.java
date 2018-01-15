@@ -75,7 +75,7 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
-                .setSecurityType(AgentWeb.SecurityType.strict)
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .setWebLayout(new WebLayout(this))
                 .openParallelDownload()//打开并行下载 , 默认串行下载
                 .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载图标
