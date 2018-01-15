@@ -52,7 +52,7 @@ public final class AgentWeb {
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
     private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
     private WebChromeClient mTargetChromeClient;
-    private SecurityType mSecurityType = SecurityType.default_check;
+    private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
     private static final int ACTIVITY_TAG = 0;
     private static final int FRAGMENT_TAG = 1;
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
@@ -68,7 +68,6 @@ public final class AgentWeb {
     private MiddleWareWebClientBase mMiddleWrareWebClientBaseHeader;
     private MiddleWareWebChromeBase mMiddleWareWebChromeBaseHeader;
     private EventInterceptor mEventInterceptor;
-
 
 
     private AgentWeb(AgentBuilder agentBuilder) {
@@ -214,7 +213,6 @@ public final class AgentWeb {
             throw new NullPointerException("activity can not be null .");
         return new AgentBuilder(mActivity, fragment);
     }
-
 
 
     private EventInterceptor getInterceptor() {
@@ -486,8 +484,8 @@ public final class AgentWeb {
     }
 
 
-    public static enum SecurityType {
-        default_check, strict;
+    public enum SecurityType {
+        DEFAULT_CHECK, STRICT_CHECK;
     }
 
 
@@ -513,7 +511,7 @@ public final class AgentWeb {
         private int height_dp = -1;
         private ArrayMap<String, Object> mJavaObject;
         private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
-        private SecurityType mSecurityType = SecurityType.default_check;
+        private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
         private WebView mWebView;
         private WebViewClientCallbackManager mWebViewClientCallbackManager = new WebViewClientCallbackManager();
         private boolean webClientHelper = true;
@@ -539,12 +537,12 @@ public final class AgentWeb {
         public AgentBuilder(@NonNull Activity activity, @NonNull Fragment fragment) {
             mActivity = activity;
             mFragment = fragment;
-            tag = 1;
+            tag = AgentWeb.FRAGMENT_TAG;
         }
 
         public AgentBuilder(@NonNull Activity activity) {
             mActivity = activity;
-            tag = 0;
+            tag = AgentWeb.ACTIVITY_TAG;
         }
 
 
@@ -555,7 +553,7 @@ public final class AgentWeb {
         }
 
         private PreAgentWeb buildAgentWeb() {
-            if (this.mViewGroup == null)
+            if (tag == AgentWeb.FRAGMENT_TAG && this.mViewGroup == null)
                 throw new NullPointerException("ViewGroup is null,please check you params");
             return new PreAgentWeb(HookManager.hookAgentWeb(new AgentWeb(this), this));
         }

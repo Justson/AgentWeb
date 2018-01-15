@@ -43,7 +43,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     private JsResult cJsResult = null;
     private String TAG = DefaultChromeClient.class.getSimpleName();
     private ChromeClientCallbackManager mChromeClientCallbackManager;
-    public static final String ChromePath = "android.webkit.WebChromeClient";
+    public static final String ANDROID_WEBCHROMECLIENT_PATH = "android.webkit.WebChromeClient";
     private WebChromeClient mWebChromeClient;
     private boolean isWrapper = false;
     private IFileUploadChooser mIFileUploadChooser;
@@ -109,7 +109,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsAlert", "public boolean " + ChromePath + ".onJsAlert", WebView.class, String.class, String.class, JsResult.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsAlert", "public boolean " + ANDROID_WEBCHROMECLIENT_PATH + ".onJsAlert", WebView.class, String.class, String.class, JsResult.class)) {
             return super.onJsAlert(view, url, message, result);
         }
 
@@ -139,7 +139,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 
         LogUtils.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin + "   callback:" + callback);
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ChromePath + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ANDROID_WEBCHROMECLIENT_PATH + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             return;
         }
@@ -208,7 +208,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
 
 
         try {
-            if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsPrompt", "public boolean " + ChromePath + ".onJsPrompt", WebView.class, String.class, String.class, String.class, JsPromptResult.class)) {
+            if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsPrompt", "public boolean " + ANDROID_WEBCHROMECLIENT_PATH + ".onJsPrompt", WebView.class, String.class, String.class, String.class, JsPromptResult.class)) {
 
                 return super.onJsPrompt(view, url, message, defaultValue, result);
             }
@@ -237,7 +237,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
 
         LogUtils.i(TAG, "onJsConfirm:" + message);
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ChromePath + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ANDROID_WEBCHROMECLIENT_PATH + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
 
             return super.onJsConfirm(view, url, message, result);
         }
@@ -342,7 +342,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onExceededDatabaseQuota", ChromePath + ".onExceededDatabaseQuota", String.class, String.class, long.class, long.class, long.class, WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onExceededDatabaseQuota", ANDROID_WEBCHROMECLIENT_PATH + ".onExceededDatabaseQuota", String.class, String.class, long.class, long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
             super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             return;
@@ -354,7 +354,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onReachedMaxAppCacheSize", ChromePath + ".onReachedMaxAppCacheSize", long.class, long.class, WebStorage.QuotaUpdater.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onReachedMaxAppCacheSize", ANDROID_WEBCHROMECLIENT_PATH + ".onReachedMaxAppCacheSize", long.class, long.class, WebStorage.QuotaUpdater.class)) {
 
             super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
             return;
@@ -367,7 +367,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
         LogUtils.i(TAG, "openFileChooser>=5.0");
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowFileChooser", ChromePath + ".onShowFileChooser", WebView.class, ValueCallback.class, FileChooserParams.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowFileChooser", ANDROID_WEBCHROMECLIENT_PATH + ".onShowFileChooser", WebView.class, ValueCallback.class, FileChooserParams.class)) {
 
             return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
         }
@@ -403,7 +403,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
         LogUtils.i(TAG, "openFileChooser>=4.1");
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class, String.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ANDROID_WEBCHROMECLIENT_PATH + ".openFileChooser", ValueCallback.class, String.class, String.class)) {
             super.openFileChooser(uploadFile, acceptType, capture);
             return;
         }
@@ -412,7 +412,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ANDROID_WEBCHROMECLIENT_PATH + ".openFileChooser", ValueCallback.class)) {
             super.openFileChooser(valueCallback);
             return;
         }
@@ -424,7 +424,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         Log.i(TAG, "openFileChooser>3.0");
 
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ChromePath + ".openFileChooser", ValueCallback.class, String.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ANDROID_WEBCHROMECLIENT_PATH + ".openFileChooser", ValueCallback.class, String.class)) {
             super.openFileChooser(valueCallback, acceptType);
             return;
         }
@@ -469,7 +469,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
         LogUtils.i(TAG, "view:" + view + "   callback:" + callback);
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowCustomView", ChromePath + ".onShowCustomView", View.class, CustomViewCallback.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowCustomView", ANDROID_WEBCHROMECLIENT_PATH + ".onShowCustomView", View.class, CustomViewCallback.class)) {
             super.onShowCustomView(view, callback);
             return;
         }
@@ -483,7 +483,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
 
     @Override
     public void onHideCustomView() {
-        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ChromePath + ".onHideCustomView")) {
+        if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ANDROID_WEBCHROMECLIENT_PATH + ".onHideCustomView")) {
             LogUtils.i(TAG, "onHideCustomView:" + true);
             super.onHideCustomView();
             return;

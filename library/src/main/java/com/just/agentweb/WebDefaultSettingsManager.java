@@ -80,8 +80,8 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         } else {
             mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         }
-        mWebSettings.setLoadWithOverviewMode(true);
-        mWebSettings.setUseWideViewPort(true);
+        mWebSettings.setLoadWithOverviewMode(false);
+        mWebSettings.setUseWideViewPort(false);
         mWebSettings.setDomStorageEnabled(true);
         mWebSettings.setNeedInitialFocus(true);
         mWebSettings.setDefaultTextEncodingName("utf-8");//设置编码格式

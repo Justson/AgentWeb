@@ -43,7 +43,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     private static final int CONSTANTS_ABNORMAL_BIG = 7;
     private WebViewClient mWebViewClient;
     private boolean webClientHelper = true;
-    private static final String WEBVIEWCLIENTPATH = "android.webkit.WebViewClient";
+    private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
     public static final String INTENT_SCHEME = "intent://";
     public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
     public static final String ALIPAYS_SCHEME = "alipays://";
@@ -113,7 +113,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         LogUtils.i(TAG, " DefaultWebClient shouldOverrideUrlLoading:" + request.getUrl());
         int tag = -1;
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", WEBVIEWCLIENTPATH + ".shouldOverrideUrlLoading", WebView.class, WebResourceRequest.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, request))) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", ANDROID_WEBVIEWCLIENT_PATH + ".shouldOverrideUrlLoading", WebView.class, WebResourceRequest.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, request))) {
             return true;
         }
 
@@ -210,7 +210,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
         int tag = -1;
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", WEBVIEWCLIENTPATH + ".shouldOverrideUrlLoading", WebView.class, String.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, url))) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", ANDROID_WEBVIEWCLIENT_PATH + ".shouldOverrideUrlLoading", WebView.class, String.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, url))) {
             return true;
         }
 
@@ -395,7 +395,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", WEBVIEWCLIENTPATH + ".onReceivedError", WebView.class, int.class, String.class, String.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", ANDROID_WEBVIEWCLIENT_PATH + ".onReceivedError", WebView.class, int.class, String.class, String.class)) {
             super.onReceivedError(view, errorCode, description, failingUrl);
 //            return;
         }
@@ -407,7 +407,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", WEBVIEWCLIENTPATH + ".onReceivedError", WebView.class, WebResourceRequest.class, WebResourceError.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", ANDROID_WEBVIEWCLIENT_PATH + ".onReceivedError", WebView.class, WebResourceRequest.class, WebResourceError.class)) {
             super.onReceivedError(view, request, error);
 //            return;
         }
@@ -507,7 +507,7 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     public void onScaleChanged(WebView view, float oldScale, float newScale) {
 
 
-        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onScaleChanged", WEBVIEWCLIENTPATH + ".onScaleChanged", WebView.class, float.class, float.class)) {
+        if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onScaleChanged", ANDROID_WEBVIEWCLIENT_PATH + ".onScaleChanged", WebView.class, float.class, float.class)) {
             super.onScaleChanged(view, oldScale, newScale);
             return;
         }
