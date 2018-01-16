@@ -38,7 +38,6 @@ import java.util.Set;
 
 public class DefaultWebClient extends MiddleWareWebClientBase {
 
-    private WebViewClientCallbackManager mWebViewClientCallbackManager;
     private WeakReference<Activity> mWeakReference = null;
     private static final int CONSTANTS_ABNORMAL_BIG = 7;
     private WebViewClient mWebViewClient;
@@ -79,12 +78,11 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     }
 
     @Deprecated
-    DefaultWebClient(@NonNull Activity activity, WebViewClient client, WebViewClientCallbackManager manager, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
+    DefaultWebClient(@NonNull Activity activity, WebViewClient client,  boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
         super(client);
         this.mWebView = webView;
         this.mWebViewClient = client;
         mWeakReference = new WeakReference<Activity>(activity);
-        this.mWebViewClientCallbackManager = manager;
         this.webClientHelper = webClientHelper;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
     }
@@ -94,7 +92,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
         this.mWebView = builder.webView;
         this.mWebViewClient = builder.client;
         mWeakReference = new WeakReference<Activity>(builder.activity);
-        this.mWebViewClientCallbackManager = builder.manager;
         this.webClientHelper = builder.webClientHelper;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.webView));
         isInterceptUnkownScheme = builder.isInterceptUnkownScheme;
@@ -379,9 +376,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
         LogUtils.i(TAG, "onPageStarted");
-        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClientCallbackManager.getPageLifeCycleCallback() != null) {
-            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageStarted(view, url, favicon);
-        }
 
         if (!mWaittingFinishSet.contains(url)) {
             mWaittingFinishSet.add(url);
@@ -444,9 +438,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
     @Override
     public void onPageFinished(WebView view, String url) {
-        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClientCallbackManager.getPageLifeCycleCallback() != null) {
-            mWebViewClientCallbackManager.getPageLifeCycleCallback().onPageFinished(view, url);
-        }
 
         LogUtils.i(TAG, "onPageFinished:" + mErrorUrlsSet + "  contains:" + mErrorUrlsSet.contains(url));
         if (!mErrorUrlsSet.contains(url) && mWaittingFinishSet.contains(url)) {
@@ -546,7 +537,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
         private Activity activity;
         private WebViewClient client;
-        private WebViewClientCallbackManager manager;
         private boolean webClientHelper;
         private PermissionInterceptor permissionInterceptor;
         private WebView webView;
@@ -566,11 +556,6 @@ public class DefaultWebClient extends MiddleWareWebClientBase {
 
         public Builder setClient(WebViewClient client) {
             this.client = client;
-            return this;
-        }
-
-        public Builder setManager(WebViewClientCallbackManager manager) {
-            this.manager = manager;
             return this;
         }
 

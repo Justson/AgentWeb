@@ -33,7 +33,7 @@ public class WebSecurityControllerImpl implements WebSecurityController<WebSecur
             webSecurityCheckLogic.dealHoneyComb(mWebView);
         }
 
-        if (mMap != null &&mSecurityType== AgentWeb.SecurityType.strict&& !mMap.isEmpty()) {
+        if (mMap != null &&mSecurityType== AgentWeb.SecurityType.STRICT_CHECK&& !mMap.isEmpty()) {
             webSecurityCheckLogic.dealJsInterface(mMap,mSecurityType);
         }
 

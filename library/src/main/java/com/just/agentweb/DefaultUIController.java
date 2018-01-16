@@ -46,13 +46,18 @@ public class DefaultUIController extends AgentWebUIController {
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            callback.handleMessage(Message.obtain(null, -1));
+                            if (callback != null) {
+                                callback.handleMessage(Message.obtain(null, -1));
+                            }
+
                         }
                     })//
                     .setPositiveButton(confirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            callback.handleMessage(Message.obtain(null, 1));
+                            if (callback != null) {
+                                callback.handleMessage(Message.obtain(null, 1));
+                            }
                         }
                     })
                     .create();

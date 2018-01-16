@@ -19,9 +19,4 @@ public interface AgentWebSettings<T extends android.webkit.WebSettings>{
 
     T getWebSettings();
 
-
-
-
-
-
 }

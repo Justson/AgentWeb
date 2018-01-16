@@ -28,7 +28,7 @@ public class DefaultWebCreator implements WebCreator {
     private int height_dp;
     private boolean isCreated=false;
     private IWebLayout mIWebLayout;
-    private BaseProgressSpec mBaseProgressSpec;
+    private BaseIndicatorSpec mBaseIndicatorSpec;
     private static final String TAG=DefaultWebCreator.class.getSimpleName();
 
 
@@ -141,18 +141,18 @@ public class DefaultWebCreator implements WebCreator {
         mFrameLayout.addView(mViewStub,new FrameLayout.LayoutParams(-1,-1));
         if (isNeedDefaultProgress) {
             FrameLayout.LayoutParams lp = null;
-            WebProgressBar mWebProgressBar = new WebProgressBar(mActivity);
+            WebIndicator mWebIndicator = new WebIndicator(mActivity);
             if (height_dp > 0)
                 lp = new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, height_dp));
             else
-                lp = mWebProgressBar.offerLayoutParams();
+                lp = mWebIndicator.offerLayoutParams();
             if (color != -1)
-                mWebProgressBar.setColor(color);
+                mWebIndicator.setColor(color);
             lp.gravity = Gravity.TOP;
-            mFrameLayout.addView((View) (this.mBaseProgressSpec = mWebProgressBar), lp);
-            mWebProgressBar.setVisibility(View.GONE);
+            mFrameLayout.addView((View) (this.mBaseIndicatorSpec = mWebIndicator), lp);
+            mWebIndicator.setVisibility(View.GONE);
         } else if (!isNeedDefaultProgress && progressView != null) {
-            mFrameLayout.addView((View) (this.mBaseProgressSpec = (BaseProgressSpec) progressView), progressView.offerLayoutParams());
+            mFrameLayout.addView((View) (this.mBaseIndicatorSpec = (BaseIndicatorSpec) progressView), progressView.offerLayoutParams());
             progressView.setVisibility(View.GONE);
         }
         return mFrameLayout;
@@ -194,7 +194,7 @@ public class DefaultWebCreator implements WebCreator {
     }
 
     @Override
-    public BaseProgressSpec offer() {
-        return mBaseProgressSpec;
+    public BaseIndicatorSpec offer() {
+        return mBaseIndicatorSpec;
     }
 }

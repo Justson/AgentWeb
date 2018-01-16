@@ -44,8 +44,7 @@ public class CustomIndicatorFragment extends AgentWebFragment {
                 .setAgentWebWebSettings(WebDefaultSettingsManager.getInstance())//
                 .setWebViewClient(mWebViewClient)
                 .setPermissionInterceptor(mPermissionInterceptor)
-                .setReceivedTitleCallback(mCallback)
-                .setSecurityType(AgentWeb.SecurityType.strict)
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .interceptUnkownScheme()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .createAgentWeb()//

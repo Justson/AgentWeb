@@ -42,7 +42,6 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     private JsPromptResult pJsResult = null;
     private JsResult cJsResult = null;
     private String TAG = DefaultChromeClient.class.getSimpleName();
-    private ChromeClientCallbackManager mChromeClientCallbackManager;
     public static final String ANDROID_WEBCHROMECLIENT_PATH = "android.webkit.WebChromeClient";
     private WebChromeClient mWebChromeClient;
     private boolean isWrapper = false;
@@ -61,7 +60,6 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
                         WebChromeClient chromeClient,
-                        ChromeClientCallbackManager chromeClientCallbackManager,
                         @Nullable IVideo iVideo,
                         DefaultMsgConfig.ChromeClientMsgCfg chromeClientMsgCfg, PermissionInterceptor permissionInterceptor, WebView webView) {
         super(chromeClient);
@@ -69,7 +67,6 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
         mActivityWeakReference = new WeakReference<Activity>(activity);
-        this.mChromeClientCallbackManager = chromeClientCallbackManager;
         this.mIVideo = iVideo;
         this.mChromeClientMsgCfg = chromeClientMsgCfg;
         this.mPermissionInterceptor = permissionInterceptor;
@@ -86,23 +83,13 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
         if (mIndicatorController != null)
             mIndicatorController.progress(view, newProgress);
 
-        ChromeClientCallbackManager.AgentWebCompatInterface mAgentWebCompatInterface = null;
-        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && (mAgentWebCompatInterface = mChromeClientCallbackManager.getAgentWebCompatInterface()) != null) {
-            mAgentWebCompatInterface.onProgressChanged(view, newProgress);
-        }
-
     }
 
     @Override
     public void onReceivedTitle(WebView view, String title) {
-        ChromeClientCallbackManager.ReceivedTitleCallback mCallback = null;
-        if (mChromeClientCallbackManager != null && (mCallback = mChromeClientCallbackManager.getReceivedTitleCallback()) != null)
-            mCallback.onReceivedTitle(view, title);
-
-        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && (mChromeClientCallbackManager.getAgentWebCompatInterface()) != null)
-            mChromeClientCallbackManager.getAgentWebCompatInterface().onReceivedTitle(view, title);
-        if (isWrapper)
+        if (isWrapper){
             super.onReceivedTitle(view, title);
+        }
     }
 
     @Override
@@ -211,12 +198,6 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
             if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsPrompt", "public boolean " + ANDROID_WEBCHROMECLIENT_PATH + ".onJsPrompt", WebView.class, String.class, String.class, String.class, JsPromptResult.class)) {
 
                 return super.onJsPrompt(view, url, message, defaultValue, result);
-            }
-            if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mChromeClientCallbackManager != null && mChromeClientCallbackManager.getAgentWebCompatInterface() != null) {
-
-                LogUtils.i(TAG, "mChromeClientCallbackManager.getAgentWebCompatInterface():" + mChromeClientCallbackManager.getAgentWebCompatInterface());
-                if (mChromeClientCallbackManager.getAgentWebCompatInterface().onJsPrompt(view, url, message, defaultValue, result))
-                    return true;
             }
 
             if (this.mAgentWebUiController.get() != null) {
@@ -378,7 +359,7 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
     private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
 
 
-        LogUtils.i(TAG, "fileChooserParams:" + fileChooserParams.getAcceptTypes() + "  getTitle:" + fileChooserParams.getTitle() + " accept:" + Arrays.toString(fileChooserParams.getAcceptTypes()) + " length:" + fileChooserParams.getAcceptTypes().length + "  :" + fileChooserParams.isCaptureEnabled() + "  " + fileChooserParams.getFilenameHint() + "  intent:" + fileChooserParams.createIntent().toString()+"   mode:"+fileChooserParams.getMode());
+        LogUtils.i(TAG, "fileChooserParams:" + fileChooserParams.getAcceptTypes() + "  getTitle:" + fileChooserParams.getTitle() + " accept:" + Arrays.toString(fileChooserParams.getAcceptTypes()) + " length:" + fileChooserParams.getAcceptTypes().length + "  :" + fileChooserParams.isCaptureEnabled() + "  " + fileChooserParams.getFilenameHint() + "  intent:" + fileChooserParams.createIntent().toString() + "   mode:" + fileChooserParams.getMode());
 
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {

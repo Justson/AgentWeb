@@ -15,6 +15,7 @@ import android.webkit.JsPromptResult;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -30,9 +31,9 @@ import java.util.Map;
  *
  *
  */
-public class AgentWebView extends WebView  implements ChromeClientCallbackManager.AgentWebCompatInterface,WebViewClientCallbackManager.PageLifeCycleCallback{
+public class AgentWebView extends WebView {
     private static final String TAG = AgentWebView.class.getSimpleName();
-    private Map<String, JsCallJava> mJsCallJavas;
+    private Map<String, JSCallJava> mJsCallJavas;
     private Map<String, String> mInjectJavaScripts;
     private FixedOnReceivedTitle mFixedOnReceivedTitle;
     private boolean mIsInited;
@@ -46,12 +47,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
         super(context, attrs);
         removeSearchBoxJavaBridge();
         mIsInited = true;
-
-
-
-
         mFixedOnReceivedTitle = new FixedOnReceivedTitle();
-
     }
 
     /**
@@ -60,24 +56,23 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
      * 2、在webViewClient.onPageStarted中都注入JS；
      * 3、在webChromeClient.onProgressChanged中都注入JS，并且不能通过自检查（onJsPrompt里面判断）JS是否注入成功来减少注入JS的次数，因为网页中的JS可以同时打开多个url导致无法控制检查的准确性；
      *
-     *
-     * @deprecated Android4.2.2及以上版本的addJavascriptInterface方法已经解决了安全问题，如果不使用“网页能将JS函数传到Java层”功能，不建议使用该类，毕竟系统的JS注入效率才是最高的；
+     * @deprecated Android 4.2.2及以上版本的 addJavascriptInterface 方法已经解决了安全问题，如果不使用“网页能将JS函数传到Java层”功能，不建议使用该类，毕竟系统的JS注入效率才是最高的；
      */
     @Override
     @Deprecated
     public void addJavascriptInterface(Object interfaceObj, String interfaceName) {
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.JELLY_BEAN_MR1){
-            super.addJavascriptInterface(interfaceObj,interfaceName);
-            Log.i(TAG,"注入");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            super.addJavascriptInterface(interfaceObj, interfaceName);
+            Log.i(TAG, "注入");
             return;
         }
 
-        LogUtils.i(TAG,"addJavascriptInterface:"+interfaceObj+"   interfaceName:"+interfaceName);
+        LogUtils.i(TAG, "addJavascriptInterface:" + interfaceObj + "   interfaceName:" + interfaceName);
         if (mJsCallJavas == null) {
-            mJsCallJavas = new HashMap<String, JsCallJava>();
+            mJsCallJavas = new HashMap<String, JSCallJava>();
         }
-        mJsCallJavas.put(interfaceName, new JsCallJava(interfaceObj, interfaceName));
+        mJsCallJavas.put(interfaceName, new JSCallJava(interfaceObj, interfaceName));
         injectJavaScript();
         if (LogUtils.isDebug()) {
             Log.d(TAG, "injectJavaScript, addJavascriptInterface.interfaceObj = " + interfaceObj + ", interfaceName = " + interfaceName);
@@ -86,8 +81,17 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
 
     @Override
     public void setWebChromeClient(WebChromeClient client) {
+        AgentWebChrome mAgentWebChrome = new AgentWebChrome(this);
+        mAgentWebChrome.setWebChromeClient(client);
         mFixedOnReceivedTitle.setWebChromeClient(client);
-        super.setWebChromeClient(client);
+        super.setWebChromeClient(mAgentWebChrome);
+    }
+
+    @Override
+    public void setWebViewClient(WebViewClient client) {
+        AgentWebClient mAgentWebClient = new AgentWebClient(this);
+        mAgentWebClient.setWebViewClient(client);
+        super.setWebViewClient(mAgentWebClient);
     }
 
     @Override
@@ -105,7 +109,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
         if (mIsInited) {
             resetAccessibilityEnabled();
 //
-            LogUtils.i(TAG,"destroy web");
+            LogUtils.i(TAG, "destroy web");
             super.destroy();
         }
     }
@@ -159,6 +163,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
     /**
      * 添加并注入JavaScript脚本（和“addJavascriptInterface”注入对象的注入时机一致，100%能注入成功）；
      * 注意：为了做到能100%注入，需要在注入的js中自行判断对象是否已经存在（如：if (typeof(window.Android) = 'undefined')）；
+     *
      * @param javaScript
      */
     public void addInjectJavaScript(String javaScript) {
@@ -170,7 +175,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
     }
 
     private void injectJavaScript() {
-        for (Map.Entry<String, JsCallJava> entry : mJsCallJavas.entrySet()) {
+        for (Map.Entry<String, JSCallJava> entry : mJsCallJavas.entrySet()) {
             this.loadUrl(buildNotRepeatInjectJS(entry.getKey(), entry.getValue().getPreloadInterfaceJS()));
         }
     }
@@ -183,6 +188,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
 
     /**
      * 构建一个“不会重复注入”的js脚本；
+     *
      * @param key
      * @param js
      * @return
@@ -204,6 +210,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
 
     /**
      * 构建一个“带try catch”的js脚本；
+     *
      * @param js
      * @return
      */
@@ -215,70 +222,90 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
         return sb.toString();
     }
 
-    @Override
-    public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
-        Log.i(TAG,"onJsPrompt:"+url+"  message:"+message+"  d:"+defaultValue+"  ");
-        if (mJsCallJavas != null && JsCallJava.isSafeWebViewCallMsg(message)) {
-            JSONObject jsonObject = JsCallJava.getMsgJSONObject(message);
-            String interfacedName = JsCallJava.getInterfacedName(jsonObject);
-            if (interfacedName != null) {
-                JsCallJava jsCallJava = mJsCallJavas.get(interfacedName);
-                if (jsCallJava != null) {
-                    result.confirm(jsCallJava.call(view, jsonObject));
+
+    public static class AgentWebClient extends MiddleWareWebClientBase {
+
+        private AgentWebView mAgentWebView;
+
+        private AgentWebClient(AgentWebView agentWebView) {
+            this.mAgentWebView = agentWebView;
+        }
+
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            if (mAgentWebView.mJsCallJavas != null) {
+                mAgentWebView.injectJavaScript();
+                if (LogUtils.isDebug()) {
+                    Log.d(TAG, "injectJavaScript, onPageStarted.url = " + view.getUrl());
                 }
             }
-            return true;
-        } else {
-            return false;
+            if (mAgentWebView.mInjectJavaScripts != null) {
+                mAgentWebView.injectExtraJavaScript();
+            }
+            mAgentWebView.mFixedOnReceivedTitle.onPageStarted();
+            mAgentWebView.fixedAccessibilityInjectorExceptionForOnPageFinished(url);
         }
 
-    }
+        @Override
+        public void onPageFinished(WebView view, String url) {
 
-    @Override
-    public void onReceivedTitle(WebView view, String title) {
-        mFixedOnReceivedTitle.onReceivedTitle();
-    }
-
-    @Override
-    public void onProgressChanged(WebView view, int newProgress) {
-        if (mJsCallJavas != null) {
-            injectJavaScript();
+            mAgentWebView.mFixedOnReceivedTitle.onPageFinished(view);
             if (LogUtils.isDebug()) {
-                Log.d(TAG, "injectJavaScript, onProgressChanged.newProgress = " + newProgress + ", url = " + view.getUrl());
+                Log.d(TAG, "onPageFinished.url = " + view.getUrl());
             }
         }
-        if (mInjectJavaScripts != null) {
-            injectExtraJavaScript();
-        }
+
 
     }
 
-    @Override
-    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        if (mJsCallJavas != null) {
-            injectJavaScript();
-            if (LogUtils.isDebug()) {
-                Log.d(TAG, "injectJavaScript, onPageStarted.url = " + view.getUrl());
+    public static class AgentWebChrome extends MiddleWareWebChromeBase {
+
+        private AgentWebView mAgentWebView;
+
+        private AgentWebChrome(AgentWebView agentWebView) {
+            this.mAgentWebView = agentWebView;
+        }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            this.mAgentWebView.mFixedOnReceivedTitle.onReceivedTitle();
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            if (this.mAgentWebView.mJsCallJavas != null) {
+                this.mAgentWebView.injectJavaScript();
+                if (LogUtils.isDebug()) {
+                    Log.d(TAG, "injectJavaScript, onProgressChanged.newProgress = " + newProgress + ", url = " + view.getUrl());
+                }
             }
+            if (this.mAgentWebView.mInjectJavaScripts != null) {
+                this.mAgentWebView.injectExtraJavaScript();
+            }
+
         }
-        if (mInjectJavaScripts != null) {
-            injectExtraJavaScript();
+
+        @Override
+        public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
+            Log.i(TAG, "onJsPrompt:" + url + "  message:" + message + "  d:" + defaultValue + "  ");
+            if (this.mAgentWebView.mJsCallJavas != null && JSCallJava.isSafeWebViewCallMsg(message)) {
+                JSONObject jsonObject = JSCallJava.getMsgJSONObject(message);
+                String interfacedName = JSCallJava.getInterfacedName(jsonObject);
+                if (interfacedName != null) {
+                    JSCallJava mJSCallJava = this.mAgentWebView.mJsCallJavas.get(interfacedName);
+                    if (mJSCallJava != null) {
+                        result.confirm(mJSCallJava.call(view, jsonObject));
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+
         }
-        mFixedOnReceivedTitle.onPageStarted();
-        fixedAccessibilityInjectorExceptionForOnPageFinished(url);
+
     }
-
-    @Override
-    public void onPageFinished(WebView view, String url) {
-
-        mFixedOnReceivedTitle.onPageFinished(view);
-        if (LogUtils.isDebug()) {
-            Log.d(TAG, "onPageFinished.url = " + view.getUrl());
-        }
-    }
-
-
-
 
 
     /**
@@ -352,7 +379,7 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
                     e.printStackTrace();
                 }
             }
-        } else if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)  { // KITKAT
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) { // KITKAT
             try {
                 Field sConfigCallback = Class.forName("android.webkit.BrowserFrame").getDeclaredField("sConfigCallback");
                 if (sConfigCallback != null) {
@@ -472,7 +499,6 @@ public class AgentWebView extends WebView  implements ChromeClientCallbackManage
             setAccessibilityEnabled(mIsAccessibilityEnabledOriginal);
         }
     }
-
 
 
 }

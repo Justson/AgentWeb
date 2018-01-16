@@ -9,11 +9,11 @@ import android.webkit.WebView;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public abstract class BaseJsEntraceAccess implements JsEntraceAccess {
+public abstract class BaseJSEntraceAccess implements JSEntraceAccess {
 
     private WebView mWebView;
-    public static final String TAG=BaseJsEntraceAccess.class.getSimpleName();
-    BaseJsEntraceAccess(WebView webView){
+    public static final String TAG=BaseJSEntraceAccess.class.getSimpleName();
+    BaseJSEntraceAccess(WebView webView){
         this.mWebView=webView;
     }
 

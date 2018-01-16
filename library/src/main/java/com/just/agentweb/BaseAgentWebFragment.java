@@ -42,8 +42,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .setWebChromeClient(getWebChromeClient())
                 .interceptUnkownScheme()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
-                .setReceivedTitleCallback(getReceivedTitleCallback())
-                .setSecurityType(AgentWeb.SecurityType.strict)
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .addDownLoadResultListener(getDownLoadResultListener())
                 .setAgentWebUIController(getAgentWebUIController())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
@@ -106,15 +105,6 @@ public abstract class BaseAgentWebFragment extends Fragment {
         super.onResume();
     }
 
-    private @Nullable
-    ChromeClientCallbackManager.ReceivedTitleCallback getReceivedTitleCallback() {
-        return new ChromeClientCallbackManager.ReceivedTitleCallback() {
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                setTitle(view, title);
-            }
-        };
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -49,7 +49,7 @@ public class JSAgentWebFragment extends AgentWebFragment {
 
         if(mAgentWeb!=null){
             //注入对象
-            mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this.getActivity()));
+            mAgentWeb.getJSInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this.getActivity()));
         }
         view.findViewById(R.id.callJsNoParamsButton).setOnClickListener(mOnClickListener);
         view.findViewById(R.id.callJsOneParamsButton).setOnClickListener(mOnClickListener);
@@ -69,15 +69,15 @@ public class JSAgentWebFragment extends AgentWebFragment {
             switch (v.getId()){
 
                 case R.id.callJsNoParamsButton:
-                    mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
+                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroid");
                     break;
 
                 case R.id.callJsOneParamsButton:
-                    mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroidParam","Hello ! Agentweb");
+                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroidParam","Hello ! Agentweb");
                     break;
 
                 case R.id.callJsMoreParamsButton:
-                    mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroidMoreParams", new ValueCallback<String>() {
+                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroidMoreParams", new ValueCallback<String>() {
                         @Override
                         public void onReceiveValue(String value) {
                             Log.i("Info","value:"+value);
@@ -86,7 +86,7 @@ public class JSAgentWebFragment extends AgentWebFragment {
 
                     break;
                 case R.id.jsJavaCommunicationButton:
-                    mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroidInteraction","你好Js");
+                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroidInteraction","你好Js");
                     break;
             }
 

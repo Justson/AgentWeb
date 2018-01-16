@@ -11,5 +11,11 @@ public interface IndicatorController {
 
     void progress(WebView v, int newProgress);
 
-    BaseProgressSpec offerIndicator();
+    BaseIndicatorSpec offerIndicator();
+
+    void showProgressBar();
+
+    void setProgressBar(int newProgress);
+
+    void finish();
 }

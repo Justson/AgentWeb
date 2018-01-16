@@ -20,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.just.agentweb.AgentWeb;
-import com.just.agentweb.ChromeClientCallbackManager;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.widget.WebLayout;
@@ -71,7 +70,6 @@ public class BaseWebActivity extends AppCompatActivity {
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//
                 .useDefaultIndicator()//
-                .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
@@ -89,6 +87,8 @@ public class BaseWebActivity extends AppCompatActivity {
 
         long n = System.currentTimeMillis();
         Log.i("Info", "init used time:" + (n - p));
+
+
 
 
     }
@@ -117,14 +117,6 @@ public class BaseWebActivity extends AppCompatActivity {
 
         return "https://m.jd.com/";
     }
-
-    private ChromeClientCallbackManager.ReceivedTitleCallback mCallback = new ChromeClientCallbackManager.ReceivedTitleCallback() {
-        @Override
-        public void onReceivedTitle(WebView view, String title) {
-            if (mTitleTextView != null)
-                mTitleTextView.setText(title);
-        }
-    };
 
 
     private void showDialog() {

@@ -50,9 +50,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
         ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(-1, -1))//
-                .useDefaultIndicator()//
-                .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())
-                .setReceivedTitleCallback(getReceivedTitleCallback())
+                .setIndicatorColorWithHeight(getIndicatorColor(),getIndicatorHeight())//
                 .setWebChromeClient(getWebChromeClient())
                 .setWebViewClient(getWebViewClient())
                 .setWebView(getWebView())
@@ -64,9 +62,9 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .useMiddleWareWebChrome(getMiddleWareWebChrome())
                 .useMiddleWareWebClient(getMiddleWareWebClient())
                 .addDownLoadResultListener(getDownLoadResultListener())
-                .setAgentWebSettings(getAgentWebSettings())
+                .setAgentWebWebSettings(getAgentWebSettings())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
-                .setSecurityType(AgentWeb.SecurityType.strict)
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .createAgentWeb()//
                 .ready()
                 .go(getUrl());
@@ -150,15 +148,6 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
         return null;
     }
 
-    private @Nullable
-    ChromeClientCallbackManager.ReceivedTitleCallback getReceivedTitleCallback() {
-        return new ChromeClientCallbackManager.ReceivedTitleCallback() {
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                setTitle(view, title);
-            }
-        };
-    }
 
     protected void setTitle(WebView view, String title) {
 
@@ -222,11 +211,14 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     DefaultWebClient.OpenOtherPageWays getOpenOtherAppWay() {
         return null;
     }
-    protected @NonNull MiddleWareWebChromeBase getMiddleWareWebChrome() {
+
+    protected @NonNull
+    MiddleWareWebChromeBase getMiddleWareWebChrome() {
         return this.mMiddleWareWebChrome = new MiddleWareWebChromeBase();
     }
 
-    protected @NonNull MiddleWareWebClientBase getMiddleWareWebClient() {
+    protected @NonNull
+    MiddleWareWebClientBase getMiddleWareWebClient() {
         return this.mMiddleWareWebClient = new MiddleWareWebClientBase();
     }
 }

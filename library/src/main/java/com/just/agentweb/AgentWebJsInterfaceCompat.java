@@ -32,7 +32,7 @@ public class AgentWebJsInterfaceCompat implements AgentWebCompat, FileUploadPop<
                         @Override
                         public void call(String value) {
                             if (mReference.get() != null)
-                                mReference.get().getJsEntraceAccess().quickCallJs("uploadFileResult", value);
+                                mReference.get().getJSEntraceAccess().quickCallJs("uploadFileResult", value);
                         }
                     }).setFileUploadMsgConfig(mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileUploadMsgConfig())
                     .setPermissionInterceptor(mReference.get().getPermissionInterceptor())

@@ -7,7 +7,7 @@ import android.webkit.ValueCallback;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public interface JsEntraceAccess extends QuickCallJs{
+public interface JSEntraceAccess extends QuickCallJS {
 
 
     void callJs(String js, ValueCallback<String> callback);

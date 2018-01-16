@@ -10,7 +10,7 @@ import android.widget.FrameLayout;
  * source CODE  https://github.com/Justson/AgentWeb
  */
 
-public abstract class BaseIndicatorView extends FrameLayout implements BaseProgressSpec ,LayoutParamsOffer{
+public abstract class BaseIndicatorView extends FrameLayout implements BaseIndicatorSpec,LayoutParamsOffer{
     public BaseIndicatorView(Context context) {
         super(context);
     }
@@ -42,8 +42,6 @@ public abstract class BaseIndicatorView extends FrameLayout implements BaseProgr
     public void hide() {
 
     }
-
-
 
     @Override
     public FrameLayout.LayoutParams offerLayoutParams() {

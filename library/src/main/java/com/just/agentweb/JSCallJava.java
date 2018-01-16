@@ -11,8 +11,8 @@ import org.json.JSONObject;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class JsCallJava {
-    private final static String TAG = "JsCallJava";
+public class JSCallJava {
+    private final static String TAG = "JSCallJava";
     private final static String RETURN_RESULT_FORMAT = "{\"CODE\": %d, \"result\": %s}";
     private static final String MSG_PROMPT_HEADER = "AgentWeb:";
     private static final String KEY_OBJ = "obj";
@@ -25,7 +25,7 @@ public class JsCallJava {
     private String mInterfacedName;
     private String mPreloadInterfaceJS;
 
-    public JsCallJava(Object interfaceObj, String interfaceName) {
+    public JSCallJava(Object interfaceObj, String interfaceName) {
         try {
             if (TextUtils.isEmpty(interfaceName)) {
                 throw new Exception("injected name can not be null");
@@ -95,7 +95,7 @@ public class JsCallJava {
                 sign += "_B";
             } else if (cls == JSONObject.class) {
                 sign += "_O";
-            } else if (cls == JsCallback.class) {
+            } else if (cls == JSCallback.class) {
                 sign += "_F";
             } else {
                 sign += "_P";
@@ -140,7 +140,7 @@ public class JsCallJava {
                         values[k] = argsVals.isNull(k) ? null : argsVals.getJSONObject(k);
                     } else if ("function".equals(currType)) {
                         sign += "_F";
-                        values[k] = new JsCallback(webView, mInterfacedName, argsVals.getInt(k));
+                        values[k] = new JSCallback(webView, mInterfacedName, argsVals.getInt(k));
                     } else {
                         sign += "_P";
                     }

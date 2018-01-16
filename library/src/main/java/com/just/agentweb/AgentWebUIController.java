@@ -100,7 +100,7 @@ public abstract class AgentWebUIController {
 
     /**
      * @param message 消息
-     * @param intent  说明message的来源
+     * @param intent  说明message的来源，意图
      */
     public abstract void showMessage(String message, String intent);
 

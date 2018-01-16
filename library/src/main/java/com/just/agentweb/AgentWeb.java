@@ -48,7 +48,6 @@ public final class AgentWeb {
     private int TAG_TARGET = 0;
     private WebListenerManager mWebListenerManager;
     private DownloadListener mDownloadListener = null;
-    private ChromeClientCallbackManager mChromeClientCallbackManager;
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
     private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
     private WebChromeClient mTargetChromeClient;
@@ -56,7 +55,7 @@ public final class AgentWeb {
     private static final int ACTIVITY_TAG = 0;
     private static final int FRAGMENT_TAG = 1;
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
-    private JsEntraceAccess mJsEntraceAccess = null;
+    private JSEntraceAccess mJSEntraceAccess = null;
     private ILoader mILoader = null;
     private WebLifeCycle mWebLifeCycle;
     private IVideo mIVideo = null;
@@ -89,9 +88,7 @@ public final class AgentWeb {
             LogUtils.i(TAG, "mJavaObject size:" + this.mJavaObjects.size());
 
         }
-        this.mChromeClientCallbackManager = agentBuilder.mChromeClientCallbackManager;
         this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
-        this.mWebViewClientCallbackManager = agentBuilder.mWebViewClientCallbackManager;
         this.mSecurityType = agentBuilder.mSecurityType;
         this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.mHttpHeaders);
         if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
@@ -131,16 +128,7 @@ public final class AgentWeb {
     }
 
     private void doCompat() {
-
-
         mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat = new AgentWebJsInterfaceCompat(this, mActivity));
-
-        LogUtils.i(TAG, "AgentWebConfig.isUseAgentWebView:" + AgentWebConfig.WEBVIEW_TYPE + "  mChromeClientCallbackManager:" + mChromeClientCallbackManager);
-        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE) {
-            this.mChromeClientCallbackManager.setAgentWebCompatInterface((ChromeClientCallbackManager.AgentWebCompatInterface) mWebCreator.get());
-            this.mWebViewClientCallbackManager.setPageLifeCycleCallback((WebViewClientCallbackManager.PageLifeCycleCallback) mWebCreator.get());
-        }
-
     }
 
     public WebLifeCycle getWebLifeCycle() {
@@ -177,13 +165,13 @@ public final class AgentWeb {
     }
 
 
-    public JsEntraceAccess getJsEntraceAccess() {
+    public JSEntraceAccess getJSEntraceAccess() {
 
-        JsEntraceAccess mJsEntraceAccess = this.mJsEntraceAccess;
-        if (mJsEntraceAccess == null) {
-            this.mJsEntraceAccess = mJsEntraceAccess = JsEntraceAccessImpl.getInstance(mWebCreator.get());
+        JSEntraceAccess mJSEntraceAccess = this.mJSEntraceAccess;
+        if (mJSEntraceAccess == null) {
+            this.mJSEntraceAccess = mJSEntraceAccess = JSEntraceAccessImpl.getInstance(mWebCreator.get());
         }
-        return mJsEntraceAccess;
+        return mJSEntraceAccess;
     }
 
 
@@ -253,7 +241,7 @@ public final class AgentWeb {
         return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(), getInterceptor())) : this.mIEventHandler;
     }
 
-    private JsInterfaceHolder mJsInterfaceHolder = null;
+    private JSInterfaceHolder mJSInterfaceHolder = null;
 
     public AgentWebSettings getAgentWebSettings() {
         return this.mAgentWebSettings;
@@ -275,12 +263,12 @@ public final class AgentWeb {
             mWebListenerManager = (WebListenerManager) mAgentWebSettings;
         }
         mAgentWebSettings.toSetting(mWebCreator.get());
-        if (mJsInterfaceHolder == null) {
-            mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get(), this.mSecurityType);
+        if (mJSInterfaceHolder == null) {
+            mJSInterfaceHolder = JSInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get(), this.mSecurityType);
         }
         LogUtils.i(TAG, "mJavaObjects:" + mJavaObjects.size());
         if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
-            mJsInterfaceHolder.addJavaObjects(mJavaObjects);
+            mJSInterfaceHolder.addJavaObjects(mJavaObjects);
         }
 
         if (mWebListenerManager != null) {
@@ -315,13 +303,12 @@ public final class AgentWeb {
         return mDownloadListener;
     }
 
-    private WebViewClientCallbackManager mWebViewClientCallbackManager = null;
 
     private WebChromeClient getChromeClient() {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
 
         DefaultChromeClient mDefaultChromeClient =
-                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mChromeClientCallbackManager, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
+                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
 
         LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
         MiddleWareWebChromeBase header = this.mMiddleWareWebChromeBaseHeader;
@@ -352,7 +339,6 @@ public final class AgentWeb {
                 .createBuilder()
                 .setActivity(this.mActivity)
                 .setClient(this.mWebViewClient)
-                .setManager(this.mWebViewClientCallbackManager)
                 .setWebClientHelper(this.webClientHelper)
                 .setPermissionInterceptor(this.mPermissionInterceptor)
                 .setWebView(this.mWebCreator.get())
@@ -378,8 +364,8 @@ public final class AgentWeb {
 
     }
 
-    public JsInterfaceHolder getJsInterfaceHolder() {
-        return this.mJsInterfaceHolder;
+    public JSInterfaceHolder getJSInterfaceHolder() {
+        return this.mJSInterfaceHolder;
     }
 
     @Deprecated
@@ -393,7 +379,6 @@ public final class AgentWeb {
                     .createBuilder()
                     .setActivity(this.mActivity)
                     .setClient(this.mWebViewClient)
-                    .setManager(this.mWebViewClientCallbackManager)
                     .setWebClientHelper(this.webClientHelper)
                     .setPermissionInterceptor(this.mPermissionInterceptor)
                     .setWebView(this.mWebCreator.get())
@@ -510,10 +495,8 @@ public final class AgentWeb {
         private IEventHandler mIEventHandler;
         private int height_dp = -1;
         private ArrayMap<String, Object> mJavaObject;
-        private ChromeClientCallbackManager mChromeClientCallbackManager = new ChromeClientCallbackManager();
         private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
         private WebView mWebView;
-        private WebViewClientCallbackManager mWebViewClientCallbackManager = new WebViewClientCallbackManager();
         private boolean webClientHelper = true;
         private List<DownLoadResultListener> mDownLoadResultListeners = null;
         private IWebLayout mWebLayout = null;
@@ -695,10 +678,6 @@ public final class AgentWeb {
             return this.mAgentBuilder.buildAgentWeb();
         }
 
-        public CommonBuilderForFragment setReceivedTitleCallback(@Nullable ChromeClientCallbackManager.ReceivedTitleCallback receivedTitleCallback) {
-            this.mAgentBuilder.mChromeClientCallbackManager.setReceivedTitleCallback(receivedTitleCallback);
-            return this;
-        }
 
         public CommonBuilderForFragment addJavascriptInterface(@NonNull String name, @NonNull Object o) {
             this.mAgentBuilder.addJavaObject(name, o);

@@ -53,9 +53,8 @@ public class CustomWebViewFragment extends AgentWebFragment {
                 .setAgentWebParent((ViewGroup) view, lp)//
                 .closeDefaultIndicator()//
                 .setWebViewClient(mWebViewClient)
-                .setReceivedTitleCallback(mCallback)
                 .setWebView(mMarkdownWebView)
-                .setSecurityType(AgentWeb.SecurityType.strict)
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .createAgentWeb()//
                 .ready()//
                 .go(null);

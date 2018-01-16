@@ -5,7 +5,7 @@ package com.just.agentweb;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public interface ProgressManager<T extends BaseProgressSpec> {
+public interface IWebIndicator<T extends BaseIndicatorSpec> {
 
 
     T offer();

@@ -47,9 +47,8 @@ public class BounceWebFragment extends AgentWebFragment {
                 .setAgentWebWebSettings(getSettings())//
                 .setWebViewClient(mWebViewClient)
                 .setWebChromeClient(mWebChromeClient)
-                .setReceivedTitleCallback(mCallback)
                 .setWebLayout(getWebLayout())
-                .setSecurityType(AgentWeb.SecurityType.strict)
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .addDownLoadResultListener(mDownLoadResultListener)
                 .interceptUnkownScheme()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)

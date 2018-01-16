@@ -77,12 +77,6 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
     public void setParallelDownload(boolean isOpen) {
         isParallelDownload.set(isOpen);
-        /*if(isParallelDownload.get()){
-            ExecutorProvider.getInstance().open();
-        }else{
-            ExecutorProvider.getInstance().close();
-        }*/
-
     }
 
 

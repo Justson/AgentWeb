@@ -409,7 +409,9 @@ public class AgentWebUtils {
         try {
             clearCacheFolder(new File(getAgentWebFilePath(context)), 0);
         } catch (Throwable throwable) {
-
+            if (LogUtils.isDebug()) {
+                throwable.printStackTrace();
+            }
         }
     }
 

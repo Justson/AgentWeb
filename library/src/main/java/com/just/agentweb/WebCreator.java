@@ -8,7 +8,7 @@ import android.webkit.WebView;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public interface WebCreator extends ProgressManager {
+public interface WebCreator extends IWebIndicator {
     WebCreator create();
 
     WebView get();

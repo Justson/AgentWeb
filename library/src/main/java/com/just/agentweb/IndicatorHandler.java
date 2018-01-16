@@ -7,13 +7,12 @@ import android.webkit.WebView;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class IndicatorHandler implements IndicatorController, ProgressLifeCyclic {
-    BaseProgressSpec baseProgressSpec;
+public class IndicatorHandler implements IndicatorController {
+    BaseIndicatorSpec mBaseIndicatorSpec;
 
     @Override
     public void progress(WebView v, int newProgress) {
 
-//        Log.i("Info", "newProgress:" + newProgress + "  v:" + v);
         if (newProgress == 0) {
             reset();
         } else if (newProgress > 0 && newProgress <= 10) {
@@ -28,33 +27,33 @@ public class IndicatorHandler implements IndicatorController, ProgressLifeCyclic
     }
 
     @Override
-    public BaseProgressSpec offerIndicator() {
-        return this.baseProgressSpec;
+    public BaseIndicatorSpec offerIndicator() {
+        return this.mBaseIndicatorSpec;
     }
 
     public void reset() {
 
-        if (baseProgressSpec != null) {
-            baseProgressSpec.reset();
+        if (mBaseIndicatorSpec != null) {
+            mBaseIndicatorSpec.reset();
         }
     }
 
     public void finish() {
-        if (baseProgressSpec != null) {
-            baseProgressSpec.hide();
+        if (mBaseIndicatorSpec != null) {
+            mBaseIndicatorSpec.hide();
         }
     }
 
     public void setProgressBar(int n) {
-        if (baseProgressSpec != null) {
-            baseProgressSpec.setProgress(n);
+        if (mBaseIndicatorSpec != null) {
+            mBaseIndicatorSpec.setProgress(n);
         }
     }
 
     public void showProgressBar() {
 
-        if (baseProgressSpec != null) {
-            baseProgressSpec.show();
+        if (mBaseIndicatorSpec != null) {
+            mBaseIndicatorSpec.show();
         }
     }
 
@@ -63,8 +62,8 @@ public class IndicatorHandler implements IndicatorController, ProgressLifeCyclic
     }
 
 
-    public IndicatorHandler inJectProgressView(BaseProgressSpec baseProgressSpec) {
-        this.baseProgressSpec = baseProgressSpec;
+    public IndicatorHandler inJectProgressView(BaseIndicatorSpec baseIndicatorSpec) {
+        this.mBaseIndicatorSpec = baseIndicatorSpec;
         return this;
     }
 }

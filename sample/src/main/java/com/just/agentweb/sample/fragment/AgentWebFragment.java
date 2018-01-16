@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettings;
-import com.just.agentweb.ChromeClientCallbackManager;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.DownLoadResultListener;
@@ -98,8 +97,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
-                .setReceivedTitleCallback(mCallback)//标题回调。
-                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
                 .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
@@ -178,21 +176,20 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         return target;
     }
 
-    protected ChromeClientCallbackManager.ReceivedTitleCallback mCallback = new ChromeClientCallbackManager.ReceivedTitleCallback() {
-        @Override
-        public void onReceivedTitle(WebView view, String title) {
-            if (mTitleTextView != null && !TextUtils.isEmpty(title))
-                if (title.length() > 10)
-                    title = title.substring(0, 10).concat("...");
-            mTitleTextView.setText(title);
-
-        }
-    };
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //  super.onProgressChanged(view, newProgress);
             Log.i(TAG, "onProgressChanged:" + newProgress + "  view:" + view);
+        }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+            if (mTitleTextView != null && !TextUtils.isEmpty(title))
+                if (title.length() > 10)
+                    title = title.substring(0, 10).concat("...");
+            mTitleTextView.setText(title);
         }
     };
 
