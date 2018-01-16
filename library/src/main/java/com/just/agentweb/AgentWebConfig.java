@@ -50,6 +50,9 @@ public class AgentWebConfig {
     static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
     private static volatile boolean IS_INITIALIZED = false;
     private static final String TAG = AgentWebConfig.class.getSimpleName();
+    /**
+     * AgentWeb 的版本
+     */
     public static final String AGENTWEB_VERSION = "agentweb/3.1.0";
 
     /**

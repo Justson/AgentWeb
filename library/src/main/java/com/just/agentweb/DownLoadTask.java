@@ -15,18 +15,34 @@ public class DownLoadTask implements Serializable {
 
 
     private int id;
+    /**
+     * 下载的地址
+     */
     private String url;
-    //是否强制下载不管网络类型
+    /**
+     * 是否强制下载不管网络类型
+     */
     private boolean isForce;
 
-    //如否需要需要下载进度条
+    /**
+     * 如否需要需要指示器
+     */
     private boolean enableIndicator=true;
-
+    /**
+     *  Context
+     */
     private Context mContext;
+    /**
+     * 下载的文件
+     */
     private File mFile;
-
+    /**
+     * 文件的总大小
+     */
     private long length;
-
+    /**
+     * 通知的icon
+     */
     private int drawableRes;
 
     private WeakReference<DownLoadResultListener>mReference=null;
