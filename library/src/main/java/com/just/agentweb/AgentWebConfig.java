@@ -21,18 +21,35 @@ import static com.just.agentweb.AgentWebUtils.getAgentWebFilePath;
 public class AgentWebConfig {
 
 
-    static final String AGENTWEB_CACHE_PATCH = File.separator + "agentweb-cache";
     static final String FILE_CACHE_PATH = "agentweb-cache";
+    static final String AGENTWEB_CACHE_PATCH = File.separator + "agentweb-cache";
+    /**
+     * 缓存路径
+     */
     static String AGENTWEB_FILE_PATH;
+    /**
+     * DEBUG 模式 ， 如果需要查看日志请设置为 true
+     */
     public static boolean DEBUG = false;
-    static final boolean isKitkatOrBelowKitkat = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
+    /**
+     * 当前操作系统是否低于 KITKAT
+     */
+    static final boolean IS_KITKAT_OR_BELOW_KITKAT = Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT;
+    /**
+     * 默认 WebView  类型 。
+     */
     public static final int WEBVIEW_DEFAULT_TYPE = 1;
+    /**
+     * 使用 AgentWebView
+     */
     public static final int WEBVIEW_AGENTWEB_SAFE_TYPE = 2;
+    /**
+     * 自定义 WebView
+     */
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
     static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
-    private static volatile boolean isInit = false;
+    private static volatile boolean IS_INITIALIZED = false;
     private static final String TAG = AgentWebConfig.class.getSimpleName();
-
     public static final String AGENTWEB_VERSION = "agentweb/3.1.0";
 
     /**
@@ -46,7 +63,9 @@ public class AgentWebConfig {
         return CookieManager.getInstance() == null ? null : CookieManager.getInstance().getCookie(url);
     }
 
-
+    /**
+     * 删除所有已经过期的 Cookies
+     */
     public static void removeExpiredCookies() {
         CookieManager mCookieManager = null;
         if ((mCookieManager = CookieManager.getInstance()) != null) { //同步清除
@@ -55,14 +74,31 @@ public class AgentWebConfig {
         }
     }
 
+    /**
+     * 删除所有 Cookies
+     */
     public static void removeAllCookies() {
         removeAllCookies(null);
-
     }
 
     // 解决兼容 Android 4.4 java.lang.NoSuchMethodError: android.webkit.CookieManager.removeSessionCookies
     public static void removeSessionCookies() {
         removeSessionCookies(null);
+    }
+
+    /**
+     * 同步cookie
+     *
+     * @param url
+     * @param cookies
+     */
+    public static void syncCookie(String url, String cookies) {
+
+        CookieManager mCookieManager = CookieManager.getInstance();
+        if (mCookieManager != null) {
+            mCookieManager.setCookie(url, cookies);
+            toSyncCookies();
+        }
     }
 
     public static void removeSessionCookies(ValueCallback<Boolean> callback) {
@@ -84,6 +120,23 @@ public class AgentWebConfig {
 
     }
 
+    /**
+     * @param context
+     * @return WebView 的缓存路径
+     */
+    public static String getCachePath(Context context) {
+        return context.getCacheDir().getAbsolutePath() + AGENTWEB_CACHE_PATCH;
+    }
+
+    /**
+     * @param context
+     * @return AgentWeb 缓存路径
+     */
+    public static String getExternalCachePath(Context context) {
+        return getAgentWebFilePath(context);
+    }
+
+
     //Android  4.4  NoSuchMethodError: android.webkit.CookieManager.removeAllCookies
     public static void removeAllCookies(@Nullable ValueCallback<Boolean> callback) {
 
@@ -99,46 +152,34 @@ public class AgentWebConfig {
         toSyncCookies();
     }
 
-    private static ValueCallback<Boolean> getDefaultIgnoreCallback() {
+    /**
+     * 清空缓存
+     *
+     * @param context
+     */
+    public static synchronized void clearDiskCache(Context context) {
 
-        return new ValueCallback<Boolean>() {
-            @Override
-            public void onReceiveValue(Boolean ignore) {
-                LogUtils.i(TAG, "removeExpiredCookies:" + ignore);
+        try {
+
+            AgentWebUtils.clearCacheFolder(new File(getCachePath(context)), 0);
+            String path = getExternalCachePath(context);
+            if (!TextUtils.isEmpty(path)) {
+                File mFile = new File(path);
+                AgentWebUtils.clearCacheFolder(mFile, 0);
             }
-        };
+        } catch (Throwable throwable) {
+            if (LogUtils.isDebug()) {
+                throwable.printStackTrace();
+            }
+        }
+
     }
 
 
     static synchronized void initCookiesManager(Context context) {
-        if (!isInit) {
+        if (!IS_INITIALIZED) {
             createCookiesSyncInstance(context);
-            isInit = true;
-        }
-    }
-
-    // WebView 的缓存路径
-    public static String getCachePath(Context context) {
-        return context.getCacheDir().getAbsolutePath() + AGENTWEB_CACHE_PATCH;
-    }
-
-
-    public static String getExternalCachePath(Context context) {
-        return getAgentWebFilePath(context);
-    }
-
-
-    static String getDatabasesCachePath(Context context) {
-        return context.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
-    }
-
-
-    public static void syncCookie(String url, String cookies) {
-
-        CookieManager mCookieManager = CookieManager.getInstance();
-        if (mCookieManager != null) {
-            mCookieManager.setCookie(url, cookies);
-            toSyncCookies();
+            IS_INITIALIZED = true;
         }
     }
 
@@ -167,20 +208,16 @@ public class AgentWebConfig {
     }
 
 
-    public static synchronized void clearDiskCache(Context context) {
-
-        try {
-
-            AgentWebUtils.clearCacheFolder(new File(getCachePath(context)), 0);
-            String path = getExternalCachePath(context);
-            if (!TextUtils.isEmpty(path)) {
-                File mFile = new File(path);
-                AgentWebUtils.clearCacheFolder(mFile, 0);
-            }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
+    static String getDatabasesCachePath(Context context) {
+        return context.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();
     }
 
+    private static ValueCallback<Boolean> getDefaultIgnoreCallback() {
+        return new ValueCallback<Boolean>() {
+            @Override
+            public void onReceiveValue(Boolean ignore) {
+                LogUtils.i(TAG, "removeExpiredCookies:" + ignore);
+            }
+        };
+    }
 }

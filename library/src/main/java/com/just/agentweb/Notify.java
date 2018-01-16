@@ -35,14 +35,21 @@ public class Notify {
         nm = (NotificationManager) mContext
                 .getSystemService(NOTIFICATION_SERVICE);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            cBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
-            NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId, AgentWebUtils.getApplicationName(context), NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
-            mNotificationManager.createNotificationChannel(mNotificationChannel);
-        } else {
-            cBuilder = new NotificationCompat.Builder(mContext);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                cBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
+                NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId, AgentWebUtils.getApplicationName(context), NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
+                mNotificationManager.createNotificationChannel(mNotificationChannel);
+            } else {
+                cBuilder = new NotificationCompat.Builder(mContext);
+            }
+        } catch (Throwable ignore) {
+            if (LogUtils.isDebug()) {
+                ignore.printStackTrace();
+            }
         }
+
     }
 
 
