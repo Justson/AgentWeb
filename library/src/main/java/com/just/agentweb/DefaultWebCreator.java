@@ -69,9 +69,6 @@ public class DefaultWebCreator implements WebCreator {
     private FrameLayout mFrameLayout = null;
     private View targetProgress;
 
-    public WebView getWebView() {
-        return mWebView;
-    }
 
     public void setWebView(WebView webView) {
         mWebView = webView;
@@ -112,12 +109,12 @@ public class DefaultWebCreator implements WebCreator {
     }
 
     @Override
-    public WebView get() {
+    public WebView getWebView() {
         return mWebView;
     }
 
     @Override
-    public ViewGroup getGroup() {
+    public FrameLayout getWebParentLayout() {
         return mFrameLayout;
     }
 

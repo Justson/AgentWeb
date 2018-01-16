@@ -34,7 +34,7 @@ public class SonicSessionClientImpl extends SonicSessionClient {
     }
 
     public WebView getWebView() {
-        return this.mAgentWeb.getWebCreator().get();
+        return this.mAgentWeb.getWebCreator().getWebView();
     }
 
     @Override

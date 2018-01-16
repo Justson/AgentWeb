@@ -6,8 +6,11 @@ import android.webkit.WebView;
 /**
  * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb
+ *
+ * 该类封装了 WebView 对事件的处理，主要是针对
+ * 视屏状态进行了处理 ， 如果当前状态为 视频状态
+ * 则先退出视频。
  */
-
 public class EventHandlerImpl implements IEventHandler {
     private WebView mWebView;
     private EventInterceptor mEventInterceptor;
@@ -23,10 +26,7 @@ public class EventHandlerImpl implements IEventHandler {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-
             return back();
         }
         return false;
@@ -44,7 +44,4 @@ public class EventHandlerImpl implements IEventHandler {
         return false;
     }
 
-    public void inJectPriorityEvent(){
-
-    }
 }

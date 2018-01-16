@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -36,25 +35,73 @@ import static com.just.agentweb.ActionActivity.start;
  */
 
 public class FileUpLoadChooserImpl implements IFileUploadChooser {
-
+    /**
+     *  Activity
+     */
     private Activity mActivity;
+    /**
+     * ValueCallback
+     */
     private ValueCallback<Uri> mUriValueCallback;
+    /**
+     * ValueCallback<Uri[]> After LOLLIPOP
+     */
     private ValueCallback<Uri[]> mUriValueCallbacks;
+    /**
+     * Open Activity Request Code
+     */
     public static final int REQUEST_CODE = 0x254;
-    private boolean isAboveL = false;
+    /**
+     * 当前系统是否高于 Android 5.0 ；
+     */
+    private boolean isAboveLollipop = false;
+    /**
+     * WebChromeClient.FileChooserParams 封装了 Intent ，acceptType  等参数
+     */
     private WebChromeClient.FileChooserParams mFileChooserParams;
-    private JsChannelCallback mJsChannelCallback;
+    /**
+     * 如果是通过 JavaScript 打开文件选择器 ，那么 mJSChannelCallback 不能为空
+     */
+    private JSChannelCallback mJSChannelCallback;
+    /**
+     * 是否为JS Channel
+     */
     private boolean jsChannel = false;
-    private AlertDialog mAlertDialog;
+    /**
+     * TAG
+     */
     private static final String TAG = FileUpLoadChooserImpl.class.getSimpleName();
+    /**
+     * 弹窗文案信息
+     */
     private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
-    private Uri mUri;
+    /**
+     * 当前 WebView
+     */
     private WebView mWebView;
+    /**
+     * 是否为 Camera State
+     */
     private boolean cameraState = false;
+    /**
+     * 权限拦截
+     */
     private PermissionInterceptor mPermissionInterceptor;
+    /**
+     * FROM_INTENTION_CODE 用于表示当前Action
+     */
     private int FROM_INTENTION_CODE = 21;
+    /**
+     * 当前 AgentWebUIController
+     */
     private WeakReference<AgentWebUIController> mAgentWebUIController = null;
+    /**
+     * 选择文件类型
+     */
     private String acceptType = "*/*";
+    /**
+     * 修复某些特定手机拍照后，立刻获取照片为空的情况
+     */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
     public FileUpLoadChooserImpl(Builder builder) {
@@ -62,10 +109,10 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         this.mActivity = builder.mActivity;
         this.mUriValueCallback = builder.mUriValueCallback;
         this.mUriValueCallbacks = builder.mUriValueCallbacks;
-        this.isAboveL = builder.isL;
+        this.isAboveLollipop = builder.isL;
         this.jsChannel = builder.jsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
-        this.mJsChannelCallback = builder.mJsChannelCallback;
+        this.mJSChannelCallback = builder.mJSChannelCallback;
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
@@ -114,7 +161,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private Intent getFilechooserIntent() {
         Intent mIntent = null;
-        if (isAboveL && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
+        if (isAboveLollipop && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
             //多选
             /*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
                 mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -150,7 +197,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
 
         // 是否直接打开文件选择器
-        if (this.isAboveL && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
+        if (this.isAboveLollipop && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
             boolean needCamera = false;
             String[] types = this.mFileChooserParams.getAcceptTypes();
             for (String typeTmp : types) {
@@ -314,7 +361,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         }
 
         //5.0以上系统通过input标签获取文件
-        if (isAboveL) {
+        if (isAboveLollipop) {
             handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), cameraState);
             return;
         }
@@ -332,7 +379,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             handleBelowLData(data);
         }
 
-        /*if (isAboveL)
+        /*if (isAboveLollipop)
             handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
         else if (jsChannel)
             convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
@@ -348,7 +395,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     private void cancel() {
         if (jsChannel) {
-            mJsChannelCallback.call(null);
+            mJSChannelCallback.call(null);
             return;
         }
         if (mUriValueCallback != null)
@@ -413,7 +460,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
         String[] paths = null;
         if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
-            mJsChannelCallback.call(null);
+            mJSChannelCallback.call(null);
             return;
         }
 
@@ -433,11 +480,11 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(String.format(mFileUploadMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
             }
-            mJsChannelCallback.call(null);
+            mJSChannelCallback.call(null);
             return;
         }
 
-        new CovertFileThread(this.mJsChannelCallback, paths).start();
+        new CovertFileThread(this.mJSChannelCallback, paths).start();
 
     }
 
@@ -557,11 +604,11 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     static class CovertFileThread extends Thread {
 
-        private WeakReference<JsChannelCallback> mJsChannelCallback;
+        private WeakReference<JSChannelCallback> mJsChannelCallback;
         private String[] paths;
 
-        private CovertFileThread(JsChannelCallback jsChannelCallback, String[] paths) {
-            this.mJsChannelCallback = new WeakReference<JsChannelCallback>(jsChannelCallback);
+        private CovertFileThread(JSChannelCallback JSChannelCallback, String[] paths) {
+            this.mJsChannelCallback = new WeakReference<JSChannelCallback>(JSChannelCallback);
             this.paths = paths;
         }
 
@@ -582,7 +629,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         }
     }
 
-    interface JsChannelCallback {
+    interface JSChannelCallback {
 
         void call(String value);
     }
@@ -594,7 +641,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         private ValueCallback<Uri[]> mUriValueCallbacks;
         private boolean isL = false;
         private WebChromeClient.FileChooserParams mFileChooserParams;
-        private JsChannelCallback mJsChannelCallback;
+        private JSChannelCallback mJSChannelCallback;
         private boolean jsChannel = false;
         private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
         private WebView mWebView;
@@ -621,7 +668,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             isL = false;
             jsChannel = false;
             mUriValueCallbacks = null;
-            mJsChannelCallback = null;
+            mJSChannelCallback = null;
             return this;
         }
 
@@ -629,7 +676,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             mUriValueCallbacks = uriValueCallbacks;
             isL = true;
             mUriValueCallback = null;
-            mJsChannelCallback = null;
+            mJSChannelCallback = null;
             jsChannel = false;
             return this;
         }
@@ -640,8 +687,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             return this;
         }
 
-        public Builder setJsChannelCallback(JsChannelCallback jsChannelCallback) {
-            mJsChannelCallback = jsChannelCallback;
+        public Builder setJSChannelCallback(JSChannelCallback JSChannelCallback) {
+            mJSChannelCallback = JSChannelCallback;
             jsChannel = true;
             mUriValueCallback = null;
             mUriValueCallbacks = null;

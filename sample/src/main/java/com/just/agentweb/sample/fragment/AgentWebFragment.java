@@ -119,8 +119,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
         //AgentWeb 没有把WebView的功能全面覆盖 ，所有某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
-        mAgentWeb.getWebCreator().get().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
-        //mAgentWeb.getWebCreator().get()  获取WebView .
+        mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
+        //mAgentWeb.getWebCreator().getWebView()  获取WebView .
 
 
 
@@ -379,11 +379,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
                 case R.id.copy:
                     if (mAgentWeb != null)
-                        toCopy(AgentWebFragment.this.getContext(), mAgentWeb.getWebCreator().get().getUrl());
+                        toCopy(AgentWebFragment.this.getContext(), mAgentWeb.getWebCreator().getWebView().getUrl());
                     return true;
                 case R.id.default_browser:
                     if (mAgentWeb != null)
-                        openBrowser(mAgentWeb.getWebCreator().get().getUrl());
+                        openBrowser(mAgentWeb.getWebCreator().getWebView().getUrl());
                     return true;
                 case R.id.default_clean:
                     toCleanWebCache();

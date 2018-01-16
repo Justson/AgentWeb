@@ -1,7 +1,7 @@
 package com.just.agentweb;
 
-import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 
 /**
  * Created by cenxiaozhong .
@@ -11,7 +11,7 @@ import android.webkit.WebView;
 public interface WebCreator extends IWebIndicator {
     WebCreator create();
 
-    WebView get();
+    WebView getWebView();
 
-    ViewGroup getGroup();
+    FrameLayout getWebParentLayout();
 }

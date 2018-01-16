@@ -90,16 +90,16 @@ public final class AgentWeb {
         }
         this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
         this.mSecurityType = agentBuilder.mSecurityType;
-        this.mILoader = new LoaderImpl(mWebCreator.create().get(), agentBuilder.mHttpHeaders);
-        if (this.mWebCreator.getGroup() instanceof WebParentLayout) {
-            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getGroup();
+        this.mILoader = new LoaderImpl(mWebCreator.create().getWebView(), agentBuilder.mHttpHeaders);
+        if (this.mWebCreator.getWebParentLayout() instanceof WebParentLayout) {
+            WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getWebParentLayout();
             mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilder.mAgentWebUIController);
 
             mWebParentLayout.setErrorLayoutRes(agentBuilder.errorLayout, agentBuilder.reloadId);
             mWebParentLayout.setErrorView(agentBuilder.errorView);
         }
-        this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.get());
-        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.get(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
+        this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.getWebView());
+        mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.getWebView(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
         this.webClientHelper = agentBuilder.webClientHelper;
         this.isInterceptUnkownScheme = agentBuilder.isInterceptUnkownScheme;
         if (agentBuilder.openOtherPage != null) {
@@ -111,12 +111,6 @@ public final class AgentWeb {
         setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
-    private void init() {
-        if (this.mDownloadListener == null)
-            mDefaultMsgConfig = new DefaultMsgConfig();
-        doCompat();
-        doSafeCheck();
-    }
 
     public DefaultMsgConfig getDefaultMsgConfig() {
         return this.mDefaultMsgConfig;
@@ -127,41 +121,10 @@ public final class AgentWeb {
         return this.mPermissionInterceptor;
     }
 
-    private void doCompat() {
-        mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat = new AgentWebJsInterfaceCompat(this, mActivity));
-    }
+
 
     public WebLifeCycle getWebLifeCycle() {
         return this.mWebLifeCycle;
-    }
-
-    private void doSafeCheck() {
-
-        WebSecurityCheckLogic mWebSecurityCheckLogic = this.mWebSecurityCheckLogic;
-        if (mWebSecurityCheckLogic == null) {
-            this.mWebSecurityCheckLogic = mWebSecurityCheckLogic = WebSecurityLogicImpl.getInstance();
-        }
-        mWebSecurityController.check(mWebSecurityCheckLogic);
-
-    }
-
-    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
-
-        if (progressView != null && enableProgress) {
-            return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView, webLayout);
-        } else {
-            return enableProgress ?
-                    new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp, webView, webLayout)
-                    : new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView, webLayout);
-        }
-    }
-
-    private void loadData(String data, String mimeType, String encoding) {
-        mWebCreator.get().loadData(data, mimeType, encoding);
-    }
-
-    private void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String history) {
-        mWebCreator.get().loadDataWithBaseURL(baseUrl, data, mimeType, encoding, history);
     }
 
 
@@ -169,7 +132,7 @@ public final class AgentWeb {
 
         JSEntraceAccess mJSEntraceAccess = this.mJSEntraceAccess;
         if (mJSEntraceAccess == null) {
-            this.mJSEntraceAccess = mJSEntraceAccess = JSEntraceAccessImpl.getInstance(mWebCreator.get());
+            this.mJSEntraceAccess = mJSEntraceAccess = JSEntraceAccessImpl.getInstance(mWebCreator.getWebView());
         }
         return mJSEntraceAccess;
     }
@@ -177,9 +140,9 @@ public final class AgentWeb {
 
     public AgentWeb clearWebCache() {
 
-        if (this.getWebCreator().get() != null) {
+        if (this.getWebCreator().getWebView() != null) {
             Log.i(TAG, "清空 webview 缓存");
-            AgentWebUtils.clearWebViewAllCache(mActivity, this.getWebCreator().get());
+            AgentWebUtils.clearWebViewAllCache(mActivity, this.getWebCreator().getWebView());
         } else {
             AgentWebUtils.clearWebViewAllCache(mActivity);
         }
@@ -202,24 +165,10 @@ public final class AgentWeb {
         return new AgentBuilder(mActivity, fragment);
     }
 
-
-    private EventInterceptor getInterceptor() {
-
-        if (this.mEventInterceptor != null)
-            return this.mEventInterceptor;
-
-        if (mIVideo instanceof VideoImpl) {
-            return this.mEventInterceptor = (EventInterceptor) this.mIVideo;
-        }
-
-        return null;
-
-    }
-
     public boolean handleKeyEvent(int keyCode, KeyEvent keyEvent) {
 
         if (mIEventHandler == null) {
-            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(), getInterceptor());
+            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.getWebView(), getInterceptor());
         }
         return mIEventHandler.onKeyDown(keyCode, keyEvent);
     }
@@ -227,7 +176,7 @@ public final class AgentWeb {
     public boolean back() {
 
         if (mIEventHandler == null) {
-            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(), getInterceptor());
+            mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.getWebView(), getInterceptor());
         }
         return mIEventHandler.back();
     }
@@ -238,7 +187,7 @@ public final class AgentWeb {
     }
 
     public IEventHandler getIEventHandler() {
-        return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.get(), getInterceptor())) : this.mIEventHandler;
+        return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.getWebView(), getInterceptor())) : this.mIEventHandler;
     }
 
     private JSInterfaceHolder mJSInterfaceHolder = null;
@@ -251,161 +200,13 @@ public final class AgentWeb {
         return this.mIndicatorController;
     }
 
-
-    private AgentWeb ready() {
-
-        AgentWebConfig.initCookiesManager(mActivity.getApplicationContext());
-        AgentWebSettings mAgentWebSettings = this.mAgentWebSettings;
-        if (mAgentWebSettings == null) {
-            this.mAgentWebSettings = mAgentWebSettings = WebDefaultSettingsManager.getInstance();
-        }
-        if (mWebListenerManager == null && mAgentWebSettings instanceof WebDefaultSettingsManager) {
-            mWebListenerManager = (WebListenerManager) mAgentWebSettings;
-        }
-        mAgentWebSettings.toSetting(mWebCreator.get());
-        if (mJSInterfaceHolder == null) {
-            mJSInterfaceHolder = JSInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.get(), this.mSecurityType);
-        }
-        LogUtils.i(TAG, "mJavaObjects:" + mJavaObjects.size());
-        if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
-            mJSInterfaceHolder.addJavaObjects(mJavaObjects);
-        }
-
-        if (mWebListenerManager != null) {
-            mWebListenerManager.setDownLoader(mWebCreator.get(), getLoadListener());
-            mWebListenerManager.setWebChromeClient(mWebCreator.get(), getChromeClient());
-            mWebListenerManager.setWebViewClient(mWebCreator.get(), getWebViewClient());
-        }
-
-        return this;
-    }
-
-
-    private void setDownloadListener(List<DownLoadResultListener> downLoadResultListeners, boolean isParallelDl, int icon) {
-        DownloadListener mDownloadListener = this.mDownloadListener;
-        if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl.Builder().setActivity(mActivity)
-                    .setEnableIndicator(true)//
-                    .setForce(false)//
-                    .setDownLoadResultListeners(downLoadResultListeners)//
-                    .setDownLoadMsgConfig(mDefaultMsgConfig.getDownLoadMsgConfig())//
-                    .setParallelDownload(isParallelDl)//
-                    .setPermissionInterceptor(this.mPermissionInterceptor)
-                    .setIcon(icon)
-                    .setWebView(this.mWebCreator.get())
-                    .create();
-
-        }
-    }
-
-    private DownloadListener getLoadListener() {
-        DownloadListener mDownloadListener = this.mDownloadListener;
-        return mDownloadListener;
-    }
-
-
-    private WebChromeClient getChromeClient() {
-        IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
-
-        DefaultChromeClient mDefaultChromeClient =
-                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.get());
-
-        LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
-        MiddleWareWebChromeBase header = this.mMiddleWareWebChromeBaseHeader;
-        if (header != null) {
-            MiddleWareWebChromeBase tail = header;
-            int count = 1;
-            MiddleWareWebChromeBase tmp = header;
-            while (tmp.next() != null) {
-                tail = tmp = tmp.next();
-                count++;
-            }
-            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
-            tail.setWebChromeClient(mDefaultChromeClient);
-            return this.mTargetChromeClient = header;
-        } else {
-            return this.mTargetChromeClient = mDefaultChromeClient;
-        }
-    }
-
-    private IVideo getIVideo() {
-        return mIVideo == null ? new VideoImpl(mActivity, mWebCreator.get()) : mIVideo;
-    }
-
-    private WebViewClient getWebViewClient() {
-
-        LogUtils.i(TAG, "getWebViewClient:" + this.mMiddleWrareWebClientBaseHeader);
-        DefaultWebClient mDefaultWebClient = DefaultWebClient
-                .createBuilder()
-                .setActivity(this.mActivity)
-                .setClient(this.mWebViewClient)
-                .setWebClientHelper(this.webClientHelper)
-                .setPermissionInterceptor(this.mPermissionInterceptor)
-                .setWebView(this.mWebCreator.get())
-                .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
-                .setSchemeHandleType(this.openOtherAppWays)
-                .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
-                .build();
-        MiddleWareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
-        if (header != null) {
-            MiddleWareWebClientBase tail = header;
-            int count = 1;
-            MiddleWareWebClientBase tmp = header;
-            while (tmp.next() != null) {
-                tail = tmp = tmp.next();
-                count++;
-            }
-            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
-            tail.setWebViewClient(mDefaultWebClient);
-            return header;
-        } else {
-            return mDefaultWebClient;
-        }
-
-    }
-
     public JSInterfaceHolder getJSInterfaceHolder() {
         return this.mJSInterfaceHolder;
     }
 
-    @Deprecated
-    private WebViewClient getClient() {
-
-        if (!webClientHelper && AgentWebConfig.WEBVIEW_TYPE != AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE && mWebViewClient != null) {
-            return mWebViewClient;
-        } else {
-            LogUtils.i(TAG, "isInterceptUnkownScheme:" + isInterceptUnkownScheme + "   openOtherAppWays:" + openOtherAppWays);
-            return DefaultWebClient
-                    .createBuilder()
-                    .setActivity(this.mActivity)
-                    .setClient(this.mWebViewClient)
-                    .setWebClientHelper(this.webClientHelper)
-                    .setPermissionInterceptor(this.mPermissionInterceptor)
-                    .setWebView(this.mWebCreator.get())
-                    .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
-                    .setSchemeHandleType(this.openOtherAppWays)
-                    .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
-                    .build();
-        }
-
-
-    }
-
-
     public ILoader getLoader() {
         return this.mILoader;
     }
-
-
-    private AgentWeb go(String url) {
-        this.getLoader().loadUrl(url);
-        IndicatorController mIndicatorController = null;
-        if (!TextUtils.isEmpty(url) && (mIndicatorController = getIndicatorController()) != null && mIndicatorController.offerIndicator() != null) {
-            getIndicatorController().offerIndicator().show();
-        }
-        return this;
-    }
-
 
     public void destroy() {
         this.mWebLifeCycle.onDestroy();
@@ -466,6 +267,184 @@ public final class AgentWeb {
         }
 
 
+    }
+
+
+    private void doSafeCheck() {
+
+        WebSecurityCheckLogic mWebSecurityCheckLogic = this.mWebSecurityCheckLogic;
+        if (mWebSecurityCheckLogic == null) {
+            this.mWebSecurityCheckLogic = mWebSecurityCheckLogic = WebSecurityLogicImpl.getInstance();
+        }
+        mWebSecurityController.check(mWebSecurityCheckLogic);
+
+    }
+
+    private void doCompat() {
+        mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat = new AgentWebJsInterfaceCompat(this, mActivity));
+    }
+
+    private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
+
+        if (progressView != null && enableProgress) {
+            return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView, webLayout);
+        } else {
+            return enableProgress ?
+                    new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp, webView, webLayout)
+                    : new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView, webLayout);
+        }
+    }
+
+    private void loadData(String data, String mimeType, String encoding) {
+        mWebCreator.getWebView().loadData(data, mimeType, encoding);
+    }
+
+    private void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String history) {
+        mWebCreator.getWebView().loadDataWithBaseURL(baseUrl, data, mimeType, encoding, history);
+    }
+
+    private AgentWeb go(String url) {
+        this.getLoader().loadUrl(url);
+        IndicatorController mIndicatorController = null;
+        if (!TextUtils.isEmpty(url) && (mIndicatorController = getIndicatorController()) != null && mIndicatorController.offerIndicator() != null) {
+            getIndicatorController().offerIndicator().show();
+        }
+        return this;
+    }
+
+    private EventInterceptor getInterceptor() {
+
+        if (this.mEventInterceptor != null)
+            return this.mEventInterceptor;
+
+        if (mIVideo instanceof VideoImpl) {
+            return this.mEventInterceptor = (EventInterceptor) this.mIVideo;
+        }
+
+        return null;
+
+    }
+
+    private void init() {
+        if (this.mDownloadListener == null)
+            mDefaultMsgConfig = new DefaultMsgConfig();
+        doCompat();
+        doSafeCheck();
+    }
+
+    private IVideo getIVideo() {
+        return mIVideo == null ? new VideoImpl(mActivity, mWebCreator.getWebView()) : mIVideo;
+    }
+
+    private WebViewClient getWebViewClient() {
+
+        LogUtils.i(TAG, "getWebViewClient:" + this.mMiddleWrareWebClientBaseHeader);
+        DefaultWebClient mDefaultWebClient = DefaultWebClient
+                .createBuilder()
+                .setActivity(this.mActivity)
+                .setClient(this.mWebViewClient)
+                .setWebClientHelper(this.webClientHelper)
+                .setPermissionInterceptor(this.mPermissionInterceptor)
+                .setWebView(this.mWebCreator.getWebView())
+                .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
+                .setSchemeHandleType(this.openOtherAppWays)
+                .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
+                .build();
+        MiddleWareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
+        if (header != null) {
+            MiddleWareWebClientBase tail = header;
+            int count = 1;
+            MiddleWareWebClientBase tmp = header;
+            while (tmp.next() != null) {
+                tail = tmp = tmp.next();
+                count++;
+            }
+            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
+            tail.setWebViewClient(mDefaultWebClient);
+            return header;
+        } else {
+            return mDefaultWebClient;
+        }
+
+    }
+
+
+
+
+    private AgentWeb ready() {
+
+        AgentWebConfig.initCookiesManager(mActivity.getApplicationContext());
+        AgentWebSettings mAgentWebSettings = this.mAgentWebSettings;
+        if (mAgentWebSettings == null) {
+            this.mAgentWebSettings = mAgentWebSettings = WebDefaultSettingsManager.getInstance();
+        }
+        if (mWebListenerManager == null && mAgentWebSettings instanceof WebDefaultSettingsManager) {
+            mWebListenerManager = (WebListenerManager) mAgentWebSettings;
+        }
+        mAgentWebSettings.toSetting(mWebCreator.getWebView());
+        if (mJSInterfaceHolder == null) {
+            mJSInterfaceHolder = JSInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.getWebView(), this.mSecurityType);
+        }
+        LogUtils.i(TAG, "mJavaObjects:" + mJavaObjects.size());
+        if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
+            mJSInterfaceHolder.addJavaObjects(mJavaObjects);
+        }
+
+        if (mWebListenerManager != null) {
+            mWebListenerManager.setDownLoader(mWebCreator.getWebView(), getLoadListener());
+            mWebListenerManager.setWebChromeClient(mWebCreator.getWebView(), getChromeClient());
+            mWebListenerManager.setWebViewClient(mWebCreator.getWebView(), getWebViewClient());
+        }
+
+        return this;
+    }
+
+
+    private void setDownloadListener(List<DownLoadResultListener> downLoadResultListeners, boolean isParallelDl, int icon) {
+        DownloadListener mDownloadListener = this.mDownloadListener;
+        if (mDownloadListener == null) {
+            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl.Builder().setActivity(mActivity)
+                    .setEnableIndicator(true)//
+                    .setForce(false)//
+                    .setDownLoadResultListeners(downLoadResultListeners)//
+                    .setDownLoadMsgConfig(mDefaultMsgConfig.getDownLoadMsgConfig())//
+                    .setParallelDownload(isParallelDl)//
+                    .setPermissionInterceptor(this.mPermissionInterceptor)
+                    .setIcon(icon)
+                    .setWebView(this.mWebCreator.getWebView())
+                    .create();
+
+        }
+    }
+
+    private DownloadListener getLoadListener() {
+        DownloadListener mDownloadListener = this.mDownloadListener;
+        return mDownloadListener;
+    }
+
+
+    private WebChromeClient getChromeClient() {
+        IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
+
+        DefaultChromeClient mDefaultChromeClient =
+                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.getWebView());
+
+        LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
+        MiddleWareWebChromeBase header = this.mMiddleWareWebChromeBaseHeader;
+        if (header != null) {
+            MiddleWareWebChromeBase tail = header;
+            int count = 1;
+            MiddleWareWebChromeBase tmp = header;
+            while (tmp.next() != null) {
+                tail = tmp = tmp.next();
+                count++;
+            }
+            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
+            tail.setWebChromeClient(mDefaultChromeClient);
+            return this.mTargetChromeClient = header;
+        } else {
+            return this.mTargetChromeClient = mDefaultChromeClient;
+        }
     }
 
 
