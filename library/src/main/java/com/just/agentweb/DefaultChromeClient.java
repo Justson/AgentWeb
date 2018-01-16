@@ -196,16 +196,12 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
 
         try {
             if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsPrompt", "public boolean " + ANDROID_WEBCHROMECLIENT_PATH + ".onJsPrompt", WebView.class, String.class, String.class, String.class, JsPromptResult.class)) {
-
                 return super.onJsPrompt(view, url, message, defaultValue, result);
             }
-
             if (this.mAgentWebUiController.get() != null) {
                 this.mAgentWebUiController.get().onJsPrompt(mWebView, url, message, defaultValue, result);
             }
-//            showJsPrompt(message, result, defaultValue);
         } catch (Exception e) {
-//            e.printStackTrace();
             if (LogUtils.isDebug()) {
                 e.printStackTrace();
             }
@@ -219,16 +215,13 @@ public class DefaultChromeClient extends MiddleWareWebChromeBase implements File
 
         LogUtils.i(TAG, "onJsConfirm:" + message);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ANDROID_WEBCHROMECLIENT_PATH + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
-
             return super.onJsConfirm(view, url, message, result);
         }
-
 
         LogUtils.i(TAG, "mAgentWebUiController:" + mAgentWebUiController.get());
         if (mAgentWebUiController.get() != null) {
             mAgentWebUiController.get().onJsConfirm(view, url, message, result);
         }
-//        showJsConfirm(message, result);
         return true;
     }
 
