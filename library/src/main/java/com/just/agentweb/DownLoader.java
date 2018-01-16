@@ -30,25 +30,53 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Observer {
 
+    /**
+     * 下载参数
+     */
     private DownLoadTask mDownLoadTask;
+    /**
+     * 已经下载的大小
+     */
     private long loaded = 0;
+    /**
+     * 总大小
+     */
     private long totals = -1;
+    /**
+     *
+     */
     private long tmp = 0;
     private long begin = 0;
     private long used = 1;
     private long mTimeLast = 0;
+    /**
+     * 当前下载速度
+     */
     private long mSpeed = 0;
+    /**
+     * 下载错误回调给用户的错误
+     */
     private Exception e;
+    /**
+     * 下载最大时长
+     */
     private static final int TIME_OUT = 30000000;
+    /**
+     * 通知
+     */
     private Notify mNotify;
 
     private static final int ERROR_LOAD = 406;
 
     private static final String TAG = DownLoader.class.getSimpleName();
-
-
+    /**
+     *   false 表示用户已经取消下载
+     */
     private AtomicBoolean atomic = new AtomicBoolean(false);
-
+    /**
+     * Observable 缓存当前Downloader，如果用户滑动取消下载，通知所有 Downloader 找到
+     * 相应的 Downloader 取消下载。
+     */
     private static Observable mObservable = new Observable() {
         @Override
         public synchronized void setChanged() {
