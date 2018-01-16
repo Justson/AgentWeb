@@ -60,7 +60,6 @@ public class CustomWebViewFragment extends AgentWebFragment {
                 .go(null);
 
 
-        mMarkdownWebView.getSettings().setTextZoom(300);
 
 
         String text="## AgentWeb 功能\n" +
