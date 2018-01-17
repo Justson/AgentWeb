@@ -184,7 +184,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private ActionActivity.ChooserListener getChooserListener() {
         return new ActionActivity.ChooserListener() {
             @Override
-            public void onFileDataResult(int requestCode, int resultCode, Intent data) {
+            public void onChoiceResult(int requestCode, int resultCode, Intent data) {
 
                 LogUtils.i(TAG, "request:" + requestCode + "  resultCode:" + resultCode);
                 fetchFilePathFromIntent(requestCode, resultCode, data);

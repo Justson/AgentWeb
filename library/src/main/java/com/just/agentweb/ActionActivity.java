@@ -113,7 +113,7 @@ public final class ActionActivity extends Activity {
 
     private void chooserActionCallback(int resultCode, Intent data) {
         if (mChooserListener != null) {
-            mChooserListener.onFileDataResult(REQUEST_CODE, resultCode, data);
+            mChooserListener.onChoiceResult(REQUEST_CODE, resultCode, data);
             mChooserListener = null;
         }
         finish();
@@ -168,7 +168,7 @@ public final class ActionActivity extends Activity {
                 finish();
             File mFile = AgentWebUtils.createImageFile(this);
             if (mFile == null) {
-                mChooserListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+                mChooserListener.onChoiceResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
                 mChooserListener = null;
                 finish();
             }
@@ -180,7 +180,7 @@ public final class ActionActivity extends Activity {
         } catch (Throwable ignore) {
             LogUtils.i(TAG, "找不到系统相机");
             if (mChooserListener != null) {
-                mChooserListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+                mChooserListener.onChoiceResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
             }
             mChooserListener = null;
             if (LogUtils.isDebug())
@@ -212,7 +212,7 @@ public final class ActionActivity extends Activity {
     }
 
     interface ChooserListener {
-        void onFileDataResult(int requestCode, int resultCode, Intent data);
+        void onChoiceResult(int requestCode, int resultCode, Intent data);
     }
 
     @Override
