@@ -2,7 +2,6 @@ package com.just.agentweb;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -21,7 +19,6 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
-import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
@@ -35,26 +32,69 @@ import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
  */
 public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
-
+    /**
+     * Activity 的虚引用
+     */
     private WeakReference<Activity> mActivityWeakReference = null;
-    private AlertDialog promptDialog = null;
-    private AlertDialog confirmDialog = null;
-    private JsPromptResult pJsResult = null;
-    private JsResult cJsResult = null;
+    /**
+     * DefaultChromeClient 's TAG
+     */
     private String TAG = DefaultChromeClient.class.getSimpleName();
+    /**
+     * Android WebChromeClient path ，用于反射，用户是否重写来该方法
+     */
     public static final String ANDROID_WEBCHROMECLIENT_PATH = "android.webkit.WebChromeClient";
+    /**
+     * 开发者传过来的参数 WebChromeClient
+     */
     private WebChromeClient mWebChromeClient;
+    /**
+     * 是否被包装过
+     */
     private boolean isWrapper = false;
+    /**
+     * Video 处理类
+     */
     private IVideo mIVideo;
+    /**
+     * ChromeClientMsgCfg 文案信息
+     */
     private DefaultMsgConfig.ChromeClientMsgCfg mChromeClientMsgCfg;
+    /**
+     * PermissionInterceptor 权限拦截器
+     */
     private PermissionInterceptor mPermissionInterceptor;
+    /**
+     * 当前WebView
+     */
     private WebView mWebView;
+    /**
+     * Web端触发的定位 origin ，全局做保存
+     */
     private String origin = null;
+    /**
+     * Web 端触发的定位 Callback 回调成功，或者失败
+     */
     private GeolocationPermissions.Callback mCallback = null;
+    /**
+     * 标志位
+     */
     public static final int FROM_CODE_INTENTION = 0x18;
+    /**
+     * 标识当前是获取定位权限
+     */
     public static final int FROM_CODE_INTENTION_LOCATION = FROM_CODE_INTENTION << 2;
+    /**
+     * AgentWebUIController
+     */
     private WeakReference<AgentWebUIController> mAgentWebUiController = null;
+    /**
+     * IndicatorController 进度条控制器
+     */
     private IndicatorController mIndicatorController;
+    /**
+     * 文件选择器
+     */
     private FileChooser mFileChooser;
 
     DefaultChromeClient(Activity activity,
@@ -233,84 +273,12 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     }
 
 
-    @Deprecated
-    private void showJsConfirm(String message, final JsResult result) {
-
-        Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null || mActivity.isFinishing()) {
-            result.cancel();
-            return;
-        }
-
-        if (confirmDialog == null) {
-
-            confirmDialog = new AlertDialog.Builder(mActivity)//
-                    .setMessage(message)//
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(confirmDialog);
-                            toCancelJsresult(cJsResult);
-                        }
-                    })//
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(confirmDialog);
-                            if (DefaultChromeClient.this.cJsResult != null)
-                                DefaultChromeClient.this.cJsResult.confirm();
-
-                        }
-                    }).create();
-        }
-        confirmDialog.setMessage(message);
-        this.cJsResult = result;
-        confirmDialog.show();
-
-    }
 
     private void toCancelJsresult(JsResult result) {
         if (result != null)
             result.cancel();
     }
 
-    @Deprecated
-    private void showJsPrompt(String message, final JsPromptResult js, String defaultstr) {
-
-        Activity mActivity = this.mActivityWeakReference.get();
-        if (mActivity == null || mActivity.isFinishing()) {
-            js.cancel();
-            return;
-        }
-        if (promptDialog == null) {
-
-            final EditText et = new EditText(mActivity);
-            et.setText(defaultstr);
-            promptDialog = new AlertDialog.Builder(mActivity)//
-                    .setView(et)//
-                    .setTitle(message)
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(promptDialog);
-                            toCancelJsresult(pJsResult);
-                        }
-                    })//
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(promptDialog);
-
-                            if (DefaultChromeClient.this.pJsResult != null)
-                                DefaultChromeClient.this.pJsResult.confirm(et.getText().toString());
-
-                        }
-                    }).create();
-        }
-        this.pJsResult = js;
-        promptDialog.show();
-
-    }
 
     @Override
     public void onExceededDatabaseQuota(String url, String databaseIdentifier, long quota, long estimatedDatabaseSize, long totalQuota, WebStorage.QuotaUpdater quotaUpdater) {

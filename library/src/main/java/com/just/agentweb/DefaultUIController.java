@@ -18,7 +18,6 @@ import android.widget.EditText;
 public class DefaultUIController extends AgentWebUIController {
 
     private AlertDialog mAlertDialog;
-
     protected AlertDialog confirmDialog;
     private JsPromptResult pJsResult = null;
     private JsResult cJsResult = null;

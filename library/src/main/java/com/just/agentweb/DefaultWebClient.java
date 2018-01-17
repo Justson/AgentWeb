@@ -38,31 +38,109 @@ import java.util.Set;
 
 public class DefaultWebClient extends MiddlewareWebClientBase {
 
+    /**
+     * Activity's WeakReference
+     */
     private WeakReference<Activity> mWeakReference = null;
+    /**
+     * 缩放
+     */
     private static final int CONSTANTS_ABNORMAL_BIG = 7;
+    /**
+     * WebViewClient
+     */
     private WebViewClient mWebViewClient;
+    /**
+     * webClientHelper
+     */
     private boolean webClientHelper = true;
+    /**
+     * Android  WebViewClient ' path 用于反射，判断用户是否重写了某一个方法
+     */
     private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
+    /**
+     *  intent ' s scheme
+     */
     public static final String INTENT_SCHEME = "intent://";
+    /**
+     * Wechat pay scheme ，用于唤醒微信支付
+     */
     public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
+    /**
+     * 唤醒支付宝支付
+     */
     public static final String ALIPAYS_SCHEME = "alipays://";
+    /**
+     * http scheme
+     */
     public static final String HTTP_SCHEME = "http://";
+    /**
+     * https scheme
+     */
     public static final String HTTPS_SCHEME = "https://";
-    private static final boolean hasAlipayLib;
+    /**
+     * true 表示当前应用内依赖了 alipay library false  反之
+     */
+    private static final boolean HAS_ALIPAY_LIB;
+    /**
+     * WebViewClient's tag 用于打印
+     */
     private static final String TAG = DefaultWebClient.class.getSimpleName();
-    public static final int DERECT_OPEN_OTHER_APP = 1001;
-    public static final int ASK_USER_OPEN_OTHER_APP = DERECT_OPEN_OTHER_APP >> 2;
-    public static final int DISALLOW_OPEN_OTHER_APP = DERECT_OPEN_OTHER_APP >> 4;
-    private int schemeHandleType = ASK_USER_OPEN_OTHER_APP;
+    /**
+     * 直接打开其他页面
+     */
+    public static final int DERECT_OPEN_OTHER_PAGE = 1001;
+    /**
+     * 弹窗咨询用户是否前往其他页面
+     */
+    public static final int ASK_USER_OPEN_OTHER_PAGE = DERECT_OPEN_OTHER_PAGE >> 2;
+    /**
+     * 不允许打开其他页面
+     */
+    public static final int DISALLOW_OPEN_OTHER_APP = DERECT_OPEN_OTHER_PAGE >> 4;
+    /**
+     * 默认为咨询用户
+     */
+    private int schemeHandleType = ASK_USER_OPEN_OTHER_PAGE;
+    /**
+     * 是否拦截找不到相应页面的Url，默认拦截
+     */
     private boolean isInterceptUnkownScheme = true;
+    /**
+     * AgentWebUIController
+     */
     private WeakReference<AgentWebUIController> mAgentWebUIController = null;
+    /**
+     * WebView
+     */
     private WebView mWebView;
+    /**
+     * 文案信息
+     */
     private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
+    /**
+     * 弹窗回调
+     */
     private Handler.Callback mCallback = null;
+    /**
+     * MainFrameErrorMethod
+     */
     private Method onMainFrameErrorMethod = null;
+    /**
+     * PayTask 对象
+     */
     private Object mPayTask; //alipay
+    /**
+     * sms scheme
+     */
     public static final String SCHEME_SMS = "sms:";
+    /**
+     * 缓存当前出现错误的页面
+     */
     private Set<String> mErrorUrlsSet = new HashSet<>();
+    /**
+     * 缓存等待加载完成的页面 onPageStart()执行之后 ，onPageFinished()执行之前
+     */
     private Set<String> mWaittingFinishSet = new HashSet<>();
 
     static {
@@ -72,9 +150,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         } catch (Throwable ignore) {
             tag = false;
         }
-        hasAlipayLib = tag;
+        HAS_ALIPAY_LIB = tag;
 
-        LogUtils.i(TAG, "hasAlipayLib:" + hasAlipayLib);
+        LogUtils.i(TAG, "HAS_ALIPAY_LIB:" + HAS_ALIPAY_LIB);
     }
 
     @Deprecated
@@ -98,7 +176,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
         LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType);
         if (builder.schemeHandleType <= 0) {
-            schemeHandleType = ASK_USER_OPEN_OTHER_APP;
+            schemeHandleType = ASK_USER_OPEN_OTHER_PAGE;
         } else {
             schemeHandleType = builder.schemeHandleType;
         }
@@ -117,7 +195,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         String url = request.getUrl().toString();
 
         if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
-            return (webClientHelper && hasAlipayLib && isAlipay(view, url));
+            return (webClientHelper && HAS_ALIPAY_LIB && isAlipay(view, url));
         }
 
         if (!webClientHelper) {
@@ -175,10 +253,10 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
         switch (schemeHandleType) {
 
-            case DERECT_OPEN_OTHER_APP: //直接打开其他App
+            case DERECT_OPEN_OTHER_PAGE: //直接打开其他App
                 openOtherPage(url);
                 return true;
-            case ASK_USER_OPEN_OTHER_APP:  //咨询用户是否打开其他App
+            case ASK_USER_OPEN_OTHER_PAGE:  //咨询用户是否打开其他App
                 if (mAgentWebUIController.get() != null) {
                     mAgentWebUIController.get()
                             .onAskOpenPage(this.mWebView,
@@ -212,7 +290,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         }
 
         if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
-            return (webClientHelper && hasAlipayLib && isAlipay(view, url));
+            return (webClientHelper && HAS_ALIPAY_LIB && isAlipay(view, url));
         }
 
         if (!webClientHelper) {
@@ -590,7 +668,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     }
 
     public static enum OpenOtherPageWays {
-        DERECT(DefaultWebClient.DERECT_OPEN_OTHER_APP), ASK(DefaultWebClient.ASK_USER_OPEN_OTHER_APP), DISALLOW(DefaultWebClient.DISALLOW_OPEN_OTHER_APP);
+        DERECT(DefaultWebClient.DERECT_OPEN_OTHER_PAGE), ASK(DefaultWebClient.ASK_USER_OPEN_OTHER_PAGE), DISALLOW(DefaultWebClient.DISALLOW_OPEN_OTHER_APP);
         int code;
 
         OpenOtherPageWays(int code) {
