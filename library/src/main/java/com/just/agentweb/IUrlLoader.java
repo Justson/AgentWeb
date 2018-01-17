@@ -5,7 +5,7 @@ package com.just.agentweb;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public interface ILoader {
+public interface IUrlLoader {
 
 
     void loadUrl(String url);

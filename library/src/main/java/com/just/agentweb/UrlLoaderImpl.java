@@ -9,14 +9,14 @@ import android.webkit.WebView;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class LoaderImpl implements ILoader {
+public class UrlLoaderImpl implements IUrlLoader {
 
 
     private Handler mHandler = null;
     private WebView mWebView;
     private HttpHeaders mHttpHeaders;
 
-    LoaderImpl(WebView webView, HttpHeaders httpHeaders) {
+    UrlLoaderImpl(WebView webView, HttpHeaders httpHeaders) {
         this.mWebView = webView;
         if (this.mWebView == null)
             new NullPointerException("webview is null");

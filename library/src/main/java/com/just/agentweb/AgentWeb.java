@@ -130,7 +130,7 @@ public final class AgentWeb {
     /**
      * URL Loader ， 封装了 mWebView.loadUrl(url) reload() stopLoading（） postUrl()等方法
      */
-    private ILoader mILoader = null;
+    private IUrlLoader mIUrlLoader = null;
     /**
      * WebView 生命周期 ， 适当的释放CPU
      */
@@ -194,7 +194,7 @@ public final class AgentWeb {
         }
         this.mPermissionInterceptor = agentBuilder.mPermissionInterceptor == null ? null : new PermissionInterceptorWrapper(agentBuilder.mPermissionInterceptor);
         this.mSecurityType = agentBuilder.mSecurityType;
-        this.mILoader = new LoaderImpl(mWebCreator.create().getWebView(), agentBuilder.mHttpHeaders);
+        this.mIUrlLoader = new UrlLoaderImpl(mWebCreator.create().getWebView(), agentBuilder.mHttpHeaders);
         if (this.mWebCreator.getWebParentLayout() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getWebParentLayout();
             mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilder.mAgentWebUIController);
@@ -315,8 +315,8 @@ public final class AgentWeb {
         return this.mJSInterfaceHolder;
     }
 
-    public ILoader getLoader() {
-        return this.mILoader;
+    public IUrlLoader getLoader() {
+        return this.mIUrlLoader;
     }
 
     public void destroy() {
