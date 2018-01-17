@@ -49,7 +49,7 @@ public class BounceWebFragment extends AgentWebFragment {
                 .setWebChromeClient(mWebChromeClient)
                 .setWebLayout(getWebLayout())
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
-                .addDownLoadResultListener(mDownLoadResultListener)
+                .addDownloadResultListener(mDownloadResultListener)
                 .interceptUnkownScheme()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .setMainFrameErrorView(R.layout.agentweb_error_page,-1)

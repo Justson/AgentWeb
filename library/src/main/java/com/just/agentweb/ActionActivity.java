@@ -27,7 +27,7 @@ public final class ActionActivity extends Activity {
     public static final String KEY_FILE_CHOOSER_INTENT = "KEY_FILE_CHOOSER_INTENT";
     private static RationaleListener mRationaleListener;
     private static PermissionListener mPermissionListener;
-    private static FileDataListener mFileDataListener;
+    private static ChooserListener mChooserListener;
     private static final String TAG = ActionActivity.class.getSimpleName();
     private Action mAction;
 
@@ -41,8 +41,8 @@ public final class ActionActivity extends Activity {
 
     }
 
-    static void setFileDataListener(FileDataListener fileDataListener) {
-        mFileDataListener = fileDataListener;
+    static void setChooserListener(ChooserListener chooserListener) {
+        mChooserListener = chooserListener;
     }
 
     static void setPermissionListener(PermissionListener permissionListener) {
@@ -50,7 +50,7 @@ public final class ActionActivity extends Activity {
     }
 
     private void cancelAction() {
-        mFileDataListener = null;
+        mChooserListener = null;
         mPermissionListener = null;
         mRationaleListener = null;
     }
@@ -81,16 +81,16 @@ public final class ActionActivity extends Activity {
 
     private void fetchFile(Action action) {
 
-        if (mFileDataListener == null)
+        if (mChooserListener == null)
             finish();
 
-        openRealFileChooser();
+        realOpenFileChooser();
     }
 
-    private void openRealFileChooser() {
+    private void realOpenFileChooser() {
 
         try {
-            if (mFileDataListener == null) {
+            if (mChooserListener == null) {
                 finish();
                 return;
             }
@@ -103,7 +103,7 @@ public final class ActionActivity extends Activity {
             this.startActivityForResult(mIntent, REQUEST_CODE);
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "找不到文件选择器");
-            fileDataActionOver(-1, null);
+            chooserActionCallback(-1, null);
             if (LogUtils.isDebug()) {
                 throwable.printStackTrace();
             }
@@ -111,10 +111,10 @@ public final class ActionActivity extends Activity {
 
     }
 
-    private void fileDataActionOver(int resultCode, Intent data) {
-        if (mFileDataListener != null) {
-            mFileDataListener.onFileDataResult(REQUEST_CODE, resultCode, data);
-            mFileDataListener = null;
+    private void chooserActionCallback(int resultCode, Intent data) {
+        if (mChooserListener != null) {
+            mChooserListener.onFileDataResult(REQUEST_CODE, resultCode, data);
+            mChooserListener = null;
         }
         finish();
     }
@@ -123,9 +123,9 @@ public final class ActionActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        LogUtils.i(TAG, "mFileDataListener:" + mFileDataListener);
+        LogUtils.i(TAG, "mChooserListener:" + mChooserListener);
         if (requestCode == REQUEST_CODE) {
-            fileDataActionOver(resultCode, mUri != null ? new Intent().putExtra(KEY_URI, mUri) : data);
+            chooserActionCallback(resultCode, mUri != null ? new Intent().putExtra(KEY_URI, mUri) : data);
         }
     }
 
@@ -164,25 +164,25 @@ public final class ActionActivity extends Activity {
     private void realOpenCamera() {
 
         try {
-            if (mFileDataListener == null)
+            if (mChooserListener == null)
                 finish();
             File mFile = AgentWebUtils.createImageFile(this);
             if (mFile == null) {
-                mFileDataListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
-                mFileDataListener = null;
+                mChooserListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+                mChooserListener = null;
                 finish();
             }
             Intent intent = AgentWebUtils.getIntentCaptureCompat(this, mFile);
-            LogUtils.i(TAG, "listener:" + mFileDataListener + "  file:" + mFile.getAbsolutePath());
+            LogUtils.i(TAG, "listener:" + mChooserListener + "  file:" + mFile.getAbsolutePath());
             // 指定开启系统相机的Action
             mUri = intent.getParcelableExtra(EXTRA_OUTPUT);
             this.startActivityForResult(intent, REQUEST_CODE);
         } catch (Throwable ignore) {
             LogUtils.i(TAG, "找不到系统相机");
-            if (mFileDataListener != null) {
-                mFileDataListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+            if (mChooserListener != null) {
+                mChooserListener.onFileDataResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
             }
-            mFileDataListener = null;
+            mChooserListener = null;
             if (LogUtils.isDebug())
                 ignore.printStackTrace();
         }
@@ -211,7 +211,7 @@ public final class ActionActivity extends Activity {
         void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras);
     }
 
-    interface FileDataListener {
+    interface ChooserListener {
         void onFileDataResult(int requestCode, int resultCode, Intent data);
     }
 

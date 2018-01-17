@@ -36,7 +36,7 @@ import java.util.Set;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultWebClient extends MiddleWareWebClientBase {
+public class DefaultWebClient extends MiddlewareWebClientBase {
 
     private WeakReference<Activity> mWeakReference = null;
     private static final int CONSTANTS_ABNORMAL_BIG = 7;

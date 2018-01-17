@@ -25,8 +25,8 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     protected AgentWeb mAgentWeb;
     private AgentWebUIControllerImplBase mAgentWebUIController;
     private ErrorLayoutEntity mErrorLayoutEntity;
-    private MiddleWareWebChromeBase mMiddleWareWebChrome;
-    private MiddleWareWebClientBase mMiddleWareWebClient;
+    private MiddlewareWebChromeBase mMiddleWareWebChrome;
+    private MiddlewareWebClientBase mMiddleWareWebClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setOpenOtherPageWays(getOpenOtherAppWay())
                 .useMiddleWareWebChrome(getMiddleWareWebChrome())
                 .useMiddleWareWebClient(getMiddleWareWebClient())
-                .addDownLoadResultListener(getDownLoadResultListener())
+                .addDownloadResultListener(getDownLoadResultListener())
                 .setAgentWebWebSettings(getAgentWebSettings())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
@@ -146,7 +146,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
 
     protected @Nullable
-    DownLoadResultListener getDownLoadResultListener() {
+    DownloadResultListener getDownLoadResultListener() {
         return null;
     }
 
@@ -215,12 +215,12 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
     protected @NonNull
-    MiddleWareWebChromeBase getMiddleWareWebChrome() {
-        return this.mMiddleWareWebChrome = new MiddleWareWebChromeBase();
+    MiddlewareWebChromeBase getMiddleWareWebChrome() {
+        return this.mMiddleWareWebChrome = new MiddlewareWebChromeBase();
     }
 
     protected @NonNull
-    MiddleWareWebClientBase getMiddleWareWebClient() {
-        return this.mMiddleWareWebClient = new MiddleWareWebClientBase();
+    MiddlewareWebClientBase getMiddleWareWebClient() {
+        return this.mMiddleWareWebClient = new MiddlewareWebClientBase();
     }
 }

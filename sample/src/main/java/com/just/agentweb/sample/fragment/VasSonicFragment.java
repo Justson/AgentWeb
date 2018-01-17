@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.just.agentweb.MiddleWareWebClientBase;
+import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.sample.sonic.SonicImpl;
 import com.just.agentweb.sample.sonic.SonicJavaScriptInterface;
 
@@ -48,7 +48,7 @@ public class VasSonicFragment extends AgentWebFragment {
 
     //在步骤3的时候应该传入给AgentWeb
     @Override
-    public MiddleWareWebClientBase getMiddleWareWebClient() {
+    public MiddlewareWebClientBase getMiddleWareWebClient() {
         return mSonicImpl.createSonicClientMiddleWare();
     }
 

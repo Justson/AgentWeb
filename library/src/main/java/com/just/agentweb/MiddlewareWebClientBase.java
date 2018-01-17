@@ -7,23 +7,23 @@ import android.webkit.WebViewClient;
  *  https://github.com/Justson/AgentWeb
  */
 
-public class MiddleWareWebClientBase extends WrapperWebViewClient {
-    private MiddleWareWebClientBase mMiddleWrareWebClientBase;
+public class MiddlewareWebClientBase extends WrapperWebViewClient {
+    private MiddlewareWebClientBase mMiddleWrareWebClientBase;
     private String TAG = this.getClass().getSimpleName();
 
-     MiddleWareWebClientBase(MiddleWareWebClientBase client) {
+     MiddlewareWebClientBase(MiddlewareWebClientBase client) {
         super(client);
         this.mMiddleWrareWebClientBase = client;
     }
 
-    MiddleWareWebClientBase(WebViewClient client) {
+    MiddlewareWebClientBase(WebViewClient client) {
         super(client);
     }
-    public MiddleWareWebClientBase(){
+    public MiddlewareWebClientBase(){
          super(null);
     }
 
-    MiddleWareWebClientBase next() {
+    MiddlewareWebClientBase next() {
         LogUtils.i(TAG, "next");
         return this.mMiddleWrareWebClientBase;
     }
@@ -34,7 +34,7 @@ public class MiddleWareWebClientBase extends WrapperWebViewClient {
         super.setWebViewClient(webViewClient);
 
     }
-     MiddleWareWebClientBase enq(MiddleWareWebClientBase middleWrareWebClientBase){
+     MiddlewareWebClientBase enq(MiddlewareWebClientBase middleWrareWebClientBase){
         setWebViewClient(middleWrareWebClientBase);
         this.mMiddleWrareWebClientBase = middleWrareWebClientBase;
         return middleWrareWebClientBase;

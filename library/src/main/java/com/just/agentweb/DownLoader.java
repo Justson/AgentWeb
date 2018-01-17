@@ -244,16 +244,16 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
     }
 
     private void doCallback(Integer code) {
-        DownLoadResultListener mDownLoadResultListener = null;
-        if ((mDownLoadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
-            LogUtils.e(TAG, "DownLoadResultListener has been death");
+        DownloadResultListener mDownloadResultListener = null;
+        if ((mDownloadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
+            LogUtils.e(TAG, "DownloadResultListener has been death");
             DefaultDownLoaderImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
             return;
         }
         if (code > 200) {
-            mDownLoadResultListener.error(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), DownLoadMsg.getMsgByCode(code), this.e == null ? new RuntimeException("download fail ， cause:" + DownLoadMsg.getMsgByCode(code)) : this.e);
+            mDownloadResultListener.error(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), DownLoadMsg.getMsgByCode(code), this.e == null ? new RuntimeException("download fail ， cause:" + DownLoadMsg.getMsgByCode(code)) : this.e);
         } else {
-            mDownLoadResultListener.success(mDownLoadTask.getFile().getPath());
+            mDownloadResultListener.success(mDownLoadTask.getFile().getPath());
         }
 
     }

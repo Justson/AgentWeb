@@ -3,7 +3,7 @@ package com.just.agentweb.sample.sonic;
 import android.content.Context;
 
 import com.just.agentweb.AgentWeb;
-import com.just.agentweb.MiddleWareWebClientBase;
+import com.just.agentweb.MiddlewareWebClientBase;
 import com.tencent.sonic.sdk.SonicConfig;
 import com.tencent.sonic.sdk.SonicEngine;
 import com.tencent.sonic.sdk.SonicSession;
@@ -50,9 +50,9 @@ public class SonicImpl {
 
     /**
      * 不使用中间件，使用普通的 WebViewClient 也是可以的。
-     * @return MiddleWareWebClientBase
+     * @return MiddlewareWebClientBase
      */
-    public MiddleWareWebClientBase createSonicClientMiddleWare(){
+    public MiddlewareWebClientBase createSonicClientMiddleWare(){
         return new SonicWebViewClient(sonicSession);
     }
 

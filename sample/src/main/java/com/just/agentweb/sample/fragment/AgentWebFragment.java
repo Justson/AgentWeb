@@ -34,13 +34,13 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettings;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
-import com.just.agentweb.DownLoadResultListener;
-import com.just.agentweb.MiddleWareWebChromeBase;
-import com.just.agentweb.MiddleWareWebClientBase;
+import com.just.agentweb.DownloadResultListener;
+import com.just.agentweb.MiddlewareWebChromeBase;
+import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebDefaultSettingsManager;
 import com.just.agentweb.sample.R;
-import com.just.agentweb.sample.client.MiddleWareChromeClient;
+import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
 import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.common.UIController;
@@ -65,8 +65,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private Gson mGson = new Gson(); //用于方便打印测试
     public static final String TAG = AgentWebFragment.class.getSimpleName();
 
-    private MiddleWareWebClientBase mWebClient;
-    private MiddleWareWebChromeBase mMiddleWareWebChrome;
+    private MiddlewareWebClientBase mMiddleWareWebClient;
+    private MiddlewareWebChromeBase mMiddleWareWebChrome;
 
     public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -98,11 +98,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
-                .addDownLoadResultListener(mDownLoadResultListener) //下载回调
                 .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .useMiddleWareWebChrome(getMiddleWareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
+                .addDownloadResultListener(mDownloadResultListener) //下载回调
                 .openParallelDownload()//打开并行下载 , 默认串行下载。
                 .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载通知图标。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
@@ -145,7 +145,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
      * 下载文件完成后，回调文件的绝对路径 ，DownLoadResultListener只会在触发文件下载回调 ， 如果文件存在，并且完整 ，
      * AgentWeb则默认打开它。
      */
-    protected DownLoadResultListener mDownLoadResultListener = new DownLoadResultListener() {
+    protected DownloadResultListener mDownloadResultListener = new DownloadResultListener() {
         //下载成功
         @Override
         public void success(String path) {
@@ -453,11 +453,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
     //
-    protected MiddleWareWebClientBase getMiddleWareWebClient() {
-        return this.mWebClient = new MiddlewareWebViewClient();
+    protected MiddlewareWebClientBase getMiddleWareWebClient() {
+        return this.mMiddleWareWebClient = new MiddlewareWebViewClient();
     }
 
-    protected MiddleWareWebChromeBase getMiddleWareWebChrome() {
-        return this.mMiddleWareWebChrome = new MiddleWareChromeClient();
+    protected MiddlewareWebChromeBase getMiddleWareWebChrome() {
+        return this.mMiddleWareWebChrome = new MiddlewareChromeClient();
     }
 }

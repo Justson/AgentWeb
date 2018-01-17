@@ -20,8 +20,8 @@ import android.webkit.WebViewClient;
 public abstract class BaseAgentWebFragment extends Fragment {
 
     protected AgentWeb mAgentWeb;
-    private MiddleWareWebChromeBase mMiddleWareWebChrome;
-    private MiddleWareWebClientBase mMiddleWareWebClient;
+    private MiddlewareWebChromeBase mMiddleWareWebChrome;
+    private MiddlewareWebClientBase mMiddleWareWebClient;
     private ErrorLayoutEntity mErrorLayoutEntity;
     private AgentWebUIControllerImplBase mAgentWebUIController;
 
@@ -43,7 +43,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .interceptUnkownScheme()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
-                .addDownLoadResultListener(getDownLoadResultListener())
+                .addDownloadResultListener(getDownLoadResultListener())
                 .setAgentWebUIController(getAgentWebUIController())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
                 .useMiddleWareWebChrome(getMiddleWareWebChrome())
@@ -132,7 +132,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     protected @Nullable
-    DownLoadResultListener getDownLoadResultListener() {
+    DownloadResultListener getDownLoadResultListener() {
         return null;
     }
 
@@ -172,11 +172,13 @@ public abstract class BaseAgentWebFragment extends Fragment {
         return null;
     }
 
-    protected @NonNull MiddleWareWebChromeBase getMiddleWareWebChrome() {
-        return this.mMiddleWareWebChrome = new MiddleWareWebChromeBase();
+    protected @NonNull
+    MiddlewareWebChromeBase getMiddleWareWebChrome() {
+        return this.mMiddleWareWebChrome = new MiddlewareWebChromeBase();
     }
 
-    protected @NonNull MiddleWareWebClientBase getMiddleWareWebClient() {
-        return this.mMiddleWareWebClient = new MiddleWareWebClientBase();
+    protected @NonNull
+    MiddlewareWebClientBase getMiddleWareWebClient() {
+        return this.mMiddleWareWebClient = new MiddlewareWebClientBase();
     }
 }

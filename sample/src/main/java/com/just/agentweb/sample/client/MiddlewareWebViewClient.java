@@ -4,13 +4,13 @@ import android.util.Log;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 
-import com.just.agentweb.MiddleWareWebClientBase;
+import com.just.agentweb.MiddlewareWebClientBase;
 
 /**
  * Created by cenxiaozhong on 2017/12/16.
  */
 
-public class MiddlewareWebViewClient extends MiddleWareWebClientBase {
+public class MiddlewareWebViewClient extends MiddlewareWebClientBase {
 
     public MiddlewareWebViewClient() {
     }

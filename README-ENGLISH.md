@@ -202,7 +202,7 @@ mAgentWeb = AgentWeb.with (this) //
                 .setPermissionInterceptor (mPermissionInterceptor) / / permission to intercept 2.0.0 join.
                 .setReceivedTitleCallback (mCallback) // Title callback.
                 . SetSecurityType (AgentWeb.SecurityType.strict) / / strict mode Android 4.2.2 The following will give up the injection of the object, use AgentWebView did not affect.
-                .addDownLoadResultListener (mDownLoadResultListener) // Download callback
+                .addDownLoadResultListener (mDownloadResultListener) // Download callback
                 .setAgentWebUIController (new UIController (getActivity ())) // Custom UI AgentWeb3.0.0 join.
                 .setMainFrameErrorView (R.layout.agentweb_error_page, -1) / / Parameter 1 is the layout of the error display, parameter 2 Click refresh control ID -1 Click to refresh the entire layout Click AgentWeb 3.0.0 to join.
                 .useMiddleWareWebChrome (getMiddleWareWebChrome ()) // Set up WebChromeClient middleware, support multiple WebChromeClient, AgentWeb 3.0.0 join.

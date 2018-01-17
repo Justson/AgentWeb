@@ -33,7 +33,7 @@ import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
  * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb
  */
-public class DefaultChromeClient extends MiddleWareWebChromeBase implements FileUploadPop<IFileUploadChooser> {
+public class DefaultChromeClient extends MiddlewareWebChromeBase implements FileUploadPop<IFileUploadChooser> {
 
 
     private WeakReference<Activity> mActivityWeakReference = null;

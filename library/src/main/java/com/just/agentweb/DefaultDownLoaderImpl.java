@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -36,13 +35,13 @@ import java.util.regex.Pattern;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultListener {
+public class DefaultDownLoaderImpl implements DownloadListener, DownloadResultListener {
 
     private Context mContext;
     private boolean isForce;
     private boolean enableIndicator;
     private volatile static int NoticationID = 1;
-    private List<DownLoadResultListener> mDownLoadResultListeners;
+    private List<DownloadResultListener> mDownloadResultListeners;
     private WeakReference<Activity> mActivityWeakReference = null;
     private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = null;
     private static final String TAG = DefaultDownLoaderImpl.class.getSimpleName();
@@ -60,7 +59,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         this.mContext = builder.mActivity.getApplicationContext();
         this.isForce = builder.isForce;
         this.enableIndicator = builder.enableIndicator;
-        this.mDownLoadResultListeners = builder.mDownLoadResultListeners;
+        this.mDownloadResultListeners = builder.mDownloadResultListeners;
         this.mDownLoadMsgConfig = builder.mDownLoadMsgConfig;
         this.mPermissionListener = builder.mPermissionInterceptor;
         isParallelDownload.set(builder.isParallelDownload);
@@ -280,12 +279,12 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         ExecuteTasksMap.getInstance().removeTask(path);
 
-        if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
+        if (AgentWebUtils.isEmptyCollection(mDownloadResultListeners)) {
             return;
         }
-        for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
-            if (mDownLoadResultListener != null) {
-                mDownLoadResultListener.success(path);
+        for (DownloadResultListener mDownloadResultListener : mDownloadResultListeners) {
+            if (mDownloadResultListener != null) {
+                mDownloadResultListener.success(path);
             }
         }
     }
@@ -296,16 +295,16 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
 
         ExecuteTasksMap.getInstance().removeTask(path);
 
-        if (AgentWebUtils.isEmptyCollection(mDownLoadResultListeners)) {
+        if (AgentWebUtils.isEmptyCollection(mDownloadResultListeners)) {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(mDownLoadMsgConfig.getDownLoadFail(), TAG.concat("|error"));
             }
             return;
         }
 
-        for (DownLoadResultListener mDownLoadResultListener : mDownLoadResultListeners) {
-            if (mDownLoadResultListener != null) {
-                mDownLoadResultListener.error(path, resUrl, cause, e);
+        for (DownloadResultListener mDownloadResultListener : mDownloadResultListeners) {
+            if (mDownloadResultListener != null) {
+                mDownloadResultListener.error(path, resUrl, cause, e);
             }
         }
     }
@@ -441,7 +440,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
         private Activity mActivity;
         private boolean isForce;
         private boolean enableIndicator;
-        private List<DownLoadResultListener> mDownLoadResultListeners;
+        private List<DownloadResultListener> mDownloadResultListeners;
         private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig;
         private PermissionInterceptor mPermissionInterceptor;
         private int icon = -1;
@@ -463,8 +462,8 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownLoadResultLi
             return this;
         }
 
-        public Builder setDownLoadResultListeners(List<DownLoadResultListener> downLoadResultListeners) {
-            this.mDownLoadResultListeners = downLoadResultListeners;
+        public Builder setDownloadResultListeners(List<DownloadResultListener> downloadResultListeners) {
+            this.mDownloadResultListeners = downloadResultListeners;
             return this;
         }
 

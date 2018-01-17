@@ -5,14 +5,14 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 
-import com.just.agentweb.MiddleWareWebClientBase;
+import com.just.agentweb.MiddlewareWebClientBase;
 import com.tencent.sonic.sdk.SonicSession;
 
 /**
  * Created by cenxiaozhong on 2017/12/17.
  */
 
-public class SonicWebViewClient extends MiddleWareWebClientBase {
+public class SonicWebViewClient extends MiddlewareWebClientBase {
 
     private SonicSession sonicSession;
 

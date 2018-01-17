@@ -45,11 +45,11 @@ public class DownLoadTask implements Serializable {
      */
     private int drawableRes;
 
-    private WeakReference<DownLoadResultListener>mReference=null;
+    private WeakReference<DownloadResultListener>mReference=null;
     private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig;
 
 
-    public DownLoadTask(int id, String url, DownLoadResultListener downLoadResultListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig, int drawableRes) {
+    public DownLoadTask(int id, String url, DownloadResultListener downloadResultListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig, int drawableRes) {
         this.id = id;
         this.url = url;
         this.isForce = isForce;
@@ -58,7 +58,7 @@ public class DownLoadTask implements Serializable {
         mFile = file;
         this.length = length;
         this.drawableRes = drawableRes;
-        mReference=new WeakReference<DownLoadResultListener>(downLoadResultListeners);
+        mReference=new WeakReference<DownloadResultListener>(downloadResultListeners);
         this.mDownLoadMsgConfig=downLoadMsgConfig;
     }
 
@@ -94,11 +94,11 @@ public class DownLoadTask implements Serializable {
         this.enableIndicator = enableIndicator;
     }
 
-    public WeakReference<DownLoadResultListener> getReference() {
+    public WeakReference<DownloadResultListener> getReference() {
         return mReference;
     }
 
-    public void setReference(WeakReference<DownLoadResultListener> reference) {
+    public void setReference(WeakReference<DownloadResultListener> reference) {
         mReference = reference;
     }
 
@@ -138,7 +138,7 @@ public class DownLoadTask implements Serializable {
         return drawableRes;
     }
 
-    public DownLoadResultListener getDownLoadResultListener() {
+    public DownloadResultListener getDownLoadResultListener() {
         return mReference.get();
     }
 

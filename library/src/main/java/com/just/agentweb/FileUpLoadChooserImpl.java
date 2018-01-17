@@ -154,7 +154,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private void touchOffFileChooserAction() {
         Action mAction = new Action();
         mAction.setAction(Action.ACTION_FILE);
-        ActionActivity.setFileDataListener(getFileDataListener());
+        ActionActivity.setChooserListener(getChooserListener());
         mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction)
                 .putExtra(KEY_FILE_CHOOSER_INTENT, getFilechooserIntent()));
     }
@@ -181,8 +181,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         return mIntent = Intent.createChooser(i, "");
     }
 
-    private ActionActivity.FileDataListener getFileDataListener() {
-        return new ActionActivity.FileDataListener() {
+    private ActionActivity.ChooserListener getChooserListener() {
+        return new ActionActivity.ChooserListener() {
             @Override
             public void onFileDataResult(int requestCode, int resultCode, Intent data) {
 
@@ -299,7 +299,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     private void openCameraAction() {
         Action mAction = new Action();
         mAction.setAction(Action.ACTION_CAMERA);
-        ActionActivity.setFileDataListener(this.getFileDataListener());
+        ActionActivity.setChooserListener(this.getChooserListener());
         ActionActivity.start(mActivity, mAction);
     }
 

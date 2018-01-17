@@ -160,13 +160,13 @@ public final class AgentWeb {
      */
     private int openOtherAppWays = -1;
     /**
-     * MiddleWareWebClientBase WebViewClient 中间件，
+     * MiddlewareWebClientBase WebViewClient 中间件，
      */
-    private MiddleWareWebClientBase mMiddleWrareWebClientBaseHeader;
+    private MiddlewareWebClientBase mMiddleWrareWebClientBaseHeader;
     /**
-     * MiddleWareWebChromeBase WebChromeClient 中间件
+     * MiddlewareWebChromeBase WebChromeClient 中间件
      */
-    private MiddleWareWebChromeBase mMiddleWareWebChromeBaseHeader;
+    private MiddlewareWebChromeBase mMiddlewareWebChromeBaseHeader;
     /**
      * 事件拦截
      */
@@ -210,9 +210,9 @@ public final class AgentWeb {
             this.openOtherAppWays = agentBuilder.openOtherPage.code;
         }
         this.mMiddleWrareWebClientBaseHeader = agentBuilder.header;
-        this.mMiddleWareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
+        this.mMiddlewareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
         init();
-        setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
+        setDownloadListener(agentBuilder.mDownloadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
     /**
@@ -449,16 +449,16 @@ public final class AgentWeb {
                 .setSchemeHandleType(this.openOtherAppWays)
                 .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
                 .build();
-        MiddleWareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
+        MiddlewareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
         if (header != null) {
-            MiddleWareWebClientBase tail = header;
+            MiddlewareWebClientBase tail = header;
             int count = 1;
-            MiddleWareWebClientBase tmp = header;
+            MiddlewareWebClientBase tmp = header;
             while (tmp.next() != null) {
                 tail = tmp = tmp.next();
                 count++;
             }
-            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
+            LogUtils.i(TAG, "MiddlewareWebClientBase middleware count:" + count);
             tail.setWebViewClient(mDefaultWebClient);
             return header;
         } else {
@@ -499,13 +499,13 @@ public final class AgentWeb {
     }
 
 
-    private void setDownloadListener(List<DownLoadResultListener> downLoadResultListeners, boolean isParallelDl, int icon) {
+    private void setDownloadListener(List<DownloadResultListener> downloadResultListeners, boolean isParallelDl, int icon) {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
             this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl.Builder().setActivity(mActivity)
                     .setEnableIndicator(true)//
                     .setForce(false)//
-                    .setDownLoadResultListeners(downLoadResultListeners)//
+                    .setDownloadResultListeners(downloadResultListeners)//
                     .setDownLoadMsgConfig(mDefaultMsgConfig.getDownLoadMsgConfig())//
                     .setParallelDownload(isParallelDl)//
                     .setPermissionInterceptor(this.mPermissionInterceptor)
@@ -529,16 +529,16 @@ public final class AgentWeb {
                 new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.getWebView());
 
         LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
-        MiddleWareWebChromeBase header = this.mMiddleWareWebChromeBaseHeader;
+        MiddlewareWebChromeBase header = this.mMiddlewareWebChromeBaseHeader;
         if (header != null) {
-            MiddleWareWebChromeBase tail = header;
+            MiddlewareWebChromeBase tail = header;
             int count = 1;
-            MiddleWareWebChromeBase tmp = header;
+            MiddlewareWebChromeBase tmp = header;
             while (tmp.next() != null) {
                 tail = tmp = tmp.next();
                 count++;
             }
-            LogUtils.i(TAG, "MiddleWareWebClientBase middleware count:" + count);
+            LogUtils.i(TAG, "MiddlewareWebClientBase middleware count:" + count);
             tail.setWebChromeClient(mDefaultChromeClient);
             return this.mTargetChromeClient = header;
         } else {
@@ -576,7 +576,7 @@ public final class AgentWeb {
         private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
         private WebView mWebView;
         private boolean webClientHelper = true;
-        private List<DownLoadResultListener> mDownLoadResultListeners = null;
+        private List<DownloadResultListener> mDownloadResultListeners = null;
         private IWebLayout mWebLayout = null;
         private PermissionInterceptor mPermissionInterceptor = null;
         private boolean isParallelDownload = false;
@@ -585,10 +585,10 @@ public final class AgentWeb {
         private AgentWebUIController mAgentWebUIController;
         private DefaultWebClient.OpenOtherPageWays openOtherPage = null;
         private boolean isInterceptUnkownScheme = false;
-        private MiddleWareWebClientBase header;
-        private MiddleWareWebClientBase tail;
-        private MiddleWareWebChromeBase mChromeMiddleWareHeader = null;
-        private MiddleWareWebChromeBase mChromeMiddleWareTail = null;
+        private MiddlewareWebClientBase header;
+        private MiddlewareWebClientBase tail;
+        private MiddlewareWebChromeBase mChromeMiddleWareHeader = null;
+        private MiddlewareWebChromeBase mChromeMiddleWareTail = null;
         private View errorView;
         private int errorLayout;
         private int reloadId;
@@ -710,7 +710,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment useMiddleWareWebClient(@NonNull MiddleWareWebClientBase middleWrareWebClientBase) {
+        public CommonBuilderForFragment useMiddleWareWebClient(@NonNull MiddlewareWebClientBase middleWrareWebClientBase) {
             if (middleWrareWebClientBase == null) {
                 return this;
             }
@@ -723,15 +723,15 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment useMiddleWareWebChrome(@NonNull MiddleWareWebChromeBase middleWareWebChromeBase) {
-            if (middleWareWebChromeBase == null) {
+        public CommonBuilderForFragment useMiddleWareWebChrome(@NonNull MiddlewareWebChromeBase middlewareWebChromeBase) {
+            if (middlewareWebChromeBase == null) {
                 return this;
             }
             if (this.mAgentBuilder.mChromeMiddleWareHeader == null) {
-                this.mAgentBuilder.mChromeMiddleWareHeader = this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
+                this.mAgentBuilder.mChromeMiddleWareHeader = this.mAgentBuilder.mChromeMiddleWareTail = middlewareWebChromeBase;
             } else {
-                this.mAgentBuilder.mChromeMiddleWareTail.enq(middleWareWebChromeBase);
-                this.mAgentBuilder.mChromeMiddleWareTail = middleWareWebChromeBase;
+                this.mAgentBuilder.mChromeMiddleWareTail.enq(middlewareWebChromeBase);
+                this.mAgentBuilder.mChromeMiddleWareTail = middlewareWebChromeBase;
             }
             return this;
         }
@@ -798,12 +798,12 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment addDownLoadResultListener(@Nullable DownLoadResultListener downLoadResultListener) {
+        public CommonBuilderForFragment addDownloadResultListener(@Nullable DownloadResultListener downloadResultListener) {
 
-            if (this.mAgentBuilder.mDownLoadResultListeners == null) {
-                this.mAgentBuilder.mDownLoadResultListeners = new ArrayList<>();
+            if (this.mAgentBuilder.mDownloadResultListeners == null) {
+                this.mAgentBuilder.mDownloadResultListeners = new ArrayList<>();
             }
-            this.mAgentBuilder.mDownLoadResultListeners.add(downLoadResultListener);
+            this.mAgentBuilder.mDownloadResultListeners.add(downloadResultListener);
             return this;
         }
 

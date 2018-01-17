@@ -230,7 +230,7 @@ public class AgentWebView extends WebView {
     }
 
 
-    public static class AgentWebClient extends MiddleWareWebClientBase {
+    public static class AgentWebClient extends MiddlewareWebClientBase {
 
         private AgentWebView mAgentWebView;
 
@@ -267,7 +267,7 @@ public class AgentWebView extends WebView {
 
     }
 
-    public static class AgentWebChrome extends MiddleWareWebChromeBase {
+    public static class AgentWebChrome extends MiddlewareWebChromeBase {
 
         private AgentWebView mAgentWebView;
 
