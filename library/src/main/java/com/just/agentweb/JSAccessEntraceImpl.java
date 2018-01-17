@@ -31,19 +31,19 @@ public class JSAccessEntraceImpl extends BaseJSAccessEntrace {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                callJs(s, valueCallback);
+                callJS(s, valueCallback);
             }
         });
     }
 
     @Override
-    public void callJs(String params, final ValueCallback<String> callback) {
+    public void callJS(String params, final ValueCallback<String> callback) {
         if (Thread.currentThread() != Looper.getMainLooper().getThread()) {
             callSafeCallJs(params, callback);
             return;
         }
 
-        super.callJs(params,callback);
+        super.callJS(params,callback);
 
     }
 

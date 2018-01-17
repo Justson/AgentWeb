@@ -18,9 +18,9 @@ public abstract class BaseJSAccessEntrace implements JSAccessEntrace {
     }
 
     @Override
-    public void callJs(String js, final ValueCallback<String> callback) {
+    public void callJS(String js, final ValueCallback<String> callback) {
 
-        LogUtils.i(TAG,"method callJs:"+js);
+        LogUtils.i(TAG,"method callJS:"+js);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             this.evaluateJs(js, callback);
         } else {
@@ -30,8 +30,8 @@ public abstract class BaseJSAccessEntrace implements JSAccessEntrace {
 
     }
     @Override
-    public void callJs(String js) {
-        this.callJs(js,  null);
+    public void callJS(String js) {
+        this.callJS(js,  null);
     }
 
 
@@ -64,7 +64,7 @@ public abstract class BaseJSAccessEntrace implements JSAccessEntrace {
         }
 
 
-        callJs(sb.toString(),callback);
+        callJS(sb.toString(),callback);
 
     }
 
@@ -88,11 +88,6 @@ public abstract class BaseJSAccessEntrace implements JSAccessEntrace {
         }
 
         return mStringBuilder.toString();
-    }
-
-    @Override
-    public void quickCallRawJS(int res) {
-
     }
 
     @Override

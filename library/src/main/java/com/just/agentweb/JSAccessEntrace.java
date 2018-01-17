@@ -10,11 +10,9 @@ import android.webkit.ValueCallback;
 public interface JSAccessEntrace extends QuickCallJS {
 
 
-    void callJs(String js, ValueCallback<String> callback);
+    void callJS(String js, ValueCallback<String> callback);
 
-    void callJs(String js);
-
-
+    void callJS(String js);
 
 
 }

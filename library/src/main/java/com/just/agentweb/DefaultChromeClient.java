@@ -33,7 +33,7 @@ import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
  * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb
  */
-public class DefaultChromeClient extends MiddlewareWebChromeBase implements FileUploadPop<IFileUploadChooser> {
+public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
 
     private WeakReference<Activity> mActivityWeakReference = null;
@@ -45,7 +45,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
     public static final String ANDROID_WEBCHROMECLIENT_PATH = "android.webkit.WebChromeClient";
     private WebChromeClient mWebChromeClient;
     private boolean isWrapper = false;
-    private IFileUploadChooser mIFileUploadChooser;
     private IVideo mIVideo;
     private DefaultMsgConfig.ChromeClientMsgCfg mChromeClientMsgCfg;
     private PermissionInterceptor mPermissionInterceptor;
@@ -56,6 +55,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
     public static final int FROM_CODE_INTENTION_LOCATION = FROM_CODE_INTENTION << 2;
     private WeakReference<AgentWebUIController> mAgentWebUiController = null;
     private IndicatorController mIndicatorController;
+    private FileChooser mFileChooser;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
@@ -87,7 +87,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
 
     @Override
     public void onReceivedTitle(WebView view, String title) {
-        if (isWrapper){
+        if (isWrapper) {
             super.onReceivedTitle(view, title);
         }
     }
@@ -359,8 +359,8 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
             filePathCallback.onReceiveValue(new Uri[]{});
             return false;
         }
-        IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
-        this.mIFileUploadChooser = mIFileUploadChooser = new FileChooser.Builder()
+        FileChooser mFileChooser = this.mFileChooser;
+        this.mFileChooser = mFileChooser = new FileChooser.Builder()
                 .setWebView(webView)
                 .setActivity(mActivity)
                 .setUriValueCallbacks(filePathCallback)
@@ -368,7 +368,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
                 .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
                 .setPermissionInterceptor(this.mPermissionInterceptor)
                 .build();
-        mIFileUploadChooser.openFileChooser();
+        mFileChooser.openFileChooser();
         return true;
 
     }
@@ -412,7 +412,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
             valueCallback.onReceiveValue(new Object());
             return;
         }
-        this.mIFileUploadChooser = new FileChooser.Builder()
+        this.mFileChooser = new FileChooser.Builder()
                 .setWebView(this.mWebView)
                 .setActivity(mActivity)
                 .setUriValueCallback(valueCallback)
@@ -420,17 +420,10 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
                 .setPermissionInterceptor(this.mPermissionInterceptor)
                 .setAcceptType(mimeType)
                 .build();
-        this.mIFileUploadChooser.openFileChooser();
+        this.mFileChooser.openFileChooser();
 
     }
 
-    @Override
-    public IFileUploadChooser pop() {
-        Log.i(TAG, "offer:" + mIFileUploadChooser);
-        IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
-        this.mIFileUploadChooser = null;
-        return mIFileUploadChooser;
-    }
 
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
