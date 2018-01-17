@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.List;
 
 import static android.provider.MediaStore.EXTRA_OUTPUT;
-import static com.just.agentweb.FileUpLoadChooserImpl.REQUEST_CODE;
+import static com.just.agentweb.FileChooserImpl.REQUEST_CODE;
 
 /**
  * <p>

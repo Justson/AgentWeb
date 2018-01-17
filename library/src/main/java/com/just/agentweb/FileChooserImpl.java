@@ -34,9 +34,9 @@ import static com.just.agentweb.ActionActivity.start;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class FileUpLoadChooserImpl implements IFileUploadChooser {
+public class FileChooserImpl {
     /**
-     *  Activity
+     * Activity
      */
     private Activity mActivity;
     /**
@@ -70,7 +70,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     /**
      * TAG
      */
-    private static final String TAG = FileUpLoadChooserImpl.class.getSimpleName();
+    private static final String TAG = FileChooserImpl.class.getSimpleName();
     /**
      * 弹窗文案信息
      */
@@ -104,7 +104,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
      */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
-    public FileUpLoadChooserImpl(Builder builder) {
+    public FileChooserImpl(Builder builder) {
 
         this.mActivity = builder.mActivity;
         this.mUriValueCallback = builder.mUriValueCallback;
@@ -121,7 +121,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
     }
 
 
-    @Override
     public void openFileChooser() {
         if (!AgentWebUtils.isUIThread()) {
             AgentWebUtils.runInUiThread(new Runnable() {
@@ -262,7 +261,7 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
             return;
 
         if (mPermissionInterceptor != null) {
-            if (mPermissionInterceptor.intercept(FileUpLoadChooserImpl.this.mWebView.getUrl(), AgentWebPermissions.CAMERA, "camera")) {
+            if (mPermissionInterceptor.intercept(FileChooserImpl.this.mWebView.getUrl(), AgentWebPermissions.CAMERA, "camera")) {
                 cancel();
                 return;
             }
@@ -335,7 +334,6 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
 
     }
 
-    @Override
     public void fetchFilePathFromIntent(int requestCode, int resultCode, Intent data) {
 
         LogUtils.i(TAG, "request:" + requestCode + "  result:" + resultCode + "  data:" + data);
@@ -708,8 +706,8 @@ public class FileUpLoadChooserImpl implements IFileUploadChooser {
         }
 
 
-        public FileUpLoadChooserImpl build() {
-            return new FileUpLoadChooserImpl(this);
+        public FileChooserImpl build() {
+            return new FileChooserImpl(this);
         }
     }
 

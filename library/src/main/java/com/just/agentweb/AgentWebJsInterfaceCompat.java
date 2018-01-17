@@ -9,10 +9,10 @@ import java.lang.ref.WeakReference;
  * Created by cenxiaozhong on 2017/5/24.
  */
 
-public class AgentWebJsInterfaceCompat implements AgentWebCompat, FileUploadPop<IFileUploadChooser> {
+public class AgentWebJsInterfaceCompat implements AgentWebCompat {
 
     private WeakReference<AgentWeb> mReference = null;
-    private IFileUploadChooser mIFileUploadChooser;
+    private FileChooserImpl mFileChooser;
     private WeakReference<Activity> mActivityWeakReference = null;
 
     AgentWebJsInterfaceCompat(AgentWeb agentWeb, Activity activity) {
@@ -26,9 +26,9 @@ public class AgentWebJsInterfaceCompat implements AgentWebCompat, FileUploadPop<
 
 
         if (mActivityWeakReference.get() != null && mReference.get() != null) {
-            mIFileUploadChooser = new FileUpLoadChooserImpl.Builder()
+            mFileChooser = new FileChooserImpl.Builder()
                     .setActivity(mActivityWeakReference.get())
-                    .setJSChannelCallback(new FileUpLoadChooserImpl.JSChannelCallback() {
+                    .setJSChannelCallback(new FileChooserImpl.JSChannelCallback() {
                         @Override
                         public void call(String value) {
                             if (mReference.get() != null)
@@ -38,16 +38,10 @@ public class AgentWebJsInterfaceCompat implements AgentWebCompat, FileUploadPop<
                     .setPermissionInterceptor(mReference.get().getPermissionInterceptor())
                     .setWebView(mReference.get().getWebCreator().getWebView())
                     .build();
-            mIFileUploadChooser.openFileChooser();
+            mFileChooser.openFileChooser();
         }
 
 
     }
 
-    @Override
-    public IFileUploadChooser pop() {
-        IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
-        this.mIFileUploadChooser = null;
-        return mIFileUploadChooser;
-    }
 }
