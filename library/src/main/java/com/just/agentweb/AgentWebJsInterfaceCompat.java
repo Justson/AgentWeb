@@ -9,10 +9,10 @@ import java.lang.ref.WeakReference;
  * Created by cenxiaozhong on 2017/5/24.
  */
 
-public class AgentWebJsInterfaceCompat implements AgentWebCompat {
+public class AgentWebJsInterfaceCompat {
 
     private WeakReference<AgentWeb> mReference = null;
-    private FileChooserImpl mFileChooser;
+    private FileChooser mFileChooser;
     private WeakReference<Activity> mActivityWeakReference = null;
 
     AgentWebJsInterfaceCompat(AgentWeb agentWeb, Activity activity) {
@@ -23,25 +23,26 @@ public class AgentWebJsInterfaceCompat implements AgentWebCompat {
 
     @JavascriptInterface
     public void uploadFile() {
+        uploadFile("*/*");
+    }
 
-
+    public void uploadFile(String acceptType){
         if (mActivityWeakReference.get() != null && mReference.get() != null) {
-            mFileChooser = new FileChooserImpl.Builder()
+            mFileChooser = new FileChooser.Builder()
                     .setActivity(mActivityWeakReference.get())
-                    .setJSChannelCallback(new FileChooserImpl.JSChannelCallback() {
+                    .setJSChannelCallback(new FileChooser.JSChannelCallback() {
                         @Override
                         public void call(String value) {
                             if (mReference.get() != null)
-                                mReference.get().getJSEntraceAccess().quickCallJs("uploadFileResult", value);
+                                mReference.get().getJSAccessEntrace().quickCallJS("uploadFileResult", value);
                         }
                     }).setFileUploadMsgConfig(mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileUploadMsgConfig())
                     .setPermissionInterceptor(mReference.get().getPermissionInterceptor())
+                    .setAcceptType(acceptType)
                     .setWebView(mReference.get().getWebCreator().getWebView())
                     .build();
             mFileChooser.openFileChooser();
         }
-
-
     }
 
 }

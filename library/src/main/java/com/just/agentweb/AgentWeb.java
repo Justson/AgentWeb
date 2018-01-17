@@ -124,9 +124,9 @@ public final class AgentWeb {
      */
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
     /**
-     * JSEntraceAccess 提供快速的JS调用
+     * JSAccessEntrace 提供快速的JS调用
      */
-    private JSEntraceAccess mJSEntraceAccess = null;
+    private JSAccessEntrace mJSAccessEntrace = null;
     /**
      * URL Loader ， 封装了 mWebView.loadUrl(url) reload() stopLoading（） postUrl()等方法
      */
@@ -239,13 +239,13 @@ public final class AgentWeb {
     }
 
 
-    public JSEntraceAccess getJSEntraceAccess() {
+    public JSAccessEntrace getJSAccessEntrace() {
 
-        JSEntraceAccess mJSEntraceAccess = this.mJSEntraceAccess;
-        if (mJSEntraceAccess == null) {
-            this.mJSEntraceAccess = mJSEntraceAccess = JSEntraceAccessImpl.getInstance(mWebCreator.getWebView());
+        JSAccessEntrace mJSAccessEntrace = this.mJSAccessEntrace;
+        if (mJSAccessEntrace == null) {
+            this.mJSAccessEntrace = mJSAccessEntrace = JSAccessEntraceImpl.getInstance(mWebCreator.getWebView());
         }
-        return mJSEntraceAccess;
+        return mJSAccessEntrace;
     }
 
 

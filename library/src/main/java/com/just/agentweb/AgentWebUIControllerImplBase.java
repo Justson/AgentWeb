@@ -8,7 +8,7 @@ import android.webkit.WebView;
 
 /**
  * Created by cenxiaozhong on 2017/12/6.
- * 该类统一控制了与用户交互的一些界面
+ *
  */
 public  class AgentWebUIControllerImplBase extends AgentWebUIController {
 
@@ -23,8 +23,8 @@ public  class AgentWebUIControllerImplBase extends AgentWebUIController {
     }
 
     @Override
-    public void onAskOpenOtherApp(WebView view, String url, String message,String confirm,String title, Handler.Callback callback) {
-        getDelegate().onAskOpenOtherApp(view,url,message,confirm,title,callback);
+    public void onAskOpenPage(WebView view, String url, String message, String confirm, String title, Handler.Callback callback) {
+        getDelegate().onAskOpenPage(view,url,message,confirm,title,callback);
     }
 
     @Override

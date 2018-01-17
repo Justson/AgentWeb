@@ -10,17 +10,17 @@ import android.webkit.WebView;
  *source code  https://github.com/Justson/AgentWeb
  */
 
-public class JSEntraceAccessImpl extends BaseJSEntraceAccess {
+public class JSAccessEntraceImpl extends BaseJSAccessEntrace {
 
     private WebView mWebView;
     private Handler mHandler = new Handler(Looper.getMainLooper());
 
 
-    public static JSEntraceAccessImpl getInstance(WebView webView) {
-        return new JSEntraceAccessImpl(webView);
+    public static JSAccessEntraceImpl getInstance(WebView webView) {
+        return new JSAccessEntraceImpl(webView);
     }
 
-    private JSEntraceAccessImpl(WebView webView) {
+    private JSAccessEntraceImpl(WebView webView) {
         super(webView);
         this.mWebView = webView;
     }

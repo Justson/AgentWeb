@@ -69,15 +69,15 @@ public class JSAgentWebFragment extends AgentWebFragment {
             switch (v.getId()){
 
                 case R.id.callJsNoParamsButton:
-                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroid");
+                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroid");
                     break;
 
                 case R.id.callJsOneParamsButton:
-                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroidParam","Hello ! Agentweb");
+                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroidParam","Hello ! Agentweb");
                     break;
 
                 case R.id.callJsMoreParamsButton:
-                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroidMoreParams", new ValueCallback<String>() {
+                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroidMoreParams", new ValueCallback<String>() {
                         @Override
                         public void onReceiveValue(String value) {
                             Log.i("Info","value:"+value);
@@ -86,7 +86,7 @@ public class JSAgentWebFragment extends AgentWebFragment {
 
                     break;
                 case R.id.jsJavaCommunicationButton:
-                    mAgentWeb.getJSEntraceAccess().quickCallJs("callByAndroidInteraction","你好Js");
+                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroidInteraction","你好Js");
                     break;
             }
 

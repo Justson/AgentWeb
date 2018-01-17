@@ -9,11 +9,11 @@ import android.webkit.WebView;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public abstract class BaseJSEntraceAccess implements JSEntraceAccess {
+public abstract class BaseJSAccessEntrace implements JSAccessEntrace {
 
     private WebView mWebView;
-    public static final String TAG=BaseJSEntraceAccess.class.getSimpleName();
-    BaseJSEntraceAccess(WebView webView){
+    public static final String TAG=BaseJSAccessEntrace.class.getSimpleName();
+    BaseJSAccessEntrace(WebView webView){
         this.mWebView=webView;
     }
 
@@ -53,7 +53,7 @@ public abstract class BaseJSEntraceAccess implements JSEntraceAccess {
 
 
     @Override
-    public void quickCallJs(String method, ValueCallback<String> callback,String... params) {
+    public void quickCallJS(String method, ValueCallback<String> callback, String... params) {
 
         StringBuilder sb=new StringBuilder();
         sb.append("javascript:"+method);
@@ -90,15 +90,19 @@ public abstract class BaseJSEntraceAccess implements JSEntraceAccess {
         return mStringBuilder.toString();
     }
 
-
     @Override
-    public void quickCallJs(String method, String... params) {
+    public void quickCallRawJS(int res) {
 
-        this.quickCallJs(method,null,params);
     }
 
     @Override
-    public void quickCallJs(String method) {
-        this.quickCallJs(method,(String[])null);
+    public void quickCallJS(String method, String... params) {
+
+        this.quickCallJS(method,null,params);
+    }
+
+    @Override
+    public void quickCallJS(String method) {
+        this.quickCallJS(method,(String[])null);
     }
 }

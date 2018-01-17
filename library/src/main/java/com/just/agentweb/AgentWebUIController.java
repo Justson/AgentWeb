@@ -13,7 +13,7 @@ import android.webkit.WebView;
  */
 public abstract class AgentWebUIController {
 
-    public static boolean hasDesignLib = false;
+    public static boolean HAS_DESIGN_LIB = false;
     private Activity mActivity;
     private WebParentLayout mWebParentLayout;
     private volatile boolean isBindWebParent = false;
@@ -24,15 +24,15 @@ public abstract class AgentWebUIController {
         try {
             Class.forName("android.support.design.widget.Snackbar");
             Class.forName("android.support.design.widget.BottomSheetDialog");
-            hasDesignLib = true;
+            HAS_DESIGN_LIB = true;
         } catch (Throwable ignore) {
-            hasDesignLib = false;
+            HAS_DESIGN_LIB = false;
         }
     }
 
 
     protected AgentWebUIController create() {
-        return hasDesignLib ? new DefaultDesignUIController() : new DefaultUIController();
+        return HAS_DESIGN_LIB ? new DefaultDesignUIController() : new DefaultUIController();
     }
 
     protected AgentWebUIController getDelegate() {
@@ -67,15 +67,31 @@ public abstract class AgentWebUIController {
     protected abstract void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity);
 
     /**
-     * onJsAlert
+     * WebChromeClient#onJsAlert
      * @param view
      * @param url
      * @param message
      */
     public abstract void onJsAlert(WebView view, String url, String message);
 
-    public abstract void onAskOpenOtherApp(WebView view, String url, String message, String confirm, String title, Handler.Callback callback);
+    /**
+     * 咨询用户是否前往其他页面
+     * @param view
+     * @param url
+     * @param message
+     * @param confirm
+     * @param title
+     * @param callback
+     */
+    public abstract void onAskOpenPage(WebView view, String url, String message, String confirm, String title, Handler.Callback callback);
 
+    /**
+     * WebChromeClient#onJsConfirm
+     * @param view
+     * @param url
+     * @param message
+     * @param jsResult
+     */
     public abstract void onJsConfirm(WebView view, String url, String message, JsResult jsResult);
 
     public abstract void showChooser(WebView view, String url, String[] ways, Handler.Callback callback);
@@ -88,14 +104,39 @@ public abstract class AgentWebUIController {
      */
     public abstract void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback);
 
+    /**
+     * WebChromeClient#onJsPrompt
+     * @param view
+     * @param url
+     * @param message
+     * @param defaultValue
+     * @param jsPromptResult
+     */
     public abstract void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult);
 
+    /**
+     * 显示错误页
+     * @param view
+     * @param errorCode
+     * @param description
+     * @param failingUrl
+     */
     public abstract void onMainFrameError(WebView view, int errorCode, String description, String failingUrl);
 
+    /**
+     * 隐藏错误页
+     */
     public abstract void onShowMainFrame();
 
+    /**
+     * 弹窗正在加载...
+     * @param msg
+     */
     public abstract void onLoading(String msg);
 
+    /**
+     * 正在加载弹窗取消
+     */
     public abstract void cancelLoading();
 
     /**

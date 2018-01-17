@@ -1,6 +1,7 @@
 package com.just.agentweb;
 
 import android.os.Build;
+import android.support.annotation.RawRes;
 import android.support.annotation.RequiresApi;
 import android.webkit.ValueCallback;
 
@@ -10,7 +11,12 @@ import android.webkit.ValueCallback;
 
 public interface QuickCallJS {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    void quickCallJs(String method, ValueCallback<String> callback, String... params);
-    void quickCallJs(String method,String... params);
-    void quickCallJs(String method);
+    void quickCallJS(String method, ValueCallback<String> callback, String... params);
+
+    void quickCallJS(String method, String... params);
+
+    void quickCallJS(String method);
+
+    void quickCallRawJS(@RawRes int res);
+
 }

@@ -181,7 +181,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
             case ASK_USER_OPEN_OTHER_APP:  //咨询用户是否打开其他App
                 if (mAgentWebUIController.get() != null) {
                     mAgentWebUIController.get()
-                            .onAskOpenOtherApp(this.mWebView,
+                            .onAskOpenPage(this.mWebView,
                                     mWebView.getUrl(),
                                     String.format(mMsgCfg.getLeaveApp(), AgentWebUtils.getApplicationName(mWebView.getContext())),
                                     mMsgCfg.getConfirm(),

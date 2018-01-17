@@ -360,7 +360,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
             return false;
         }
         IFileUploadChooser mIFileUploadChooser = this.mIFileUploadChooser;
-        this.mIFileUploadChooser = mIFileUploadChooser = new FileChooserImpl.Builder()
+        this.mIFileUploadChooser = mIFileUploadChooser = new FileChooser.Builder()
                 .setWebView(webView)
                 .setActivity(mActivity)
                 .setUriValueCallbacks(filePathCallback)
@@ -412,7 +412,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase implements File
             valueCallback.onReceiveValue(new Object());
             return;
         }
-        this.mIFileUploadChooser = new FileChooserImpl.Builder()
+        this.mIFileUploadChooser = new FileChooser.Builder()
                 .setWebView(this.mWebView)
                 .setActivity(mActivity)
                 .setUriValueCallback(valueCallback)

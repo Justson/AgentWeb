@@ -35,9 +35,9 @@ public class DefaultUIController extends AgentWebUIController {
 
 
     @Override
-    public void onAskOpenOtherApp(WebView view, String url, String message, String confirm, String title, final Handler.Callback callback) {
+    public void onAskOpenPage(WebView view, String url, String message, String confirm, String title, final Handler.Callback callback) {
 
-        LogUtils.i(TAG, "onAskOpenOtherApp");
+        LogUtils.i(TAG, "onAskOpenPage");
         if (askOpenOtherAppDialog == null) {
             askOpenOtherAppDialog = new AlertDialog
                     .Builder(mActivity)//

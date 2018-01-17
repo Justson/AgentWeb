@@ -34,7 +34,7 @@ import static com.just.agentweb.ActionActivity.start;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class FileChooserImpl {
+public class FileChooser {
     /**
      * Activity
      */
@@ -70,7 +70,7 @@ public class FileChooserImpl {
     /**
      * TAG
      */
-    private static final String TAG = FileChooserImpl.class.getSimpleName();
+    private static final String TAG = FileChooser.class.getSimpleName();
     /**
      * 弹窗文案信息
      */
@@ -104,7 +104,7 @@ public class FileChooserImpl {
      */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
-    public FileChooserImpl(Builder builder) {
+    public FileChooser(Builder builder) {
 
         this.mActivity = builder.mActivity;
         this.mUriValueCallback = builder.mUriValueCallback;
@@ -186,7 +186,7 @@ public class FileChooserImpl {
             public void onChoiceResult(int requestCode, int resultCode, Intent data) {
 
                 LogUtils.i(TAG, "request:" + requestCode + "  resultCode:" + resultCode);
-                fetchFilePathFromIntent(requestCode, resultCode, data);
+                onIntentResult(requestCode, resultCode, data);
             }
         };
     }
@@ -261,7 +261,7 @@ public class FileChooserImpl {
             return;
 
         if (mPermissionInterceptor != null) {
-            if (mPermissionInterceptor.intercept(FileChooserImpl.this.mWebView.getUrl(), AgentWebPermissions.CAMERA, "camera")) {
+            if (mPermissionInterceptor.intercept(FileChooser.this.mWebView.getUrl(), AgentWebPermissions.CAMERA, "camera")) {
                 cancel();
                 return;
             }
@@ -334,7 +334,7 @@ public class FileChooserImpl {
 
     }
 
-    public void fetchFilePathFromIntent(int requestCode, int resultCode, Intent data) {
+    public void onIntentResult(int requestCode, int resultCode, Intent data) {
 
         LogUtils.i(TAG, "request:" + requestCode + "  result:" + resultCode + "  data:" + data);
         if (REQUEST_CODE != requestCode) {
@@ -360,7 +360,7 @@ public class FileChooserImpl {
 
         //5.0以上系统通过input标签获取文件
         if (isAboveLollipop) {
-            handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), cameraState);
+            handleAboveLollipop(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), cameraState);
             return;
         }
 
@@ -374,18 +374,18 @@ public class FileChooserImpl {
         if (cameraState) {
             mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
         } else {
-            handleBelowLData(data);
+            handleBelowLollipop(data);
         }
 
         /*if (isAboveLollipop)
-            handleAboveL(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
+            handleAboveLollipop(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
         else if (jsChannel)
             convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
         else {
             if (cameraState && mUriValueCallback != null)
                 mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
             else
-                handleBelowLData(data);
+                handleBelowLollipop(data);
         }*/
 
 
@@ -404,7 +404,7 @@ public class FileChooserImpl {
     }
 
 
-    private void handleBelowLData(Intent data) {
+    private void handleBelowLollipop(Intent data) {
 
 
         if (data == null) {
@@ -413,7 +413,7 @@ public class FileChooserImpl {
             return;
         }
         Uri mUri = data.getData();
-        LogUtils.i(TAG, "handleBelowLData  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
+        LogUtils.i(TAG, "handleBelowLollipop  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
         if (mUriValueCallback != null)
             mUriValueCallback.onReceiveValue(mUri);
 
@@ -493,7 +493,7 @@ public class FileChooserImpl {
      * @param datas
      * @param isCamera
      */
-    private void handleAboveL(final Uri[] datas, boolean isCamera) {
+    private void handleAboveLollipop(final Uri[] datas, boolean isCamera) {
         if (mUriValueCallbacks == null) {
             return;
         }
@@ -706,8 +706,8 @@ public class FileChooserImpl {
         }
 
 
-        public FileChooserImpl build() {
-            return new FileChooserImpl(this);
+        public FileChooser build() {
+            return new FileChooser(this);
         }
     }
 
