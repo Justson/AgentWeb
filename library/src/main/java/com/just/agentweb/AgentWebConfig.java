@@ -30,7 +30,7 @@ public class AgentWebConfig {
     /**
      * DEBUG 模式 ， 如果需要查看日志请设置为 true
      */
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     /**
      * 当前操作系统是否低于 KITKAT
      */

@@ -111,6 +111,13 @@ public class BaseWebActivity extends AppCompatActivity {
             //do you work
 //            Log.i("Info","progress:"+newProgress);
         }
+
+        @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+            if (mTitleTextView != null)
+                mTitleTextView.setText(title);
+        }
     };
 
     public String getUrl() {

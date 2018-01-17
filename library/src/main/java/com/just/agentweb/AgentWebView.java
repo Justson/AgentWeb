@@ -60,12 +60,14 @@ public class AgentWebView extends WebView {
      */
     @Override
     @Deprecated
-    public void addJavascriptInterface(Object interfaceObj, String interfaceName) {
+    public final void addJavascriptInterface(Object interfaceObj, String interfaceName) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             super.addJavascriptInterface(interfaceObj, interfaceName);
             Log.i(TAG, "注入");
             return;
+        } else {
+            Log.i(TAG, "use mJsCallJavas:" + interfaceName);
         }
 
         LogUtils.i(TAG, "addJavascriptInterface:" + interfaceObj + "   interfaceName:" + interfaceName);
@@ -77,6 +79,11 @@ public class AgentWebView extends WebView {
         if (LogUtils.isDebug()) {
             Log.d(TAG, "injectJavaScript, addJavascriptInterface.interfaceObj = " + interfaceObj + ", interfaceName = " + interfaceName);
         }
+        addJavascriptInterfaceSupport(interfaceObj, interfaceName);
+    }
+
+    protected void addJavascriptInterfaceSupport(Object interfaceObj, String interfaceName) {
+
     }
 
     @Override
@@ -234,6 +241,7 @@ public class AgentWebView extends WebView {
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
             if (mAgentWebView.mJsCallJavas != null) {
                 mAgentWebView.injectJavaScript();
                 if (LogUtils.isDebug()) {
@@ -249,7 +257,7 @@ public class AgentWebView extends WebView {
 
         @Override
         public void onPageFinished(WebView view, String url) {
-
+            super.onPageFinished(view, url);
             mAgentWebView.mFixedOnReceivedTitle.onPageFinished(view);
             if (LogUtils.isDebug()) {
                 Log.d(TAG, "onPageFinished.url = " + view.getUrl());
@@ -270,6 +278,7 @@ public class AgentWebView extends WebView {
         @Override
         public void onReceivedTitle(WebView view, String title) {
             this.mAgentWebView.mFixedOnReceivedTitle.onReceivedTitle();
+            super.onReceivedTitle(view, title);
         }
 
         @Override
@@ -283,6 +292,7 @@ public class AgentWebView extends WebView {
             if (this.mAgentWebView.mInjectJavaScripts != null) {
                 this.mAgentWebView.injectExtraJavaScript();
             }
+            super.onProgressChanged(view, newProgress);
 
         }
 
@@ -300,7 +310,7 @@ public class AgentWebView extends WebView {
                 }
                 return true;
             } else {
-                return false;
+                return super.onJsPrompt(view, url, message, defaultValue, result);
             }
 
         }

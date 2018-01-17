@@ -31,41 +31,145 @@ import java.util.Map;
  * author just -- cxz
  */
 public final class AgentWeb {
-
+    /**
+     * AgentWeb TAG
+     */
     private static final String TAG = AgentWeb.class.getSimpleName();
+    /**
+     *  使用 AgentWeb 的 Activity
+     */
     private Activity mActivity;
+    /**
+     *  承载 WebParentLayout 的 ViewGroup
+     */
     private ViewGroup mViewGroup;
+    /**
+     * 负责创建布局 WebView ，WebParentLayout  Indicator等。
+     */
     private WebCreator mWebCreator;
+    /**
+     * 管理 WebSettings
+     */
     private AgentWebSettings mAgentWebSettings;
+    /**
+     * AgentWeb
+     */
     private AgentWeb mAgentWeb = null;
+    /**
+     * IndicatorController 控制Indicator
+     */
     private IndicatorController mIndicatorController;
+    /**
+     * Client 传过来的 WebChromeClient
+     */
     private WebChromeClient mWebChromeClient;
+    /**
+     * Client 传过来的 WebViewClient
+     */
     private WebViewClient mWebViewClient;
+    /**
+     * 是否启动进度条
+     */
     private boolean enableProgress;
+    /**
+     * Fragment
+     */
     private Fragment mFragment;
+    /**
+     * IEventHandler 处理WebView相关返回事件
+     */
     private IEventHandler mIEventHandler;
+    /**
+     * WebView 注入对象
+     */
     private ArrayMap<String, Object> mJavaObjects = new ArrayMap<>();
+    /**
+     * 用于表示当前在 Fragment 使用还是 Activity 上使用
+     */
     private int TAG_TARGET = 0;
+    /**
+     * WebListenerManager
+     */
     private WebListenerManager mWebListenerManager;
+    /**
+     * 下载监听
+     */
     private DownloadListener mDownloadListener = null;
+    /**
+     * 安全把控
+     */
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
+    /**
+     * 检查逻辑
+     */
     private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
+    /**
+     * WebChromeClient
+     */
     private WebChromeClient mTargetChromeClient;
+    /**
+     * 安全类型
+     */
     private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
+    /**
+     * Activity  标识
+     */
     private static final int ACTIVITY_TAG = 0;
+    /**
+     * Fragment 标识
+     */
     private static final int FRAGMENT_TAG = 1;
+    /**
+     * AgentWeb 注入对象
+     */
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
+    /**
+     * JSEntraceAccess 提供快速的JS调用
+     */
     private JSEntraceAccess mJSEntraceAccess = null;
+    /**
+     * URL Loader ， 封装了 mWebView.loadUrl(url) reload() stopLoading（） postUrl()等方法
+     */
     private ILoader mILoader = null;
+    /**
+     * WebView 生命周期 ， 适当的释放CPU
+     */
     private WebLifeCycle mWebLifeCycle;
+    /**
+     * Video 视屏播放类
+     */
     private IVideo mIVideo = null;
+    /**
+     * WebViewClient 辅助控制开关
+     */
     private boolean webClientHelper = true;
+    /**
+     * AgentWeb 提示的信息封装类
+     */
     private DefaultMsgConfig mDefaultMsgConfig;
+    /**
+     * PermissionInterceptor 权限拦截
+     */
     private PermissionInterceptor mPermissionInterceptor;
+    /**
+     * 是否拦截未知的scheme， 用于 DefaultWebClient
+     */
     private boolean isInterceptUnkownScheme = false;
+    /**
+     * 该变量控制了是否质询用户页面跳转，或者直接拦截
+     */
     private int openOtherAppWays = -1;
+    /**
+     * MiddleWareWebClientBase WebViewClient 中间件，
+     */
     private MiddleWareWebClientBase mMiddleWrareWebClientBaseHeader;
+    /**
+     * MiddleWareWebChromeBase WebChromeClient 中间件
+     */
     private MiddleWareWebChromeBase mMiddleWareWebChromeBaseHeader;
+    /**
+     * 事件拦截
+     */
     private EventInterceptor mEventInterceptor;
 
 
@@ -111,12 +215,19 @@ public final class AgentWeb {
         setDownloadListener(agentBuilder.mDownLoadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
-
+    /**
+     *
+     * @return DefaultMsgConfig 文案信息
+     */
     public DefaultMsgConfig getDefaultMsgConfig() {
         return this.mDefaultMsgConfig;
     }
 
 
+    /**
+     *
+     * @return PermissionInterceptor 权限控制者
+     */
     public PermissionInterceptor getPermissionInterceptor() {
         return this.mPermissionInterceptor;
     }
@@ -223,21 +334,9 @@ public final class AgentWeb {
     @Deprecated
     public void uploadFileResult(int requestCode, int resultCode, Intent data) {
 
-        IFileUploadChooser mIFileUploadChooser = null;
-
-        if (mTargetChromeClient instanceof DefaultChromeClient) {
-            DefaultChromeClient mDefaultChromeClient = (DefaultChromeClient) mTargetChromeClient;
-            mIFileUploadChooser = mDefaultChromeClient.pop();
-        }
-
-        if (mIFileUploadChooser == null)
-            mIFileUploadChooser = mAgentWebJsInterfaceCompat.pop();
-        LogUtils.i(TAG, "file upload:" + mIFileUploadChooser);
-        if (mIFileUploadChooser != null)
-            mIFileUploadChooser.fetchFilePathFromIntent(requestCode, resultCode, data);
-
-        if (mIFileUploadChooser != null)
-            mIFileUploadChooser = null;
+        /**
+         * 该方法废弃 ，没方法替代 。
+         */
     }
 
 
