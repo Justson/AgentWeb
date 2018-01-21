@@ -87,18 +87,28 @@ public class AgentWebView extends WebView {
     }
 
     @Override
-    public void setWebChromeClient(WebChromeClient client) {
+    public final void setWebChromeClient(WebChromeClient client) {
         AgentWebChrome mAgentWebChrome = new AgentWebChrome(this);
         mAgentWebChrome.setWebChromeClient(client);
         mFixedOnReceivedTitle.setWebChromeClient(client);
         super.setWebChromeClient(mAgentWebChrome);
+        setWebChromeClientSupport(mAgentWebChrome);
+    }
+
+    protected final void setWebChromeClientSupport(WebChromeClient client) {
+
     }
 
     @Override
-    public void setWebViewClient(WebViewClient client) {
+    public final void setWebViewClient(WebViewClient client) {
         AgentWebClient mAgentWebClient = new AgentWebClient(this);
         mAgentWebClient.setWebViewClient(client);
         super.setWebViewClient(mAgentWebClient);
+        setWebViewClientSupport(mAgentWebClient);
+    }
+
+    public final void setWebViewClientSupport(WebViewClient client) {
+
     }
 
     @Override

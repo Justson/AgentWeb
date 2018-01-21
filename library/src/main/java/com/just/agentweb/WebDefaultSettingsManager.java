@@ -133,6 +133,18 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
     @Override
     public WebListenerManager setDownLoader(WebView webView, DownloadListener downloadListener) {
         webView.setDownloadListener(downloadListener);
+
+
+       /* mDownloadListener = new DefaultDownLoaderImpl.Builder().setActivity(mActivity)
+                .setEnableIndicator(true)//
+                .setForce(false)//
+                .setDownloadResultListeners(downloadResultListeners)//
+                .setDownLoadMsgConfig(mDefaultMsgConfig.getDownLoadMsgConfig())//
+                .setParallelDownload(isParallelDl)//
+                .setPermissionInterceptor(this.mPermissionInterceptor)
+                .setIcon(icon)
+                .setWebView(this.mWebCreator.getWebView())
+                .create();*/
         return this;
     }
 

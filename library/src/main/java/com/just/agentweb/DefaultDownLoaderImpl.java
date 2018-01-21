@@ -91,7 +91,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownloadResultLi
         if (mActivityWeakReference.get() == null || mActivityWeakReference.get().isFinishing()) {
             return;
         }
-        LogUtils.i(TAG, "mime:" + mimetype);
+        LogUtils.i(TAG, "mimetype:" + mimetype);
         if (this.mPermissionListener != null) {
             if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
                 return;

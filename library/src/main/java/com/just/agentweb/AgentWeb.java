@@ -555,7 +555,6 @@ public final class AgentWeb {
     public static final class AgentBuilder {
         private Activity mActivity;
         private Fragment mFragment;
-
         private ViewGroup mViewGroup;
         private boolean isNeedDefaultProgress;
         private int index = -1;
@@ -607,10 +606,10 @@ public final class AgentWeb {
         }
 
 
-        public IndicatorBuilderForFragment setAgentWebParent(@NonNull ViewGroup v, @NonNull ViewGroup.LayoutParams lp) {
+        public IndicatorBuilder setAgentWebParent(@NonNull ViewGroup v, @NonNull ViewGroup.LayoutParams lp) {
             this.mViewGroup = v;
             this.mLayoutParams = lp;
-            return new IndicatorBuilderForFragment(this);
+            return new IndicatorBuilder(this);
         }
 
         private PreAgentWeb buildAgentWeb() {
@@ -634,32 +633,32 @@ public final class AgentWeb {
         }
     }
 
-    public static class IndicatorBuilderForFragment {
+    public static class IndicatorBuilder {
         AgentBuilder mAgentBuilder = null;
 
-        public IndicatorBuilderForFragment(AgentBuilder agentBuilder) {
+        public IndicatorBuilder(AgentBuilder agentBuilder) {
             this.mAgentBuilder = agentBuilder;
         }
 
-        public CommonBuilderForFragment useDefaultIndicator(int color) {
+        public CommonBuilder useDefaultIndicator(int color) {
             this.mAgentBuilder.enableProgress = true;
             this.mAgentBuilder.mIndicatorColor = color;
-            return new CommonBuilderForFragment(mAgentBuilder);
+            return new CommonBuilder(mAgentBuilder);
         }
 
-        public CommonBuilderForFragment useDefaultIndicator() {
+        public CommonBuilder useDefaultIndicator() {
             this.mAgentBuilder.enableProgress = true;
-            return new CommonBuilderForFragment(mAgentBuilder);
+            return new CommonBuilder(mAgentBuilder);
         }
 
-        public CommonBuilderForFragment closeDefaultIndicator() {
+        public CommonBuilder closeDefaultIndicator() {
             this.mAgentBuilder.enableProgress = false;
             this.mAgentBuilder.mIndicatorColor = -1;
             this.mAgentBuilder.height_dp = -1;
-            return new CommonBuilderForFragment(mAgentBuilder);
+            return new CommonBuilder(mAgentBuilder);
         }
 
-        public CommonBuilderForFragment setCustomIndicator(@NonNull BaseIndicatorView v) {
+        public CommonBuilder setCustomIndicator(@NonNull BaseIndicatorView v) {
             if (v != null) {
                 this.mAgentBuilder.enableProgress = true;
                 this.mAgentBuilder.v = v;
@@ -669,48 +668,48 @@ public final class AgentWeb {
                 this.mAgentBuilder.isNeedDefaultProgress = true;
             }
 
-            return new CommonBuilderForFragment(mAgentBuilder);
+            return new CommonBuilder(mAgentBuilder);
         }
 
-        public CommonBuilderForFragment setIndicatorColorWithHeight(@ColorInt int color, int height_dp) {
+        public CommonBuilder setIndicatorColorWithHeight(@ColorInt int color, int height_dp) {
             this.mAgentBuilder.mIndicatorColor = color;
             this.mAgentBuilder.height_dp = height_dp;
-            return new CommonBuilderForFragment(this.mAgentBuilder);
+            return new CommonBuilder(this.mAgentBuilder);
         }
 
     }
 
 
-    public static class CommonBuilderForFragment {
+    public static class CommonBuilder {
         private AgentBuilder mAgentBuilder;
 
-        public CommonBuilderForFragment(AgentBuilder agentBuilder) {
+        public CommonBuilder(AgentBuilder agentBuilder) {
             this.mAgentBuilder = agentBuilder;
         }
 
-        public CommonBuilderForFragment setEventHanadler(@Nullable IEventHandler iEventHandler) {
+        public CommonBuilder setEventHanadler(@Nullable IEventHandler iEventHandler) {
             mAgentBuilder.mIEventHandler = iEventHandler;
             return this;
         }
 
-        public CommonBuilderForFragment closeWebViewClientHelper() {
+        public CommonBuilder closeWebViewClientHelper() {
             mAgentBuilder.webClientHelper = false;
             return this;
         }
 
 
-        public CommonBuilderForFragment setWebChromeClient(@Nullable WebChromeClient webChromeClient) {
+        public CommonBuilder setWebChromeClient(@Nullable WebChromeClient webChromeClient) {
             this.mAgentBuilder.mWebChromeClient = webChromeClient;
             return this;
 
         }
 
-        public CommonBuilderForFragment setWebViewClient(@Nullable WebViewClient webChromeClient) {
+        public CommonBuilder setWebViewClient(@Nullable WebViewClient webChromeClient) {
             this.mAgentBuilder.mWebViewClient = webChromeClient;
             return this;
         }
 
-        public CommonBuilderForFragment useMiddleWareWebClient(@NonNull MiddlewareWebClientBase middleWrareWebClientBase) {
+        public CommonBuilder useMiddleWareWebClient(@NonNull MiddlewareWebClientBase middleWrareWebClientBase) {
             if (middleWrareWebClientBase == null) {
                 return this;
             }
@@ -723,7 +722,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment useMiddleWareWebChrome(@NonNull MiddlewareWebChromeBase middlewareWebChromeBase) {
+        public CommonBuilder useMiddleWareWebChrome(@NonNull MiddlewareWebChromeBase middlewareWebChromeBase) {
             if (middlewareWebChromeBase == null) {
                 return this;
             }
@@ -736,18 +735,18 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setMainFrameErrorView(@NonNull View view) {
+        public CommonBuilder setMainFrameErrorView(@NonNull View view) {
             this.mAgentBuilder.errorView = view;
             return this;
         }
 
-        public CommonBuilderForFragment setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int reloadId) {
+        public CommonBuilder setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int reloadId) {
             this.mAgentBuilder.errorLayout = errorLayout;
             this.mAgentBuilder.reloadId = reloadId;
             return this;
         }
 
-        public CommonBuilderForFragment setAgentWebWebSettings(@Nullable AgentWebSettings agentWebSettings) {
+        public CommonBuilder setAgentWebWebSettings(@Nullable AgentWebSettings agentWebSettings) {
             this.mAgentBuilder.mAgentWebSettings = agentWebSettings;
             return this;
         }
@@ -757,48 +756,48 @@ public final class AgentWeb {
         }
 
 
-        public CommonBuilderForFragment addJavascriptInterface(@NonNull String name, @NonNull Object o) {
+        public CommonBuilder addJavascriptInterface(@NonNull String name, @NonNull Object o) {
             this.mAgentBuilder.addJavaObject(name, o);
             return this;
         }
 
-        public CommonBuilderForFragment setSecurityType(@NonNull SecurityType type) {
+        public CommonBuilder setSecurityType(@NonNull SecurityType type) {
             this.mAgentBuilder.mSecurityType = type;
             return this;
         }
 
-        public CommonBuilderForFragment openParallelDownload() {
+        public CommonBuilder openParallelDownload() {
             this.mAgentBuilder.isParallelDownload = true;
             return this;
         }
 
-        public CommonBuilderForFragment setNotifyIcon(@DrawableRes int icon) {
+        public CommonBuilder setNotifyIcon(@DrawableRes int icon) {
             this.mAgentBuilder.icon = icon;
             return this;
         }
 
-        public CommonBuilderForFragment setWebView(@Nullable WebView webView) {
+        public CommonBuilder setWebView(@Nullable WebView webView) {
             this.mAgentBuilder.mWebView = webView;
             return this;
         }
 
-        public CommonBuilderForFragment setWebLayout(@Nullable IWebLayout iWebLayout) {
+        public CommonBuilder setWebLayout(@Nullable IWebLayout iWebLayout) {
             this.mAgentBuilder.mWebLayout = iWebLayout;
             return this;
         }
 
-        public CommonBuilderForFragment additionalHttpHeader(String k, String v) {
+        public CommonBuilder additionalHttpHeader(String k, String v) {
             this.mAgentBuilder.addHeader(k, v);
 
             return this;
         }
 
-        public CommonBuilderForFragment setPermissionInterceptor(@Nullable PermissionInterceptor permissionInterceptor) {
+        public CommonBuilder setPermissionInterceptor(@Nullable PermissionInterceptor permissionInterceptor) {
             this.mAgentBuilder.mPermissionInterceptor = permissionInterceptor;
             return this;
         }
 
-        public CommonBuilderForFragment addDownloadResultListener(@Nullable DownloadResultListener downloadResultListener) {
+        public CommonBuilder addDownloadResultListener(@Nullable DownloadResultListener downloadResultListener) {
 
             if (this.mAgentBuilder.mDownloadResultListeners == null) {
                 this.mAgentBuilder.mDownloadResultListeners = new ArrayList<>();
@@ -807,17 +806,17 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilderForFragment setAgentWebUIController(@Nullable AgentWebUIControllerImplBase agentWebUIController) {
+        public CommonBuilder setAgentWebUIController(@Nullable AgentWebUIControllerImplBase agentWebUIController) {
             this.mAgentBuilder.mAgentWebUIController = agentWebUIController;
             return this;
         }
 
-        public CommonBuilderForFragment setOpenOtherPageWays(@Nullable DefaultWebClient.OpenOtherPageWays openOtherPageWays) {
+        public CommonBuilder setOpenOtherPageWays(@Nullable DefaultWebClient.OpenOtherPageWays openOtherPageWays) {
             this.mAgentBuilder.openOtherPage = openOtherPageWays;
             return this;
         }
 
-        public CommonBuilderForFragment interceptUnkownScheme() {
+        public CommonBuilder interceptUnkownScheme() {
             this.mAgentBuilder.isInterceptUnkownScheme = true;
             return this;
         }

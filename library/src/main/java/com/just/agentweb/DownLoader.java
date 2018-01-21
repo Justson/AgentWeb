@@ -74,7 +74,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
      */
     private AtomicBoolean atomic = new AtomicBoolean(false);
     /**
-     * Observable 缓存当前Downloader，如果用户滑动取消下载，通知所有 Downloader 找到
+     * Observable 缓存当前Downloader，如果用户滑动通知取消下载，通知所有 Downloader 找到
      * 相应的 Downloader 取消下载。
      */
     private static Observable mObservable = new Observable() {
