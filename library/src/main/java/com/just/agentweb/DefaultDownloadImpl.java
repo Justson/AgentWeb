@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultDownLoaderImpl implements DownloadListener, DownloadResultListener {
+public class DefaultDownloadImpl implements DownloadListener, DownloadResultListener {
 
     private Context mContext;
     private boolean isForce;
@@ -44,7 +44,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownloadResultLi
     private List<DownloadResultListener> mDownloadResultListeners;
     private WeakReference<Activity> mActivityWeakReference = null;
     private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = null;
-    private static final String TAG = DefaultDownLoaderImpl.class.getSimpleName();
+    private static final String TAG = DefaultDownloadImpl.class.getSimpleName();
     private PermissionInterceptor mPermissionListener = null;
     private String url;
     private String contentDisposition;
@@ -54,7 +54,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownloadResultLi
     private WeakReference<AgentWebUIController> mAgentWebUIController;
 
 
-    DefaultDownLoaderImpl(Builder builder) {
+    DefaultDownloadImpl(Builder builder) {
         mActivityWeakReference = new WeakReference<Activity>(builder.mActivity);
         this.mContext = builder.mActivity.getApplicationContext();
         this.isForce = builder.isForce;
@@ -124,7 +124,7 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownloadResultLi
             @Override
             public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
                 if (checkNeedPermission().isEmpty()) {
-                    preDownload(DefaultDownLoaderImpl.this.url, DefaultDownLoaderImpl.this.contentDisposition, DefaultDownLoaderImpl.this.contentLength);
+                    preDownload(DefaultDownloadImpl.this.url, DefaultDownloadImpl.this.contentDisposition, DefaultDownloadImpl.this.contentLength);
                     url = null;
                     contentDisposition = null;
                     contentLength = -1;
@@ -492,8 +492,8 @@ public class DefaultDownLoaderImpl implements DownloadListener, DownloadResultLi
             return this;
         }
 
-        public DefaultDownLoaderImpl create() {
-            return new DefaultDownLoaderImpl(this);
+        public DefaultDownloadImpl create() {
+            return new DefaultDownloadImpl(this);
         }
     }
 }

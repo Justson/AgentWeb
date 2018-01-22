@@ -502,7 +502,7 @@ public final class AgentWeb {
     private void setDownloadListener(List<DownloadResultListener> downloadResultListeners, boolean isParallelDl, int icon) {
         DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownLoaderImpl.Builder().setActivity(mActivity)
+            this.mDownloadListener = mDownloadListener = new DefaultDownloadImpl.Builder().setActivity(mActivity)
                     .setEnableIndicator(true)//
                     .setForce(false)//
                     .setDownloadResultListeners(downloadResultListeners)//

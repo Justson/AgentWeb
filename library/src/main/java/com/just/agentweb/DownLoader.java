@@ -247,7 +247,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
         DownloadResultListener mDownloadResultListener = null;
         if ((mDownloadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
             LogUtils.e(TAG, "DownloadResultListener has been death");
-            DefaultDownLoaderImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
+            DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
             return;
         }
         if (code > 200) {

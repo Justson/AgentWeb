@@ -135,7 +135,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         webView.setDownloadListener(downloadListener);
 
 
-       /* mDownloadListener = new DefaultDownLoaderImpl.Builder().setActivity(mActivity)
+       /* mDownloadListener = new DefaultDownloadImpl.Builder().setActivity(mActivity)
                 .setEnableIndicator(true)//
                 .setForce(false)//
                 .setDownloadResultListeners(downloadResultListeners)//

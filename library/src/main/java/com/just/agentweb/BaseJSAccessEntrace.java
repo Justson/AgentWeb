@@ -22,7 +22,7 @@ public abstract class BaseJSAccessEntrace implements JSAccessEntrace {
 
         LogUtils.i(TAG,"method callJS:"+js);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            this.evaluateJs(js, callback);
+            this.evaluateJS(js, callback);
         } else {
             this.loadJs(js);
         }
@@ -40,7 +40,7 @@ public abstract class BaseJSAccessEntrace implements JSAccessEntrace {
         mWebView.loadUrl(js);
 
     }
-    private void evaluateJs(String js, final ValueCallback<String>callback){
+    private void evaluateJS(String js, final ValueCallback<String>callback){
 
         mWebView.evaluateJavascript(js, new ValueCallback<String>() {
             @Override
