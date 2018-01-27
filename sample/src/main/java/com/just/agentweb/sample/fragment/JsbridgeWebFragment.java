@@ -49,7 +49,7 @@ public class JsbridgeWebFragment extends AgentWebFragment {
                 .setWebChromeClient(mWebChromeClient)
                 .setWebView(mBridgeWebView)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
-                .addDownloadResultListener(mDownloadResultListener)
+                .setDownloadListener(mDownloadListener)
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());

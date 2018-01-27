@@ -38,7 +38,7 @@ public  class AgentWebUIControllerImplBase extends AgentWebUIController {
     }
 
     @Override
-    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback) {
+    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, Handler.Callback callback) {
         getDelegate().onForceDownloadAlert(url, message, callback);
     }
 

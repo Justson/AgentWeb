@@ -34,7 +34,7 @@ import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettings;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
-import com.just.agentweb.DownloadResultListener;
+import com.just.agentweb.DownloadListener;
 import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
@@ -102,7 +102,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
-                .addDownloadResultListener(mDownloadResultListener) //下载回调
+                .setDownloadListener(mDownloadListener) //下载回调
                 .openParallelDownload()//打开并行下载 , 默认串行下载。
                 .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载通知图标。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
@@ -115,17 +115,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         initView(view);
 
 
-
-
-        DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownLoadMsgConfig();
-        //  mDownLoadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
+        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
+        //  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
         //AgentWeb 没有把WebView的功能全面覆盖 ，所有某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
         mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
         //mAgentWeb.getWebCreator().getWebView()  获取WebView .
-
-
-
 
 
     }
@@ -148,17 +143,38 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
      * 下载文件完成后，回调文件的绝对路径 ，DownLoadResultListener只会在触发文件下载回调 ， 如果文件存在，并且完整 ，
      * AgentWeb则默认打开它。
      */
-    protected DownloadResultListener mDownloadResultListener = new DownloadResultListener() {
-        //下载成功
+    protected DownloadListener mDownloadListener = new DownloadListener() {
+
+        /**
+         *
+         * @param url                下载链接
+         * @param userAgent          userAgent
+         * @param contentDisposition contentDisposition
+         * @param mimetype           资源的媒体类型
+         * @param contentLength      文件长度
+         * @param extra              下载配置 ， 用户可以通过 Extra 修改下载logo ， 关闭进度条 ， 或者是否强制下载。
+         * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
+         */
         @Override
-        public void success(String path) {
-            //do you work
+        public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+            return false;
         }
 
-        //下载失败
+        /**
+         *
+         * @param path 文件的绝对路径
+         * @param url  下载地址
+         * @param throwable    如果异常，返回给用户异常
+         * @return true 表示用户处理了下载完成后续的事件 ，false 默认交给AgentWeb 处理
+         */
         @Override
-        public void error(String path, String resUrl, String cause, Throwable e) {
-            //do you work
+        public boolean result(String path, String url, Throwable throwable) {
+            if (throwable == null) { //下载成功
+                //do you work
+            } else {//下载失败
+
+            }
+            return false;
         }
     };
 
@@ -168,6 +184,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     /**
      * 页面空白，请检查scheme是否加上， scheme://host:port/path?query 。
+     *
      * @return url
      */
     public String getUrl() {
@@ -251,7 +268,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
 
-            if(timer.get(url)!=null){
+            if (timer.get(url) != null) {
                 long overTime = System.currentTimeMillis();
                 Long startTime = timer.get(url);
                 Log.i(TAG, "  page url:" + url + "  used time:" + (overTime - startTime));

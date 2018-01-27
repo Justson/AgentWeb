@@ -10,7 +10,7 @@ import android.os.Parcelable;
 public final class DefaultMsgConfig {
 
 
-    private DownLoadMsgConfig mDownLoadMsgConfig = null;
+    private DownloadMsgConfig mDownloadMsgConfig = null;
 
     private ChromeClientMsgCfg mChromeClientMsgCfg = new ChromeClientMsgCfg();
 
@@ -26,14 +26,14 @@ public final class DefaultMsgConfig {
 
     DefaultMsgConfig() {
 
-        mDownLoadMsgConfig = new DownLoadMsgConfig();
+        mDownloadMsgConfig = new DownloadMsgConfig();
     }
 
-    public DownLoadMsgConfig getDownLoadMsgConfig() {
-        return mDownLoadMsgConfig;
+    public DownloadMsgConfig getDownloadMsgConfig() {
+        return mDownloadMsgConfig;
     }
 
-    public static class DownLoadMsgConfig implements Parcelable {
+    public static class DownloadMsgConfig implements Parcelable {
 
 
         private String mTaskHasBeenExist = "该任务已经存在 ， 请勿重复点击下载!";
@@ -67,11 +67,11 @@ public final class DefaultMsgConfig {
             this.preLoading = preLoading;
         }
 
-        DownLoadMsgConfig() {
+        DownloadMsgConfig() {
 
         }
 
-        protected DownLoadMsgConfig(Parcel in) {
+        protected DownloadMsgConfig(Parcel in) {
             mTaskHasBeenExist = in.readString();
             mTips = in.readString();
             mHoneycomblow = in.readString();
@@ -84,15 +84,15 @@ public final class DefaultMsgConfig {
             mClickOpen = in.readString();
         }
 
-        public static final Creator<DownLoadMsgConfig> CREATOR = new Creator<DownLoadMsgConfig>() {
+        public static final Creator<DownloadMsgConfig> CREATOR = new Creator<DownloadMsgConfig>() {
             @Override
-            public DownLoadMsgConfig createFromParcel(Parcel in) {
-                return new DownLoadMsgConfig(in);
+            public DownloadMsgConfig createFromParcel(Parcel in) {
+                return new DownloadMsgConfig(in);
             }
 
             @Override
-            public DownLoadMsgConfig[] newArray(int size) {
-                return new DownLoadMsgConfig[size];
+            public DownloadMsgConfig[] newArray(int size) {
+                return new DownloadMsgConfig[size];
             }
         };
 
@@ -180,9 +180,9 @@ public final class DefaultMsgConfig {
         @Override
         public boolean equals(Object mo) {
             if (this == mo) return true;
-            if (!(mo instanceof DownLoadMsgConfig)) return false;
+            if (!(mo instanceof DownloadMsgConfig)) return false;
 
-            DownLoadMsgConfig mthat = (DownLoadMsgConfig) mo;
+            DownloadMsgConfig mthat = (DownloadMsgConfig) mo;
 
             if (!getTaskHasBeenExist().equals(mthat.getTaskHasBeenExist())) return false;
             if (!getTips().equals(mthat.getTips())) return false;

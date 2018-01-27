@@ -50,13 +50,13 @@ public class JsCallJava {
             }
             sb.append("function(){var f=Array.prototype.slice.call(arguments,0);if(f.length<1){throw\"");
             sb.append(mInterfacedName);
-            sb.append(" call error, message:miss method name\"}var e=[];for(var h=1;h<f.length;h++){var c=f[h];var j=typeof c;e[e.length]=j;if(j==\"function\"){var d=a.queue.length;a.queue[d]=c;f[h]=d}}var k = new Date().getTime();var l = f.shift();var m=prompt('");
+            sb.append(" call result, message:miss method name\"}var e=[];for(var h=1;h<f.length;h++){var c=f[h];var j=typeof c;e[e.length]=j;if(j==\"function\"){var d=a.queue.length;a.queue[d]=c;f[h]=d}}var k = new Date().getTime();var l = f.shift();var m=prompt('");
             sb.append(MSG_PROMPT_HEADER);
             sb.append("'+JSON.stringify(");
             sb.append(promptMsgFormat("'" + mInterfacedName + "'", "l", "e", "f"));
             sb.append("));console.log(\"invoke \"+l+\", time: \"+(new Date().getTime()-k));var g=JSON.parse(m);if(g.CODE!=200){throw\"");
             sb.append(mInterfacedName);
-            sb.append(" call error, CODE:\"+g.CODE+\", message:\"+g.result}return g.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c===\"function\"&&d!==\"callback\"){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.");
+            sb.append(" call result, CODE:\"+g.CODE+\", message:\"+g.result}return g.result};Object.getOwnPropertyNames(a).forEach(function(d){var c=a[d];if(typeof c===\"function\"&&d!==\"callback\"){a[d]=function(){return c.apply(a,[d].concat(Array.prototype.slice.call(arguments,0)))}}});b.");
             sb.append(mInterfacedName);
             sb.append("=a;console.log(\"");
             sb.append(mInterfacedName);
@@ -65,7 +65,7 @@ public class JsCallJava {
             sb.setLength(0);
         } catch (Exception e) {
             if (LogUtils.isDebug()) {
-                Log.e(TAG, "init js error:" + e.getMessage());
+                Log.e(TAG, "init js result:" + e.getMessage());
             }
         }
     }
@@ -177,9 +177,9 @@ public class JsCallJava {
                 LogUtils.safeCheckCrash(TAG, "call", e);
                 //优先返回详细的错误信息
                 if (e.getCause() != null) {
-                    return getReturn(jsonObject, 500, "method execute error:" + e.getCause().getMessage(), time);
+                    return getReturn(jsonObject, 500, "method execute result:" + e.getCause().getMessage(), time);
                 }
-                return getReturn(jsonObject, 500, "method execute error:" + e.getMessage(), time);
+                return getReturn(jsonObject, 500, "method execute result:" + e.getMessage(), time);
             }
         } else {
             return getReturn(jsonObject, 500, "call data empty", time);

@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.webkit.DownloadListener;
 import android.webkit.WebView;
 
 import java.io.File;
@@ -36,37 +35,42 @@ import java.util.regex.Pattern;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultDownloadImpl implements DownloadListener, DownloadResultListener {
+public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapter implements android.webkit.DownloadListener {
 
     private Context mContext;
     private boolean isForce;
     private boolean enableIndicator;
     private volatile static int NoticationID = 1;
-    private List<DownloadResultListener> mDownloadResultListeners;
+    private DownloadListener mDownloadListener;
     private WeakReference<Activity> mActivityWeakReference = null;
-    private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig = null;
+    private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = null;
     private static final String TAG = DefaultDownloadImpl.class.getSimpleName();
     private PermissionInterceptor mPermissionListener = null;
     private String url;
     private String contentDisposition;
     private long contentLength;
+    private String mimetype;
     private AtomicBoolean isParallelDownload = new AtomicBoolean(false);
     private int icon = -1;
     private WeakReference<AgentWebUIController> mAgentWebUIController;
-
+    private Builder mBuilder;
 
     DefaultDownloadImpl(Builder builder) {
+        this.bind(builder);
+        this.mBuilder = builder;
+    }
+
+    private void bind(Builder builder) {
         mActivityWeakReference = new WeakReference<Activity>(builder.mActivity);
         this.mContext = builder.mActivity.getApplicationContext();
         this.isForce = builder.isForce;
         this.enableIndicator = builder.enableIndicator;
-        this.mDownloadResultListeners = builder.mDownloadResultListeners;
-        this.mDownLoadMsgConfig = builder.mDownLoadMsgConfig;
+        this.mDownloadListener = builder.mDownloadListener;
+        this.mDownloadMsgConfig = builder.mDownloadMsgConfig;
         this.mPermissionListener = builder.mPermissionInterceptor;
         isParallelDownload.set(builder.isParallelDownload);
         icon = builder.icon;
         this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
-
     }
 
 
@@ -83,40 +87,42 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
     @Override
     public synchronized void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
-        onDownloadStartInternal(url, contentDisposition, mimetype, contentLength);
+        onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength);
 
     }
 
-    private void onDownloadStartInternal(String url, String contentDisposition, String mimetype, long contentLength) {
+    private String userAgent;
+
+    private void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
         if (mActivityWeakReference.get() == null || mActivityWeakReference.get().isFinishing()) {
             return;
         }
-        LogUtils.i(TAG, "mimetype:" + mimetype);
         if (this.mPermissionListener != null) {
             if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
                 return;
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        LogUtils.i(TAG, "mimetype:" + mimetype);
+        this.url = url;
+        this.contentDisposition = contentDisposition;
+        this.contentLength = contentLength;
+        this.mimetype = mimetype;
+        this.userAgent = userAgent;
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> mList = null;
             if ((mList = checkNeedPermission()).isEmpty()) {
-                preDownload(url, contentDisposition, contentLength);
+                preDownload();
             } else {
                 Action mAction = Action.createPermissionsAction(mList.toArray(new String[]{}));
                 ActionActivity.setPermissionListener(getPermissionListener());
-                this.url = url;
-                this.contentDisposition = contentDisposition;
-                this.contentLength = contentLength;
                 ActionActivity.start(mActivityWeakReference.get(), mAction);
-
             }
 
         } else {
-
-            preDownload(url, contentDisposition, contentLength);
+            preDownload();
         }
     }
 
@@ -125,10 +131,7 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
             @Override
             public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
                 if (checkNeedPermission().isEmpty()) {
-                    preDownload(DefaultDownloadImpl.this.url, DefaultDownloadImpl.this.contentDisposition, DefaultDownloadImpl.this.contentLength);
-                    url = null;
-                    contentDisposition = null;
-                    contentLength = -1;
+                    preDownload();
                 } else {
                     LogUtils.e(TAG, "储存权限获取失败~");
                 }
@@ -147,11 +150,24 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
         return deniedPermissions;
     }
 
-    private void preDownload(String url, String contentDisposition, long contentLength) {
-        File mFile = getFile(contentDisposition, url);
-        if (mFile == null)
+    private void preDownload() {
+
+        //true 表示用户取消了该下载事件。
+        if (mDownloadListener != null && mDownloadListener.start(this.url, this.userAgent, this.contentDisposition, this.mimetype, contentLength, this.mBuilder)) {
             return;
+        }
+        File mFile = getFile(contentDisposition, url);
+        //File 创建文件失败
+        if (mFile == null) {
+            LogUtils.i(TAG, "新建文件失败");
+            return;
+        }
         if (mFile.exists() && mFile.length() >= contentLength) {
+
+            //true 表示用户处理了下载完成后续的通知用户事件
+            if (mDownloadListener != null && mDownloadListener.result(mFile.getAbsolutePath(), url, null)) {
+                return;
+            }
 
             Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
             try {
@@ -174,7 +190,7 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
         if (ExecuteTasksMap.getInstance().contains(url) || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
-                        mDownLoadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
+                        mDownloadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
             }
             return;
         }
@@ -204,7 +220,7 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
 
         AgentWebUIController mAgentWebUIController;
         if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
-            mAgentWebUIController.onForceDownloadAlert(url, mDownLoadMsgConfig, createCallback(url, contentLength, file));
+            mAgentWebUIController.onForceDownloadAlert(url, mDownloadMsgConfig, createCallback(url, contentLength, file));
         }
 
     }
@@ -224,15 +240,21 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
         ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
         if (mAgentWebUIController.get() != null) {
             mAgentWebUIController.get()
-                    .showMessage(mDownLoadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
+                    .showMessage(mDownloadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
         }
         //并行下载.
         if (isParallelDownload.get()) {
-            new DownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
+            new DownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
         } else {
             //默认串行下载.
-            new DownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownLoadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).execute();
+            new DownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).execute();
         }
+
+        this.url = null;
+        this.contentDisposition = null;
+        this.contentLength = -1;
+        this.mimetype = null;
+        this.userAgent = null;
 
 
     }
@@ -276,41 +298,14 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
         }
     }
 
-    @Override
-    public void success(String path) {
-
-
-        ExecuteTasksMap.getInstance().removeTask(path);
-
-        if (AgentWebUtils.isEmptyCollection(mDownloadResultListeners)) {
-            return;
-        }
-        for (DownloadResultListener mDownloadResultListener : mDownloadResultListeners) {
-            if (mDownloadResultListener != null) {
-                mDownloadResultListener.success(path);
-            }
-        }
-    }
 
 
     @Override
-    public void error(String path, String resUrl, String cause, Throwable e) {
-
+    public boolean result(String path, String url, Throwable e) {
         ExecuteTasksMap.getInstance().removeTask(path);
-
-        if (AgentWebUtils.isEmptyCollection(mDownloadResultListeners)) {
-            if (mAgentWebUIController.get() != null) {
-                mAgentWebUIController.get().showMessage(mDownLoadMsgConfig.getDownLoadFail(), TAG.concat("|error"));
-            }
-            return;
-        }
-
-        for (DownloadResultListener mDownloadResultListener : mDownloadResultListeners) {
-            if (mDownloadResultListener != null) {
-                mDownloadResultListener.error(path, resUrl, cause, e);
-            }
-        }
+        return mDownloadListener != null && mDownloadListener.result(path, url, e);
     }
+
 
     static class ExecutorProvider implements Provider<Executor> {
 
@@ -439,23 +434,24 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
     }
 
 
-    public static class Builder {
+    public static class Builder extends Extra {
         private Activity mActivity;
         private boolean isForce;
         private boolean enableIndicator;
-        private List<DownloadResultListener> mDownloadResultListeners;
-        private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig;
+        private DownloadListener mDownloadListener;
+        private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
         private PermissionInterceptor mPermissionInterceptor;
         private int icon = -1;
         private boolean isParallelDownload = false;
         private WebView mWebView;
+        private DefaultDownloadImpl mDefaultDownload;
 
-        public Builder setActivity(Activity activity) {
+        Builder setActivity(Activity activity) {
             mActivity = activity;
             return this;
         }
 
-        public Builder setForce(boolean force) {
+        public Builder setForceDownload(boolean force) {
             isForce = force;
             return this;
         }
@@ -465,17 +461,17 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
             return this;
         }
 
-        public Builder setDownloadResultListeners(List<DownloadResultListener> downloadResultListeners) {
-            this.mDownloadResultListeners = downloadResultListeners;
+        Builder setDownloadListener(DownloadListener downloadListeners) {
+            this.mDownloadListener = downloadListeners;
             return this;
         }
 
-        public Builder setDownLoadMsgConfig(DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig) {
-            mDownLoadMsgConfig = downLoadMsgConfig;
+        public Builder setDownloadMsgConfig(DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
+            mDownloadMsgConfig = downloadMsgConfig;
             return this;
         }
 
-        public Builder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+        Builder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
             mPermissionInterceptor = permissionInterceptor;
             return this;
         }
@@ -490,13 +486,21 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
             return this;
         }
 
-        public Builder setWebView(WebView webView) {
+        Builder setWebView(WebView webView) {
             this.mWebView = webView;
             return this;
         }
 
-        public DefaultDownloadImpl create() {
-            return new DefaultDownloadImpl(this);
+        public void build() {
+            if (mDefaultDownload != null) {
+                mDefaultDownload.bind(this);
+            }
+        }
+
+        DefaultDownloadImpl create() {
+            return this.mDefaultDownload = new DefaultDownloadImpl(this);
         }
     }
+
+
 }

@@ -15,14 +15,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -94,7 +91,7 @@ public final class AgentWeb {
     /**
      * 下载监听
      */
-    private DownloadListener mDownloadListener = null;
+    private android.webkit.DownloadListener mDownloadListener = null;
     /**
      * 安全把控
      */
@@ -212,7 +209,7 @@ public final class AgentWeb {
         this.mMiddleWrareWebClientBaseHeader = agentBuilder.header;
         this.mMiddlewareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
         init();
-        setDownloadListener(agentBuilder.mDownloadResultListeners, agentBuilder.isParallelDownload, agentBuilder.icon);
+        setDownloadListener(agentBuilder.mDownloadListener, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
     /**
@@ -499,14 +496,14 @@ public final class AgentWeb {
     }
 
 
-    private void setDownloadListener(List<DownloadResultListener> downloadResultListeners, boolean isParallelDl, int icon) {
-        DownloadListener mDownloadListener = this.mDownloadListener;
+    private void setDownloadListener(DownloadListener downloadListener, boolean isParallelDl, int icon) {
+        android.webkit.DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener == null) {
             this.mDownloadListener = mDownloadListener = new DefaultDownloadImpl.Builder().setActivity(mActivity)
                     .setEnableIndicator(true)//
-                    .setForce(false)//
-                    .setDownloadResultListeners(downloadResultListeners)//
-                    .setDownLoadMsgConfig(mDefaultMsgConfig.getDownLoadMsgConfig())//
+                    .setForceDownload(false)//
+                    .setDownloadListener(downloadListener)//
+                    .setDownloadMsgConfig(mDefaultMsgConfig.getDownloadMsgConfig())//
                     .setParallelDownload(isParallelDl)//
                     .setPermissionInterceptor(this.mPermissionInterceptor)
                     .setIcon(icon)
@@ -516,8 +513,8 @@ public final class AgentWeb {
         }
     }
 
-    private DownloadListener getLoadListener() {
-        DownloadListener mDownloadListener = this.mDownloadListener;
+    private android.webkit.DownloadListener getLoadListener() {
+        android.webkit.DownloadListener mDownloadListener = this.mDownloadListener;
         return mDownloadListener;
     }
 
@@ -575,7 +572,6 @@ public final class AgentWeb {
         private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
         private WebView mWebView;
         private boolean webClientHelper = true;
-        private List<DownloadResultListener> mDownloadResultListeners = null;
         private IWebLayout mWebLayout = null;
         private PermissionInterceptor mPermissionInterceptor = null;
         private boolean isParallelDownload = false;
@@ -797,12 +793,9 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilder addDownloadResultListener(@Nullable DownloadResultListener downloadResultListener) {
+        public CommonBuilder setDownloadListener(@Nullable DownloadListener downloadListener) {
 
-            if (this.mAgentBuilder.mDownloadResultListeners == null) {
-                this.mAgentBuilder.mDownloadResultListeners = new ArrayList<>();
-            }
-            this.mAgentBuilder.mDownloadResultListeners.add(downloadResultListener);
+            this.mAgentBuilder.mDownloadListener =downloadListener;
             return this;
         }
 

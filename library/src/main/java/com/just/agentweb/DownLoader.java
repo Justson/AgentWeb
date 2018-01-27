@@ -70,7 +70,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
 
     private static final String TAG = DownLoader.class.getSimpleName();
     /**
-     *   false 表示用户已经取消下载
+     * false 表示用户已经取消下载
      */
     private AtomicBoolean atomic = new AtomicBoolean(false);
     /**
@@ -99,7 +99,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
     protected void onPreExecute() {
         super.onPreExecute();
         mObservable.addObserver(this);
-        buildNotify(new Intent(), mDownLoadTask.getId(), mDownLoadTask.getDownLoadMsgConfig().getPreLoading());
+        buildNotify(new Intent(), mDownLoadTask.getId(), mDownLoadTask.getDownloadMsgConfig().getPreLoading());
     }
 
     private boolean checkDownLoaderCondition() {
@@ -190,7 +190,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
                     mNotify.setDelecte(buildCancelContent(mDownLoadTask.getContext().getApplicationContext(), mDownLoadTask.getId()));
 
                 int mProgress = (int) ((tmp + loaded) / Float.valueOf(totals) * 100);
-                mNotify.setContentText(String.format(mDownLoadTask.getDownLoadMsgConfig().getLoading(), mProgress + "%"));
+                mNotify.setContentText(String.format(mDownLoadTask.getDownloadMsgConfig().getLoading(), mProgress + "%"));
                 mNotify.setProgress(100, mProgress, false);
             }
 
@@ -226,7 +226,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
                             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         PendingIntent rightPendIntent = PendingIntent.getActivity(mDownLoadTask.getContext(),
                                 mDownLoadTask.getId() << 4, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mNotify.setProgressFinish(mDownLoadTask.getDownLoadMsgConfig().getClickOpen(), rightPendIntent);
+                        mNotify.setProgressFinish(mDownLoadTask.getDownloadMsgConfig().getClickOpen(), rightPendIntent);
                     }
                     return;
                 } catch (Throwable throwable) {
@@ -244,17 +244,13 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
     }
 
     private void doCallback(Integer code) {
-        DownloadResultListener mDownloadResultListener = null;
-        if ((mDownloadResultListener = mDownLoadTask.getDownLoadResultListener()) == null) {
-            LogUtils.e(TAG, "DownloadResultListener has been death");
+        DownloadListener mDownloadListener = null;
+        if ((mDownloadListener = mDownLoadTask.getDownLoadResultListener()) == null) {
+            LogUtils.e(TAG, "DownloadListener has been death");
             DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
             return;
         }
-        if (code > 200) {
-            mDownloadResultListener.error(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), DownLoadMsg.getMsgByCode(code), this.e == null ? new RuntimeException("download fail ， cause:" + DownLoadMsg.getMsgByCode(code)) : this.e);
-        } else {
-            mDownloadResultListener.success(mDownLoadTask.getFile().getPath());
-        }
+        mDownloadListener.result(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), code <= 200 ? null : this.e == null ? new RuntimeException("download fail ， cause:" + DownLoadMsg.getMsgByCode(code)) : this.e);
 
     }
 
@@ -268,10 +264,10 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
             PendingIntent rightPendIntent = PendingIntent.getActivity(mContext,
                     0x33 * id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             int smallIcon = mDownLoadTask.getDrawableRes();
-            String ticker = mDownLoadTask.getDownLoadMsgConfig().getTrickter();
+            String ticker = mDownLoadTask.getDownloadMsgConfig().getTrickter();
             mNotify = new Notify(mContext, id);
 
-            String title = TextUtils.isEmpty(mDownLoadTask.getFile().getName()) ? mDownLoadTask.getDownLoadMsgConfig().getFileDownLoad() : mDownLoadTask.getFile().getName();
+            String title = TextUtils.isEmpty(mDownLoadTask.getFile().getName()) ? mDownLoadTask.getDownloadMsgConfig().getFileDownLoad() : mDownLoadTask.getFile().getName();
 
             mNotify.notify_progress(rightPendIntent, smallIcon, ticker, title, progressHint, false, false, false, buildCancelContent(mContext, id));
             mNotify.sent();
@@ -388,9 +384,9 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
 
 
                 case 400:
-                    return "Network connection error";
+                    return "Network connection result";
                 case 401:
-                    return "Connection status code error, non-200 or non 206";
+                    return "Connection status code result, non-200 or non 206";
                 case 402:
                     return "Insufficient memory space";
                 case 403:

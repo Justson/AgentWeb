@@ -3,7 +3,7 @@
 
 ## Introduction to AgentWeb
 
-AgentWeb is an Android WebView based, easy to use with progress bar to support file upload, download, streamline communication with Javascript, chained calls, with error pages, permission blocking, targeting, support for multiple WebViewClient, WebChromeClient, Web safe library. Let you integrate a few lines of code into a lightweight browser in your application. For more use, please refer to the above sample. [Download AgentWeb] (./ agentweb.apk)
+AgentWeb is an Android WebView based, easy to use with progress bar to support file upload, download, streamline communication with Javascript, chained calls, with result pages, permission blocking, targeting, support for multiple WebViewClient, WebChromeClient, Web safe library. Let you integrate a few lines of code into a lightweight browser in your application. For more use, please refer to the above sample. [Download AgentWeb] (./ agentweb.apk)
 
 
 
@@ -202,9 +202,9 @@ mAgentWeb = AgentWeb.with (this) //
                 .setPermissionInterceptor (mPermissionInterceptor) / / permission to intercept 2.0.0 join.
                 .setReceivedTitleCallback (mCallback) // Title callback.
                 . SetSecurityType (AgentWeb.SecurityType.strict) / / strict mode Android 4.2.2 The following will give up the injection of the object, use AgentWebView did not affect.
-                .addDownLoadResultListener (mDownloadResultListener) // Download callback
+                .addDownLoadResultListener (mDownloadListener) // Download callback
                 .setAgentWebUIController (new UIController (getActivity ())) // Custom UI AgentWeb3.0.0 join.
-                .setMainFrameErrorView (R.layout.agentweb_error_page, -1) / / Parameter 1 is the layout of the error display, parameter 2 Click refresh control ID -1 Click to refresh the entire layout Click AgentWeb 3.0.0 to join.
+                .setMainFrameErrorView (R.layout.agentweb_error_page, -1) / / Parameter 1 is the layout of the result display, parameter 2 Click refresh control ID -1 Click to refresh the entire layout Click AgentWeb 3.0.0 to join.
                 .useMiddleWareWebChrome (getMiddleWareWebChrome ()) // Set up WebChromeClient middleware, support multiple WebChromeClient, AgentWeb 3.0.0 join.
                 .useMiddleWareWebClient (getMiddleWareWebClient ()) / / Set WebViewClient middleware, support multiple WebViewClient, AgentWeb 3.0.0 join.
                 . OpenParallelDownload () / / open parallel download, the default serial download.
@@ -243,7 +243,7 @@ Java injection class do not proguard, such as sample inside the AndroidInterface
 * v_3.0.0 update
 	* Add MiddlewareWebChromeBase middleware, support multiple WebChromeClient.
 	* Add `MiddleWareWebClientBase` middleware, support multiple` WebViewClient`.
-	* Added the default error page, and supports custom error page.
+	* Added the default result page, and supports custom result page.
 	* Join `AgentWebUIController`, unified control UI.
 	* Support for blocking unknown pages.
 	* Support to tune other applications.

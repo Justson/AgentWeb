@@ -102,7 +102,7 @@ public abstract class AgentWebUIController {
      * @param message 对话信息
      * @param callback 用户操作回调回调
      */
-    public abstract void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, Handler.Callback callback);
+    public abstract void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, Handler.Callback callback);
 
     /**
      * WebChromeClient#onJsPrompt

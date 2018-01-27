@@ -9,6 +9,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +73,7 @@ public class DefaultDesignUIController extends DefaultUIController {
     }
 
     @Override
-    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, final Handler.Callback callback) {
+    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, final Handler.Callback callback) {
         super.onForceDownloadAlert(url, message, callback);
     }
 
@@ -165,6 +166,9 @@ public class DefaultDesignUIController extends DefaultUIController {
 
     @Override
     public void showMessage(String message, String from) {
+        if (!TextUtils.isEmpty(from) && from.contains("performDownload")) {
+            return;
+        }
         onJsAlertInternal(mWebParentLayout.getWebView(), message);
     }
 }

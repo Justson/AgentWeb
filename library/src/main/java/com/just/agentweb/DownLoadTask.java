@@ -45,11 +45,11 @@ public class DownLoadTask implements Serializable {
      */
     private int drawableRes;
 
-    private WeakReference<DownloadResultListener>mReference=null;
-    private DefaultMsgConfig.DownLoadMsgConfig mDownLoadMsgConfig;
+    private WeakReference<DownloadListener>mReference=null;
+    private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
 
 
-    public DownLoadTask(int id, String url, DownloadResultListener downloadResultListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig, int drawableRes) {
+    public DownLoadTask(int id, String url, DownloadListener downloadListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig, int drawableRes) {
         this.id = id;
         this.url = url;
         this.isForce = isForce;
@@ -58,8 +58,8 @@ public class DownLoadTask implements Serializable {
         mFile = file;
         this.length = length;
         this.drawableRes = drawableRes;
-        mReference=new WeakReference<DownloadResultListener>(downloadResultListeners);
-        this.mDownLoadMsgConfig=downLoadMsgConfig;
+        mReference=new WeakReference<DownloadListener>(downloadListeners);
+        this.mDownloadMsgConfig = downloadMsgConfig;
     }
 
     public int getId() {
@@ -94,20 +94,20 @@ public class DownLoadTask implements Serializable {
         this.enableIndicator = enableIndicator;
     }
 
-    public WeakReference<DownloadResultListener> getReference() {
+    public WeakReference<DownloadListener> getReference() {
         return mReference;
     }
 
-    public void setReference(WeakReference<DownloadResultListener> reference) {
+    public void setReference(WeakReference<DownloadListener> reference) {
         mReference = reference;
     }
 
-    public DefaultMsgConfig.DownLoadMsgConfig getDownLoadMsgConfig() {
-        return mDownLoadMsgConfig;
+    public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
+        return mDownloadMsgConfig;
     }
 
-    public void setDownLoadMsgConfig(DefaultMsgConfig.DownLoadMsgConfig downLoadMsgConfig) {
-        mDownLoadMsgConfig = downLoadMsgConfig;
+    public void setDownloadMsgConfig(DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
+        mDownloadMsgConfig = downloadMsgConfig;
     }
 
     public Context getContext() {
@@ -138,7 +138,7 @@ public class DownLoadTask implements Serializable {
         return drawableRes;
     }
 
-    public DownloadResultListener getDownLoadResultListener() {
+    public DownloadListener getDownLoadResultListener() {
         return mReference.get();
     }
 

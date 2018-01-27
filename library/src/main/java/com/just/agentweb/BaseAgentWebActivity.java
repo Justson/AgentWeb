@@ -61,7 +61,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setOpenOtherPageWays(getOpenOtherAppWay())
                 .useMiddlewareWebChrome(getMiddleWareWebChrome())
                 .useMiddlewareWebClient(getMiddleWareWebClient())
-                .addDownloadResultListener(getDownLoadResultListener())
+                .setDownloadListener(getDownLoadResultListener())
                 .setAgentWebWebSettings(getAgentWebSettings())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
@@ -146,7 +146,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
 
     protected @Nullable
-    DownloadResultListener getDownLoadResultListener() {
+    DownloadListener getDownLoadResultListener() {
         return null;
     }
 

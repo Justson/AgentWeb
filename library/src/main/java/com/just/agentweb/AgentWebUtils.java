@@ -471,7 +471,7 @@ public class AgentWebUtils {
                     }
                 }
             } catch (Exception e) {
-                Log.e("Info", String.format("Failed to clean the cache, error %s", e.getMessage()));
+                Log.e("Info", String.format("Failed to clean the cache, result %s", e.getMessage()));
             }
         }
         return deletedFiles;

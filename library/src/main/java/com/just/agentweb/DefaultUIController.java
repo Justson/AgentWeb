@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebView;
@@ -75,13 +76,13 @@ public class DefaultUIController extends AgentWebUIController {
     }
 
     @Override
-    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownLoadMsgConfig message, final Handler.Callback callback) {
+    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, final Handler.Callback callback) {
 
         onForceDownloadAlertInternal(message, callback);
 
     }
 
-    private void onForceDownloadAlertInternal(DefaultMsgConfig.DownLoadMsgConfig message, final Handler.Callback callback) {
+    private void onForceDownloadAlertInternal(DefaultMsgConfig.DownloadMsgConfig message, final Handler.Callback callback) {
         Activity mActivity;
         if ((mActivity = this.mActivity) == null || mActivity.isFinishing())
             return;
@@ -270,6 +271,9 @@ public class DefaultUIController extends AgentWebUIController {
 
     @Override
     public void showMessage(String message, String from) {
+        if (!TextUtils.isEmpty(from) && from.contains("performDownload")) {
+            return;
+        }
         AgentWebUtils.toastShowShort(mActivity.getApplicationContext(), message);
     }
 

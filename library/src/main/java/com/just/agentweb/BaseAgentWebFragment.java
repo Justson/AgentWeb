@@ -43,7 +43,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .interceptUnkownScheme()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
-                .addDownloadResultListener(getDownLoadResultListener())
+                .setDownloadListener(getDownLoadResultListener())
                 .setAgentWebUIController(getAgentWebUIController())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
                 .useMiddlewareWebChrome(getMiddleWareWebChrome())
@@ -132,7 +132,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     protected @Nullable
-    DownloadResultListener getDownLoadResultListener() {
+    DownloadListener getDownLoadResultListener() {
         return null;
     }
 
