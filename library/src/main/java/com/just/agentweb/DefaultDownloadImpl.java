@@ -71,7 +71,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         this.mPermissionListener = builder.mPermissionInterceptor;
         isParallelDownload.set(builder.isParallelDownload);
         icon = builder.icon;
-        isOpenBreakPointDoDownload = builder.isOpenBreakPointDoDownload();
+        isOpenBreakPointDoDownload = builder.isOpenBreakPointDownload();
         this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
     }
 
@@ -484,8 +484,8 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             isParallelDownload = parallelDownload;
             return this;
         }
-        public Builder setOpenBreakPointDoDownload(boolean openBreakPointDoDownload) {
-            isOpenBreakPointDoDownload = openBreakPointDoDownload;
+        public Builder setOpenBreakPointDownload(boolean openBreakPointDownload) {
+            isOpenBreakPointDownload = openBreakPointDownload;
             return this;
         }
 

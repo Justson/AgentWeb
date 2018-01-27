@@ -50,7 +50,7 @@ public interface DownloadListener {
         protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
         protected int icon = -1;
         protected boolean isParallelDownload = false;
-        protected boolean isOpenBreakPointDoDownload = false;
+        protected boolean isOpenBreakPointDownload = false;
 
 
         public boolean isForceDownload() {
@@ -73,12 +73,12 @@ public interface DownloadListener {
             return isParallelDownload;
         }
 
-        public boolean isOpenBreakPointDoDownload() {
-            return isOpenBreakPointDoDownload;
+        public boolean isOpenBreakPointDownload() {
+            return isOpenBreakPointDownload;
         }
 
-        public Extra setOpenBreakPointDoDownload(boolean openBreakPointDoDownload) {
-            isOpenBreakPointDoDownload = openBreakPointDoDownload;
+        public Extra setOpenBreakPointDownload(boolean openBreakPointDownload) {
+            isOpenBreakPointDownload = openBreakPointDownload;
             return this;
         }
 

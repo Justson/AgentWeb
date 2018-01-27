@@ -102,7 +102,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
         buildNotify(new Intent(), mDownLoadTask.getId(), mDownLoadTask.getDownloadMsgConfig().getPreLoading());
     }
 
-    private boolean checkDownLoaderCondition() {
+    private boolean checkDownloadCondition() {
 
         if (mDownLoadTask.getLength() - mDownLoadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
             LogUtils.i(TAG, " 空间不足");
@@ -127,7 +127,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
         int result = ERROR_LOAD;
         try {
             begin = System.currentTimeMillis();
-            if (!checkDownLoaderCondition())
+            if (!checkDownloadCondition())
                 return DownloadMsg.STORAGE_ERROR.CODE;
             if (!checknet())
                 return DownloadMsg.NETWORK_ERROR_CONNECTION.CODE;
@@ -182,7 +182,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
     protected void onProgressUpdate(Integer... values) {
 
         try {
-            //LogUtils.i(TAG, "progress:" + ((tmp + loaded) / Float.valueOf(totals) * 100) + "tmp:" + tmp + "  load=:" + loaded + "  total:" + totals);
             long c = System.currentTimeMillis();
             if (mNotify != null && c - time > 800) {
                 time = c;
@@ -209,7 +208,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
         try {
             LogUtils.i(TAG, "onPostExecute:" + integer);
             mObservable.deleteObserver(this);
-            doCallback(integer);
+            boolean t = doCallback(integer);
             if (integer > 200) {
 
                 if (mNotify != null)
@@ -219,6 +218,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
             if (mDownLoadTask.isEnableIndicator()) {
                 if (mNotify != null)
                     mNotify.cancel(mDownLoadTask.getId());
+
+                if(t){
+                    return;
+                }
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
                 try {
                     if (mIntent != null) {
@@ -243,14 +246,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
 
     }
 
-    private void doCallback(Integer code) {
+    private boolean doCallback(Integer code) {
         DownloadListener mDownloadListener = null;
         if ((mDownloadListener = mDownLoadTask.getDownLoadResultListener()) == null) {
             LogUtils.e(TAG, "DownloadListener has been death");
             DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
-            return;
+            return false;
         }
-        mDownloadListener.result(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), code <= 200 ? null : this.e == null ? new RuntimeException("download fail ， cause:" + DownloadMsg.getMsgByCode(code)) : this.e);
+        return mDownloadListener.result(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), code <= 200 ? null : this.e == null ? new RuntimeException("download fail ， cause:" + DownloadMsg.getMsgByCode(code)) : this.e);
 
     }
 

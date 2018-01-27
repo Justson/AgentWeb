@@ -157,7 +157,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          */
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
-            extra.setIcon(R.mipmap.app_logo).build();
+//            extra.setIcon(R.mipmap.app_logo).build();
             return false;
         }
 
@@ -175,7 +175,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             } else {//下载失败
 
             }
-            return false;
+            return true; // true AgentWeb 不会发出下载完成的通知
         }
     };
 

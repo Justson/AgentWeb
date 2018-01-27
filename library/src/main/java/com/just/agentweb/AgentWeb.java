@@ -320,13 +320,6 @@ public final class AgentWeb {
         this.mWebLifeCycle.onDestroy();
     }
 
-    public void destroyAndKill() {
-        destroy();
-        if (!AgentWebUtils.isMainProcess(mActivity)) {
-            LogUtils.i(TAG, "退出进程");
-            System.exit(0);
-        }
-    }
 
     @Deprecated
     public void uploadFileResult(int requestCode, int resultCode, Intent data) {
@@ -504,7 +497,7 @@ public final class AgentWeb {
                     .setForceDownload(false)//
                     .setDownloadListener(downloadListener)//
                     .setDownloadMsgConfig(mDefaultMsgConfig.getDownloadMsgConfig())//
-                    .setOpenBreakPointDoDownload(true)
+                    .setOpenBreakPointDownload(true)
                     .setParallelDownload(isParallelDl)//
                     .setPermissionInterceptor(this.mPermissionInterceptor)
                     .setIcon(icon)

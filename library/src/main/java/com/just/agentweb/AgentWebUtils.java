@@ -3,7 +3,6 @@ package com.just.agentweb;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -803,31 +802,6 @@ public class AgentWebUtils {
 
     }
 
-    static boolean isMainProcess(Context context) {
-
-        ActivityManager mActivityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-
-        boolean tag = false;
-        int id = android.os.Process.myPid();
-        String processName = "";
-
-        String packgeName = context.getPackageName();
-        List<ActivityManager.RunningAppProcessInfo> mInfos = mActivityManager.getRunningAppProcesses();
-
-        for (ActivityManager.RunningAppProcessInfo mRunningAppProcessInfo : mInfos) {
-
-            if (mRunningAppProcessInfo.pid == id) {
-                processName = mRunningAppProcessInfo.processName;
-                break;
-            }
-        }
-
-        if (packgeName.equals(processName))
-            tag = true;
-
-        return tag;
-
-    }
 
 
     static boolean isUIThread() {
