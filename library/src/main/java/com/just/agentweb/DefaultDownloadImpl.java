@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -240,7 +241,6 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
     private File getFile(String contentDisposition, String url) {
 
         try {
-
             String fileName = getFileName(contentDisposition);
             if (TextUtils.isEmpty(fileName) && !TextUtils.isEmpty(url)) {
                 Uri mUri = Uri.parse(url);
@@ -251,6 +251,9 @@ public class DefaultDownloadImpl implements DownloadListener, DownloadResultList
             }
             if (TextUtils.isEmpty(fileName)) {
                 fileName = AgentWebUtils.md5(url);
+            }
+            if (fileName.contains("\"")) {
+                fileName = fileName.replace("\"", "");
             }
             return AgentWebUtils.createFileByName(mContext, fileName, false);
         } catch (Throwable e) {

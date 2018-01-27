@@ -174,7 +174,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         if (TextUtils.isEmpty(target = this.getArguments().getString(URL_KEY))) {
             target = "http://www.jd.com/";
         }
-        return target;
+        return "https://fir.im/acapp";
     }
 
     protected WebChromeClient mWebChromeClient = new WebChromeClient() {
