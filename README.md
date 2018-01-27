@@ -181,12 +181,52 @@ if (!mAgentWeb.back()){// true表示AgentWeb处理了该事件
 ```
 
 * #### 获取 WebView
-```
+```java
  WebView mWebView=mAgentWeb.getWebCreator().get();
 ```
 
-* #### 同步 Cookie
+* ### 文件下载监听
+```java
+ protected DownloadListener mDownloadListener = new DownloadListener.DownloadListenerAdapter() {
+
+        /**
+         *
+         * @param url                下载链接
+         * @param userAgent          userAgent
+         * @param contentDisposition contentDisposition
+         * @param mimetype           资源的媒体类型
+         * @param contentLength      文件长度
+         * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 是否强制下载。
+         * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
+         */
+        @Override
+        public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+//            extra.setIcon(R.mipmap.app_logo).build();
+            return false;
+        }
+
+        /**
+         *
+         * @param path 文件的绝对路径
+         * @param url  下载地址
+         * @param throwable    如果异常，返回给用户异常
+         * @return true 表示用户处理了下载完成后续的事件 ，false 默认交给AgentWeb 处理
+         */
+        @Override
+        public boolean result(String path, String url, Throwable throwable) {
+            if (throwable == null) { //下载成功
+                //do you work
+            } else {//下载失败
+
+            }
+            return false; // true  不会发出下载完成的通知
+        }
+    };
 ```
+
+
+* #### 同步 Cookie
+```java
 AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
 ```
 

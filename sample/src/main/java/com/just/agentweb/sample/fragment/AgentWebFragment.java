@@ -140,8 +140,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
     /**
-     * 下载文件完成后，回调文件的绝对路径 ，DownLoadResultListener只会在触发文件下载回调 ， 如果文件存在，并且完整 ，
-     * AgentWeb则默认打开它。
+     * 修改 AgentWeb  4.0.0
      */
     protected DownloadListener mDownloadListener = new DownloadListener.DownloadListenerAdapter() {
 
@@ -152,7 +151,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          * @param contentDisposition contentDisposition
          * @param mimetype           资源的媒体类型
          * @param contentLength      文件长度
-         * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 或者是否强制下载。
+         * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 是否强制下载。
          * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
          */
         @Override
@@ -175,7 +174,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             } else {//下载失败
 
             }
-            return true; // true AgentWeb 不会发出下载完成的通知
+            return false; // true  不会发出下载完成的通知
         }
     };
 
