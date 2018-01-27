@@ -222,19 +222,18 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 * #### AgentWeb 完整使用
 ```java
 mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(-1,-1))//传入AgentWeb的父控件。
-                .setIndicatorColorWithHeight(-1, 2)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
+                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
+                .setIndicatorColorWithHeight(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
                 .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings。
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
-                .setReceivedTitleCallback(mCallback)//标题回调。
-                .setSecurityType(AgentWeb.SecurityType.strict) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
-                .addDownLoadResultListener(mDownloadResultListener) //下载回调
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
                 .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
-                .useMiddleWareWebChrome(getMiddleWareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
-                .useMiddleWareWebClient(getMiddleWareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
+                .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
+                .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
+                .addDownloadResultListener(mDownloadResultListener) //下载回调
                 .openParallelDownload()//打开并行下载 , 默认串行下载。
                 .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载通知图标。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
