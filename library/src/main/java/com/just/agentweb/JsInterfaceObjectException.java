@@ -5,8 +5,8 @@ package com.just.agentweb;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class JSInterfaceObjectException extends RuntimeException {
-    JSInterfaceObjectException(String msg){
+public class JsInterfaceObjectException extends RuntimeException {
+    JsInterfaceObjectException(String msg){
         super(msg);
     }
 }

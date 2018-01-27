@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class AgentWebView extends WebView {
     private static final String TAG = AgentWebView.class.getSimpleName();
-    private Map<String, JSCallJava> mJsCallJavas;
+    private Map<String, JsCallJava> mJsCallJavas;
     private Map<String, String> mInjectJavaScripts;
     private FixedOnReceivedTitle mFixedOnReceivedTitle;
     private boolean mIsInited;
@@ -72,9 +72,9 @@ public class AgentWebView extends WebView {
 
         LogUtils.i(TAG, "addJavascriptInterface:" + interfaceObj + "   interfaceName:" + interfaceName);
         if (mJsCallJavas == null) {
-            mJsCallJavas = new HashMap<String, JSCallJava>();
+            mJsCallJavas = new HashMap<String, JsCallJava>();
         }
-        mJsCallJavas.put(interfaceName, new JSCallJava(interfaceObj, interfaceName));
+        mJsCallJavas.put(interfaceName, new JsCallJava(interfaceObj, interfaceName));
         injectJavaScript();
         if (LogUtils.isDebug()) {
             Log.d(TAG, "injectJavaScript, addJavascriptInterface.interfaceObj = " + interfaceObj + ", interfaceName = " + interfaceName);
@@ -192,7 +192,7 @@ public class AgentWebView extends WebView {
     }
 
     private void injectJavaScript() {
-        for (Map.Entry<String, JSCallJava> entry : mJsCallJavas.entrySet()) {
+        for (Map.Entry<String, JsCallJava> entry : mJsCallJavas.entrySet()) {
             this.loadUrl(buildNotRepeatInjectJS(entry.getKey(), entry.getValue().getPreloadInterfaceJS()));
         }
     }
@@ -309,13 +309,13 @@ public class AgentWebView extends WebView {
         @Override
         public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult result) {
             Log.i(TAG, "onJsPrompt:" + url + "  message:" + message + "  d:" + defaultValue + "  ");
-            if (this.mAgentWebView.mJsCallJavas != null && JSCallJava.isSafeWebViewCallMsg(message)) {
-                JSONObject jsonObject = JSCallJava.getMsgJSONObject(message);
-                String interfacedName = JSCallJava.getInterfacedName(jsonObject);
+            if (this.mAgentWebView.mJsCallJavas != null && JsCallJava.isSafeWebViewCallMsg(message)) {
+                JSONObject jsonObject = JsCallJava.getMsgJSONObject(message);
+                String interfacedName = JsCallJava.getInterfacedName(jsonObject);
                 if (interfacedName != null) {
-                    JSCallJava mJSCallJava = this.mAgentWebView.mJsCallJavas.get(interfacedName);
-                    if (mJSCallJava != null) {
-                        result.confirm(mJSCallJava.call(view, jsonObject));
+                    JsCallJava mJsCallJava = this.mAgentWebView.mJsCallJavas.get(interfacedName);
+                    if (mJsCallJava != null) {
+                        result.confirm(mJsCallJava.call(view, jsonObject));
                     }
                 }
                 return true;

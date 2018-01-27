@@ -7,11 +7,11 @@ import android.support.v4.util.ArrayMap;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public interface JSInterfaceHolder {
+public interface JsInterfaceHolder {
 
-    JSInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps);
+    JsInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps);
 
-    JSInterfaceHolder addJavaObject(String k, Object v);
+    JsInterfaceHolder addJavaObject(String k, Object v);
 
     boolean checkObject(Object v);
 

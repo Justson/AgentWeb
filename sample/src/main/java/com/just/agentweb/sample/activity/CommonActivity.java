@@ -17,7 +17,7 @@ import com.just.agentweb.sample.fragment.BounceWebFragment;
 import com.just.agentweb.sample.fragment.CustomIndicatorFragment;
 import com.just.agentweb.sample.fragment.CustomSettingsFragment;
 import com.just.agentweb.sample.fragment.CustomWebViewFragment;
-import com.just.agentweb.sample.fragment.JSAgentWebFragment;
+import com.just.agentweb.sample.fragment.JsAgentWebFragment;
 import com.just.agentweb.sample.fragment.JsbridgeWebFragment;
 import com.just.agentweb.sample.fragment.SmartRefreshWebFragment;
 
@@ -82,7 +82,7 @@ public class CommonActivity extends AppCompatActivity {
                 break;
             /*Js*/
             case 4:
-                ft.add(R.id.container_framelayout, mAgentWebFragment = JSAgentWebFragment.getInstance(mBundle = new Bundle()), JSAgentWebFragment.class.getName());
+                ft.add(R.id.container_framelayout, mAgentWebFragment = JsAgentWebFragment.getInstance(mBundle = new Bundle()), JsAgentWebFragment.class.getName());
                 mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/js_interaction/hello.html");
                 break;
 

@@ -8,13 +8,13 @@ import android.webkit.ValueCallback;
  * Created by cenxiaozhong on 2017/5/29.
  */
 
-public interface QuickCallJS {
+public interface QuickCallJs {
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    void quickCallJS(String method, ValueCallback<String> callback, String... params);
+    void quickCallJs(String method, ValueCallback<String> callback, String... params);
 
-    void quickCallJS(String method, String... params);
+    void quickCallJs(String method, String... params);
 
-    void quickCallJS(String method);
+    void quickCallJs(String method);
 
 
 }

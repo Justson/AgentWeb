@@ -11,11 +11,11 @@ import java.lang.reflect.Method;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public abstract class JSBaseInterfaceHolder implements JSInterfaceHolder {
+public abstract class JsBaseInterfaceHolder implements JsInterfaceHolder {
 
     private AgentWeb.SecurityType mSecurityType;
 
-    protected JSBaseInterfaceHolder(AgentWeb.SecurityType securityType) {
+    protected JsBaseInterfaceHolder(AgentWeb.SecurityType securityType) {
         this.mSecurityType = securityType;
     }
 

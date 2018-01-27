@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
-public class JSCallback {
+public class JsCallback {
     private static final String CALLBACK_JS_FORMAT = "javascript:%s.callback(%d, %d %s);";
     private int mIndex;
     private boolean mCouldGoOn;
@@ -19,7 +19,7 @@ public class JSCallback {
     private int mIsPermanent;
     private String mInjectedName;
 
-    public JSCallback(WebView view, String injectedName, int index) {
+    public JsCallback(WebView view, String injectedName, int index) {
         mCouldGoOn = true;
         mWebViewRef = new WeakReference<WebView>(view);
         mInjectedName = injectedName;
@@ -33,10 +33,10 @@ public class JSCallback {
      */
     public void apply (Object... args) throws JsCallbackException {
         if (mWebViewRef.get() == null) {
-            throw new JsCallbackException("the WebView related to the JSCallback has been recycled");
+            throw new JsCallbackException("the WebView related to the JsCallback has been recycled");
         }
         if (!mCouldGoOn) {
-            throw new JsCallbackException("the JSCallback isn't permanent,cannot be called more than once");
+            throw new JsCallbackException("the JsCallback isn't permanent,cannot be called more than once");
         }
         StringBuilder sb = new StringBuilder();
         for (Object arg : args){

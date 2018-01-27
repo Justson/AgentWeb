@@ -34,7 +34,7 @@ public class AgentWebJsInterfaceCompat {
                         @Override
                         public void call(String value) {
                             if (mReference.get() != null)
-                                mReference.get().getJSAccessEntrace().quickCallJS("uploadFileResult", value);
+                                mReference.get().getJSAccessEntrace().quickCallJs("uploadFileResult", value);
                         }
                     }).setFileUploadMsgConfig(mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileUploadMsgConfig())
                     .setPermissionInterceptor(mReference.get().getPermissionInterceptor())

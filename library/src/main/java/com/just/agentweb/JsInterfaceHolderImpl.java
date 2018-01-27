@@ -11,24 +11,24 @@ import java.util.Set;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class JSInterfaceHolderImpl extends JSBaseInterfaceHolder {
+public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
-    private static final String TAG=JSInterfaceHolderImpl.class.getSimpleName();
-    static JSInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
+    private static final String TAG=JsInterfaceHolderImpl.class.getSimpleName();
+    static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
 
-        return new JSInterfaceHolderImpl(webView,securityType);
+        return new JsInterfaceHolderImpl(webView,securityType);
     }
 
     private WebView mWebView;
     private AgentWeb.SecurityType mSecurityType;
-    JSInterfaceHolderImpl(WebView webView, AgentWeb.SecurityType securityType) {
+    JsInterfaceHolderImpl(WebView webView, AgentWeb.SecurityType securityType) {
         super(securityType);
         this.mWebView = webView;
         this.mSecurityType=securityType;
     }
 
     @Override
-    public JSInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps) {
+    public JsInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps) {
 
 
 
@@ -44,7 +44,7 @@ public class JSInterfaceHolderImpl extends JSBaseInterfaceHolder {
             Object v = mEntry.getValue();
             boolean t = checkObject(v);
             if (!t)
-                throw new JSInterfaceObjectException("this object has not offer method javascript to call ,please check addJavascriptInterface annotation was be added");
+                throw new JsInterfaceObjectException("this object has not offer method javascript to call ,please check addJavascriptInterface annotation was be added");
 
             else
                 addJavaObjectDirect(mEntry.getKey(), v);
@@ -54,21 +54,21 @@ public class JSInterfaceHolderImpl extends JSBaseInterfaceHolder {
     }
 
     @Override
-    public JSInterfaceHolder addJavaObject(String k, Object v) {
+    public JsInterfaceHolder addJavaObject(String k, Object v) {
 
         if(!checkSecurity()){
             return this;
         }
         boolean t = checkObject(v);
         if (!t)
-            throw new JSInterfaceObjectException("this object has not offer method javascript to call , please check addJavascriptInterface annotation was be added");
+            throw new JsInterfaceObjectException("this object has not offer method javascript to call , please check addJavascriptInterface annotation was be added");
 
         else
             addJavaObjectDirect(k, v);
         return this;
     }
 
-    private JSInterfaceHolder addJavaObjectDirect(String k, Object v) {
+    private JsInterfaceHolder addJavaObjectDirect(String k, Object v) {
         LogUtils.i(TAG, "k:" + k + "  v:" + v);
         this.mWebView.addJavascriptInterface(v, k);
         return this;

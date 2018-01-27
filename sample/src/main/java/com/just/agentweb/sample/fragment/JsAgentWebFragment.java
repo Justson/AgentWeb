@@ -21,15 +21,15 @@ import org.json.JSONObject;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class JSAgentWebFragment extends AgentWebFragment {
+public class JsAgentWebFragment extends AgentWebFragment {
 
-    public static final JSAgentWebFragment getInstance(Bundle bundle) {
+    public static final JsAgentWebFragment getInstance(Bundle bundle) {
 
-        JSAgentWebFragment mJSAgentWebFragment = new JSAgentWebFragment();
+        JsAgentWebFragment mJsAgentWebFragment = new JsAgentWebFragment();
         if (bundle != null)
-            mJSAgentWebFragment.setArguments(bundle);
+            mJsAgentWebFragment.setArguments(bundle);
 
-        return mJSAgentWebFragment;
+        return mJsAgentWebFragment;
 
     }
 
@@ -49,7 +49,7 @@ public class JSAgentWebFragment extends AgentWebFragment {
 
         if(mAgentWeb!=null){
             //注入对象
-            mAgentWeb.getJSInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this.getActivity()));
+            mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this.getActivity()));
         }
         view.findViewById(R.id.callJsNoParamsButton).setOnClickListener(mOnClickListener);
         view.findViewById(R.id.callJsOneParamsButton).setOnClickListener(mOnClickListener);
@@ -69,15 +69,15 @@ public class JSAgentWebFragment extends AgentWebFragment {
             switch (v.getId()){
 
                 case R.id.callJsNoParamsButton:
-                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroid");
+                    mAgentWeb.getJSAccessEntrace().quickCallJs("callByAndroid");
                     break;
 
                 case R.id.callJsOneParamsButton:
-                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroidParam","Hello ! Agentweb");
+                    mAgentWeb.getJSAccessEntrace().quickCallJs("callByAndroidParam","Hello ! Agentweb");
                     break;
 
                 case R.id.callJsMoreParamsButton:
-                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroidMoreParams", new ValueCallback<String>() {
+                    mAgentWeb.getJSAccessEntrace().quickCallJs("callByAndroidMoreParams", new ValueCallback<String>() {
                         @Override
                         public void onReceiveValue(String value) {
                             Log.i("Info","value:"+value);
@@ -86,7 +86,7 @@ public class JSAgentWebFragment extends AgentWebFragment {
 
                     break;
                 case R.id.jsJavaCommunicationButton:
-                    mAgentWeb.getJSAccessEntrace().quickCallJS("callByAndroidInteraction","你好Js");
+                    mAgentWeb.getJSAccessEntrace().quickCallJs("callByAndroidInteraction","你好Js");
                     break;
             }
 

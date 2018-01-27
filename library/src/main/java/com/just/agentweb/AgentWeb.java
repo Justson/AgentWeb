@@ -124,9 +124,9 @@ public final class AgentWeb {
      */
     private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
     /**
-     * JSAccessEntrace 提供快速的JS调用
+     * JsAccessEntrace 提供快速的JS调用
      */
-    private JSAccessEntrace mJSAccessEntrace = null;
+    private JsAccessEntrace mJSAccessEntrace = null;
     /**
      * URL Loader ， 封装了 mWebView.loadUrl(url) reload() stopLoading（） postUrl()等方法
      */
@@ -239,11 +239,11 @@ public final class AgentWeb {
     }
 
 
-    public JSAccessEntrace getJSAccessEntrace() {
+    public JsAccessEntrace getJSAccessEntrace() {
 
-        JSAccessEntrace mJSAccessEntrace = this.mJSAccessEntrace;
+        JsAccessEntrace mJSAccessEntrace = this.mJSAccessEntrace;
         if (mJSAccessEntrace == null) {
-            this.mJSAccessEntrace = mJSAccessEntrace = JSAccessEntraceImpl.getInstance(mWebCreator.getWebView());
+            this.mJSAccessEntrace = mJSAccessEntrace = JsAccessEntraceImpl.getInstance(mWebCreator.getWebView());
         }
         return mJSAccessEntrace;
     }
@@ -301,7 +301,7 @@ public final class AgentWeb {
         return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.getWebView(), getInterceptor())) : this.mIEventHandler;
     }
 
-    private JSInterfaceHolder mJSInterfaceHolder = null;
+    private JsInterfaceHolder mJsInterfaceHolder = null;
 
     public AgentWebSettings getAgentWebSettings() {
         return this.mAgentWebSettings;
@@ -311,8 +311,8 @@ public final class AgentWeb {
         return this.mIndicatorController;
     }
 
-    public JSInterfaceHolder getJSInterfaceHolder() {
-        return this.mJSInterfaceHolder;
+    public JsInterfaceHolder getJsInterfaceHolder() {
+        return this.mJsInterfaceHolder;
     }
 
     public IUrlLoader getLoader() {
@@ -481,12 +481,12 @@ public final class AgentWeb {
             mWebListenerManager = (WebListenerManager) mAgentWebSettings;
         }
         mAgentWebSettings.toSetting(mWebCreator.getWebView());
-        if (mJSInterfaceHolder == null) {
-            mJSInterfaceHolder = JSInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.getWebView(), this.mSecurityType);
+        if (mJsInterfaceHolder == null) {
+            mJsInterfaceHolder = JsInterfaceHolderImpl.getJsInterfaceHolder(mWebCreator.getWebView(), this.mSecurityType);
         }
         LogUtils.i(TAG, "mJavaObjects:" + mJavaObjects.size());
         if (mJavaObjects != null && !mJavaObjects.isEmpty()) {
-            mJSInterfaceHolder.addJavaObjects(mJavaObjects);
+            mJsInterfaceHolder.addJavaObjects(mJavaObjects);
         }
 
         if (mWebListenerManager != null) {
