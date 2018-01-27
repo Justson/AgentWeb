@@ -126,7 +126,7 @@ public final class AgentWeb {
     /**
      * JsAccessEntrace 提供快速的JS调用
      */
-    private JsAccessEntrace mJSAccessEntrace = null;
+    private JsAccessEntrace mJsAccessEntrace = null;
     /**
      * URL Loader ， 封装了 mWebView.loadUrl(url) reload() stopLoading（） postUrl()等方法
      */
@@ -239,13 +239,13 @@ public final class AgentWeb {
     }
 
 
-    public JsAccessEntrace getJSAccessEntrace() {
+    public JsAccessEntrace getJsAccessEntrace() {
 
-        JsAccessEntrace mJSAccessEntrace = this.mJSAccessEntrace;
-        if (mJSAccessEntrace == null) {
-            this.mJSAccessEntrace = mJSAccessEntrace = JsAccessEntraceImpl.getInstance(mWebCreator.getWebView());
+        JsAccessEntrace mJsAccessEntrace = this.mJsAccessEntrace;
+        if (mJsAccessEntrace == null) {
+            this.mJsAccessEntrace = mJsAccessEntrace = JsAccessEntraceImpl.getInstance(mWebCreator.getWebView());
         }
-        return mJSAccessEntrace;
+        return mJsAccessEntrace;
     }
 
 
@@ -709,7 +709,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilder useMiddleWareWebClient(@NonNull MiddlewareWebClientBase middleWrareWebClientBase) {
+        public CommonBuilder useMiddlewareWebClient(@NonNull MiddlewareWebClientBase middleWrareWebClientBase) {
             if (middleWrareWebClientBase == null) {
                 return this;
             }
@@ -722,7 +722,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilder useMiddleWareWebChrome(@NonNull MiddlewareWebChromeBase middlewareWebChromeBase) {
+        public CommonBuilder useMiddlewareWebChrome(@NonNull MiddlewareWebChromeBase middlewareWebChromeBase) {
             if (middlewareWebChromeBase == null) {
                 return this;
             }

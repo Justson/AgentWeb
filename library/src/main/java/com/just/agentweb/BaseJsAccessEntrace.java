@@ -18,11 +18,11 @@ public abstract class BaseJsAccessEntrace implements JsAccessEntrace {
     }
 
     @Override
-    public void callJS(String js, final ValueCallback<String> callback) {
+    public void callJs(String js, final ValueCallback<String> callback) {
 
-        LogUtils.i(TAG,"method callJS:"+js);
+        LogUtils.i(TAG,"method callJs:"+js);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            this.evaluateJS(js, callback);
+            this.evaluateJs(js, callback);
         } else {
             this.loadJs(js);
         }
@@ -30,8 +30,8 @@ public abstract class BaseJsAccessEntrace implements JsAccessEntrace {
 
     }
     @Override
-    public void callJS(String js) {
-        this.callJS(js,  null);
+    public void callJs(String js) {
+        this.callJs(js,  null);
     }
 
 
@@ -40,7 +40,7 @@ public abstract class BaseJsAccessEntrace implements JsAccessEntrace {
         mWebView.loadUrl(js);
 
     }
-    private void evaluateJS(String js, final ValueCallback<String>callback){
+    private void evaluateJs(String js, final ValueCallback<String>callback){
 
         mWebView.evaluateJavascript(js, new ValueCallback<String>() {
             @Override
@@ -64,7 +64,7 @@ public abstract class BaseJsAccessEntrace implements JsAccessEntrace {
         }
 
 
-        callJS(sb.toString(),callback);
+        callJs(sb.toString(),callback);
 
     }
 

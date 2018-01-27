@@ -60,11 +60,11 @@ public class FileChooser {
      */
     private WebChromeClient.FileChooserParams mFileChooserParams;
     /**
-     * 如果是通过 JavaScript 打开文件选择器 ，那么 mJSChannelCallback 不能为空
+     * 如果是通过 JavaScript 打开文件选择器 ，那么 mJsChannelCallback 不能为空
      */
-    private JSChannelCallback mJSChannelCallback;
+    private JsChannelCallback mJsChannelCallback;
     /**
-     * 是否为JS Channel
+     * 是否为Js Channel
      */
     private boolean jsChannel = false;
     /**
@@ -112,7 +112,7 @@ public class FileChooser {
         this.isAboveLollipop = builder.isL;
         this.jsChannel = builder.jsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
-        this.mJSChannelCallback = builder.mJSChannelCallback;
+        this.mJsChannelCallback = builder.mJsChannelCallback;
         this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
@@ -352,7 +352,7 @@ public class FileChooser {
             return;
         }
 
-        //通过JS获取文件
+        //通过Js获取文件
         if (jsChannel) {
             convertFileAndCallBack(cameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
             return;
@@ -393,7 +393,7 @@ public class FileChooser {
 
     private void cancel() {
         if (jsChannel) {
-            mJSChannelCallback.call(null);
+            mJsChannelCallback.call(null);
             return;
         }
         if (mUriValueCallback != null)
@@ -458,7 +458,7 @@ public class FileChooser {
 
         String[] paths = null;
         if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
-            mJSChannelCallback.call(null);
+            mJsChannelCallback.call(null);
             return;
         }
 
@@ -478,11 +478,11 @@ public class FileChooser {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(String.format(mFileUploadMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
             }
-            mJSChannelCallback.call(null);
+            mJsChannelCallback.call(null);
             return;
         }
 
-        new CovertFileThread(this.mJSChannelCallback, paths).start();
+        new CovertFileThread(this.mJsChannelCallback, paths).start();
 
     }
 
@@ -602,11 +602,11 @@ public class FileChooser {
 
     static class CovertFileThread extends Thread {
 
-        private WeakReference<JSChannelCallback> mJsChannelCallback;
+        private WeakReference<JsChannelCallback> mJsChannelCallback;
         private String[] paths;
 
-        private CovertFileThread(JSChannelCallback JSChannelCallback, String[] paths) {
-            this.mJsChannelCallback = new WeakReference<JSChannelCallback>(JSChannelCallback);
+        private CovertFileThread(JsChannelCallback JsChannelCallback, String[] paths) {
+            this.mJsChannelCallback = new WeakReference<JsChannelCallback>(JsChannelCallback);
             this.paths = paths;
         }
 
@@ -627,7 +627,7 @@ public class FileChooser {
         }
     }
 
-    interface JSChannelCallback {
+    interface JsChannelCallback {
 
         void call(String value);
     }
@@ -639,7 +639,7 @@ public class FileChooser {
         private ValueCallback<Uri[]> mUriValueCallbacks;
         private boolean isL = false;
         private WebChromeClient.FileChooserParams mFileChooserParams;
-        private JSChannelCallback mJSChannelCallback;
+        private JsChannelCallback mJsChannelCallback;
         private boolean jsChannel = false;
         private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
         private WebView mWebView;
@@ -666,7 +666,7 @@ public class FileChooser {
             isL = false;
             jsChannel = false;
             mUriValueCallbacks = null;
-            mJSChannelCallback = null;
+            mJsChannelCallback = null;
             return this;
         }
 
@@ -674,7 +674,7 @@ public class FileChooser {
             mUriValueCallbacks = uriValueCallbacks;
             isL = true;
             mUriValueCallback = null;
-            mJSChannelCallback = null;
+            mJsChannelCallback = null;
             jsChannel = false;
             return this;
         }
@@ -685,8 +685,8 @@ public class FileChooser {
             return this;
         }
 
-        public Builder setJSChannelCallback(JSChannelCallback JSChannelCallback) {
-            mJSChannelCallback = JSChannelCallback;
+        public Builder setJsChannelCallback(JsChannelCallback jsChannelCallback) {
+            mJsChannelCallback = jsChannelCallback;
             jsChannel = true;
             mUriValueCallback = null;
             mUriValueCallbacks = null;

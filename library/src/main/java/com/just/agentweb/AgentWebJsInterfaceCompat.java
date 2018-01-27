@@ -30,11 +30,11 @@ public class AgentWebJsInterfaceCompat {
         if (mActivityWeakReference.get() != null && mReference.get() != null) {
             mFileChooser = new FileChooser.Builder()
                     .setActivity(mActivityWeakReference.get())
-                    .setJSChannelCallback(new FileChooser.JSChannelCallback() {
+                    .setJsChannelCallback(new FileChooser.JsChannelCallback() {
                         @Override
                         public void call(String value) {
                             if (mReference.get() != null)
-                                mReference.get().getJSAccessEntrace().quickCallJs("uploadFileResult", value);
+                                mReference.get().getJsAccessEntrace().quickCallJs("uploadFileResult", value);
                         }
                     }).setFileUploadMsgConfig(mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileUploadMsgConfig())
                     .setPermissionInterceptor(mReference.get().getPermissionInterceptor())

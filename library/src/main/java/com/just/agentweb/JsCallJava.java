@@ -23,7 +23,7 @@ public class JsCallJava {
     private HashMap<String, Method> mMethodsMap;
     private Object mInterfaceObj;
     private String mInterfacedName;
-    private String mPreloadInterfaceJS;
+    private String mPreloadInterfaceJs;
 
     public JsCallJava(Object interfaceObj, String interfaceName) {
         try {
@@ -61,7 +61,7 @@ public class JsCallJava {
             sb.append("=a;console.log(\"");
             sb.append(mInterfacedName);
             sb.append(" init end\")})(window)");
-            mPreloadInterfaceJS = sb.toString();
+            mPreloadInterfaceJs = sb.toString();
             sb.setLength(0);
         } catch (Exception e) {
             if (LogUtils.isDebug()) {
@@ -104,8 +104,8 @@ public class JsCallJava {
         return sign;
     }
 
-    public String getPreloadInterfaceJS() {
-        return mPreloadInterfaceJS;
+    public String getPreloadInterfaceJs() {
+        return mPreloadInterfaceJs;
     }
 
     public String call(WebView webView, JSONObject jsonObject) {

@@ -46,8 +46,8 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .addDownloadResultListener(getDownLoadResultListener())
                 .setAgentWebUIController(getAgentWebUIController())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
-                .useMiddleWareWebChrome(getMiddleWareWebChrome())
-                .useMiddleWareWebClient(getMiddleWareWebClient())
+                .useMiddlewareWebChrome(getMiddleWareWebChrome())
+                .useMiddlewareWebClient(getMiddleWareWebClient())
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());

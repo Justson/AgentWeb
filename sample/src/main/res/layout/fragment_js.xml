@@ -14,6 +14,7 @@
         android:id="@+id/callJsNoParamsButton"
         android:background="@drawable/selector_drawable_for_btn"
         android:layout_marginLeft="20dp"
+        android:textAllCaps="false"
         android:layout_marginRight="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -23,6 +24,7 @@
         android:background="@drawable/selector_drawable_for_btn"
         android:layout_marginLeft="20dp"
         android:text="调用Js，一个参数方法"
+        android:textAllCaps="false"
         android:textSize="14sp"
         android:id="@+id/callJsOneParamsButton"
         android:textColor="@color/white"
@@ -30,11 +32,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
     <Button
-        android:text="调用JS，多个参数方法"
+        android:text="调用Js，多个参数方法"
         android:textSize="14sp"
         android:id="@+id/callJsMoreParamsButton"
         android:textColor="@color/white"
         android:layout_marginTop="10dp"
+        android:textAllCaps="false"
         android:background="@drawable/selector_drawable_for_btn"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"

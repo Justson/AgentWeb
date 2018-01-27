@@ -193,7 +193,7 @@ public class AgentWebView extends WebView {
 
     private void injectJavaScript() {
         for (Map.Entry<String, JsCallJava> entry : mJsCallJavas.entrySet()) {
-            this.loadUrl(buildNotRepeatInjectJS(entry.getKey(), entry.getValue().getPreloadInterfaceJS()));
+            this.loadUrl(buildNotRepeatInjectJS(entry.getKey(), entry.getValue().getPreloadInterfaceJs()));
         }
     }
 

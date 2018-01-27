@@ -90,11 +90,11 @@
 
         connectWebViewJavascriptBridge(function(bridge) {
             bridge.init(function(message, responseCallback) {
-                console.log('JS got a message', message);
+                console.log('Js got a message', message);
                 var data = {
                     'Javascript Responds': '测试中文!'
                 };
-                console.log('JS responding with', data);
+                console.log('Js responding with', data);
                 responseCallback(data);
             });
 

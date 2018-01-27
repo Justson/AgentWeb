@@ -48,7 +48,7 @@ public class VasSonicFragment extends AgentWebFragment {
 
     //在步骤3的时候应该传入给AgentWeb
     @Override
-    public MiddlewareWebClientBase getMiddleWareWebClient() {
+    public MiddlewareWebClientBase getMiddlewareWebClient() {
         return mSonicImpl.createSonicClientMiddleWare();
     }
 
