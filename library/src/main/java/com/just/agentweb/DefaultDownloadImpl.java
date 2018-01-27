@@ -54,6 +54,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     private int icon = -1;
     private WeakReference<AgentWebUIController> mAgentWebUIController;
     private Builder mBuilder;
+    private boolean isOpenBreakPointDoDownload = false;
 
     DefaultDownloadImpl(Builder builder) {
         this.bind(builder);
@@ -70,6 +71,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         this.mPermissionListener = builder.mPermissionInterceptor;
         isParallelDownload.set(builder.isParallelDownload);
         icon = builder.icon;
+        isOpenBreakPointDoDownload = builder.isOpenBreakPointDoDownload();
         this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
     }
 
@@ -277,7 +279,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             if (fileName.contains("\"")) {
                 fileName = fileName.replace("\"", "");
             }
-            return AgentWebUtils.createFileByName(mContext, fileName, false);
+            return AgentWebUtils.createFileByName(mContext, fileName, !isOpenBreakPointDoDownload);
         } catch (Throwable e) {
             if (LogUtils.isDebug())
                 e.printStackTrace();
@@ -297,7 +299,6 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             return "";
         }
     }
-
 
 
     @Override
@@ -439,9 +440,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         private boolean isForce;
         private boolean enableIndicator;
         private DownloadListener mDownloadListener;
-        private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
         private PermissionInterceptor mPermissionInterceptor;
-        private int icon = -1;
         private boolean isParallelDownload = false;
         private WebView mWebView;
         private DefaultDownloadImpl mDefaultDownload;
@@ -483,6 +482,10 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
         public Builder setParallelDownload(boolean parallelDownload) {
             isParallelDownload = parallelDownload;
+            return this;
+        }
+        public Builder setOpenBreakPointDoDownload(boolean openBreakPointDoDownload) {
+            isOpenBreakPointDoDownload = openBreakPointDoDownload;
             return this;
         }
 

@@ -128,10 +128,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
         try {
             begin = System.currentTimeMillis();
             if (!checkDownLoaderCondition())
-                return DownLoadMsg.STORAGE_ERROR.CODE;
+                return DownloadMsg.STORAGE_ERROR.CODE;
             if (!checknet())
-                return DownLoadMsg.NETWORK_ERROR_CONNECTION.CODE;
-            result = doDownLoad();
+                return DownloadMsg.NETWORK_ERROR_CONNECTION.CODE;
+            result = doDownload();
 
         } catch (Exception e) {
 
@@ -144,7 +144,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
         return result;
     }
 
-    private int doDownLoad() throws IOException {
+    private int doDownload() throws IOException {
 
         HttpURLConnection mHttpURLConnection = createUrlConnection(mDownLoadTask.getUrl());
 
@@ -157,9 +157,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
             mHttpURLConnection.connect();
             boolean isSeek = false;
             if (mHttpURLConnection.getResponseCode() != 200 && mHttpURLConnection.getResponseCode() != 206 && (isSeek = true)) {
-                return DownLoadMsg.NETWORK_ERROR_STATUS_CODE.CODE;
+                return DownloadMsg.NETWORK_ERROR_STATUS_CODE.CODE;
             }
-            return doDownLoad(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownLoadTask.getFile()), isSeek);
+            return doDownload(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownLoadTask.getFile()), isSeek);
         } finally {
             if (mHttpURLConnection != null)
                 mHttpURLConnection.disconnect();
@@ -250,7 +250,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
             DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownLoadTask.getFile().getPath());
             return;
         }
-        mDownloadListener.result(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), code <= 200 ? null : this.e == null ? new RuntimeException("download fail ， cause:" + DownLoadMsg.getMsgByCode(code)) : this.e);
+        mDownloadListener.result(mDownLoadTask.getFile().getAbsolutePath(), mDownLoadTask.getUrl(), code <= 200 ? null : this.e == null ? new RuntimeException("download fail ， cause:" + DownloadMsg.getMsgByCode(code)) : this.e);
 
     }
 
@@ -287,7 +287,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
     }
 
 
-    private int doDownLoad(InputStream in, RandomAccessFile out, boolean isSeek) throws IOException {
+    private int doDownload(InputStream in, RandomAccessFile out, boolean isSeek) throws IOException {
 
         byte[] buffer = new byte[10240];
         BufferedInputStream bis = new BufferedInputStream(in, 1024 * 10);
@@ -312,7 +312,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
 
                 if (!checknet()) {
                     LogUtils.i(TAG, "network");
-                    return DownLoadMsg.NETWORK_ERROR_CONNECTION.CODE;
+                    return DownloadMsg.NETWORK_ERROR_CONNECTION.CODE;
                 }
 
                 if (mSpeed != 0) {
@@ -321,14 +321,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
                     previousBlockTime = System.currentTimeMillis();
                 } else if ((System.currentTimeMillis() - previousBlockTime) > TIME_OUT) {
                     LogUtils.i(TAG, "timeout");
-                    return DownLoadMsg.TIME_OUT.CODE;
+                    return DownloadMsg.TIME_OUT.CODE;
                 }
             }
             LogUtils.i(TAG, "atomic:" + atomic.get());
             if (atomic.get()) {
-                return DownLoadMsg.USER_CANCEL.CODE;
+                return DownloadMsg.USER_CANCEL.CODE;
             }
-            return DownLoadMsg.SUCCESSFULL.CODE;
+            return DownloadMsg.SUCCESSFULL.CODE;
         } finally {
             CloseUtils.closeIO(out);
             CloseUtils.closeIO(bis);
@@ -369,11 +369,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
     }
 
 
-    enum DownLoadMsg {
+    enum DownloadMsg {
         NETWORK_ERROR_CONNECTION(400), NETWORK_ERROR_STATUS_CODE(401), STORAGE_ERROR(402), TIME_OUT(403), USER_CANCEL(404), SUCCESSFULL(200);
         int CODE;
 
-        DownLoadMsg(int e) {
+        DownloadMsg(int e) {
             this.CODE = e;
         }
 

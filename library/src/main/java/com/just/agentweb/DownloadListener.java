@@ -24,9 +24,9 @@ public interface DownloadListener {
 
 
     /**
-     * @param path 文件的绝对路径
-     * @param url  下载的地址
-     * @param throwable    如果异常，返回给用户异常
+     * @param path      文件的绝对路径
+     * @param url       下载的地址
+     * @param throwable 如果异常，返回给用户异常
      * @return true 表示用户处理了下载完成后续的事件 ，false 默认交给AgentWeb 处理
      */
     boolean result(String path, String url, Throwable throwable);
@@ -45,14 +45,45 @@ public interface DownloadListener {
     }
 
     abstract class Extra {
-        private boolean isForce;
-        private boolean enableIndicator;
-        private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
-        private int icon = -1;
-        private boolean isParallelDownload = false;
+        protected boolean isForceDownload;
+        protected boolean enableIndicator;
+        protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
+        protected int icon = -1;
+        protected boolean isParallelDownload = false;
+        protected boolean isOpenBreakPointDoDownload = false;
+
+
+        public boolean isForceDownload() {
+            return isForceDownload;
+        }
+
+        public boolean isEnableIndicator() {
+            return enableIndicator;
+        }
+
+        public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
+            return mDownloadMsgConfig;
+        }
+
+        public int getIcon() {
+            return icon;
+        }
+
+        public boolean isParallelDownload() {
+            return isParallelDownload;
+        }
+
+        public boolean isOpenBreakPointDoDownload() {
+            return isOpenBreakPointDoDownload;
+        }
+
+        public Extra setOpenBreakPointDoDownload(boolean openBreakPointDoDownload) {
+            isOpenBreakPointDoDownload = openBreakPointDoDownload;
+            return this;
+        }
 
         public Extra setForceDownload(boolean force) {
-            isForce = force;
+            isForceDownload = force;
             return this;
         }
 
@@ -62,7 +93,7 @@ public interface DownloadListener {
         }
 
 
-        public Extra setDownloadMsgConfig(@NonNull  DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
+        public Extra setDownloadMsgConfig(@NonNull DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
             if (downloadMsgConfig != null) {
                 mDownloadMsgConfig = downloadMsgConfig;
             }

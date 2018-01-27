@@ -504,6 +504,7 @@ public final class AgentWeb {
                     .setForceDownload(false)//
                     .setDownloadListener(downloadListener)//
                     .setDownloadMsgConfig(mDefaultMsgConfig.getDownloadMsgConfig())//
+                    .setOpenBreakPointDoDownload(true)
                     .setParallelDownload(isParallelDl)//
                     .setPermissionInterceptor(this.mPermissionInterceptor)
                     .setIcon(icon)
