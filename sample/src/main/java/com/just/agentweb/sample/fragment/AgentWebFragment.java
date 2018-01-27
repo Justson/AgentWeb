@@ -152,11 +152,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          * @param contentDisposition contentDisposition
          * @param mimetype           资源的媒体类型
          * @param contentLength      文件长度
-         * @param extra              下载配置 ， 用户可以通过 Extra 修改下载logo ， 关闭进度条 ， 或者是否强制下载。
+         * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 或者是否强制下载。
          * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
          */
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+            extra.setIcon(R.mipmap.app_logo).build();
             return false;
         }
 
