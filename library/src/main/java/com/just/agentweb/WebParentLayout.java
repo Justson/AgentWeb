@@ -26,8 +26,9 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     private int errorLayoutRes;
     @IdRes
     private int clickId = -1;
-    private View errorView;
+    private View mErrorView;
     private WebView mWebView;
+    private FrameLayout mErrorLayout = null;
 
     public WebParentLayout(@NonNull Context context) {
         this(context, null);
@@ -55,11 +56,18 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 
     void showPageMainFrameError() {
 
-        View container = this.findViewById(R.id.mainframe_error_container_id);
+        View container = this.mErrorLayout;
         if (container != null) {
             container.setVisibility(View.VISIBLE);
         } else {
             createErrorLayout();
+            container = this.mErrorLayout;
+        }
+        View clickView = null;
+        if (clickId != -1 && (clickView = container.findViewById(clickId)) != null) {
+            clickView.setClickable(true);
+        } else {
+            container.setClickable(true);
         }
     }
 
@@ -68,12 +76,12 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         final FrameLayout mFrameLayout = new FrameLayout(getContext());
         mFrameLayout.setBackgroundColor(Color.WHITE);
         mFrameLayout.setId(R.id.mainframe_error_container_id);
-        if (this.errorView == null) {
+        if (this.mErrorView == null) {
             LayoutInflater mLayoutInflater = LayoutInflater.from(getContext());
             LogUtils.i(TAG, "errorLayoutRes:" + errorLayoutRes);
             mLayoutInflater.inflate(errorLayoutRes, mFrameLayout, true);
         } else {
-            mFrameLayout.addView(errorView);
+            mFrameLayout.addView(mErrorView);
         }
 
         ViewStub mViewStub = (ViewStub) this.findViewById(R.id.mainframe_error_viewsub_id);
@@ -81,19 +89,20 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
         this.removeViewInLayout(mViewStub);
         final ViewGroup.LayoutParams layoutParams = getLayoutParams();
         if (layoutParams != null) {
-            this.addView(mFrameLayout, index, layoutParams);
+            this.addView(this.mErrorLayout = mFrameLayout, index, layoutParams);
         } else {
-            this.addView(mFrameLayout, index);
+            this.addView(this.mErrorLayout = mFrameLayout, index);
         }
 
         mFrameLayout.setVisibility(View.VISIBLE);
         if (clickId != -1) {
-            View clickView = mFrameLayout.findViewById(clickId);
+            final View clickView = mFrameLayout.findViewById(clickId);
             if (clickView != null) {
                 clickView.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (getWebView() != null) {
+                            clickView.setClickable(false);
                             getWebView().reload();
                         }
                     }
@@ -112,6 +121,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
             @Override
             public void onClick(View v) {
                 if (getWebView() != null) {
+                    mFrameLayout.setClickable(false);
                     getWebView().reload();
                 }
 
@@ -127,7 +137,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     }
 
     void setErrorView(@NonNull View errorView) {
-        this.errorView = errorView;
+        this.mErrorView = errorView;
     }
 
     void setErrorLayoutRes(@LayoutRes int resLayout, @IdRes int id) {

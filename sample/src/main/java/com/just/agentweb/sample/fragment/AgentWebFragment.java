@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -111,6 +112,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .ready()//设置 WebSettings。
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+            mAgentWeb.getWebCreator().getWebView().setWebContentsDebuggingEnabled(true);
+
+        }
 
         initView(view);
 

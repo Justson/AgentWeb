@@ -46,7 +46,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     /**
      * 默认加速后减速动画最大时长
      */
-    public static final int MAX_DECELERATE_SPEED_DURATION = 800;
+    public static final int MAX_DECELERATE_SPEED_DURATION = 450;
     /**
      * 结束动画时长 ， Fade out 。
      */

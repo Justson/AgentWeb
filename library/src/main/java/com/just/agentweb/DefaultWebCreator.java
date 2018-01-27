@@ -29,6 +29,9 @@ public class DefaultWebCreator implements WebCreator {
     private boolean isCreated=false;
     private IWebLayout mIWebLayout;
     private BaseIndicatorSpec mBaseIndicatorSpec;
+    private WebView mWebView = null;
+    private FrameLayout mFrameLayout = null;
+    private View targetProgress;
     private static final String TAG=DefaultWebCreator.class.getSimpleName();
 
 
@@ -65,9 +68,7 @@ public class DefaultWebCreator implements WebCreator {
         this.mIWebLayout=webLayout;
     }
 
-    private WebView mWebView = null;
-    private FrameLayout mFrameLayout = null;
-    private View targetProgress;
+
 
 
     public void setWebView(WebView webView) {
@@ -97,13 +98,13 @@ public class DefaultWebCreator implements WebCreator {
         isCreated=true;
         ViewGroup mViewGroup = this.mViewGroup;
         if (mViewGroup == null) {
-            mViewGroup = this.mFrameLayout= (FrameLayout)createGroupWithWeb();
+            mViewGroup = this.mFrameLayout= (FrameLayout) createWebParentLayoutWithWeb();
             mActivity.setContentView(mViewGroup);
         } else {
             if (index == -1)
-                mViewGroup.addView( this.mFrameLayout= (FrameLayout)createGroupWithWeb(), mLayoutParams);
+                mViewGroup.addView( this.mFrameLayout= (FrameLayout) createWebParentLayoutWithWeb(), mLayoutParams);
             else
-                mViewGroup.addView(this.mFrameLayout= (FrameLayout)createGroupWithWeb(), index, mLayoutParams);
+                mViewGroup.addView(this.mFrameLayout= (FrameLayout) createWebParentLayoutWithWeb(), index, mLayoutParams);
         }
         return this;
     }
@@ -120,7 +121,7 @@ public class DefaultWebCreator implements WebCreator {
 
 
 
-    private ViewGroup createGroupWithWeb() {
+    private ViewGroup createWebParentLayoutWithWeb() {
         Activity mActivity = this.mActivity;
         WebParentLayout mFrameLayout = new WebParentLayout(mActivity);
         mFrameLayout.setId(R.id.web_parent_layout_id);

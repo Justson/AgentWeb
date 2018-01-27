@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.HttpAuthHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -59,7 +60,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
      */
     private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
     /**
-     *  intent ' s scheme
+     * intent ' s scheme
      */
     public static final String INTENT_SCHEME = "intent://";
     /**
@@ -156,7 +157,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     }
 
     @Deprecated
-    DefaultWebClient(@NonNull Activity activity, WebViewClient client,  boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
+    DefaultWebClient(@NonNull Activity activity, WebViewClient client, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
         super(client);
         this.mWebView = webView;
         this.mWebViewClient = client;
@@ -511,6 +512,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         if (mAgentWebUIController.get() != null) {
             mAgentWebUIController.get().onMainFrameError(view, errorCode, description, failingUrl);
         }
+//        this.mWebView.setVisibility(View.GONE);
     }
 
 
@@ -523,6 +525,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
                 LogUtils.i(TAG, "onPageFinished onShowMainFrame");
                 mAgentWebUIController.get().onShowMainFrame();
             }
+        } else {
+            view.setVisibility(View.VISIBLE);
         }
         if (mWaittingFinishSet.contains(url)) {
             mWaittingFinishSet.remove(url);

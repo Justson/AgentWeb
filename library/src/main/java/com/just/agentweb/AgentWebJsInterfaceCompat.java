@@ -14,6 +14,7 @@ public class AgentWebJsInterfaceCompat {
     private WeakReference<AgentWeb> mReference = null;
     private FileChooser mFileChooser;
     private WeakReference<Activity> mActivityWeakReference = null;
+    private String TAG = this.getClass().getSimpleName();
 
     AgentWebJsInterfaceCompat(AgentWeb agentWeb, Activity activity) {
         mReference = new WeakReference<AgentWeb>(agentWeb);
@@ -22,11 +23,17 @@ public class AgentWebJsInterfaceCompat {
 
 
     @JavascriptInterface
+    public void isPageError(boolean t) {
+
+        LogUtils.i(TAG, "onPageError:" + t);
+    }
+
+    @JavascriptInterface
     public void uploadFile() {
         uploadFile("*/*");
     }
 
-    public void uploadFile(String acceptType){
+    public void uploadFile(String acceptType) {
         if (mActivityWeakReference.get() != null && mReference.get() != null) {
             mFileChooser = new FileChooser.Builder()
                     .setActivity(mActivityWeakReference.get())
