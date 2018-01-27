@@ -143,7 +143,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
      * 下载文件完成后，回调文件的绝对路径 ，DownLoadResultListener只会在触发文件下载回调 ， 如果文件存在，并且完整 ，
      * AgentWeb则默认打开它。
      */
-    protected DownloadListener mDownloadListener = new DownloadListener() {
+    protected DownloadListener mDownloadListener = new DownloadListener.DownloadListenerAdapter() {
 
         /**
          *

@@ -244,10 +244,10 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
         //并行下载.
         if (isParallelDownload.get()) {
-            new DownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
+            new Downloader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
         } else {
             //默认串行下载.
-            new DownLoader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).execute();
+            new Downloader(new DownLoadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).execute();
         }
 
         this.url = null;

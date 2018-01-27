@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Observer {
+public class Downloader extends AsyncTask<Void, Integer, Integer> implements Observer {
 
     /**
      * 下载参数
@@ -68,7 +68,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
 
     private static final int ERROR_LOAD = 406;
 
-    private static final String TAG = DownLoader.class.getSimpleName();
+    private static final String TAG = Downloader.class.getSimpleName();
     /**
      * false 表示用户已经取消下载
      */
@@ -85,7 +85,7 @@ public class DownLoader extends AsyncTask<Void, Integer, Integer> implements Obs
     };
 
 
-    DownLoader(DownLoadTask downLoadTask) {
+    Downloader(DownLoadTask downLoadTask) {
         this.mDownLoadTask = downLoadTask;
         this.totals = mDownLoadTask.getLength();
         checkNullTask(downLoadTask);
