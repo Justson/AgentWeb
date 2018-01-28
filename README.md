@@ -38,7 +38,13 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 	</dependency>
 	
 	```
-	
+* 4.0.0-Alpha
+
+	```
+    compile 'com.just.agentweb:agentweb:4.0.0-alpha-2'(必选)
+    compile 'com.just.agentweb:agentweb-download:4.0.0-alpha-2'(可选)
+    compile 'com.just.agentweb:agentweb-filechooser:4.0.0-alpha-2'(可选)
+	```	
 	
 
 
