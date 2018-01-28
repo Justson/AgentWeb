@@ -18,9 +18,9 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
 
     private android.webkit.WebSettings mWebSettings;
     private static final String TAG = WebDefaultSettingsManager.class.getSimpleName();
-    public static final String USERAGENT_UC=" UCBrowser/11.6.4.950 ";
-    public static final String USERAGENT_QQ_BROWSER=" MQQBrowser/8.0 ";
-    public static final String USERAGENT_AGENTWEB=" agentweb/3.1.0 ";
+    public static final String USERAGENT_UC = " UCBrowser/11.6.4.950 ";
+    public static final String USERAGENT_QQ_BROWSER = " MQQBrowser/8.0 ";
+    public static final String USERAGENT_AGENTWEB = " agentweb/4.0.0-alpha ";
 
     public static WebDefaultSettingsManager getInstance() {
         return new WebDefaultSettingsManager();
@@ -107,7 +107,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         );
 
 
-        LogUtils.i(TAG,"UserAgentString : "+mWebSettings.getUserAgentString());
+        LogUtils.i(TAG, "UserAgentString : " + mWebSettings.getUserAgentString());
 
 
     }
@@ -133,8 +133,6 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
     @Override
     public WebListenerManager setDownLoader(WebView webView, DownloadListener downloadListener) {
         webView.setDownloadListener(downloadListener);
-
-
         return this;
     }
 

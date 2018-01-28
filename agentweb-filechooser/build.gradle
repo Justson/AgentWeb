@@ -23,6 +23,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions{
+        abortOnError false
+    }
 
 }
 
@@ -35,7 +38,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     provided "com.android.support:design:${SUPPORT_LIB_VERSION}"
     provided "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
-    provided project(':agentweb')
+    provided project(':agentweb-core')
 }
 task javadoc(type: Javadoc) {
     options.encoding = "utf-8"
@@ -44,7 +47,7 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'filechooser'
-    version = '4.0.0'
+    version = '4.0.0-alpha-2'
     description = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 

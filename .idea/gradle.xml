@@ -3,13 +3,13 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="distributionType" value="LOCAL" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleHome" value="D:/gradle/gradle-3.3" />
+        <option name="gradleHome" value="$USER_HOME$/Downloads/gradle-4.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/agentweb" />
+            <option value="$PROJECT_DIR$/agentweb-core" />
             <option value="$PROJECT_DIR$/agentweb-download" />
             <option value="$PROJECT_DIR$/agentweb-filechooser" />
             <option value="$PROJECT_DIR$/sample" />
