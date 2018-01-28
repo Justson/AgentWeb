@@ -104,15 +104,15 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
                 .setDownloadListener(mDownloadListener) //下载回调
-                .openParallelDownload()//打开并行下载 , 默认串行下载。
-                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载通知图标。
+//                .openParallelDownload()// 4.0.0删除该api 打开并行下载 , 默认串行下载。
+//                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) 4.0.0删除该api //下载通知图标。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
                 .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
                 .createAgentWeb()//创建AgentWeb。
                 .ready()//设置 WebSettings。
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >=Build.VERSION_CODES.KITKAT) {
 
             mAgentWeb.getWebCreator().getWebView().setWebContentsDebuggingEnabled(true);
 

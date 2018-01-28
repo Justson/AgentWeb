@@ -20,15 +20,13 @@
         <activity
             android:name="com.just.agentweb.ActionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
             android:launchMode="standard"
             android:theme="@style/actionActivity"
-            android:exported="false"
             android:windowSoftInputMode="stateHidden|stateAlwaysHidden">
 
         </activity>
 
-
-        <receiver android:name="com.just.agentweb.Downloader$NotificationBroadcastReceiver"></receiver>
     </application>
 
 </manifest>

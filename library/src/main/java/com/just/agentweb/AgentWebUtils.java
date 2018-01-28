@@ -78,14 +78,16 @@ import static com.just.agentweb.AgentWebConfig.FILE_CACHE_PATH;
 /**
  * source code  https://github.com/Justson/AgentWeb
  */
-//该类对外是不开放的
 public class AgentWebUtils {
 
     private static final String TAG = AgentWebUtils.class.getSimpleName();
     private static Handler mHandler = null;
 
+    private AgentWebUtils() {
+        throw new UnsupportedOperationException("u can't init me");
+    }
 
-    static int dp2px(Context context, float dipValue) {
+    public static int dp2px(Context context, float dipValue) {
 
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dipValue * scale + 0.5f);
@@ -132,25 +134,10 @@ public class AgentWebUtils {
 
     }
 
-    static boolean checkWifi(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity == null) {
-            return false;
-        }
-        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
-        return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
-    }
 
-    static boolean checkNetwork(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity == null) {
-            return false;
-        }
-        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
-        return info != null && info.isConnected();
-    }
 
-    static File createFileByName(Context context, String name, boolean cover) throws IOException {
+
+    public static File createFileByName(Context context, String name, boolean cover) throws IOException {
 
         String path = getAgentWebFilePath(context);
         if (TextUtils.isEmpty(path))
@@ -168,7 +155,7 @@ public class AgentWebUtils {
         return mFile;
     }
 
-    static int checkNetworkType(Context context) {
+    public static int checkNetworkType(Context context) {
 
         int netType = 0;
         //连接管理对象
@@ -211,7 +198,7 @@ public class AgentWebUtils {
 
     }
 
-    static long getAvailableStorage() {
+    public static long getAvailableStorage() {
         try {
             StatFs stat = new StatFs(Environment.getExternalStorageDirectory().toString());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -736,7 +723,7 @@ public class AgentWebUtils {
         return mIntent;
     }
 
-    static Intent getCommonFileIntentCompat(Context context, File file) {
+    public static Intent getCommonFileIntentCompat(Context context, File file) {
         Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
         setIntentDataAndType(context, mIntent, getMIMEType(file), file, false);
         return mIntent;
@@ -803,7 +790,6 @@ public class AgentWebUtils {
     }
 
 
-
     static boolean isUIThread() {
 
         return Looper.myLooper() == Looper.getMainLooper();
@@ -847,7 +833,7 @@ public class AgentWebUtils {
         }
     }
 
-    static boolean hasPermission(@NonNull Context context, @NonNull String... permissions) {
+    public static boolean hasPermission(@NonNull Context context, @NonNull String... permissions) {
         return hasPermission(context, Arrays.asList(permissions));
     }
 
@@ -882,7 +868,7 @@ public class AgentWebUtils {
     }
 
 
-    static AgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
+    public static AgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
         WebParentLayout mWebParentLayout = getWebParentLayoutByWebView(webView);
         return mWebParentLayout.provide();
     }
@@ -935,7 +921,7 @@ public class AgentWebUtils {
     }
 
 
-    static String md5(String str) {
+    public static String md5(String str) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(str.getBytes());

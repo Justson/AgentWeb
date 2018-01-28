@@ -3,7 +3,6 @@ package com.just.agentweb;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -756,15 +755,15 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilder openParallelDownload() {
-            this.mAgentBuilder.isParallelDownload = true;
-            return this;
-        }
-
-        public CommonBuilder setNotifyIcon(@DrawableRes int icon) {
-            this.mAgentBuilder.icon = icon;
-            return this;
-        }
+//        public CommonBuilder openParallelDownload() {
+//            this.mAgentBuilder.isParallelDownload = true;
+//            return this;
+//        }
+//
+//        public CommonBuilder setNotifyIcon(@DrawableRes int icon) {
+//            this.mAgentBuilder.icon = icon;
+//            return this;
+//        }
 
         public CommonBuilder setWebView(@Nullable WebView webView) {
             this.mAgentBuilder.mWebView = webView;

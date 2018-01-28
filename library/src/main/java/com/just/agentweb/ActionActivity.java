@@ -32,7 +32,7 @@ public final class ActionActivity extends Activity {
     private Action mAction;
 
 
-    static void start(Activity activity, Action action) {
+    public static void start(Activity activity, Action action) {
 
         Intent mIntent = new Intent(activity, ActionActivity.class);
         mIntent.putExtra(KEY_ACTION, action);
@@ -41,11 +41,11 @@ public final class ActionActivity extends Activity {
 
     }
 
-    static void setChooserListener(ChooserListener chooserListener) {
+    public static void setChooserListener(ChooserListener chooserListener) {
         mChooserListener = chooserListener;
     }
 
-    static void setPermissionListener(PermissionListener permissionListener) {
+    public static void setPermissionListener(PermissionListener permissionListener) {
         mPermissionListener = permissionListener;
     }
 
@@ -203,15 +203,15 @@ public final class ActionActivity extends Activity {
         finish();
     }
 
-    interface RationaleListener {
+    public interface RationaleListener {
         void onRationaleResult(boolean showRationale, Bundle extras);
     }
 
-    interface PermissionListener {
+    public interface PermissionListener {
         void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras);
     }
 
-    interface ChooserListener {
+    public interface ChooserListener {
         void onChoiceResult(int requestCode, int resultCode, Intent data);
     }
 

@@ -33,5 +33,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     provided "com.android.support:design:${SUPPORT_LIB_VERSION}"
     provided "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
-    compile project(':library')
+    provided project(':library')
 }
