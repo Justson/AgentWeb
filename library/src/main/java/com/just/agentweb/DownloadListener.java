@@ -44,6 +44,9 @@ public interface DownloadListener {
         }
     }
 
+    /**
+     *
+     */
     abstract class Extra {
         protected boolean isForceDownload;
         protected boolean enableIndicator;

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AgentWeb.iml" filepath="$PROJECT_DIR$/AgentWeb.iml" />
       <module fileurl="file://$PROJECT_DIR$/agentweb/agentweb.iml" filepath="$PROJECT_DIR$/agentweb/agentweb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/agentweb-download/agentweb-download.iml" filepath="$PROJECT_DIR$/agentweb-download/agentweb-download.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/sample/sample.iml" filepath="$PROJECT_DIR$/sample/sample.iml" />
     </modules>

@@ -70,7 +70,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
 
     private static final String TAG = Downloader.class.getSimpleName();
     /**
-     * false 表示用户已经取消下载
+     * true 表示用户已经取消下载
      */
     private AtomicBoolean atomic = new AtomicBoolean(false);
     /**
@@ -117,8 +117,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
         } else {
             return AgentWebUtils.checkNetwork(mDownLoadTask.getContext());
         }
-
-
     }
 
 
@@ -219,7 +217,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
                 if (mNotify != null)
                     mNotify.cancel(mDownLoadTask.getId());
 
-                if(t){
+                if (t) {
                     return;
                 }
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownLoadTask.getContext(), mDownLoadTask.getFile());
@@ -387,7 +385,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
 
 
                 case 400:
-                    return "Network connection result";
+                    return "Network connection error";
                 case 401:
                     return "Connection status code result, non-200 or non 206";
                 case 402:

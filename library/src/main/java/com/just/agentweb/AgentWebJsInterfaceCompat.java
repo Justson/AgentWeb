@@ -22,11 +22,6 @@ public class AgentWebJsInterfaceCompat {
     }
 
 
-    @JavascriptInterface
-    public void isPageError(boolean t) {
-
-        LogUtils.i(TAG, "onPageError:" + t);
-    }
 
     @JavascriptInterface
     public void uploadFile() {
