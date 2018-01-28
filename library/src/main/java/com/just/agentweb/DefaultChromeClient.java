@@ -95,7 +95,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     /**
      * 文件选择器
      */
-    private FileChooser mFileChooser;
+    private Object mFileChooser;
 
     DefaultChromeClient(Activity activity,
                         IndicatorController indicatorController,
@@ -273,7 +273,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     }
 
 
-
     private void toCancelJsresult(JsResult result) {
         if (result != null)
             result.cancel();
@@ -317,27 +316,26 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         return openFileChooserAboveL(webView, filePathCallback, fileChooserParams);
     }
 
-    private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+    private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> valueCallbacks, FileChooserParams fileChooserParams) {
 
 
         LogUtils.i(TAG, "fileChooserParams:" + fileChooserParams.getAcceptTypes() + "  getTitle:" + fileChooserParams.getTitle() + " accept:" + Arrays.toString(fileChooserParams.getAcceptTypes()) + " length:" + fileChooserParams.getAcceptTypes().length + "  :" + fileChooserParams.isCaptureEnabled() + "  " + fileChooserParams.getFilenameHint() + "  intent:" + fileChooserParams.createIntent().toString() + "   mode:" + fileChooserParams.getMode());
 
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
-            filePathCallback.onReceiveValue(new Uri[]{});
+//            valueCallbacks.onReceiveValue(new Uri[]{});
             return false;
         }
-        FileChooser mFileChooser = this.mFileChooser;
-        this.mFileChooser = mFileChooser = new FileChooser.Builder()
-                .setWebView(webView)
-                .setActivity(mActivity)
-                .setUriValueCallbacks(filePathCallback)
-                .setFileChooserParams(fileChooserParams)
-                .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
-                .setPermissionInterceptor(this.mPermissionInterceptor)
-                .build();
-        mFileChooser.openFileChooser();
-        return true;
+
+        return AgentWebUtils.showFileChooserCompat(mActivity,
+                mWebView,
+                mChromeClientMsgCfg.getFileChooserMsgConfig(),
+                valueCallbacks,
+                fileChooserParams,
+                this.mPermissionInterceptor,
+                null,
+                null
+        );
 
     }
 
@@ -349,7 +347,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             super.openFileChooser(uploadFile, acceptType, capture);
             return;
         }
-        createAndOpenCommonFileLoader(uploadFile, acceptType);
+        createAndOpenCommonFileChooser(uploadFile, acceptType);
     }
 
     //  Android < 3.0
@@ -359,7 +357,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             return;
         }
         Log.i(TAG, "openFileChooser<3.0");
-        createAndOpenCommonFileLoader(valueCallback, "*/*");
+        createAndOpenCommonFileChooser(valueCallback, "*/*");
     }
 
     //  Android  >= 3.0
@@ -370,25 +368,27 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             super.openFileChooser(valueCallback, acceptType);
             return;
         }
-        createAndOpenCommonFileLoader(valueCallback, acceptType);
+        createAndOpenCommonFileChooser(valueCallback, acceptType);
     }
 
 
-    private void createAndOpenCommonFileLoader(ValueCallback valueCallback, String mimeType) {
+    private void createAndOpenCommonFileChooser(ValueCallback valueCallback, String mimeType) {
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             valueCallback.onReceiveValue(new Object());
             return;
         }
-        this.mFileChooser = new FileChooser.Builder()
-                .setWebView(this.mWebView)
-                .setActivity(mActivity)
-                .setUriValueCallback(valueCallback)
-                .setFileUploadMsgConfig(mChromeClientMsgCfg.getFileUploadMsgConfig())
-                .setPermissionInterceptor(this.mPermissionInterceptor)
-                .setAcceptType(mimeType)
-                .build();
-        this.mFileChooser.openFileChooser();
+
+
+        AgentWebUtils.showFileChooserCompat(mActivity,
+                mWebView,
+                mChromeClientMsgCfg.getFileChooserMsgConfig(),
+                null,
+                null,
+                this.mPermissionInterceptor,
+                valueCallback,
+                mimeType
+        );
 
     }
 

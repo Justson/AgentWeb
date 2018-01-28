@@ -38,6 +38,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -520,7 +522,6 @@ public class AgentWebUtils {
     }
 
 
-
     static File createImageFile(Context context) {
         File mFile = null;
         try {
@@ -534,8 +535,6 @@ public class AgentWebUtils {
         }
         return mFile;
     }
-
-
 
 
     public static void closeIO(Closeable closeable) {
@@ -698,8 +697,6 @@ public class AgentWebUtils {
     }
 
 
-
-
     public static boolean isUIThread() {
 
         return Looper.myLooper() == Looper.getMainLooper();
@@ -830,6 +827,79 @@ public class AgentWebUtils {
         mHandler.post(runnable);
     }
 
+    public static boolean showFileChooserCompat(Activity activity,
+                                          WebView webView,
+                                          DefaultMsgConfig
+                                                  .ChromeClientMsgCfg
+                                                  .FileChooserMsgConfig msgConfig,
+                                          ValueCallback<Uri[]> valueCallbacks,
+                                          WebChromeClient.FileChooserParams fileChooserParams,
+                                          PermissionInterceptor permissionInterceptor,
+                                          ValueCallback valueCallback,
+                                          String mimeType
+                                          ) {
+
+
+        try {
+
+            Class<?> clz = Class.forName("com.just.agentweb.filechooser.FileChooser");
+            Object mFileChooser$Builder = clz.getDeclaredMethod("newBuilder",
+                    Activity.class, WebView.class, DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig.class)
+                    .invoke(null, activity, webView, msgConfig);
+
+            Method mMethod = null;
+            if (valueCallbacks != null) {
+                clz = mFileChooser$Builder.getClass();
+                mMethod = clz.getDeclaredMethod("setUriValueCallbacks", ValueCallback.class);
+                mMethod.setAccessible(true);
+                mMethod.invoke(mFileChooser$Builder, valueCallbacks);
+            }
+
+            if(fileChooserParams!=null){
+                mMethod = clz.getDeclaredMethod("setFileChooserParams", WebChromeClient.FileChooserParams.class);
+                mMethod.setAccessible(true);
+                mMethod.invoke(mFileChooser$Builder, fileChooserParams);
+            }
+
+            if(valueCallback!=null){
+                mMethod = clz.getDeclaredMethod("setUriValueCallback", ValueCallback.class);
+                mMethod.setAccessible(true);
+                mMethod.invoke(mFileChooser$Builder, valueCallback);
+            }
+
+
+            if(!TextUtils.isEmpty(mimeType)){
+                mMethod = clz.getDeclaredMethod("setAcceptType", String.class);
+                mMethod.setAccessible(true);
+                mMethod.invoke(mFileChooser$Builder, mimeType);
+            }
+
+            mMethod = clz.getDeclaredMethod("setPermissionInterceptor", PermissionInterceptor.class);
+            mMethod.setAccessible(true);
+            mMethod.invoke(mFileChooser$Builder, permissionInterceptor);
+
+            mMethod = clz.getDeclaredMethod("build");
+            mMethod.setAccessible(true);
+            Object mFileChooser = mMethod.invoke(mFileChooser$Builder);
+
+            mMethod = mFileChooser.getClass().getDeclaredMethod("openFileChooser");
+            mMethod.setAccessible(true);
+            mMethod.invoke(mFileChooser);
+
+        } catch (Throwable throwable) {
+            if (LogUtils.isDebug()) {
+                throwable.printStackTrace();
+            }
+            if (valueCallbacks != null) {
+                LogUtils.i(TAG, "onReceiveValue empty");
+                return false;
+            }
+            if(valueCallback!=null){
+                valueCallback.onReceiveValue(null);
+            }
+        }
+        return true;
+    }
 
     public static String md5(String str) {
         try {

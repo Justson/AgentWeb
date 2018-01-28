@@ -1,4 +1,4 @@
-package filechooser;
+package com.just.agentweb.filechooser;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -26,7 +26,6 @@ import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
-import com.just.agentweb.filechooser.FileParcel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -99,7 +98,7 @@ public class FileChooser {
     /**
      * 弹窗文案信息
      */
-    private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
+    private DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig mFileChooserMsgConfig;
     /**
      * 当前 WebView
      */
@@ -138,7 +137,7 @@ public class FileChooser {
         this.jsChannel = builder.jsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
         this.mJsChannelCallback = builder.mJsChannelCallback;
-        this.mFileUploadMsgConfig = builder.mFileUploadMsgConfig;
+        this.mFileChooserMsgConfig = builder.mFileChooserMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
         this.acceptType = builder.acceptType;
@@ -249,7 +248,7 @@ public class FileChooser {
         if (this.mAgentWebUIController.get() != null) {
             this.mAgentWebUIController
                     .get()
-                    .showChooser(this.mWebView, mWebView.getUrl(), mFileUploadMsgConfig.getMedias(), getCallBack());
+                    .showChooser(this.mWebView, mWebView.getUrl(), mFileChooserMsgConfig.getMedias(), getCallBack());
             LogUtils.i(TAG, "open");
         }
 
@@ -501,7 +500,7 @@ public class FileChooser {
 
         if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
             if (mAgentWebUIController.get() != null) {
-                mAgentWebUIController.get().showMessage(String.format(mFileUploadMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
+                mAgentWebUIController.get().showMessage(String.format(mFileChooserMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
             }
             mJsChannelCallback.call(null);
             return;
@@ -537,7 +536,7 @@ public class FileChooser {
             return;
         }
         final String path = paths[0];
-        mAgentWebUIController.get().onLoading(mFileUploadMsgConfig.getLoading());
+        mAgentWebUIController.get().onLoading(mFileChooserMsgConfig.getLoading());
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas, mAgentWebUIController)));
 
     }
@@ -768,6 +767,10 @@ public class FileChooser {
         void call(String value);
     }
 
+    public static Builder newBuilder(Activity activity,WebView webView,DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig config){
+        return new Builder().setActivity(activity).setWebView(webView).setFileChooserMsgConfig(config);
+    }
+
     public static final class Builder {
 
         private Activity mActivity;
@@ -777,10 +780,10 @@ public class FileChooser {
         private WebChromeClient.FileChooserParams mFileChooserParams;
         private JsChannelCallback mJsChannelCallback;
         private boolean jsChannel = false;
-        private DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig mFileUploadMsgConfig;
+        private DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig mFileChooserMsgConfig;
         private WebView mWebView;
         private PermissionInterceptor mPermissionInterceptor;
-        String acceptType = "*/*";
+        private String acceptType = "*/*";
 
         public Builder setAcceptType(String acceptType) {
             this.acceptType = acceptType;
@@ -830,8 +833,8 @@ public class FileChooser {
         }
 
 
-        public Builder setFileUploadMsgConfig(DefaultMsgConfig.ChromeClientMsgCfg.FileUploadMsgConfig fileUploadMsgConfig) {
-            mFileUploadMsgConfig = fileUploadMsgConfig;
+        public Builder setFileChooserMsgConfig(DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig fileChooserMsgConfig) {
+            mFileChooserMsgConfig = fileChooserMsgConfig;
             return this;
         }
 

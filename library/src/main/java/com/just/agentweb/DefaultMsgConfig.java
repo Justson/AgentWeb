@@ -235,13 +235,13 @@ public final class DefaultMsgConfig {
 
     public static final class ChromeClientMsgCfg {
 
-        private FileUploadMsgConfig mFileUploadMsgConfig = new FileUploadMsgConfig();
+        private FileChooserMsgConfig mFileChooserMsgConfig = new FileChooserMsgConfig();
 
-        public FileUploadMsgConfig getFileUploadMsgConfig() {
-            return mFileUploadMsgConfig;
+        public FileChooserMsgConfig getFileChooserMsgConfig() {
+            return mFileChooserMsgConfig;
         }
 
-        public static final class FileUploadMsgConfig implements Parcelable {
+        public static final class FileChooserMsgConfig implements Parcelable {
 
             private String[] medias = new String[]{"相机", "文件选择器"};
             private String maxFileLengthLimit = "选择的文件不能大于%sMB";
@@ -255,25 +255,25 @@ public final class DefaultMsgConfig {
                 this.loading = loading;
             }
 
-            FileUploadMsgConfig() {
+            FileChooserMsgConfig() {
 
             }
 
-            protected FileUploadMsgConfig(Parcel in) {
+            protected FileChooserMsgConfig(Parcel in) {
                 medias = in.createStringArray();
                 maxFileLengthLimit = in.readString();
                 loading=in.readString();
             }
 
-            public static final Creator<FileUploadMsgConfig> CREATOR = new Creator<FileUploadMsgConfig>() {
+            public static final Creator<FileChooserMsgConfig> CREATOR = new Creator<FileChooserMsgConfig>() {
                 @Override
-                public FileUploadMsgConfig createFromParcel(Parcel in) {
-                    return new FileUploadMsgConfig(in);
+                public FileChooserMsgConfig createFromParcel(Parcel in) {
+                    return new FileChooserMsgConfig(in);
                 }
 
                 @Override
-                public FileUploadMsgConfig[] newArray(int size) {
-                    return new FileUploadMsgConfig[size];
+                public FileChooserMsgConfig[] newArray(int size) {
+                    return new FileChooserMsgConfig[size];
                 }
             };
 

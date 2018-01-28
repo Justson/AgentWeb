@@ -12,7 +12,6 @@ import java.io.File;
 import java.util.List;
 
 import static android.provider.MediaStore.EXTRA_OUTPUT;
-import static com.just.agentweb.FileChooser.REQUEST_CODE;
 
 /**
  * <p>
@@ -30,6 +29,7 @@ public final class ActionActivity extends Activity {
     private static ChooserListener mChooserListener;
     private static final String TAG = ActionActivity.class.getSimpleName();
     private Action mAction;
+    public static final int REQUEST_CODE = 0x254;
 
 
     public static void start(Activity activity, Action action) {
