@@ -34,7 +34,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,12 +46,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
@@ -62,16 +58,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import static com.just.agentweb.AgentWebConfig.AGENTWEB_FILE_PATH;
 import static com.just.agentweb.AgentWebConfig.FILE_CACHE_PATH;
@@ -488,7 +477,7 @@ public class AgentWebUtils {
     }
 
 
-    static String[] uriToPath(Activity activity, Uri[] uris) {
+    public static String[] uriToPath(Activity activity, Uri[] uris) {
 
         if (activity == null || uris == null || uris.length == 0) {
             return null;
@@ -530,37 +519,7 @@ public class AgentWebUtils {
         return filePath;
     }
 
-    //必须执行在子线程, 会阻塞直到文件转换完成;
-    static Queue<FileParcel> convertFile(String[] paths) throws Exception {
 
-        if (paths == null || paths.length == 0)
-            return null;
-        int tmp = Runtime.getRuntime().availableProcessors() + 1;
-        int result = paths.length > tmp ? tmp : paths.length;
-        Executor mExecutor = Executors.newFixedThreadPool(result);
-        final Queue<FileParcel> mQueue = new LinkedBlockingQueue<>();
-        CountDownLatch mCountDownLatch = new CountDownLatch(paths.length);
-
-        int i = 1;
-        for (String path : paths) {
-
-            LogUtils.i(TAG, "path:" + path);
-            if (TextUtils.isEmpty(path)) {
-                mCountDownLatch.countDown();
-                continue;
-            }
-
-            mExecutor.execute(new EncodeFileRunnable(path, mQueue, mCountDownLatch, i++));
-
-        }
-        mCountDownLatch.await();
-
-        if (!((ThreadPoolExecutor) mExecutor).isShutdown())
-            ((ThreadPoolExecutor) mExecutor).shutdownNow();
-
-        LogUtils.i(TAG, "convertFile isShutDown:" + (((ThreadPoolExecutor) mExecutor).isShutdown()));
-        return mQueue;
-    }
 
     static File createImageFile(Context context) {
         File mFile = null;
@@ -577,57 +536,7 @@ public class AgentWebUtils {
     }
 
 
-    static class EncodeFileRunnable implements Runnable {
 
-        private String filePath;
-        private Queue<FileParcel> mQueue;
-        private CountDownLatch mCountDownLatch;
-        private int id;
-
-        public EncodeFileRunnable(String filePath, Queue<FileParcel> queue, CountDownLatch countDownLatch, int id) {
-            this.filePath = filePath;
-            this.mQueue = queue;
-            this.mCountDownLatch = countDownLatch;
-            this.id = id;
-        }
-
-
-        @Override
-        public void run() {
-            InputStream is = null;
-            ByteArrayOutputStream os = null;
-            try {
-                File mFile = new File(filePath);
-                if (mFile.exists()) {
-
-                    is = new FileInputStream(mFile);
-                    if (is == null)
-                        return;
-
-                    os = new ByteArrayOutputStream();
-                    byte[] b = new byte[1024];
-                    int len;
-                    while ((len = is.read(b, 0, 1024)) != -1) {
-                        os.write(b, 0, len);
-                    }
-                    mQueue.offer(new FileParcel(id, mFile.getAbsolutePath(), Base64.encodeToString(os.toByteArray(), Base64.DEFAULT)));
-                    LogUtils.i(TAG, "enqueue");
-                } else {
-                    LogUtils.i(TAG, "File no exists");
-                }
-
-            } catch (Throwable e) {
-                LogUtils.i(TAG, "throwwable");
-                e.printStackTrace();
-            } finally {
-                closeIO(is);
-                closeIO(os);
-                mCountDownLatch.countDown();
-            }
-
-
-        }
-    }
 
     public static void closeIO(Closeable closeable) {
         try {
@@ -788,38 +697,10 @@ public class AgentWebUtils {
 
     }
 
-    static String convertFileParcelObjectsToJson(Collection<FileParcel> collection) {
-
-        if (collection == null || collection.size() == 0)
-            return null;
 
 
-        Iterator<FileParcel> mFileParcels = collection.iterator();
-        JSONArray mJSONArray = new JSONArray();
-        try {
-            while (mFileParcels.hasNext()) {
-                JSONObject jo = new JSONObject();
-                FileParcel mFileParcel = mFileParcels.next();
 
-                jo.put("contentPath", mFileParcel.getContentPath());
-                jo.put("fileBase64", mFileParcel.getFileBase64());
-                jo.put("id", mFileParcel.getId());
-                mJSONArray.put(jo);
-            }
-
-        } catch (Exception e) {
-
-        }
-
-
-//        Log.i("Info","json:"+mJSONArray);
-        return mJSONArray + "";
-
-
-    }
-
-
-    static boolean isUIThread() {
+    public static boolean isUIThread() {
 
         return Looper.myLooper() == Looper.getMainLooper();
 
@@ -866,7 +747,7 @@ public class AgentWebUtils {
         return hasPermission(context, Arrays.asList(permissions));
     }
 
-    static boolean hasPermission(@NonNull Context context, @NonNull List<String> permissions) {
+    public static boolean hasPermission(@NonNull Context context, @NonNull List<String> permissions) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
         for (String permission : permissions) {
             int result = ContextCompat.checkSelfPermission(context, permission);
@@ -881,7 +762,7 @@ public class AgentWebUtils {
         return true;
     }
 
-    static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
+    public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
 
         if (permissions == null || permissions.length == 0)
             return null;
@@ -943,7 +824,7 @@ public class AgentWebUtils {
         throw new IllegalStateException("please check webcreator's create method was be called ?");
     }
 
-    static void runInUiThread(Runnable runnable) {
+    public static void runInUiThread(Runnable runnable) {
         if (mHandler == null)
             mHandler = new Handler(Looper.getMainLooper());
         mHandler.post(runnable);
