@@ -1,13 +1,10 @@
 package com.just.agentweb.download;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
@@ -120,29 +117,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
 
     private boolean checknet() {
         if (!mDownloadTask.isForce()) {
-            return checkWifi(mDownloadTask.getContext());
+            return AgentWebUtils.checkWifi(mDownloadTask.getContext());
         } else {
-            return checkNetwork(mDownloadTask.getContext());
+            return AgentWebUtils.checkNetwork(mDownloadTask.getContext());
         }
     }
 
-    boolean checkWifi(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity == null) {
-            return false;
-        }
-        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
-        return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
-    }
-
-    boolean checkNetwork(Context context) {
-        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivity == null) {
-            return false;
-        }
-        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
-        return info != null && info.isConnected();
-    }
 
     @Override
     protected Integer doInBackground(Void... params) {
@@ -355,8 +335,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
             }
             return DownloadMsg.SUCCESSFULL.CODE;
         } finally {
-            CloseUtils.closeIO(out);
-            CloseUtils.closeIO(bis);
+            AgentWebUtils.closeIO(out);
+            AgentWebUtils.closeIO(bis);
 
         }
 

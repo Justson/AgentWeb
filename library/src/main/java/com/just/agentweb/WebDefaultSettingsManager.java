@@ -135,16 +135,6 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         webView.setDownloadListener(downloadListener);
 
 
-       /* mDownloadListener = new DefaultDownloadImpl.Extra().setActivity(mActivity)
-                .setEnableIndicator(true)//
-                .setForceDownload(false)//
-                .setDownloadResultListeners(downloadResultListeners)//
-                .setDownloadMsgConfig(mDefaultMsgConfig.getDownloadMsgConfig())//
-                .setParallelDownload(isParallelDl)//
-                .setPermissionInterceptor(this.mPermissionInterceptor)
-                .setIcon(icon)
-                .setWebView(this.mWebCreator.getWebView())
-                .create();*/
         return this;
     }
 

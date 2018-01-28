@@ -48,12 +48,12 @@ public interface DownloadListener {
      *
      */
     abstract class Extra {
-        protected boolean isForceDownload;
-        protected boolean enableIndicator;
+        protected boolean isForceDownload = false;
+        protected boolean enableIndicator = true;
         protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
         protected int icon = -1;
-        protected boolean isParallelDownload = false;
-        protected boolean isOpenBreakPointDownload = false;
+        protected boolean isParallelDownload = true;
+        protected boolean isOpenBreakPointDownload = true;
 
 
         public boolean isForceDownload() {

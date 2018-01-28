@@ -19,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 
@@ -32,11 +33,11 @@ public final class AgentWeb {
      */
     private static final String TAG = AgentWeb.class.getSimpleName();
     /**
-     *  使用 AgentWeb 的 Activity
+     * 使用 AgentWeb 的 Activity
      */
     private Activity mActivity;
     /**
-     *  承载 WebParentLayout 的 ViewGroup
+     * 承载 WebParentLayout 的 ViewGroup
      */
     private ViewGroup mViewGroup;
     /**
@@ -168,6 +169,8 @@ public final class AgentWeb {
      */
     private EventInterceptor mEventInterceptor;
 
+    private DownloadListener mAgentWebDownloadListener;
+
 
     private AgentWeb(AgentBuilder agentBuilder) {
         TAG_TARGET = FRAGMENT_TAG;
@@ -207,12 +210,11 @@ public final class AgentWeb {
         }
         this.mMiddleWrareWebClientBaseHeader = agentBuilder.header;
         this.mMiddlewareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
+        this.mAgentWebDownloadListener = agentBuilder.mDownloadListener;
         init();
-        setDownloadListener(agentBuilder.mDownloadListener, agentBuilder.isParallelDownload, agentBuilder.icon);
     }
 
     /**
-     *
      * @return DefaultMsgConfig 文案信息
      */
     public DefaultMsgConfig getDefaultMsgConfig() {
@@ -221,13 +223,11 @@ public final class AgentWeb {
 
 
     /**
-     *
      * @return PermissionInterceptor 权限控制者
      */
     public PermissionInterceptor getPermissionInterceptor() {
         return this.mPermissionInterceptor;
     }
-
 
 
     public WebLifeCycle getWebLifeCycle() {
@@ -457,8 +457,6 @@ public final class AgentWeb {
     }
 
 
-
-
     private AgentWeb ready() {
 
         AgentWebConfig.initCookiesManager(mActivity.getApplicationContext());
@@ -488,27 +486,56 @@ public final class AgentWeb {
     }
 
 
-    private void setDownloadListener(DownloadListener downloadListener, boolean isParallelDl, int icon) {
-        android.webkit.DownloadListener mDownloadListener = this.mDownloadListener;
-        if (mDownloadListener == null) {
-            this.mDownloadListener = mDownloadListener = new DefaultDownloadImpl.Builder().setActivity(mActivity)
-                    .setEnableIndicator(true)//
-                    .setForceDownload(false)//
-                    .setDownloadListener(downloadListener)//
-                    .setDownloadMsgConfig(mDefaultMsgConfig.getDownloadMsgConfig())//
-                    .setOpenBreakPointDownload(true)
-                    .setParallelDownload(isParallelDl)//
-                    .setPermissionInterceptor(this.mPermissionInterceptor)
-                    .setIcon(icon)
-                    .setWebView(this.mWebCreator.getWebView())
-                    .create();
-
-        }
-    }
-
     private android.webkit.DownloadListener getLoadListener() {
         android.webkit.DownloadListener mDownloadListener = this.mDownloadListener;
-        return mDownloadListener;
+        if (mDownloadListener != null) {
+            return mDownloadListener;
+        }
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName("com.just.agentweb.download.DefaultDownloadImpl");
+            Object mDefaultDownloadImpl$Builder = clazz.getDeclaredMethod("newBuilder", Activity.class).invoke(null, this.mActivity);
+
+            clazz = mDefaultDownloadImpl$Builder.getClass();
+            LogUtils.i(TAG, "clazz:" + clazz.toString());
+
+//            Method mMethod = clazz.getDeclaredMethod("setEnableIndicator", boolean.class);
+//            mMethod.setAccessible(true);
+//            mMethod.invoke(mDefaultDownloadImpl$Builder, new Boolean(true));
+//
+//            Method mMethod = clazz.getDeclaredMethod("setForceDownload", boolean.class);
+//            mMethod.setAccessible(true);
+//            mMethod.invoke(mDefaultDownloadImpl$Builder, new Boolean(false));
+
+            Method mMethod = clazz.getDeclaredMethod("setDownloadListener", DownloadListener.class);
+            mMethod.setAccessible(true);
+            mMethod.invoke(mDefaultDownloadImpl$Builder, this.mAgentWebDownloadListener);
+
+            mMethod = clazz.getDeclaredMethod("setDownloadMsgConfig", DefaultMsgConfig.DownloadMsgConfig.class);
+            mMethod.setAccessible(true);
+            mMethod.invoke(mDefaultDownloadImpl$Builder, mDefaultMsgConfig.getDownloadMsgConfig());
+
+//            mMethod = clazz.getDeclaredMethod("setOpenBreakPointDownload", boolean.class);
+//            mMethod.setAccessible(true);
+//            mMethod.invoke(mDefaultDownloadImpl$Builder, new Boolean(true));
+
+            mMethod = clazz.getDeclaredMethod("setPermissionInterceptor", PermissionInterceptor.class);
+            mMethod.setAccessible(true);
+            mMethod.invoke(mDefaultDownloadImpl$Builder, this.mPermissionInterceptor);
+
+            mMethod = clazz.getDeclaredMethod("setWebView", WebView.class);
+            mMethod.setAccessible(true);
+            mMethod.invoke(mDefaultDownloadImpl$Builder, this.mWebCreator.getWebView());
+
+
+            mMethod = clazz.getDeclaredMethod("create");
+            return this.mDownloadListener = mDownloadListener = (android.webkit.DownloadListener) mMethod.invoke(mDefaultDownloadImpl$Builder);
+        } catch (Throwable ignore) {
+            if (LogUtils.isDebug()) {
+                ignore.printStackTrace();
+            }
+        }
+        return null;
     }
 
 
@@ -567,8 +594,6 @@ public final class AgentWeb {
         private boolean webClientHelper = true;
         private IWebLayout mWebLayout = null;
         private PermissionInterceptor mPermissionInterceptor = null;
-        private boolean isParallelDownload = false;
-        private int icon = -1;
         private DownloadListener mDownloadListener = null;
         private AgentWebUIController mAgentWebUIController;
         private DefaultWebClient.OpenOtherPageWays openOtherPage = null;
@@ -788,7 +813,7 @@ public final class AgentWeb {
 
         public CommonBuilder setDownloadListener(@Nullable DownloadListener downloadListener) {
 
-            this.mAgentBuilder.mDownloadListener =downloadListener;
+            this.mAgentBuilder.mDownloadListener = downloadListener;
             return this;
         }
 

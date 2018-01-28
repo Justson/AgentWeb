@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.WebView;
+
 import com.just.agentweb.Action;
 import com.just.agentweb.ActionActivity;
 import com.just.agentweb.AgentWebPermissions;
@@ -21,6 +22,7 @@ import com.just.agentweb.DownloadListener;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.Provider;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -74,7 +76,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     private void bind(Builder builder) {
         mActivityWeakReference = new WeakReference<Activity>(builder.mActivity);
         this.mContext = builder.mActivity.getApplicationContext();
-        this.isForce = builder.isForce;
+        this.isForce = builder.isForceDownload;
         this.enableIndicator = builder.enableIndicator;
         this.mDownloadListener = builder.mDownloadListener;
         this.mDownloadMsgConfig = builder.mDownloadMsgConfig;
@@ -102,7 +104,6 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength);
 
     }
-
 
 
     private void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
@@ -256,10 +257,10 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
         //并行下载.
         if (isParallelDownload.get()) {
-            new Downloader(new DownloadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? com.just.agentweb.R.drawable.ic_file_download_black_24dp : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
+            new Downloader(new DownloadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
         } else {
             //默认串行下载.
-            new Downloader(new DownloadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? com.just.agentweb.R.drawable.ic_file_download_black_24dp : icon)).execute();
+            new Downloader(new DownloadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).execute();
         }
 
         this.url = null;
@@ -444,14 +445,18 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
     }
 
+    public static Builder newBuilder(Activity activity) {
+        return new Builder().setActivity(activity);
+    }
+
 
     public static class Builder extends Extra {
         private Activity mActivity;
-        private boolean isForce;
-        private boolean enableIndicator;
+        private boolean isForceDownload =false;
+        private boolean enableIndicator=true;
         private DownloadListener mDownloadListener;
         private PermissionInterceptor mPermissionInterceptor;
-        private boolean isParallelDownload = false;
+        private boolean isParallelDownload = true;
         private WebView mWebView;
         protected int icon = -1;
         private DefaultDownloadImpl mDefaultDownload;
@@ -467,7 +472,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         public Builder setForceDownload(boolean force) {
-            isForce = force;
+            isForceDownload = force;
             return this;
         }
 

@@ -48,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -133,8 +134,6 @@ public class AgentWebUtils {
         return AGENTWEB_FILE_PATH = mFile.getAbsolutePath();
 
     }
-
-
 
 
     public static File createFileByName(Context context, String name, boolean cover) throws IOException {
@@ -350,6 +349,24 @@ public class AgentWebUtils {
             snackbarWeakReference.get().dismiss();
             snackbarWeakReference = null;
         }
+    }
+
+    public static boolean checkWifi(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity == null) {
+            return false;
+        }
+        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
+        return info != null && info.isConnected() && info.getType() == ConnectivityManager.TYPE_WIFI;
+    }
+
+    public static boolean checkNetwork(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity == null) {
+            return false;
+        }
+        @SuppressLint("MissingPermission") NetworkInfo info = connectivity.getActiveNetworkInfo();
+        return info != null && info.isConnected();
     }
 
     static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
@@ -603,13 +620,25 @@ public class AgentWebUtils {
                 LogUtils.i(TAG, "throwwable");
                 e.printStackTrace();
             } finally {
-                CloseUtils.closeIO(is);
-                CloseUtils.closeIO(os);
+                closeIO(is);
+                closeIO(os);
                 mCountDownLatch.countDown();
             }
 
 
         }
+    }
+
+    public static void closeIO(Closeable closeable) {
+        try {
+
+            if (closeable != null)
+                closeable.close();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -874,7 +903,7 @@ public class AgentWebUtils {
     }
 
     //获取应用的名称
-    static String getApplicationName(Context context) {
+    public static String getApplicationName(Context context) {
         PackageManager packageManager = null;
         ApplicationInfo applicationInfo = null;
         try {
