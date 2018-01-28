@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 27
@@ -33,5 +35,17 @@ dependencies {
     testCompile 'junit:junit:4.12'
     provided "com.android.support:design:${SUPPORT_LIB_VERSION}"
     provided "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
-    provided project(':library')
+    provided project(':agentweb')
+}
+task javadoc(type: Javadoc) {
+    options.encoding = "utf-8"
+}
+publish {
+    userOrg = 'just'
+    groupId = 'com.just.agentweb'
+    artifactId = 'filechooser'
+    version = '4.0.0'
+    description = 'very easy to build you web page'
+    website = "https://github.com/Justson/AgentWeb"
+
 }
