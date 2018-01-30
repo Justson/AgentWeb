@@ -55,9 +55,11 @@ dependencies {
     compile project(':agentweb-core')
     compile project(':agentweb-download')
     compile project(':agentweb-filechooser')
-//    compile 'com.just.agentweb:agentweb:4.0.0-alpha-2'
-//    compile 'com.just.agentweb:agentweb-download:4.0.0-alpha-2'
-//    compile 'com.just.agentweb:agentweb-filechooser:4.0.0-alpha-2'
+
+    compile 'com.just.agentweb:agentweb:4.0.0-alpha-2'
+    compile 'com.just.agentweb:download:4.0.0-alpha-2'
+    compile 'com.just.agentweb:filechooser:4.0.0-alpha-2'
+    
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
