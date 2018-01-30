@@ -49,7 +49,7 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 
 
 ## 使用
-#### 普通使用
+#### 基础用法
 
 ```
 mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
@@ -263,7 +263,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
     };
 ```
 
-* #### AgentWeb 完整使用
+* #### AgentWeb 完整用法
 ```java
 mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
