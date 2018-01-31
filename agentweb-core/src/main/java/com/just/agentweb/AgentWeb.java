@@ -529,6 +529,7 @@ public final class AgentWeb {
 
 
             mMethod = clazz.getDeclaredMethod("create");
+            mMethod.setAccessible(true);
             return this.mDownloadListener = mDownloadListener = (android.webkit.DownloadListener) mMethod.invoke(mDefaultDownloadImpl$Builder);
         } catch (Throwable ignore) {
             if (LogUtils.isDebug()) {

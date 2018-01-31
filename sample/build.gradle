@@ -52,9 +52,9 @@ dependencies {
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
-    compile project(':agentweb-core')
-    compile project(':agentweb-download')
-    compile project(':agentweb-filechooser')
+//    compile project(':agentweb-core')
+//    compile project(':agentweb-download')
+//    compile project(':agentweb-filechooser')
 
     compile 'com.just.agentweb:agentweb:4.0.0-alpha-2'
     compile 'com.just.agentweb:download:4.0.0-alpha-2'
