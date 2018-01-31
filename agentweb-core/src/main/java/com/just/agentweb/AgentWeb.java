@@ -173,7 +173,7 @@ public final class AgentWeb {
 
 
     private AgentWeb(AgentBuilder agentBuilder) {
-        TAG_TARGET = FRAGMENT_TAG;
+        TAG_TARGET = agentBuilder.tag;
         this.mActivity = agentBuilder.mActivity;
         this.mFragment = agentBuilder.mFragment;
         this.mViewGroup = agentBuilder.mViewGroup;
