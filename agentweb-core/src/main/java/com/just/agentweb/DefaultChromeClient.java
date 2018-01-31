@@ -334,6 +334,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
                 fileChooserParams,
                 this.mPermissionInterceptor,
                 null,
+                null,
                 null
         );
 
@@ -387,7 +388,8 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
                 null,
                 this.mPermissionInterceptor,
                 valueCallback,
-                mimeType
+                mimeType,
+                null
         );
 
     }

@@ -1,6 +1,8 @@
 package com.just.agentweb;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.webkit.JavascriptInterface;
 
 import java.lang.ref.WeakReference;
@@ -12,7 +14,7 @@ import java.lang.ref.WeakReference;
 public class AgentWebJsInterfaceCompat {
 
     private WeakReference<AgentWeb> mReference = null;
-//    private FileChooser mFileChooser;
+    //    private FileChooser mFileChooser;
     private WeakReference<Activity> mActivityWeakReference = null;
     private String TAG = this.getClass().getSimpleName();
 
@@ -22,29 +24,36 @@ public class AgentWebJsInterfaceCompat {
     }
 
 
-
     @JavascriptInterface
     public void uploadFile() {
         uploadFile("*/*");
     }
 
     public void uploadFile(String acceptType) {
-//        if (mActivityWeakReference.get() != null && mReference.get() != null) {
-//            mFileChooser = new FileChooser.Builder()
-//                    .setActivity(mActivityWeakReference.get())
-//                    .setJsChannelCallback(new FileChooser.JsChannelCallback() {
-//                        @Override
-//                        public void call(String value) {
-//                            if (mReference.get() != null)
-//                                mReference.get().getJsAccessEntrace().quickCallJs("uploadFileResult", value);
-//                        }
-//                    }).setFileUploadMsgConfig(mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileChooserMsgConfig())
-//                    .setPermissionInterceptor(mReference.get().getPermissionInterceptor())
-//                    .setAcceptType(acceptType)
-//                    .setWebView(mReference.get().getWebCreator().getWebView())
-//                    .build();
-//            mFileChooser.openFileChooser();
-//        }
+        if (mActivityWeakReference.get() != null && mReference.get() != null) {
+
+
+            AgentWebUtils.showFileChooserCompat(mActivityWeakReference.get(),
+                    mReference.get().getWebCreator().getWebView(),
+                    mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileChooserMsgConfig(),
+                    null,
+                    null,
+                    mReference.get().getPermissionInterceptor(),
+                    null,
+                    acceptType,
+                    new Handler.Callback() {
+                        @Override
+                        public boolean handleMessage(Message msg) {
+                            if (mReference.get() != null) {
+                                mReference.get().getJsAccessEntrace().quickCallJs("uploadFileResult", msg.obj instanceof String ? (String) msg.obj : null);
+                            }
+                            return true;
+                        }
+                    }
+            );
+
+
+        }
     }
 
 }

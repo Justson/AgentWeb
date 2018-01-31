@@ -204,8 +204,6 @@ public class AgentWebUtils {
 
     static Uri getUriFromFile(Context context, File file) {
         Uri uri = null;
-
-//        LogUtils.i("Info", "::" + context.getApplicationInfo().targetSdkVersion + "   INT:" + Build.VERSION.SDK_INT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             uri = getUriFromFileForN(context, file);
         } else {
@@ -214,10 +212,8 @@ public class AgentWebUtils {
         return uri;
     }
 
-
     static Uri getUriFromFileForN(Context context, File file) {
         Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".AgentWebFileProvider", file);
-//        LogUtils.i(TAG, "getUriFromFileForN:" + (context.getPackageName() + ".AgentWebFileProvider"+"   uri:"+fileUri));
         return fileUri;
     }
 
@@ -828,16 +824,17 @@ public class AgentWebUtils {
     }
 
     public static boolean showFileChooserCompat(Activity activity,
-                                          WebView webView,
-                                          DefaultMsgConfig
-                                                  .ChromeClientMsgCfg
-                                                  .FileChooserMsgConfig msgConfig,
-                                          ValueCallback<Uri[]> valueCallbacks,
-                                          WebChromeClient.FileChooserParams fileChooserParams,
-                                          PermissionInterceptor permissionInterceptor,
-                                          ValueCallback valueCallback,
-                                          String mimeType
-                                          ) {
+                                                WebView webView,
+                                                DefaultMsgConfig
+                                                        .ChromeClientMsgCfg
+                                                        .FileChooserMsgConfig msgConfig,
+                                                ValueCallback<Uri[]> valueCallbacks,
+                                                WebChromeClient.FileChooserParams fileChooserParams,
+                                                PermissionInterceptor permissionInterceptor,
+                                                ValueCallback valueCallback,
+                                                String mimeType,
+                                                Handler.Callback jsChannelCallback
+    ) {
 
 
         try {
@@ -855,24 +852,31 @@ public class AgentWebUtils {
                 mMethod.invoke(mFileChooser$Builder, valueCallbacks);
             }
 
-            if(fileChooserParams!=null){
+            if (fileChooserParams != null) {
                 mMethod = clz.getDeclaredMethod("setFileChooserParams", WebChromeClient.FileChooserParams.class);
                 mMethod.setAccessible(true);
                 mMethod.invoke(mFileChooser$Builder, fileChooserParams);
             }
 
-            if(valueCallback!=null){
+            if (valueCallback != null) {
                 mMethod = clz.getDeclaredMethod("setUriValueCallback", ValueCallback.class);
                 mMethod.setAccessible(true);
                 mMethod.invoke(mFileChooser$Builder, valueCallback);
             }
 
 
-            if(!TextUtils.isEmpty(mimeType)){
+            if (!TextUtils.isEmpty(mimeType)) {
                 mMethod = clz.getDeclaredMethod("setAcceptType", String.class);
                 mMethod.setAccessible(true);
                 mMethod.invoke(mFileChooser$Builder, mimeType);
             }
+
+            if (jsChannelCallback != null) {
+                mMethod = clz.getDeclaredMethod("setJsChannelCallback", Handler.Callback.class);
+                mMethod.setAccessible(true);
+                mMethod.invoke(mFileChooser$Builder, jsChannelCallback);
+            }
+
 
             mMethod = clz.getDeclaredMethod("setPermissionInterceptor", PermissionInterceptor.class);
             mMethod.setAccessible(true);
@@ -894,7 +898,7 @@ public class AgentWebUtils {
                 LogUtils.i(TAG, "onReceiveValue empty");
                 return false;
             }
-            if(valueCallback!=null){
+            if (valueCallback != null) {
                 valueCallback.onReceiveValue(null);
             }
         }

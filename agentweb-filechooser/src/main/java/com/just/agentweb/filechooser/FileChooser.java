@@ -762,12 +762,25 @@ public class FileChooser {
         }
     }
 
-    interface JsChannelCallback {
+    static class JsChannelCallback {
+        WeakReference<Handler.Callback> callback = null;
 
-        void call(String value);
+        JsChannelCallback(Handler.Callback callback) {
+            this.callback = new WeakReference<Handler.Callback>(callback);
+        }
+
+        public static JsChannelCallback create(Handler.Callback callback) {
+            return new JsChannelCallback(callback);
+        }
+
+        void call(String value) {
+            if (this.callback != null && this.callback.get() != null) {
+                this.callback.get().handleMessage(Message.obtain(null, "JsChannelCallback".hashCode(), value));
+            }
+        }
     }
 
-    public static Builder newBuilder(Activity activity,WebView webView,DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig config){
+    public static Builder newBuilder(Activity activity, WebView webView, DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig config) {
         return new Builder().setActivity(activity).setWebView(webView).setFileChooserMsgConfig(config);
     }
 
@@ -824,8 +837,8 @@ public class FileChooser {
             return this;
         }
 
-        public Builder setJsChannelCallback(JsChannelCallback jsChannelCallback) {
-            mJsChannelCallback = jsChannelCallback;
+        public Builder setJsChannelCallback(Handler.Callback jsChannelCallback) {
+            mJsChannelCallback = JsChannelCallback.create(jsChannelCallback);
             jsChannel = true;
             mUriValueCallback = null;
             mUriValueCallbacks = null;
