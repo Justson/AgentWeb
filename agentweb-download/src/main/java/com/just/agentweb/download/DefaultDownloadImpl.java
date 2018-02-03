@@ -305,7 +305,9 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     @Override
     public void progress(String url, long downloaded, long length, long useTime, DownloadingService downloadingService) {
         if(mDownloadListener!=null){
-            mDownloadListener.progress(url,downloaded,length,useTime,downloadingService);
+            synchronized (mDownloadListener){
+                mDownloadListener.progress(url,downloaded,length,useTime,downloadingService);
+            }
         }
     }
 
