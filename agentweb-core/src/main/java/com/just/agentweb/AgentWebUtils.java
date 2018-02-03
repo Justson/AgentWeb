@@ -823,17 +823,17 @@ public class AgentWebUtils {
         mHandler.post(runnable);
     }
 
-    public static boolean showFileChooserCompat(Activity activity,
-                                                WebView webView,
-                                                DefaultMsgConfig
-                                                        .ChromeClientMsgCfg
-                                                        .FileChooserMsgConfig msgConfig,
-                                                ValueCallback<Uri[]> valueCallbacks,
-                                                WebChromeClient.FileChooserParams fileChooserParams,
-                                                PermissionInterceptor permissionInterceptor,
-                                                ValueCallback valueCallback,
-                                                String mimeType,
-                                                Handler.Callback jsChannelCallback
+    static boolean showFileChooserCompat(Activity activity,
+                                         WebView webView,
+                                         DefaultMsgConfig
+                                                 .ChromeClientMsgCfg
+                                                 .FileChooserMsgConfig msgConfig,
+                                         ValueCallback<Uri[]> valueCallbacks,
+                                         WebChromeClient.FileChooserParams fileChooserParams,
+                                         PermissionInterceptor permissionInterceptor,
+                                         ValueCallback valueCallback,
+                                         String mimeType,
+                                         Handler.Callback jsChannelCallback
     ) {
 
 

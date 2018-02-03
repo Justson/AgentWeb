@@ -30,9 +30,9 @@ public class DownloadTask implements Serializable {
     /**
      * 如否需要需要指示器
      */
-    private boolean enableIndicator=true;
+    private boolean enableIndicator = true;
     /**
-     *  Context
+     * Context
      */
     private Context mContext;
     /**
@@ -48,11 +48,18 @@ public class DownloadTask implements Serializable {
      */
     private int drawableRes;
 
-    private WeakReference<DownloadListener>mReference=null;
+    private WeakReference<DownloadListener> mDownloadWR = null;
     private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
 
 
-    public DownloadTask(int id, String url, DownloadListener downloadListeners, boolean isForce, boolean enableIndicator, Context context, File file, long length, DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig, int drawableRes) {
+    private volatile boolean isParallelDownload = false;
+
+    public DownloadTask(int id, String url,
+                        DownloadListener downloadListeners,
+                        boolean isForce, boolean enableIndicator,
+                        Context context, File file, long length,
+                        DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig,
+                        int drawableRes,boolean isParallelDownload) {
         this.id = id;
         this.url = url;
         this.isForce = isForce;
@@ -61,8 +68,13 @@ public class DownloadTask implements Serializable {
         mFile = file;
         this.length = length;
         this.drawableRes = drawableRes;
-        mReference=new WeakReference<DownloadListener>(downloadListeners);
+        mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
         this.mDownloadMsgConfig = downloadMsgConfig;
+        this.isParallelDownload=isParallelDownload;
+    }
+
+    public boolean isParallelDownload() {
+        return isParallelDownload;
     }
 
     public int getId() {
@@ -97,12 +109,12 @@ public class DownloadTask implements Serializable {
         this.enableIndicator = enableIndicator;
     }
 
-    public WeakReference<DownloadListener> getReference() {
-        return mReference;
+    public WeakReference<DownloadListener> getDownloadWR() {
+        return mDownloadWR;
     }
 
-    public void setReference(WeakReference<DownloadListener> reference) {
-        mReference = reference;
+    public void setDownloadWR(WeakReference<DownloadListener> downloadWR) {
+        mDownloadWR = downloadWR;
     }
 
     public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
@@ -141,10 +153,9 @@ public class DownloadTask implements Serializable {
         return drawableRes;
     }
 
-    public DownloadListener getDownLoadResultListener() {
-        return mReference.get();
+    public DownloadListener getDownloadListener() {
+        return mDownloadWR.get();
     }
-
 
 
     public void setDrawableRes(int drawableRes) {

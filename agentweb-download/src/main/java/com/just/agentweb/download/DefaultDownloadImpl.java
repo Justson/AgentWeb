@@ -19,9 +19,9 @@ import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DownloadListener;
+import com.just.agentweb.DownloadingService;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
-import com.just.agentweb.Provider;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -29,14 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -255,13 +248,10 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             mAgentWebUIController.get()
                     .showMessage(mDownloadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
         }
-        //并行下载.
-        if (isParallelDownload.get()) {
-            new Downloader(new DownloadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
-        } else {
-            //默认串行下载.
-            new Downloader(new DownloadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon)).execute();
-        }
+        DownloadTask mDownloadTask = new DownloadTask(NoticationID++, url, this, isForce, enableIndicator, mContext, file, contentLength, mDownloadMsgConfig, icon == -1 ? R.drawable.ic_file_download_black_24dp : icon, isParallelDownload.get());
+
+        new Downloader().download(mDownloadTask);
+
 
         this.url = null;
         this.contentDisposition = null;
@@ -313,70 +303,19 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
 
     @Override
+    public void progress(String url, long downloaded, long length, long useTime, DownloadingService downloadingService) {
+        if(mDownloadListener!=null){
+            mDownloadListener.progress(url,downloaded,length,useTime,downloadingService);
+        }
+    }
+
+    @Override
     public boolean result(String path, String url, Throwable e) {
         ExecuteTasksMap.getInstance().removeTask(path);
         return mDownloadListener != null && mDownloadListener.result(path, url, e);
     }
 
 
-    static class ExecutorProvider implements Provider<Executor> {
-
-
-        private final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-        private final int CORE_POOL_SIZE = (int) (Math.max(2, Math.min(CPU_COUNT - 1, 4)) * 1.5);
-        private final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
-        private final int KEEP_ALIVE_SECONDS = 15;
-
-        private final ThreadFactory sThreadFactory = new ThreadFactory() {
-            private final AtomicInteger mCount = new AtomicInteger(1);
-            private SecurityManager securityManager = System.getSecurityManager();
-            private ThreadGroup group = securityManager != null ? securityManager.getThreadGroup() : Thread.currentThread().getThreadGroup();
-
-            public Thread newThread(Runnable r) {
-                Thread mThread = new Thread(group, r, "pool-agentweb-thread-" + mCount.getAndIncrement());
-                if (mThread.isDaemon()) {
-                    mThread.setDaemon(false);
-                }
-                mThread.setPriority(Thread.MIN_PRIORITY);
-                LogUtils.i(TAG, "Thread Name:" + mThread.getName());
-                LogUtils.i(TAG, "live:" + mThreadPoolExecutor.getActiveCount() + "    getCorePoolSize:" + mThreadPoolExecutor.getCorePoolSize() + "  getPoolSize:" + mThreadPoolExecutor.getPoolSize());
-                return mThread;
-            }
-        };
-
-        private static final BlockingQueue<Runnable> sPoolWorkQueue =
-                new LinkedBlockingQueue<Runnable>(128);
-        private ThreadPoolExecutor mThreadPoolExecutor;
-
-        private ExecutorProvider() {
-            internalInit();
-        }
-
-        private void internalInit() {
-            if (mThreadPoolExecutor != null && !mThreadPoolExecutor.isShutdown()) {
-                mThreadPoolExecutor.shutdownNow();
-            }
-            mThreadPoolExecutor = new ThreadPoolExecutor(
-                    CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
-                    sPoolWorkQueue, sThreadFactory);
-            mThreadPoolExecutor.allowCoreThreadTimeOut(true);
-        }
-
-
-        public static ExecutorProvider getInstance() {
-            return InnerHolder.M_EXECUTOR_PROVIDER;
-        }
-
-        static class InnerHolder {
-            private static final ExecutorProvider M_EXECUTOR_PROVIDER = new ExecutorProvider();
-        }
-
-        @Override
-        public Executor provide() {
-            return mThreadPoolExecutor;
-        }
-
-    }
 
     //静态缓存当前正在下载的任务url
     public static class ExecuteTasksMap extends ReentrantLock {
@@ -452,8 +391,8 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
     public static class Builder extends Extra {
         private Activity mActivity;
-        private boolean isForceDownload =false;
-        private boolean enableIndicator=true;
+        private boolean isForceDownload = false;
+        private boolean enableIndicator = true;
         private DownloadListener mDownloadListener;
         private PermissionInterceptor mPermissionInterceptor;
         private boolean isParallelDownload = true;

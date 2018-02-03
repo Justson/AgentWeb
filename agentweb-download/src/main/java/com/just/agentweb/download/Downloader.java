@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
+import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.DownloadListener;
 import com.just.agentweb.LogUtils;
+import com.just.agentweb.Provider;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,7 +26,14 @@ import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.UnknownFormatConversionException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -32,7 +41,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class Downloader extends AsyncTask<Void, Integer, Integer> implements Observer {
+public class Downloader extends AsyncTask<Void, Integer, Integer> implements AgentWebDownloader<DownloadTask>, Observer {
 
     /**
      * 下载参数
@@ -89,10 +98,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
     };
 
 
-    Downloader(DownloadTask downloadTask) {
-        this.mDownloadTask = downloadTask;
-        this.totals = mDownloadTask.getLength();
-        checkNullTask(downloadTask);
+    //    Downloader(DownloadTask downloadTask) {
+//        this.mDownloadTask = downloadTask;
+//        this.totals = mDownloadTask.getLength();
+//        checkNullTask(downloadTask);
+//    }
+    Downloader() {
+
     }
 
     private void checkNullTask(DownloadTask downloadTask) {
@@ -194,6 +206,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
                 mNotify.setContentText(String.format(mDownloadTask.getDownloadMsgConfig().getLoading(), mProgress + "%"));
                 mNotify.setProgress(100, mProgress, false);
             }
+            if (mDownloadTask.getDownloadListener() != null) {
+                mDownloadTask.getDownloadListener().progress(mDownloadTask.getUrl(), (tmp + loaded), totals, c, this);
+            }
 
         } catch (UnknownFormatConversionException e) {
             e.printStackTrace();
@@ -250,7 +265,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
 
     private boolean doCallback(Integer code) {
         DownloadListener mDownloadListener = null;
-        if ((mDownloadListener = mDownloadTask.getDownLoadResultListener()) == null) {
+        if ((mDownloadListener = mDownloadTask.getDownloadListener()) == null) {
             LogUtils.e(TAG, "DownloadListener has been death");
             DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownloadTask.getFile().getPath());
             return false;
@@ -357,6 +372,31 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
 
     }
 
+    @Override
+    public boolean isShutdown() {
+        return atomic.get();
+    }
+
+    @Override
+    public void shutdownNow() {
+        toCancel();
+    }
+
+    @Override
+    public void download(DownloadTask downloadTask) {
+
+        this.mDownloadTask = downloadTask;
+        this.totals = mDownloadTask.getLength();
+        checkNullTask(downloadTask);
+
+
+        if (downloadTask.isParallelDownload()) {
+            this.executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
+        } else {
+            this.execute();
+        }
+    }
+
     private final class LoadingRandomAccessFile extends RandomAccessFile {
 
         public LoadingRandomAccessFile(File file) throws FileNotFoundException {
@@ -436,6 +476,66 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Obs
             }
         }
 
+
+    }
+
+
+    static class ExecutorProvider implements Provider<Executor> {
+
+
+        private final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+        private final int CORE_POOL_SIZE = (int) (Math.max(2, Math.min(CPU_COUNT - 1, 4)) * 1.5);
+        private final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+        private final int KEEP_ALIVE_SECONDS = 15;
+
+        private final ThreadFactory sThreadFactory = new ThreadFactory() {
+            private final AtomicInteger mCount = new AtomicInteger(1);
+            private SecurityManager securityManager = System.getSecurityManager();
+            private ThreadGroup group = securityManager != null ? securityManager.getThreadGroup() : Thread.currentThread().getThreadGroup();
+
+            public Thread newThread(Runnable r) {
+                Thread mThread = new Thread(group, r, "pool-agentweb-thread-" + mCount.getAndIncrement());
+                if (mThread.isDaemon()) {
+                    mThread.setDaemon(false);
+                }
+                mThread.setPriority(Thread.MIN_PRIORITY);
+                LogUtils.i(TAG, "Thread Name:" + mThread.getName());
+                LogUtils.i(TAG, "live:" + mThreadPoolExecutor.getActiveCount() + "    getCorePoolSize:" + mThreadPoolExecutor.getCorePoolSize() + "  getPoolSize:" + mThreadPoolExecutor.getPoolSize());
+                return mThread;
+            }
+        };
+
+        private static final BlockingQueue<Runnable> sPoolWorkQueue =
+                new LinkedBlockingQueue<Runnable>(128);
+        private ThreadPoolExecutor mThreadPoolExecutor;
+
+        private ExecutorProvider() {
+            internalInit();
+        }
+
+        private void internalInit() {
+            if (mThreadPoolExecutor != null && !mThreadPoolExecutor.isShutdown()) {
+                mThreadPoolExecutor.shutdownNow();
+            }
+            mThreadPoolExecutor = new ThreadPoolExecutor(
+                    CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
+                    sPoolWorkQueue, sThreadFactory);
+            mThreadPoolExecutor.allowCoreThreadTimeOut(true);
+        }
+
+
+        public static ExecutorProvider getInstance() {
+            return InnerHolder.M_EXECUTOR_PROVIDER;
+        }
+
+        static class InnerHolder {
+            private static final ExecutorProvider M_EXECUTOR_PROVIDER = new ExecutorProvider();
+        }
+
+        @Override
+        public Executor provide() {
+            return mThreadPoolExecutor;
+        }
 
     }
 

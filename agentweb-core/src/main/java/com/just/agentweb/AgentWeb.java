@@ -67,7 +67,7 @@ public final class AgentWeb {
     /**
      * 是否启动进度条
      */
-    private boolean enableProgress;
+    private boolean enableIndicator;
     /**
      * Fragment
      */
@@ -178,7 +178,7 @@ public final class AgentWeb {
         this.mFragment = agentBuilder.mFragment;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.mIEventHandler = agentBuilder.mIEventHandler;
-        this.enableProgress = agentBuilder.enableProgress;
+        this.enableIndicator = agentBuilder.enableProgress;
         mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.height_dp, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
@@ -197,7 +197,6 @@ public final class AgentWeb {
         if (this.mWebCreator.getWebParentLayout() instanceof WebParentLayout) {
             WebParentLayout mWebParentLayout = (WebParentLayout) this.mWebCreator.getWebParentLayout();
             mWebParentLayout.bindController(agentBuilder.mAgentWebUIController == null ? AgentWebUIControllerImplBase.build() : agentBuilder.mAgentWebUIController);
-
             mWebParentLayout.setErrorLayoutRes(agentBuilder.errorLayout, agentBuilder.reloadId);
             mWebParentLayout.setErrorView(agentBuilder.errorView);
         }
@@ -374,10 +373,10 @@ public final class AgentWeb {
 
     private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
 
-        if (progressView != null && enableProgress) {
+        if (progressView != null && enableIndicator) {
             return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView, webLayout);
         } else {
-            return enableProgress ?
+            return enableIndicator ?
                     new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp, webView, webLayout)
                     : new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView, webLayout);
         }

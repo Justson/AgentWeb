@@ -53,7 +53,7 @@ public class AgentWebConfig {
     /**
      * AgentWeb 的版本
      */
-    public static final String AGENTWEB_VERSION = "agentweb/3.1.0";
+    public static final String AGENTWEB_VERSION = "agentweb/4.0.0";
 
     /**
      * 通过JS获取的文件大小， 这里限制最大为5MB ，太大会抛出 OutOfMemoryError
