@@ -128,6 +128,8 @@ public class FileChooser {
      */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
+    private Handler.Callback jsChannelCallback;
+
     public FileChooser(Builder builder) {
 
         this.mActivity = builder.mActivity;
@@ -136,12 +138,16 @@ public class FileChooser {
         this.isAboveLollipop = builder.isL;
         this.jsChannel = builder.jsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
-        this.mJsChannelCallback = builder.mJsChannelCallback;
+        if (this.jsChannel) {
+            this.mJsChannelCallback = JsChannelCallback.create(builder.jsChannelCallback);
+        }
         this.mFileChooserMsgConfig = builder.mFileChooserMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
         this.acceptType = builder.acceptType;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
+        this.jsChannelCallback = builder.jsChannelCallback;
+
     }
 
 
@@ -752,7 +758,7 @@ public class FileChooser {
             try {
                 Queue<FileParcel> mQueue = convertFile(paths);
                 String result = convertFileParcelObjectsToJson(mQueue);
-                LogUtils.i(TAG, "result:" + result);
+//                LogUtils.i(TAG, "result:" + result);
                 if (mJsChannelCallback != null && mJsChannelCallback.get() != null)
                     mJsChannelCallback.get().call(result);
 
@@ -797,6 +803,7 @@ public class FileChooser {
         private WebView mWebView;
         private PermissionInterceptor mPermissionInterceptor;
         private String acceptType = "*/*";
+        private Handler.Callback jsChannelCallback;
 
         public Builder setAcceptType(String acceptType) {
             this.acceptType = acceptType;
@@ -838,7 +845,7 @@ public class FileChooser {
         }
 
         public Builder setJsChannelCallback(Handler.Callback jsChannelCallback) {
-            mJsChannelCallback = JsChannelCallback.create(jsChannelCallback);
+            this.jsChannelCallback = jsChannelCallback;
             jsChannel = true;
             mUriValueCallback = null;
             mUriValueCallbacks = null;

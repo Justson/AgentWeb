@@ -30,6 +30,7 @@ public class AgentWebJsInterfaceCompat {
     }
 
     public void uploadFile(String acceptType) {
+        LogUtils.i(TAG,acceptType+"  "+mActivityWeakReference.get()+"  "+mReference.get());
         if (mActivityWeakReference.get() != null && mReference.get() != null) {
 
 

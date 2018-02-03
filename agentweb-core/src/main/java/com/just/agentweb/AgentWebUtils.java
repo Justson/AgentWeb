@@ -843,10 +843,9 @@ public class AgentWebUtils {
             Object mFileChooser$Builder = clz.getDeclaredMethod("newBuilder",
                     Activity.class, WebView.class, DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig.class)
                     .invoke(null, activity, webView, msgConfig);
-
+            clz = mFileChooser$Builder.getClass();
             Method mMethod = null;
             if (valueCallbacks != null) {
-                clz = mFileChooser$Builder.getClass();
                 mMethod = clz.getDeclaredMethod("setUriValueCallbacks", ValueCallback.class);
                 mMethod.setAccessible(true);
                 mMethod.invoke(mFileChooser$Builder, valueCallbacks);
@@ -866,6 +865,7 @@ public class AgentWebUtils {
 
 
             if (!TextUtils.isEmpty(mimeType)) {
+//                LogUtils.i(TAG, Arrays.toString(clz.getDeclaredMethods()));
                 mMethod = clz.getDeclaredMethod("setAcceptType", String.class);
                 mMethod.setAccessible(true);
                 mMethod.invoke(mFileChooser$Builder, mimeType);
