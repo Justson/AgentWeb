@@ -49,7 +49,7 @@ public interface DownloadListener {
         }
 
         @Override
-        public void progress(String url, long downloaded, long length, long useTime, DownloadingService downloadingService) {
+        public void progress(String url, long downloaded, long length, long usedTime, DownloadingService downloadingService) {
 
         }
 

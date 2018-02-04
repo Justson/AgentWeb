@@ -8,6 +8,7 @@ import com.just.agentweb.DownloadListener;
 import java.io.File;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by cenxiaozhong on 2017/5/13.
@@ -50,6 +51,10 @@ public class DownloadTask implements Serializable {
 
     private WeakReference<DownloadListener> mDownloadWR = null;
     private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
+    /**
+     * 表示当前任务是否被销毁了。
+     */
+    private AtomicBoolean isDestroy = new AtomicBoolean(false);
 
 
     private volatile boolean isParallelDownload = false;
@@ -59,7 +64,7 @@ public class DownloadTask implements Serializable {
                         boolean isForce, boolean enableIndicator,
                         Context context, File file, long length,
                         DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig,
-                        int drawableRes,boolean isParallelDownload) {
+                        int drawableRes, boolean isParallelDownload) {
         this.id = id;
         this.url = url;
         this.isForce = isForce;
@@ -70,7 +75,7 @@ public class DownloadTask implements Serializable {
         this.drawableRes = drawableRes;
         mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
         this.mDownloadMsgConfig = downloadMsgConfig;
-        this.isParallelDownload=isParallelDownload;
+        this.isParallelDownload = isParallelDownload;
     }
 
     public boolean isParallelDownload() {
@@ -160,5 +165,24 @@ public class DownloadTask implements Serializable {
 
     public void setDrawableRes(int drawableRes) {
         this.drawableRes = drawableRes;
+    }
+
+    public void destroy() {
+        isDestroy.set(true);
+        this.id = -1;
+        this.url = null;
+        this.isForce = false;
+        this.enableIndicator = false;
+        mContext = null;
+        mFile = null;
+        this.length = -1;
+        this.drawableRes = -1;
+        mDownloadWR = null;
+        this.mDownloadMsgConfig = null;
+        this.isParallelDownload = false;
+    }
+
+    public boolean isDestroy() {
+        return isDestroy.get();
     }
 }

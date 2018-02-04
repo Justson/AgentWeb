@@ -128,7 +128,7 @@ public class FileChooser {
      */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
-    private Handler.Callback jsChannelCallback;
+    private Handler.Callback jsChannelHandler$Callback;
 
     public FileChooser(Builder builder) {
 
@@ -146,7 +146,7 @@ public class FileChooser {
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
         this.acceptType = builder.acceptType;
         mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
-        this.jsChannelCallback = builder.jsChannelCallback;
+        this.jsChannelHandler$Callback = builder.jsChannelCallback;
 
     }
 

@@ -8,4 +8,11 @@ public interface DownloadingService {
     boolean isShutdown();
 
     void shutdownNow();
+
+    void stop();
+
+    boolean isStoped();
+
+    void restart();
+
 }

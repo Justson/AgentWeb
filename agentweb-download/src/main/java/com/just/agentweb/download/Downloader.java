@@ -270,7 +270,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownloadTask.getFile().getPath());
             return false;
         }
-        return mDownloadListener.result(mDownloadTask.getFile().getAbsolutePath(), mDownloadTask.getUrl(), code <= 200 ? null : this.e == null ? new RuntimeException("download fail ， cause:" + DownloadMsg.getMsgByCode(code)) : this.e);
+        return mDownloadListener.result(mDownloadTask.getFile().getAbsolutePath(),
+                mDownloadTask.getUrl(), code <= 200 ? null
+                        : this.e == null
+                        ? new RuntimeException("download fail ， cause:" + DownloadMsg.getMsgByCode(code)) : this.e);
 
     }
 
@@ -358,7 +361,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
     private final void toCancel() {
-        atomic.set(true);
+        this.shutdownNow();
     }
 
     @Override
@@ -374,12 +377,34 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     @Override
     public boolean isShutdown() {
-        return atomic.get();
+        return atomic.get() && (this.mDownloadTask == null || this.mDownloadTask.isDestroy());
     }
 
     @Override
     public void shutdownNow() {
         toCancel();
+        if (mDownloadTask != null) {
+            mDownloadTask.destroy();
+        }
+    }
+
+    @Override
+    public void stop() {
+        toCancel();
+    }
+
+    @Override
+    public boolean isStoped() {
+        return atomic.get();
+    }
+
+    @Override
+    public void restart() {
+        if (this.mDownloadTask == null || this.mDownloadTask.isDestroy()) {
+            LogUtils.e(TAG, "DownloadTask can not restart , Becauce downloadTask has been destroy .");
+            return;
+        }
+        new Downloader().download(this.mDownloadTask);
     }
 
     @Override
