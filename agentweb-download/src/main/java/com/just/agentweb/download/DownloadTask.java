@@ -59,6 +59,8 @@ public class DownloadTask implements Serializable {
 
     private volatile boolean isParallelDownload = false;
 
+    private volatile boolean isShutdown = false;
+
     public DownloadTask(int id, String url,
                         DownloadListener downloadListeners,
                         boolean isForce, boolean enableIndicator,
@@ -130,6 +132,11 @@ public class DownloadTask implements Serializable {
         mDownloadMsgConfig = downloadMsgConfig;
     }
 
+
+    public void setShutdown(boolean shutdown) {
+        isShutdown = shutdown;
+    }
+
     public Context getContext() {
         return mContext;
     }
@@ -166,6 +173,7 @@ public class DownloadTask implements Serializable {
     public void setDrawableRes(int drawableRes) {
         this.drawableRes = drawableRes;
     }
+
 
     public void destroy() {
         isDestroy.set(true);

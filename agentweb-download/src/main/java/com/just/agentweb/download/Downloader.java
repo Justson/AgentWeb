@@ -46,7 +46,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 下载参数
      */
-    private DownloadTask mDownloadTask;
+    private volatile DownloadTask mDownloadTask;
     /**
      * 已经下载的大小
      */
@@ -86,6 +86,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
      * true 表示用户已经取消下载
      */
     private AtomicBoolean atomic = new AtomicBoolean(false);
+
+    private AtomicBoolean isShutdown = new AtomicBoolean(false);
     /**
      * Observable 缓存当前Downloader，如果用户滑动通知取消下载，通知所有 Downloader 找到
      * 相应的 Downloader 取消下载。
@@ -258,6 +260,15 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             if (LogUtils.isDebug()) {
                 e.printStackTrace();
             }
+        } finally {
+
+            if (!isShutdown.get()) {
+                return;
+            }
+            if (mDownloadTask != null) {
+                mDownloadTask.destroy();
+            }
+
         }
 
 
@@ -361,7 +372,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
     private final void toCancel() {
-        this.shutdownNow();
+        atomic.set(true);
     }
 
     @Override
@@ -369,7 +380,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         //LogUtils.i(TAG, "update Object    ... ");
         String url = "";
         if (arg instanceof String && !TextUtils.isEmpty(url = (String) arg) && url.equals(mDownloadTask.getUrl())) {
-            toCancel();
+            shutdownNow();
         }
 
 
@@ -377,15 +388,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     @Override
     public boolean isShutdown() {
-        return atomic.get() && (this.mDownloadTask == null || this.mDownloadTask.isDestroy());
+        return isShutdown.get();
     }
 
     @Override
     public void shutdownNow() {
         toCancel();
-        if (mDownloadTask != null) {
-            mDownloadTask.destroy();
-        }
+        isShutdown.set(true);
     }
 
     @Override
