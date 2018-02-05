@@ -1,8 +1,5 @@
 package com.just.agentweb;
 
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-
 /**
  * Created by cenxiaozhong on 2017/6/21.
  * source code  https://github.com/Justson/AgentWeb
@@ -20,16 +17,15 @@ public interface DownloadListener {
      * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 或者是否强制下载。
      * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
      */
-    boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra);
+    boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra);
 
     /**
-     *
-     * @param url  下载链接
-     * @param downloaded  已经下载的长度
-     * @param length    文件的总大小
-     * @param usedTime   耗时,单位ms
-     * @param downloadingService  开发者可以通过 DownloadingService#shutdownNow 终止下载
-     * 注意该方法回调在子线程 ，线程名 AsyncTask #XX or AgentWeb # XX
+     * @param url                下载链接
+     * @param downloaded         已经下载的长度
+     * @param length             文件的总大小
+     * @param usedTime           耗时,单位ms
+     * @param downloadingService 开发者可以通过 DownloadingService#shutdownNow 终止下载
+     *                           注意该方法回调在子线程 ，线程名 AsyncTask #XX or AgentWeb # XX
      */
     void progress(String url, long downloaded, long length, long usedTime, DownloadingService downloadingService);
 
@@ -44,7 +40,7 @@ public interface DownloadListener {
     class DownloadListenerAdapter implements DownloadListener {
 
         @Override
-        public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+        public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
             return false;
         }
 
@@ -57,83 +53,6 @@ public interface DownloadListener {
         public boolean result(String path, String url, Throwable e) {
             return false;
         }
-    }
-
-    /**
-     *
-     */
-    abstract class Extra {
-        protected boolean isForceDownload = false;
-        protected boolean enableIndicator = true;
-        protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
-        protected int icon = -1;
-        protected boolean isParallelDownload = true;
-        protected boolean isOpenBreakPointDownload = true;
-
-
-        public boolean isForceDownload() {
-            return isForceDownload;
-        }
-
-        public boolean isEnableIndicator() {
-            return enableIndicator;
-        }
-
-        public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
-            return mDownloadMsgConfig;
-        }
-
-        public int getIcon() {
-            return icon;
-        }
-
-        public boolean isParallelDownload() {
-            return isParallelDownload;
-        }
-
-        public boolean isOpenBreakPointDownload() {
-            return isOpenBreakPointDownload;
-        }
-
-        public Extra setOpenBreakPointDownload(boolean openBreakPointDownload) {
-            isOpenBreakPointDownload = openBreakPointDownload;
-            return this;
-        }
-
-        public Extra setForceDownload(boolean force) {
-            isForceDownload = force;
-            return this;
-        }
-
-        public Extra setEnableIndicator(boolean enableIndicator) {
-            this.enableIndicator = enableIndicator;
-            return this;
-        }
-
-
-        public Extra setDownloadMsgConfig(@NonNull DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
-            if (downloadMsgConfig != null) {
-                mDownloadMsgConfig = downloadMsgConfig;
-            }
-            return this;
-        }
-
-
-        public Extra setIcon(@DrawableRes int icon) {
-            this.icon = icon;
-            return this;
-        }
-
-        public Extra setParallelDownload(boolean parallelDownload) {
-            isParallelDownload = parallelDownload;
-            return this;
-        }
-
-
-        public void build() {
-
-        }
-
     }
 
 

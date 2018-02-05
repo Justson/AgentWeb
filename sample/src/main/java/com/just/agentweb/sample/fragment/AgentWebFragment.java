@@ -146,6 +146,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     };
 
     private DownloadingService mDownloadingService;
+    DownloadListener.ExtraService mExtraService;
     /**
      * 修改 AgentWeb  4.0.0
      */
@@ -163,7 +164,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          */
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
-//            extra.setIcon(R.mipmap.app_logo).build();
+            extra.setOpenBreakPointDownload(false).build();
             return false;
         }
 
@@ -434,14 +435,16 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 case R.id.error_website:
 //                    loadErrorWebSite();
                     if (mDownloadingService == null) {
-                        return false;
+                        return true;
+                    }
+                    if (!mDownloadingService.isShutdown()) {
+                        mExtraService = mDownloadingService.shutdownNow();
+                        return true;
+                    }
+                    if (mExtraService != null) {
+                        mExtraService.toReDownload();
                     }
 
-                    if(!mDownloadingService.isStoped()){
-                        mDownloadingService.stop();
-                    }else{
-                        mDownloadingService.restart();
-                    }
                     return true;
                 default:
                     return false;

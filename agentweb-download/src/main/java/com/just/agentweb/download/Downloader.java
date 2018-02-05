@@ -172,9 +172,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         try {
             mHttpURLConnection.connect();
             boolean isSeek = false;
-            if (mHttpURLConnection.getResponseCode() != 200 && mHttpURLConnection.getResponseCode() != 206 && (isSeek = true)) {
+            int resCode = mHttpURLConnection.getResponseCode();
+            if (resCode != 200 && resCode != 206) {
                 return DownloadMsg.NETWORK_ERROR_STATUS_CODE.CODE;
+            } else {
+                isSeek = (resCode == 206);
             }
+
+            LogUtils.i(TAG, "response code:" + mHttpURLConnection.getResponseCode());
             return doDownload(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownloadTask.getFile()), isSeek);
         } finally {
             if (mHttpURLConnection != null)
@@ -323,13 +328,16 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     private int doDownload(InputStream in, RandomAccessFile out, boolean isSeek) throws IOException {
 
-        byte[] buffer = new byte[10240];
+        byte[] buffer = new byte[1024 * 10];
         BufferedInputStream bis = new BufferedInputStream(in, 1024 * 10);
         try {
 
             if (isSeek) {
                 LogUtils.i(TAG, "seek -- >" + isSeek + "  length:" + out.length());
                 out.seek(out.length());
+            } else {
+                LogUtils.i(TAG, "seek -- >" + false + "  , length : 0");
+                out.seek(0l);
             }
 
             int bytes = 0;
@@ -392,29 +400,30 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
     @Override
-    public void shutdownNow() {
+    public DownloadListener.ExtraService shutdownNow() {
         toCancel();
         isShutdown.set(true);
+        return mDownloadTask.getBuilder();
     }
 
-    @Override
-    public void stop() {
-        toCancel();
-    }
-
-    @Override
-    public boolean isStoped() {
-        return atomic.get();
-    }
-
-    @Override
-    public void restart() {
-        if (this.mDownloadTask == null || this.mDownloadTask.isDestroy()) {
-            LogUtils.e(TAG, "DownloadTask can not restart , Becauce downloadTask has been destroy .");
-            return;
-        }
-        new Downloader().download(this.mDownloadTask);
-    }
+//    @Override
+//    public void stop() {
+//        toCancel();
+//    }
+//
+//    @Override
+//    public boolean isStoped() {
+//        return atomic.get();
+//    }
+//
+//    @Override
+//    public void restart() {
+//        if (this.mDownloadTask == null || this.mDownloadTask.isDestroy()) {
+//            LogUtils.e(TAG, "DownloadTask can not restart , Becauce downloadTask has been destroy .");
+//            return;
+//        }
+//        new Downloader().download(this.mDownloadTask);
+//    }
 
     @Override
     public void download(DownloadTask downloadTask) {

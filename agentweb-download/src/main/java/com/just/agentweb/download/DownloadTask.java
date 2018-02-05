@@ -61,12 +61,15 @@ public class DownloadTask implements Serializable {
 
     private volatile boolean isShutdown = false;
 
+    private DefaultDownloadImpl.Builder mBuilder;
+
     public DownloadTask(int id, String url,
                         DownloadListener downloadListeners,
                         boolean isForce, boolean enableIndicator,
                         Context context, File file, long length,
                         DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig,
-                        int drawableRes, boolean isParallelDownload) {
+                        int drawableRes, boolean isParallelDownload,
+                        DefaultDownloadImpl.Builder builder) {
         this.id = id;
         this.url = url;
         this.isForce = isForce;
@@ -78,6 +81,11 @@ public class DownloadTask implements Serializable {
         mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
         this.mDownloadMsgConfig = downloadMsgConfig;
         this.isParallelDownload = isParallelDownload;
+        this.mBuilder = builder;
+    }
+
+    public DefaultDownloadImpl.Builder getBuilder() {
+        return mBuilder;
     }
 
     public boolean isParallelDownload() {
@@ -188,6 +196,7 @@ public class DownloadTask implements Serializable {
         mDownloadWR = null;
         this.mDownloadMsgConfig = null;
         this.isParallelDownload = false;
+        this.mBuilder = null;
     }
 
     public boolean isDestroy() {

@@ -203,7 +203,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         }
         currentProgress = currentProgress == 0f ? 0.00000001f : currentProgress;
 
-        LogUtils.i("WebProgress", "currentProgress:" + currentProgress + " v:" + v + "  :" + (1f - currentProgress));
+        LogUtils.i("WebIndicator", "currentProgress:" + currentProgress + " v:" + v + "  :" + (1f - currentProgress));
         if (!isFinished) {
             ValueAnimator mAnimator = ValueAnimator.ofFloat(currentProgress, v);
             float residue = 1f - currentProgress / 100 - 0.05f;

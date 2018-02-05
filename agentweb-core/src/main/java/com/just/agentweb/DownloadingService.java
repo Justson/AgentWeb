@@ -5,14 +5,10 @@ package com.just.agentweb;
  */
 
 public interface DownloadingService {
+
     boolean isShutdown();
 
-    void shutdownNow();
+    AgentWebDownloader.ExtraService shutdownNow();
 
-    void stop();
-
-    boolean isStoped();
-
-    void restart();
 
 }
