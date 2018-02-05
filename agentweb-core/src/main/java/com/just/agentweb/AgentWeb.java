@@ -1,7 +1,6 @@
 package com.just.agentweb;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
@@ -318,16 +317,6 @@ public final class AgentWeb {
         this.mWebLifeCycle.onDestroy();
     }
 
-
-    @Deprecated
-    public void uploadFileResult(int requestCode, int resultCode, Intent data) {
-
-        /**
-         * 该方法废弃 ，没方法替代 。
-         */
-    }
-
-
     public static class PreAgentWeb {
         private AgentWeb mAgentWeb;
         private boolean isReady = false;
@@ -493,7 +482,7 @@ public final class AgentWeb {
         Class<?> clazz = null;
         try {
             clazz = Class.forName("com.just.agentweb.download.DefaultDownloadImpl");
-            Object mDefaultDownloadImpl$Builder = clazz.getDeclaredMethod("newBuilder", Activity.class).invoke(null, this.mActivity);
+            Object mDefaultDownloadImpl$Builder = clazz.getDeclaredMethod("newExtra", Activity.class).invoke(null, this.mActivity);
 
             clazz = mDefaultDownloadImpl$Builder.getClass();
             LogUtils.i(TAG, "clazz:" + clazz.toString());

@@ -164,7 +164,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          */
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
-            extra.setOpenBreakPointDownload(false).setIcon(R.mipmap.app_logo);
+//            extra.setOpenBreakPointDownload(false).setIcon(R.mipmap.app_logo);
             return false;
         }
 

@@ -61,7 +61,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     private volatile boolean isParallelDownload = false;
 
 
-    private DefaultDownloadImpl.Builder mBuilder;
+    private DefaultDownloadImpl.ExtraServiceImpl mExtraServiceImpl;
 
 
     private String TAG = this.getClass().getSimpleName();
@@ -69,25 +69,25 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     public DownloadTask(int id,
                         DownloadListener downloadListeners,
                         Context context, File file,
-                        DefaultDownloadImpl.Builder builder) {
+                        DefaultDownloadImpl.ExtraServiceImpl extraServiceImpl) {
         super();
 
         this.id = id;
-        this.url = builder.getUrl();
-        this.isForce = builder.isForceDownload();
-        this.enableIndicator = builder.isEnableIndicator();
+        this.url = extraServiceImpl.getUrl();
+        this.isForce = extraServiceImpl.isForceDownload();
+        this.enableIndicator = extraServiceImpl.isEnableIndicator();
         this.mContext = context;
         this.mFile = file;
-        this.length = builder.getContentLength();
-        this.drawableRes = builder.getIcon() == -1 ? R.drawable.ic_file_download_black_24dp : builder.getIcon();
+        this.length = extraServiceImpl.getContentLength();
+        this.drawableRes = extraServiceImpl.getIcon() == -1 ? R.drawable.ic_file_download_black_24dp : extraServiceImpl.getIcon();
         mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
-        this.mDownloadMsgConfig = builder.getDownloadMsgConfig();
-        this.isParallelDownload = builder.isParallelDownload();
-        this.mBuilder = builder;
+        this.mDownloadMsgConfig = extraServiceImpl.getDownloadMsgConfig();
+        this.isParallelDownload = extraServiceImpl.isParallelDownload();
+        this.mExtraServiceImpl = extraServiceImpl;
     }
 
-    public DefaultDownloadImpl.Builder getBuilder() {
-        return mBuilder;
+    public DefaultDownloadImpl.ExtraServiceImpl getExtraServiceImpl() {
+        return mExtraServiceImpl;
     }
 
     public boolean isParallelDownload() {
@@ -184,7 +184,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         mDownloadWR = null;
         this.mDownloadMsgConfig = null;
         this.isParallelDownload = false;
-        this.mBuilder = null;
+        this.mExtraServiceImpl = null;
     }
 
     public boolean isDestroy() {

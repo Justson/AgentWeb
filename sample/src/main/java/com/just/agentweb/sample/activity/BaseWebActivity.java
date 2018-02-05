@@ -176,7 +176,6 @@ public class BaseWebActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         Log.i("Info", "result:" + requestCode + " result:" + resultCode);
-        mAgentWeb.uploadFileResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 

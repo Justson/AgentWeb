@@ -55,25 +55,25 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     private long contentLength;
     private String mimetype;
     private WeakReference<AgentWebUIController> mAgentWebUIController;
-    private Builder mBuilder;
+    private ExtraServiceImpl mExtraServiceImpl;
     private String userAgent;
-    private Builder mCloneBuilder = null;
+    private ExtraServiceImpl mCloneExtraServiceImpl = null;
 
-    DefaultDownloadImpl(Builder builder) {
-        if (!builder.isCloneObject) {
-            this.bind(builder);
-            this.mBuilder = builder;
+    DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
+        if (!extraServiceImpl.isCloneObject) {
+            this.bind(extraServiceImpl);
+            this.mExtraServiceImpl = extraServiceImpl;
         } else {
-            this.mCloneBuilder = mCloneBuilder;
+            this.mCloneExtraServiceImpl = extraServiceImpl;
         }
     }
 
-    private void bind(Builder builder) {
-        this.mActivityWeakReference = new WeakReference<Activity>(builder.mActivity);
-        this.mContext = builder.mActivity.getApplicationContext();
-        this.mDownloadListener = builder.mDownloadListener;
-        this.mPermissionListener = builder.mPermissionInterceptor;
-        this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
+    private void bind(ExtraServiceImpl extraServiceImpl) {
+        this.mActivityWeakReference = new WeakReference<Activity>(extraServiceImpl.mActivity);
+        this.mContext = extraServiceImpl.mActivity.getApplicationContext();
+        this.mDownloadListener = extraServiceImpl.mDownloadListener;
+        this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
+        this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
     }
 
 
@@ -85,7 +85,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     }
 
 
-    private void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Builder builder) {
+    private void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
 
         if (mActivityWeakReference.get() == null || mActivityWeakReference.get().isFinishing()) {
             return;
@@ -102,10 +102,10 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         this.contentLength = contentLength;
         this.mimetype = mimetype;
         this.userAgent = userAgent;
-        Builder mCloneBuilder = null;
-        if (builder == null) {
+        ExtraServiceImpl mCloneExtraServiceImpl = null;
+        if (extraServiceImpl == null) {
             try {
-                mCloneBuilder = (Builder) this.mBuilder.clone();
+                mCloneExtraServiceImpl = (ExtraServiceImpl) this.mExtraServiceImpl.clone();
             } catch (CloneNotSupportedException ignore) {
                 if (LogUtils.isDebug()) {
                     ignore.printStackTrace();
@@ -114,17 +114,17 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
                 return;
             }
         } else {
-            mCloneBuilder = builder;
+            mCloneExtraServiceImpl = extraServiceImpl;
         }
-        mCloneBuilder
+        mCloneExtraServiceImpl
                 .setUrl(url)
                 .setMimetype(this.mimetype)
                 .setContentDisposition(this.contentDisposition)
                 .setContentLength(this.contentLength)
                 .setUserAgent(this.userAgent);
-        this.mCloneBuilder = mCloneBuilder;
+        this.mCloneExtraServiceImpl = mCloneExtraServiceImpl;
 
-        LogUtils.i(TAG, " clone a builder : " + this.mCloneBuilder.mWebView + "  aty:" + this.mCloneBuilder.mActivity + "  :" + this.mCloneBuilder.getMimetype());
+        LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  :" + this.mCloneExtraServiceImpl.getMimetype());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> mList = null;
@@ -175,7 +175,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
                         this.contentDisposition,
                         this.mimetype,
                         contentLength,
-                        this.mCloneBuilder)) {
+                        this.mCloneExtraServiceImpl)) {
             return;
         }
         File mFile = getFile(contentDisposition, url);
@@ -212,7 +212,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         if (ExecuteTasksMap.getInstance().contains(url) || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
-                        this.mCloneBuilder.mDownloadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
+                        this.mCloneExtraServiceImpl.mDownloadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
             }
             return;
         }
@@ -228,7 +228,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
     private void forceDown(final File file) {
 
-        this.mCloneBuilder.isForceDownload = true;
+        this.mCloneExtraServiceImpl.isForceDownload = true;
         performDownload(file);
 
 
@@ -242,7 +242,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
         AgentWebUIController mAgentWebUIController;
         if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
-            mAgentWebUIController.onForceDownloadAlert(url, this.mBuilder.mDownloadMsgConfig, createCallback(file));
+            mAgentWebUIController.onForceDownloadAlert(url, this.mExtraServiceImpl.mDownloadMsgConfig, createCallback(file));
         }
 
     }
@@ -264,13 +264,13 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get()
-                        .showMessage(this.mCloneBuilder.mDownloadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
+                        .showMessage(this.mCloneExtraServiceImpl.mDownloadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
             }
 
             DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
                     this,
                     mContext, file,
-                    this.mCloneBuilder);
+                    this.mCloneExtraServiceImpl);
             new Downloader().download(mDownloadTask);
             this.url = null;
             this.contentDisposition = null;
@@ -304,7 +304,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             if (fileName.contains("\"")) {
                 fileName = fileName.replace("\"", "");
             }
-            return AgentWebUtils.createFileByName(mContext, fileName, !this.mCloneBuilder.isOpenBreakPointDownload());
+            return AgentWebUtils.createFileByName(mContext, fileName, !this.mCloneExtraServiceImpl.isOpenBreakPointDownload());
         } catch (Throwable e) {
             if (LogUtils.isDebug()) {
                 e.printStackTrace();
@@ -410,12 +410,12 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
     }
 
-    public static Builder newBuilder(Activity activity) {
-        return new Builder().setActivity(activity);
+    public static ExtraServiceImpl newExtra(Activity activity) {
+        return new ExtraServiceImpl().setActivity(activity);
     }
 
 
-    public static class Builder extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
+    public static class ExtraServiceImpl extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
         private transient Activity mActivity;
         private boolean isForceDownload = false;
         private boolean enableIndicator = true;
@@ -439,7 +439,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         @Override
-        protected Builder setUrl(String url) {
+        protected ExtraServiceImpl setUrl(String url) {
             this.url = url;
             return this;
         }
@@ -450,7 +450,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         @Override
-        protected Builder setUserAgent(String userAgent) {
+        protected ExtraServiceImpl setUserAgent(String userAgent) {
             this.userAgent = userAgent;
             return this;
         }
@@ -461,7 +461,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         @Override
-        protected Builder setContentDisposition(String contentDisposition) {
+        protected ExtraServiceImpl setContentDisposition(String contentDisposition) {
             this.contentDisposition = contentDisposition;
             return this;
         }
@@ -478,7 +478,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         @Override
-        protected Builder setMimetype(String mimetype) {
+        protected ExtraServiceImpl setMimetype(String mimetype) {
             this.mimetype = mimetype;
             return this;
         }
@@ -489,13 +489,13 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         @Override
-        protected Builder setContentLength(long contentLength) {
+        protected ExtraServiceImpl setContentLength(long contentLength) {
             this.contentLength = contentLength;
             return this;
         }
 
 
-        Builder setActivity(Activity activity) {
+        ExtraServiceImpl setActivity(Activity activity) {
             mActivity = activity;
             return this;
         }
@@ -506,13 +506,13 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         @Override
-        public Builder setForceDownload(boolean force) {
+        public ExtraServiceImpl setForceDownload(boolean force) {
             isForceDownload = force;
             return this;
         }
 
         @Override
-        public Builder setDownloadMsgConfig(@NonNull DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
+        public ExtraServiceImpl setDownloadMsgConfig(@NonNull DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
             if (downloadMsgConfig != null) {
                 mDownloadMsgConfig = downloadMsgConfig;
             }
@@ -520,60 +520,55 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         }
 
         @Override
-        public Builder setEnableIndicator(boolean enableIndicator) {
+        public ExtraServiceImpl setEnableIndicator(boolean enableIndicator) {
             this.enableIndicator = enableIndicator;
             return this;
         }
 
-        Builder setDownloadListener(DownloadListener downloadListeners) {
+        ExtraServiceImpl setDownloadListener(DownloadListener downloadListeners) {
             this.mDownloadListener = downloadListeners;
             return this;
         }
 
-        Builder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+        ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
             mPermissionInterceptor = permissionInterceptor;
             return this;
         }
 
         @Override
-        public Builder setIcon(@DrawableRes int icon) {
+        public ExtraServiceImpl setIcon(@DrawableRes int icon) {
             this.icon = icon;
             LogUtils.i(TAG, "setIcon:" + icon);
             return this;
         }
 
         @Override
-        public Builder setParallelDownload(boolean parallelDownload) {
+        public ExtraServiceImpl setParallelDownload(boolean parallelDownload) {
             isParallelDownload = parallelDownload;
             return this;
         }
 
         @Override
-        public Builder setOpenBreakPointDownload(boolean openBreakPointDownload) {
+        public ExtraServiceImpl setOpenBreakPointDownload(boolean openBreakPointDownload) {
             isOpenBreakPointDownload = openBreakPointDownload;
             return this;
         }
 
-        Builder setWebView(WebView webView) {
+        ExtraServiceImpl setWebView(WebView webView) {
             this.mWebView = webView;
             return this;
         }
 
-//        public void build() {
-//            if (mDefaultDownload != null) {
-//                mDefaultDownload.bind(this);
-//            }
-//        }
 
         @Override
         protected Object clone() throws CloneNotSupportedException {
-            Builder mBuilder = (Builder) super.clone();
-            mBuilder.isCloneObject = true;
-            mBuilder.mActivity = null;
-            mBuilder.mDownloadListener = null;
-            mBuilder.mPermissionInterceptor = null;
-            mBuilder.mWebView = null;
-            return mBuilder;
+            ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
+            mExtraServiceImpl.isCloneObject = true;
+            mExtraServiceImpl.mActivity = null;
+            mExtraServiceImpl.mDownloadListener = null;
+            mExtraServiceImpl.mPermissionInterceptor = null;
+            mExtraServiceImpl.mWebView = null;
+            return mExtraServiceImpl;
         }
 
         DefaultDownloadImpl create() {
@@ -583,7 +578,13 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         public void toReDownload() {
 
             if (mDefaultDownload != null) {
-                mDefaultDownload.onDownloadStartInternal(getUrl(), getUserAgent(), getContentDisposition(), getMimetype(), getContentLength(), this);
+                mDefaultDownload
+                        .onDownloadStartInternal(
+                                getUrl(),
+                                getUserAgent(),
+                                getContentDisposition(),
+                                getMimetype(),
+                                getContentLength(), this);
             }
         }
 

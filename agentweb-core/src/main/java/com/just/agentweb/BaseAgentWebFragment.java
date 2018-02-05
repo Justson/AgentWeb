@@ -60,14 +60,16 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     }
 
-    protected @NonNull  ErrorLayoutEntity getErrorLayoutEntity() {
+    protected @NonNull
+    ErrorLayoutEntity getErrorLayoutEntity() {
         if (this.mErrorLayoutEntity == null) {
             this.mErrorLayoutEntity = new ErrorLayoutEntity();
         }
         return mErrorLayoutEntity;
     }
 
-    protected @Nullable AgentWebUIControllerImplBase getAgentWebUIController() {
+    protected @Nullable
+    AgentWebUIControllerImplBase getAgentWebUIController() {
         return mAgentWebUIController;
     }
 
@@ -108,8 +110,6 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (mAgentWeb != null)
-            mAgentWeb.uploadFileResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -168,7 +168,8 @@ public abstract class BaseAgentWebFragment extends Fragment {
         return null;
     }
 
-    protected @Nullable PermissionInterceptor getPermissionInterceptor() {
+    protected @Nullable
+    PermissionInterceptor getPermissionInterceptor() {
         return null;
     }
 

@@ -206,7 +206,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         try {
             long currentTime = System.currentTimeMillis();
             this.mUsedTime = currentTime - this.mBeginTime;
-            this.mSpeed = loaded * 1000 / this.mUsedTime;
+
+            if (mUsedTime == 0) {
+                this.mSpeed=0;
+            }else{
+                this.mSpeed = loaded * 1000 / this.mUsedTime;
+            }
             if (mAgentWebNotification != null && currentTime - this.mLastTime > 800) {
                 this.mLastTime = currentTime;
                 if (!mAgentWebNotification.hasDeleteContent())
@@ -412,7 +417,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     public synchronized AgentWebDownloader.ExtraService shutdownNow() {
         toCancel();
         isShutdown.set(true);
-        return mDownloadTask.getBuilder();
+        return mDownloadTask.getExtraServiceImpl();
     }
 
     @Override
