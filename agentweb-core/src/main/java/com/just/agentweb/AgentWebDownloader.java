@@ -3,11 +3,13 @@ package com.just.agentweb;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * Created by cenxiaozhong on 2018/2/4.
  */
 
-public interface AgentWebDownloader<T> extends DownloadingService {
+public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends DownloadingService {
 
     void download(T t);
 
@@ -15,12 +17,13 @@ public interface AgentWebDownloader<T> extends DownloadingService {
     /**
      *
      */
-    abstract class Extra {
+    abstract class Extra implements Serializable {
 
 
         protected boolean isForceDownload = false;
         protected boolean enableIndicator = true;
         protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
+        @DrawableRes
         protected int icon = -1;
         protected boolean isParallelDownload = true;
         protected boolean isOpenBreakPointDownload = true;
@@ -30,7 +33,7 @@ public interface AgentWebDownloader<T> extends DownloadingService {
         protected String mimetype;
         protected long contentLength;
 
-        private Extra() {
+        protected Extra() {
 
         }
 
@@ -138,18 +141,11 @@ public interface AgentWebDownloader<T> extends DownloadingService {
         }
 
 
-//        public void build() {
-//
-//        }
-
     }
 
     abstract class ExtraService extends Extra {
 
-
-        public void toReDownload() {
-
-        }
+        public abstract void toReDownload();
     }
 
 

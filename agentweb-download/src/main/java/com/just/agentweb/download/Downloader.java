@@ -99,12 +99,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         }
     };
 
-
-    //    Downloader(DownloadTask downloadTask) {
-//        this.mDownloadTask = downloadTask;
-//        this.totals = mDownloadTask.getLength();
-//        checkNullTask(downloadTask);
-//    }
     Downloader() {
 
     }
@@ -405,25 +399,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         isShutdown.set(true);
         return mDownloadTask.getBuilder();
     }
-
-//    @Override
-//    public void stop() {
-//        toCancel();
-//    }
-//
-//    @Override
-//    public boolean isStoped() {
-//        return atomic.get();
-//    }
-//
-//    @Override
-//    public void restart() {
-//        if (this.mDownloadTask == null || this.mDownloadTask.isDestroy()) {
-//            LogUtils.e(TAG, "DownloadTask can not restart , Becauce downloadTask has been destroy .");
-//            return;
-//        }
-//        new Downloader().download(this.mDownloadTask);
-//    }
 
     @Override
     public void download(DownloadTask downloadTask) {

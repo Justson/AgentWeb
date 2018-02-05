@@ -67,7 +67,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private PopupMenu mPopupMenu;
     private Gson mGson = new Gson(); //用于方便打印测试
     public static final String TAG = AgentWebFragment.class.getSimpleName();
-
     private MiddlewareWebClientBase mMiddleWareWebClient;
     private MiddlewareWebChromeBase mMiddleWareWebChrome;
 
@@ -165,7 +164,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          */
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
-            extra.setOpenBreakPointDownload(false);
+            extra.setOpenBreakPointDownload(false).setIcon(R.mipmap.app_logo);
             return false;
         }
 

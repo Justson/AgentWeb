@@ -2,6 +2,7 @@ package com.just.agentweb.download;
 
 import android.content.Context;
 
+import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DownloadListener;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DownloadTask implements Serializable {
+public class DownloadTask extends AgentWebDownloader.Extra implements Serializable {
 
 
     private int id;
@@ -62,10 +63,15 @@ public class DownloadTask implements Serializable {
 
     private DefaultDownloadImpl.Builder mBuilder;
 
+
+    private String TAG = this.getClass().getSimpleName();
+
     public DownloadTask(int id,
                         DownloadListener downloadListeners,
                         Context context, File file,
                         DefaultDownloadImpl.Builder builder) {
+        super();
+
         this.id = id;
         this.url = builder.getUrl();
         this.isForce = builder.isForceDownload();
@@ -100,9 +106,6 @@ public class DownloadTask implements Serializable {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
     public boolean isForce() {
         return isForce;
@@ -116,9 +119,6 @@ public class DownloadTask implements Serializable {
         return enableIndicator;
     }
 
-    public void setEnableIndicator(boolean enableIndicator) {
-        this.enableIndicator = enableIndicator;
-    }
 
     public WeakReference<DownloadListener> getDownloadWR() {
         return mDownloadWR;
@@ -130,10 +130,6 @@ public class DownloadTask implements Serializable {
 
     public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
         return mDownloadMsgConfig;
-    }
-
-    public void setDownloadMsgConfig(DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
-        mDownloadMsgConfig = downloadMsgConfig;
     }
 
 
