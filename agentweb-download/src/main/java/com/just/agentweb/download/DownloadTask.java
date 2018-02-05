@@ -73,7 +73,7 @@ public class DownloadTask implements Serializable {
         this.mContext = context;
         this.mFile = file;
         this.length = builder.getContentLength();
-        this.drawableRes = builder.getIcon();
+        this.drawableRes = builder.getIcon() == -1 ? R.drawable.ic_file_download_black_24dp : builder.getIcon();
         mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
         this.mDownloadMsgConfig = builder.getDownloadMsgConfig();
         this.isParallelDownload = builder.isParallelDownload();

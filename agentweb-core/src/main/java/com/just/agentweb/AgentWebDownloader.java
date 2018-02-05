@@ -138,9 +138,9 @@ public interface AgentWebDownloader<T> extends DownloadingService {
         }
 
 
-        public void build() {
-
-        }
+//        public void build() {
+//
+//        }
 
     }
 

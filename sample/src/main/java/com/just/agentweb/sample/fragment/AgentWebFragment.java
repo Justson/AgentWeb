@@ -165,7 +165,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          */
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
-            extra.setOpenBreakPointDownload(false).build();
+            extra.setOpenBreakPointDownload(false);
             return false;
         }
 

@@ -113,6 +113,8 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
                 .setUserAgent(this.userAgent);
         this.mCloneBuilder = mCloneBuilder;
 
+        LogUtils.i(TAG, " clone a builder : " + this.mCloneBuilder.mWebView + "  aty:" + this.mCloneBuilder.mActivity + "  :" + this.mCloneBuilder.getMimetype());
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> mList = null;
             if ((mList = checkNeedPermission()).isEmpty()) {
@@ -203,13 +205,13 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             showDialog(url, contentLength, mFile);
             return;
         }
-        performDownload( mFile);
+        performDownload(mFile);
     }
 
     private void forceDown(final String url, final long contentLength, final File file) {
 
         this.mCloneBuilder.isForceDownload = true;
-        performDownload(url, contentLength, file);
+        performDownload(file);
 
 
     }
@@ -285,7 +287,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             if (fileName.contains("\"")) {
                 fileName = fileName.replace("\"", "");
             }
-            return AgentWebUtils.createFileByName(mContext, fileName, !this.mCloneBuilder.isParallelDownload);
+            return AgentWebUtils.createFileByName(mContext, fileName, !this.mCloneBuilder.isOpenBreakPointDownload());
         } catch (Throwable e) {
             if (LogUtils.isDebug())
                 e.printStackTrace();
@@ -403,7 +405,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         private transient PermissionInterceptor mPermissionInterceptor;
         private boolean isParallelDownload = true;
         private transient WebView mWebView;
-        protected int icon = -1;
+        protected int icon = R.drawable.ic_file_download_black_24dp;
         private DefaultDownloadImpl mDefaultDownload;
         protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
 
@@ -524,20 +526,20 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             return this;
         }
 
-        public void build() {
-            if (mDefaultDownload != null) {
-                mDefaultDownload.bind(this);
-            }
-        }
+//        public void build() {
+//            if (mDefaultDownload != null) {
+//                mDefaultDownload.bind(this);
+//            }
+//        }
 
         @Override
         protected Object clone() throws CloneNotSupportedException {
             Builder mBuilder = (Builder) super.clone();
             mBuilder.isCloneObject = true;
-//            mBuilder.mActivity = null;
-//            mBuilder.mDownloadListener = null;
-//            mBuilder.mPermissionInterceptor = null;
-//            mBuilder.mWebView = null;
+            mBuilder.mActivity = null;
+            mBuilder.mDownloadListener = null;
+            mBuilder.mPermissionInterceptor = null;
+            mBuilder.mWebView = null;
             return mBuilder;
         }
 
