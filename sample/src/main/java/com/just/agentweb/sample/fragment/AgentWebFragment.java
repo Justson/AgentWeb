@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
+import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.AgentWebSettings;
 import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
@@ -146,7 +147,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     };
 
     private DownloadingService mDownloadingService;
-    DownloadListener.ExtraService mExtraService;
+    AgentWebDownloader.ExtraService mExtraService;
     /**
      * 修改 AgentWeb  4.0.0
      */
@@ -163,7 +164,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
          */
         @Override
-        public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+        public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
             extra.setOpenBreakPointDownload(false).build();
             return false;
         }

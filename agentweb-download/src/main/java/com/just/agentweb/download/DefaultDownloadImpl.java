@@ -66,7 +66,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     }
 
     private void bind(Builder builder) {
-        mActivityWeakReference = new WeakReference<Activity>(builder.mActivity);
+        this.mActivityWeakReference = new WeakReference<Activity>(builder.mActivity);
         this.mContext = builder.mActivity.getApplicationContext();
         this.mDownloadListener = builder.mDownloadListener;
         this.mPermissionListener = builder.mPermissionInterceptor;
@@ -203,7 +203,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             showDialog(url, contentLength, mFile);
             return;
         }
-        performDownload(url, contentLength, mFile);
+        performDownload( mFile);
     }
 
     private void forceDown(final String url, final long contentLength, final File file) {
@@ -237,7 +237,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         };
     }
 
-    private void performDownload(String url, long contentLength, File file) {
+    private void performDownload(File file) {
 
         try {
 
@@ -246,25 +246,12 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
                 mAgentWebUIController.get()
                         .showMessage(this.mCloneBuilder.mDownloadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
             }
-            Builder mCloneBuilder = (Builder) mBuilder.clone();
-            mCloneBuilder
-                    .setUrl(url)
-                    .setMimetype(this.mimetype)
-                    .setContentDisposition(this.contentDisposition)
-                    .setContentLength(this.contentLength)
-                    .setUserAgent(this.userAgent);
-
 
             DownloadTask mDownloadTask = new DownloadTask(NoticationID++,
-                    url,
-                    this, this.mCloneBuilder.isForceDownload,
-                    this.mCloneBuilder.enableIndicator, mContext, file,
-                    contentLength, this.mCloneBuilder.mDownloadMsgConfig,
-                    this.mCloneBuilder.icon == -1 ? R.drawable.ic_file_download_black_24dp : this.mCloneBuilder.icon, this.mCloneBuilder.isParallelDownload,
-                    mCloneBuilder);
-
+                    this,
+                    mContext, file,
+                    this.mCloneBuilder);
             new Downloader().download(mDownloadTask);
-
 
             this.url = null;
             this.contentDisposition = null;
@@ -409,13 +396,13 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
 
     public static class Builder extends AgentWebDownloader.ExtraService implements Cloneable {
-        private Activity mActivity;
+        private transient Activity mActivity;
         private boolean isForceDownload = false;
         private boolean enableIndicator = true;
-        private DownloadListener mDownloadListener;
-        private PermissionInterceptor mPermissionInterceptor;
+        private transient DownloadListener mDownloadListener;
+        private transient PermissionInterceptor mPermissionInterceptor;
         private boolean isParallelDownload = true;
-        private WebView mWebView;
+        private transient WebView mWebView;
         protected int icon = -1;
         private DefaultDownloadImpl mDefaultDownload;
         protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
@@ -547,6 +534,10 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         protected Object clone() throws CloneNotSupportedException {
             Builder mBuilder = (Builder) super.clone();
             mBuilder.isCloneObject = true;
+//            mBuilder.mActivity = null;
+//            mBuilder.mDownloadListener = null;
+//            mBuilder.mPermissionInterceptor = null;
+//            mBuilder.mWebView = null;
             return mBuilder;
         }
 

@@ -59,28 +59,24 @@ public class DownloadTask implements Serializable {
 
     private volatile boolean isParallelDownload = false;
 
-    private volatile boolean isShutdown = false;
 
     private DefaultDownloadImpl.Builder mBuilder;
 
-    public DownloadTask(int id, String url,
+    public DownloadTask(int id,
                         DownloadListener downloadListeners,
-                        boolean isForce, boolean enableIndicator,
-                        Context context, File file, long length,
-                        DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig,
-                        int drawableRes, boolean isParallelDownload,
+                        Context context, File file,
                         DefaultDownloadImpl.Builder builder) {
         this.id = id;
-        this.url = url;
-        this.isForce = isForce;
-        this.enableIndicator = enableIndicator;
-        mContext = context;
-        mFile = file;
-        this.length = length;
-        this.drawableRes = drawableRes;
+        this.url = builder.getUrl();
+        this.isForce = builder.isForceDownload();
+        this.enableIndicator = builder.isEnableIndicator();
+        this.mContext = context;
+        this.mFile = file;
+        this.length = builder.getContentLength();
+        this.drawableRes = builder.getIcon();
         mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
-        this.mDownloadMsgConfig = downloadMsgConfig;
-        this.isParallelDownload = isParallelDownload;
+        this.mDownloadMsgConfig = builder.getDownloadMsgConfig();
+        this.isParallelDownload = builder.isParallelDownload();
         this.mBuilder = builder;
     }
 
@@ -140,10 +136,6 @@ public class DownloadTask implements Serializable {
         mDownloadMsgConfig = downloadMsgConfig;
     }
 
-
-    public void setShutdown(boolean shutdown) {
-        isShutdown = shutdown;
-    }
 
     public Context getContext() {
         return mContext;

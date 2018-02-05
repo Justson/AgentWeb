@@ -400,7 +400,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
     @Override
-    public DownloadListener.ExtraService shutdownNow() {
+    public AgentWebDownloader.ExtraService shutdownNow() {
         toCancel();
         isShutdown.set(true);
         return mDownloadTask.getBuilder();
