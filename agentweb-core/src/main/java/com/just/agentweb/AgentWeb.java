@@ -153,11 +153,11 @@ public final class AgentWeb {
      */
     private boolean isInterceptUnkownScheme = false;
     /**
-     * 该变量控制了是否质询用户页面跳转，或者直接拦截
+     * 该变量控制了是否咨询用户页面跳转，或者直接拦截
      */
     private int openOtherAppWays = -1;
     /**
-     * MiddlewareWebClientBase WebViewClient 中间件，
+     * MiddlewareWebClientBase WebViewClient 中间件
      */
     private MiddlewareWebClientBase mMiddleWrareWebClientBaseHeader;
     /**

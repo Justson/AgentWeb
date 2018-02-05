@@ -371,9 +371,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             }
         }
 
-
     };
-
 
     /**
      * 打开浏览器

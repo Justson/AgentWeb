@@ -20,7 +20,7 @@ import static com.just.agentweb.AgentWebConfig.AGENTWEB_VERSION;
  * https://github.com/Justson/AgentWeb
  */
 
-public class Notify {
+public class AgentWebNotification {
 
     private static final int FLAG = Notification.FLAG_INSISTENT;
     int requestCode = (int) SystemClock.uptimeMillis();
@@ -31,7 +31,7 @@ public class Notify {
     private Context mContext;
     private String mChannelId = "";
 
-    public Notify(Context context, int ID) {
+    public AgentWebNotification(Context context, int ID) {
         this.NOTIFICATION_ID = ID;
         mContext = context;
         // 获取系统服务来初始化对象

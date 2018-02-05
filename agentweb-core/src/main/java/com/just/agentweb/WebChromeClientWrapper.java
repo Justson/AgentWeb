@@ -187,7 +187,7 @@ public class WebChromeClientWrapper extends WebChromeClient {
     }
 
     /**
-     * Notify the host application that a request for Geolocation permissions,
+     * notify the host application that a request for Geolocation permissions,
      * made with a previous call to
      * {@link #onGeolocationPermissionsShowPrompt(String, GeolocationPermissions.Callback) onGeolocationPermissionsShowPrompt()}
      * has been canceled. Any related UI should therefore be hidden.
