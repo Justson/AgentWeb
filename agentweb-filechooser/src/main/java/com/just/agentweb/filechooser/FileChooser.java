@@ -72,7 +72,7 @@ public class FileChooser {
      */
     private ValueCallback<Uri[]> mUriValueCallbacks;
     /**
-     * Open Activity Request Code
+     *  Activity Request Code
      */
     public static final int REQUEST_CODE = 0x254;
     /**

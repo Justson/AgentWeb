@@ -53,9 +53,6 @@ public class UrlLoaderImpl implements IUrlLoader {
             safeLoadUrl(url);
             return;
         }
-        //|| ((!url.startsWith("http")&&(!url.startsWith("javascript:"))))
-        /*if (TextUtils.isEmpty(url))
-            throw new UrlCommonException("url is null or '' or not startsWith http ,javascript , file , please check url format");*/
 
         if (mHttpHeaders==null|| mHttpHeaders.isEmptyHeaders())
             this.mWebView.loadUrl(url);

@@ -226,7 +226,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         performDownload(mFile);
     }
 
-    private void forceDown(final File file) {
+    private void forceDownload(final File file) {
 
         this.mCloneExtraServiceImpl.isForceDownload = true;
         performDownload(file);
@@ -251,7 +251,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         return new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
-                forceDown(file);
+                forceDownload(file);
                 return true;
             }
         };

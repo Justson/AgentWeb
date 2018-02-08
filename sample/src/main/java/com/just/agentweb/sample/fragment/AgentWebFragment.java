@@ -119,6 +119,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         }
 
+
         initView(view);
 
 
@@ -197,7 +198,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             } else {//下载失败
 
             }
-            return false; // true  不会发出下载完成的通知
+            return false; // true  不会发出下载完成的通知 , 或者打开文件
         }
     };
 
