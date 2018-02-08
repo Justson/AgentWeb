@@ -441,7 +441,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                         return true;
                     }
                     if (mExtraService != null) {
-                        mExtraService.toReDownload();
+                        mExtraService.performReDownload();
                     }
 
                     return true;

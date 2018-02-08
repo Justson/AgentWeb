@@ -145,7 +145,7 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 
     abstract class ExtraService extends Extra {
 
-        public abstract void toReDownload();
+        public abstract void performReDownload();
     }
 
 

@@ -575,7 +575,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             return this.mDefaultDownload = new DefaultDownloadImpl(this);
         }
 
-        public void toReDownload() {
+        public void performReDownload() {
 
             if (mDefaultDownload != null) {
                 mDefaultDownload
