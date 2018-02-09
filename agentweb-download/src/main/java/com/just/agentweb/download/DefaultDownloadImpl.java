@@ -78,14 +78,14 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
 
     @Override
-    public synchronized void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+    public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
 
         onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength, null);
 
     }
 
 
-    private void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
+    private synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
 
         if (mActivityWeakReference.get() == null || mActivityWeakReference.get().isFinishing()) {
             return;
@@ -538,7 +538,6 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         @Override
         public ExtraServiceImpl setIcon(@DrawableRes int icon) {
             this.icon = icon;
-            LogUtils.i(TAG, "setIcon:" + icon);
             return this;
         }
 
@@ -575,7 +574,8 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             return this.mDefaultDownload = new DefaultDownloadImpl(this);
         }
 
-        public void performReDownload() {
+        @Override
+        public synchronized void performReDownload() {
 
             if (mDefaultDownload != null) {
                 mDefaultDownload
