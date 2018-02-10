@@ -36,7 +36,6 @@ public class AgentWebJsInterfaceCompat {
 
             AgentWebUtils.showFileChooserCompat(mActivityWeakReference.get(),
                     mReference.get().getWebCreator().getWebView(),
-                    mReference.get().getDefaultMsgConfig().getChromeClientMsgCfg().getFileChooserMsgConfig(),
                     null,
                     null,
                     mReference.get().getPermissionInterceptor(),

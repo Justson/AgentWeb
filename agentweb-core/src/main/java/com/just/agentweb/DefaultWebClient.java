@@ -116,10 +116,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
      */
     private WebView mWebView;
     /**
-     * 文案信息
-     */
-    private DefaultMsgConfig.WebViewClientMsgCfg mMsgCfg = null;
-    /**
      * 弹窗回调
      */
     private Handler.Callback mCallback = null;
@@ -181,7 +177,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         } else {
             schemeHandleType = builder.schemeHandleType;
         }
-        this.mMsgCfg = builder.mCfg;
     }
 
     @Override
@@ -622,12 +617,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         private WebView webView;
         private boolean isInterceptUnkownScheme;
         private int schemeHandleType;
-        private DefaultMsgConfig.WebViewClientMsgCfg mCfg;
-
-        public Builder setCfg(DefaultMsgConfig.WebViewClientMsgCfg cfg) {
-            mCfg = cfg;
-            return this;
-        }
 
         public Builder setActivity(Activity activity) {
             this.activity = activity;

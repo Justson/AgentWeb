@@ -824,9 +824,6 @@ public class AgentWebUtils {
 
     static boolean showFileChooserCompat(Activity activity,
                                          WebView webView,
-                                         DefaultMsgConfig
-                                                 .ChromeClientMsgCfg
-                                                 .FileChooserMsgConfig msgConfig,
                                          ValueCallback<Uri[]> valueCallbacks,
                                          WebChromeClient.FileChooserParams fileChooserParams,
                                          PermissionInterceptor permissionInterceptor,
@@ -840,8 +837,8 @@ public class AgentWebUtils {
 
             Class<?> clz = Class.forName("com.just.agentweb.filechooser.FileChooser");
             Object mFileChooser$Builder = clz.getDeclaredMethod("newBuilder",
-                    Activity.class, WebView.class, DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig.class)
-                    .invoke(null, activity, webView, msgConfig);
+                    Activity.class, WebView.class)
+                    .invoke(null, activity, webView);
             clz = mFileChooser$Builder.getClass();
             Method mMethod = null;
             if (valueCallbacks != null) {

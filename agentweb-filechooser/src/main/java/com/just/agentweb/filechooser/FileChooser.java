@@ -71,7 +71,7 @@ public class FileChooser {
      */
     private ValueCallback<Uri[]> mUriValueCallbacks;
     /**
-     *  Activity Request Code
+     * Activity Request Code
      */
     public static final int REQUEST_CODE = 0x254;
     /**
@@ -94,10 +94,6 @@ public class FileChooser {
      * TAG
      */
     private static final String TAG = FileChooser.class.getSimpleName();
-    /**
-     * 弹窗文案信息
-     */
-    private DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig mFileChooserMsgConfig;
     /**
      * 当前 WebView
      */
@@ -140,7 +136,6 @@ public class FileChooser {
         if (this.jsChannel) {
             this.mJsChannelCallback = JsChannelCallback.create(builder.jsChannelCallback);
         }
-        this.mFileChooserMsgConfig = builder.mFileChooserMsgConfig;
         this.mWebView = builder.mWebView;
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
         this.acceptType = builder.acceptType;
@@ -253,7 +248,7 @@ public class FileChooser {
         if (this.mAgentWebUIController.get() != null) {
             this.mAgentWebUIController
                     .get()
-                    .showChooser(this.mWebView, mWebView.getUrl(), mFileChooserMsgConfig.getMedias(), getCallBack());
+                    .showChooser(this.mWebView, mWebView.getUrl(), new String[]{}, getCallBack());
             LogUtils.i(TAG, "open");
         }
 
@@ -505,7 +500,7 @@ public class FileChooser {
 
         if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
             if (mAgentWebUIController.get() != null) {
-                mAgentWebUIController.get().showMessage(String.format(mFileChooserMsgConfig.getMaxFileLengthLimit(), (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
+                mAgentWebUIController.get().showMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
             }
             mJsChannelCallback.call(null);
             return;
@@ -541,7 +536,7 @@ public class FileChooser {
             return;
         }
         final String path = paths[0];
-        mAgentWebUIController.get().onLoading(mFileChooserMsgConfig.getLoading());
+        mAgentWebUIController.get().onLoading(mActivity.getString(R.string.agentweb_loading));
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas, mAgentWebUIController)));
 
     }
@@ -785,8 +780,8 @@ public class FileChooser {
         }
     }
 
-    public static Builder newBuilder(Activity activity, WebView webView, DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig config) {
-        return new Builder().setActivity(activity).setWebView(webView).setFileChooserMsgConfig(config);
+    public static Builder newBuilder(Activity activity, WebView webView) {
+        return new Builder().setActivity(activity).setWebView(webView);
     }
 
     public static final class Builder {
@@ -798,7 +793,6 @@ public class FileChooser {
         private WebChromeClient.FileChooserParams mFileChooserParams;
         private JsChannelCallback mJsChannelCallback;
         private boolean jsChannel = false;
-        private DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig mFileChooserMsgConfig;
         private WebView mWebView;
         private PermissionInterceptor mPermissionInterceptor;
         private String acceptType = "*/*";
@@ -848,12 +842,6 @@ public class FileChooser {
             jsChannel = true;
             mUriValueCallback = null;
             mUriValueCallbacks = null;
-            return this;
-        }
-
-
-        public Builder setFileChooserMsgConfig(DefaultMsgConfig.ChromeClientMsgCfg.FileChooserMsgConfig fileChooserMsgConfig) {
-            mFileChooserMsgConfig = fileChooserMsgConfig;
             return this;
         }
 

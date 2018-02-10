@@ -123,10 +123,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         initView(view);
 
 
-        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
+        //AgentWeb 4.0 开始，删除该类
+//        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
         //  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
-        //AgentWeb 没有把WebView的功能全面覆盖 ，所有某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
+        //AgentWeb 没有把WebView的功能全面覆盖 ，所以某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
         mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
         //mAgentWeb.getWebCreator().getWebView()  获取WebView .
 

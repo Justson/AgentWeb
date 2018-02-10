@@ -57,10 +57,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
      */
     private IVideo mIVideo;
     /**
-     * ChromeClientMsgCfg 文案信息
-     */
-    private DefaultMsgConfig.ChromeClientMsgCfg mChromeClientMsgCfg;
-    /**
      * PermissionInterceptor 权限拦截器
      */
     private PermissionInterceptor mPermissionInterceptor;
@@ -101,14 +97,13 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
                         IndicatorController indicatorController,
                         WebChromeClient chromeClient,
                         @Nullable IVideo iVideo,
-                        DefaultMsgConfig.ChromeClientMsgCfg chromeClientMsgCfg, PermissionInterceptor permissionInterceptor, WebView webView) {
+                        PermissionInterceptor permissionInterceptor, WebView webView) {
         super(chromeClient);
         this.mIndicatorController = indicatorController;
         isWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
         mActivityWeakReference = new WeakReference<Activity>(activity);
         this.mIVideo = iVideo;
-        this.mChromeClientMsgCfg = chromeClientMsgCfg;
         this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
         mAgentWebUiController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
@@ -329,7 +324,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
         return AgentWebUtils.showFileChooserCompat(mActivity,
                 mWebView,
-                mChromeClientMsgCfg.getFileChooserMsgConfig(),
                 valueCallbacks,
                 fileChooserParams,
                 this.mPermissionInterceptor,
@@ -383,7 +377,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
         AgentWebUtils.showFileChooserCompat(mActivity,
                 mWebView,
-                mChromeClientMsgCfg.getFileChooserMsgConfig(),
                 null,
                 null,
                 this.mPermissionInterceptor,

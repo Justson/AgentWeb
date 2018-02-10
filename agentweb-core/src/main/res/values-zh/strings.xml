@@ -4,11 +4,10 @@
     <string name="agentweb_tips">提示</string>
 
 
-
     <string name="agentweb_honeycomblow">您正在使用手机流量 ， 继续下载该文件吗?</string>
     <string name="agentweb_download">下载</string>
     <string name="agentweb_cancel">取消</string>
-    <string name="agentweb_downLoad_fail">下载失败!</string>
+    <string name="agentweb_download_fail">下载失败!</string>
     <string name="agentweb_current_downloading_progress">当前进度:%s</string>
     <string name="agentweb_trickter">您有一条新通知</string>
     <string name="agentweb_file_downLoad">文件下载</string>
@@ -17,9 +16,9 @@
     <string name="agentweb_camera">相机</string>
     <string name="agentweb_file_chooser">文件</string>
     <string name="agentweb_loading">加载中 ...</string>
-
     <string name="agentweb_leave_app_and_go_other_page">您需要离开%s前往其他应用吗？</string>
     <string name="agentweb_leave">离开</string>
+    <string name="agentweb_max_file_length_limit">选择的文件不能大于%sMB</string>
 
 
 </resources>

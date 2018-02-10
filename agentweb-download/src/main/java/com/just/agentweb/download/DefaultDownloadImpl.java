@@ -211,7 +211,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         if (ExecuteTasksMap.getInstance().contains(url) || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
-                        this.mCloneExtraServiceImpl.mDownloadMsgConfig.getTaskHasBeenExist(), TAG.concat("|preDownload"));
+                        mActivityWeakReference.get().getString(R.string.agentweb_download_task_has_been_exist), TAG.concat("|preDownload"));
             }
             return;
         }
@@ -263,7 +263,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get()
-                        .showMessage(this.mCloneExtraServiceImpl.mDownloadMsgConfig.getPreLoading() + ":" + file.getName(), TAG.concat("|performDownload"));
+                        .showMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
             }
 
             DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
@@ -424,7 +424,6 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         private transient WebView mWebView;
         protected int icon = R.drawable.ic_file_download_black_24dp;
         private DefaultDownloadImpl mDefaultDownload;
-        protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
         protected String url;
         protected String userAgent;
         protected String contentDisposition;
@@ -505,22 +504,10 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             return this;
         }
 
-        @Override
-        public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
-            return mDownloadMsgConfig;
-        }
 
         @Override
         public ExtraServiceImpl setForceDownload(boolean force) {
             isForceDownload = force;
-            return this;
-        }
-
-        @Override
-        public ExtraServiceImpl setDownloadMsgConfig(@NonNull DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
-            if (downloadMsgConfig != null) {
-                mDownloadMsgConfig = downloadMsgConfig;
-            }
             return this;
         }
 

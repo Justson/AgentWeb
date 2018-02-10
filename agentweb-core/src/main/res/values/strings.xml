@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">AgentWeb</string>
+
+
+    <string name="agentweb_download_task_has_been_exist">该任务已经存在 ， 请勿重复点击下载!</string>
+    <string name="agentweb_tips">提示</string>
+
+
+
+    <string name="agentweb_honeycomblow">您正在使用手机流量 ， 继续下载该文件吗?</string>
+    <string name="agentweb_download">下载</string>
+    <string name="agentweb_cancel">取消</string>
+    <string name="agentweb_download_fail">下载失败!</string>
+    <string name="agentweb_current_downloading_progress">当前进度:%s</string>
+    <string name="agentweb_trickter">您有一条新通知</string>
+    <string name="agentweb_file_downLoad">文件下载</string>
+    <string name="agentweb_click_open">点击打开</string>
+    <string name="agentweb_coming_soon_download">即将开始下载文件</string>
+    <string name="agentweb_camera">相机</string>
+    <string name="agentweb_file_chooser">文件</string>
+    <string name="agentweb_loading">加载中 ...</string>
+    <string name="agentweb_leave_app_and_go_other_page">您需要离开%s前往其他应用吗？</string>
+    <string name="agentweb_leave">离开</string>
 </resources>

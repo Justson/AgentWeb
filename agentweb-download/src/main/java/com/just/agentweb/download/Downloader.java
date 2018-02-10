@@ -119,7 +119,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     protected void onPreExecute() {
         super.onPreExecute();
         mObservable.addObserver(this);
-        buildNotify(new Intent(), mDownloadTask.getId(), mDownloadTask.getDownloadMsgConfig().getPreLoading());
+        buildNotify(new Intent(), mDownloadTask.getId(),
+                mDownloadTask.getContext().getString(R.string.agentweb_coming_soon_download));
     }
 
     private boolean checkDownloadCondition() {
@@ -218,12 +219,18 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             }
             this.mLastTime = currentTime;
             if (mAgentWebNotification != null) {
-                if (!mAgentWebNotification.hasDeleteContent()){
+                if (!mAgentWebNotification.hasDeleteContent()) {
                     mAgentWebNotification.setDelecte(buildCancelContent(mDownloadTask.getContext().getApplicationContext(), mDownloadTask.getId()));
                 }
 
                 int mProgress = (int) ((tmp + loaded) / Float.valueOf(totals) * 100);
-                mAgentWebNotification.setContentText(String.format(mDownloadTask.getDownloadMsgConfig().getLoading(), mProgress + "%"));
+                mAgentWebNotification.setContentText(
+                        mDownloadTask.getContext()
+                                .getString(R.string.agentweb_current_downloading_progress,(mProgress + "%"))
+                       );
+
+
+
                 mAgentWebNotification.setProgress(100, mProgress, false);
 
             }
@@ -273,7 +280,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         PendingIntent rightPendIntent = PendingIntent.getActivity(mDownloadTask.getContext(),
                                 mDownloadTask.getId() << 4, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        mAgentWebNotification.setProgressFinish(mDownloadTask.getDownloadMsgConfig().getClickOpen(), rightPendIntent);
+                        mAgentWebNotification.setProgressFinish(mDownloadTask.getContext().getString(R.string.agentweb_click_open), rightPendIntent);
                     }
                     return;
                 } catch (Throwable throwable) {
@@ -323,10 +330,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             PendingIntent rightPendIntent = PendingIntent.getActivity(mContext,
                     0x33 * id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             int smallIcon = mDownloadTask.getDrawableRes();
-            String ticker = mDownloadTask.getDownloadMsgConfig().getTrickter();
+            String ticker = mContext.getString(R.string.agentweb_trickter);
             mAgentWebNotification = new AgentWebNotification(mContext, id);
 
-            String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ? mDownloadTask.getDownloadMsgConfig().getFileDownLoad() : mDownloadTask.getFile().getName();
+            String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ?mContext.getString(R.string.agentweb_file_downLoad): mDownloadTask.getFile().getName();
 
             if (title.length() > 24) {
                 title = "..." + title.substring(title.length() - 24, title.length());

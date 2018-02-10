@@ -1,7 +1,6 @@
 package com.just.agentweb;
 
 import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 
@@ -22,7 +21,6 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 
         protected boolean isForceDownload = false;
         protected boolean enableIndicator = true;
-        protected DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
         @DrawableRes
         protected int icon = -1;
         protected boolean isParallelDownload = true;
@@ -91,9 +89,6 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
             return enableIndicator;
         }
 
-        public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
-            return mDownloadMsgConfig;
-        }
 
         public int getIcon() {
             return icon;
@@ -119,14 +114,6 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 
         public Extra setEnableIndicator(boolean enableIndicator) {
             this.enableIndicator = enableIndicator;
-            return this;
-        }
-
-
-        public Extra setDownloadMsgConfig(@NonNull DefaultMsgConfig.DownloadMsgConfig downloadMsgConfig) {
-            if (downloadMsgConfig != null) {
-                mDownloadMsgConfig = downloadMsgConfig;
-            }
             return this;
         }
 

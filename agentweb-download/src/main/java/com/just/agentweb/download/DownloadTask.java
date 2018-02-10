@@ -50,7 +50,6 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     private int drawableRes;
 
     private WeakReference<DownloadListener> mDownloadWR = null;
-    private DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig;
     /**
      * 表示当前任务是否被销毁了。
      */
@@ -80,7 +79,6 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         this.length = extraServiceImpl.getContentLength();
         this.drawableRes = extraServiceImpl.getIcon() == -1 ? R.drawable.ic_file_download_black_24dp : extraServiceImpl.getIcon();
         mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
-        this.mDownloadMsgConfig = extraServiceImpl.getDownloadMsgConfig();
         this.isParallelDownload = extraServiceImpl.isParallelDownload();
         this.mExtraServiceImpl = extraServiceImpl;
     }
@@ -125,10 +123,6 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
 
     public void setDownloadWR(WeakReference<DownloadListener> downloadWR) {
         mDownloadWR = downloadWR;
-    }
-
-    public DefaultMsgConfig.DownloadMsgConfig getDownloadMsgConfig() {
-        return mDownloadMsgConfig;
     }
 
 
@@ -181,7 +175,6 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         this.length = -1;
         this.drawableRes = -1;
         mDownloadWR = null;
-        this.mDownloadMsgConfig = null;
         this.isParallelDownload = false;
         this.mExtraServiceImpl = null;
     }

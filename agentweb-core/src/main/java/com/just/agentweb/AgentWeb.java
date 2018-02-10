@@ -140,10 +140,6 @@ public final class AgentWeb {
      */
     private boolean webClientHelper = true;
     /**
-     * AgentWeb 提示的信息封装类
-     */
-    private DefaultMsgConfig mDefaultMsgConfig;
-    /**
      * PermissionInterceptor 权限拦截
      */
     private PermissionInterceptor mPermissionInterceptor;
@@ -214,12 +210,6 @@ public final class AgentWeb {
         init();
     }
 
-    /**
-     * @return DefaultMsgConfig 文案信息
-     */
-    public DefaultMsgConfig getDefaultMsgConfig() {
-        return this.mDefaultMsgConfig;
-    }
 
 
     /**
@@ -403,8 +393,6 @@ public final class AgentWeb {
     }
 
     private void init() {
-        if (this.mDownloadListener == null)
-            mDefaultMsgConfig = new DefaultMsgConfig();
         doCompat();
         doSafeCheck();
     }
@@ -425,7 +413,6 @@ public final class AgentWeb {
                 .setWebView(this.mWebCreator.getWebView())
                 .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
                 .setSchemeHandleType(this.openOtherAppWays)
-                .setCfg(this.mDefaultMsgConfig.getWebViewClientMsgCfg())
                 .build();
         MiddlewareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
         if (header != null) {
@@ -500,10 +487,6 @@ public final class AgentWeb {
             mMethod.setAccessible(true);
             mMethod.invoke(mDefaultDownloadImpl$Extra, this.mAgentWebDownloadListener);
 
-            mMethod = clazz.getDeclaredMethod("setDownloadMsgConfig", DefaultMsgConfig.DownloadMsgConfig.class);
-            mMethod.setAccessible(true);
-            mMethod.invoke(mDefaultDownloadImpl$Extra, mDefaultMsgConfig.getDownloadMsgConfig());
-
 //            mMethod = clazz.getDeclaredMethod("setOpenBreakPointDownload", boolean.class);
 //            mMethod.setAccessible(true);
 //            mMethod.invoke(mDefaultDownloadImpl$Extra, new Boolean(true));
@@ -536,7 +519,6 @@ public final class AgentWeb {
                 new DefaultChromeClient(this.mActivity,
                         this.mIndicatorController = mIndicatorController,
                         this.mWebChromeClient, this.mIVideo = getIVideo(),
-                        mDefaultMsgConfig.getChromeClientMsgCfg(),
                         this.mPermissionInterceptor, mWebCreator.getWebView());
 
         LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
