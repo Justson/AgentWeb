@@ -179,7 +179,7 @@ public final class AgentWeb {
         this.mFragment = agentBuilder.mFragment;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.mIEventHandler = agentBuilder.mIEventHandler;
-        this.enableIndicator = agentBuilder.enableProgress;
+        this.enableIndicator = agentBuilder.enableIndicator;
         mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.height_dp, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
@@ -296,7 +296,6 @@ public final class AgentWeb {
     public IEventHandler getIEventHandler() {
         return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.getWebView(), getInterceptor())) : this.mIEventHandler;
     }
-
 
 
     public AgentWebSettings getAgentWebSettings() {
@@ -546,7 +545,7 @@ public final class AgentWeb {
             MiddlewareWebChromeBase tail = header;
             int count = 1;
             MiddlewareWebChromeBase tmp = header;
-            while (tmp.next() != null) {
+            for (; tmp.next() != null; ) {
                 tail = tmp = tmp.next();
                 count++;
             }
@@ -573,7 +572,7 @@ public final class AgentWeb {
         private BaseIndicatorView v;
         private IndicatorController mIndicatorController = null;
         /*默认进度条是显示的*/
-        private boolean enableProgress = true;
+        private boolean enableIndicator = true;
         private ViewGroup.LayoutParams mLayoutParams = null;
         private WebViewClient mWebViewClient;
         private WebChromeClient mWebChromeClient;
@@ -650,18 +649,18 @@ public final class AgentWeb {
         }
 
         public CommonBuilder useDefaultIndicator(int color) {
-            this.mAgentBuilder.enableProgress = true;
+            this.mAgentBuilder.enableIndicator = true;
             this.mAgentBuilder.mIndicatorColor = color;
             return new CommonBuilder(mAgentBuilder);
         }
 
         public CommonBuilder useDefaultIndicator() {
-            this.mAgentBuilder.enableProgress = true;
+            this.mAgentBuilder.enableIndicator = true;
             return new CommonBuilder(mAgentBuilder);
         }
 
         public CommonBuilder closeDefaultIndicator() {
-            this.mAgentBuilder.enableProgress = false;
+            this.mAgentBuilder.enableIndicator = false;
             this.mAgentBuilder.mIndicatorColor = -1;
             this.mAgentBuilder.height_dp = -1;
             return new CommonBuilder(mAgentBuilder);
@@ -669,11 +668,11 @@ public final class AgentWeb {
 
         public CommonBuilder setCustomIndicator(@NonNull BaseIndicatorView v) {
             if (v != null) {
-                this.mAgentBuilder.enableProgress = true;
+                this.mAgentBuilder.enableIndicator = true;
                 this.mAgentBuilder.v = v;
                 this.mAgentBuilder.isNeedDefaultProgress = false;
             } else {
-                this.mAgentBuilder.enableProgress = true;
+                this.mAgentBuilder.enableIndicator = true;
                 this.mAgentBuilder.isNeedDefaultProgress = true;
             }
 

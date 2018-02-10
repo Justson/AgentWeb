@@ -3,6 +3,7 @@ package com.just.agentweb;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -87,11 +88,12 @@ public class DefaultUIController extends AgentWebUIController {
         if ((mActivity = this.mActivity) == null || mActivity.isFinishing())
             return;
 
+
         AlertDialog mAlertDialog = null;
         mAlertDialog = new AlertDialog.Builder(mActivity)//
                 .setTitle(message.getTips())//
-                .setMessage(message.getHoneycomblow())//
-                .setNegativeButton(message.getDownLoad(), new DialogInterface.OnClickListener() {
+                .setMessage(mResources.getString(R.string.agentweb_honeycomblow))//
+                .setNegativeButton(mResources.getString(R.string.agentweb_download), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (dialog != null)
@@ -100,7 +102,7 @@ public class DefaultUIController extends AgentWebUIController {
                             callback.handleMessage(Message.obtain());
                     }
                 })//
-                .setPositiveButton(message.getCancel(), new DialogInterface.OnClickListener() {
+                .setPositiveButton(mResources.getString(R.string.agentweb_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -282,11 +284,13 @@ public class DefaultUIController extends AgentWebUIController {
             result.cancel();
     }
 
+    Resources mResources = null;
 
     @Override
     protected void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
         this.mActivity = activity;
         this.mWebParentLayout = webParentLayout;
+        mResources = this.mActivity.getResources();
 
     }
 }

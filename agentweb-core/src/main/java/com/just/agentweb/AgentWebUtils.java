@@ -716,7 +716,6 @@ public class AgentWebUtils {
         if (mToast == null) {
             mToast = Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_SHORT);
         } else {
-
             mToast.setText(msg);
         }
         mToast.show();
