@@ -262,9 +262,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
                     mAgentWebUIController.get()
                             .onAskOpenPage(this.mWebView,
                                     mWebView.getUrl(),
-                                    String.format(mMsgCfg.getLeaveApp(), AgentWebUtils.getApplicationName(mWebView.getContext())),
-                                    mMsgCfg.getConfirm(),
-                                    mMsgCfg.getTitle(), getCallback(url));
+                                    getCallback(url));
                 }
                 return true;
             default://默认不打开

@@ -73,8 +73,8 @@ public class DefaultDesignUIController extends DefaultUIController {
     }
 
     @Override
-    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, final Handler.Callback callback) {
-        super.onForceDownloadAlert(url, message, callback);
+    public void onForceDownloadAlert(String url, final Handler.Callback callback) {
+        super.onForceDownloadAlert(url, callback);
     }
 
     private void showChooserInternal(WebView view, String url, final String[] ways, final Handler.Callback callback) {
@@ -94,8 +94,8 @@ public class DefaultDesignUIController extends DefaultUIController {
         mBottomSheetDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                if(callback!=null){
-                    callback.handleMessage(Message.obtain(null,-1));
+                if (callback != null) {
+                    callback.handleMessage(Message.obtain(null, -1));
                 }
             }
         });
@@ -152,8 +152,6 @@ public class DefaultDesignUIController extends DefaultUIController {
     public void onJsPrompt(WebView view, String url, String message, String defaultValue, JsPromptResult jsPromptResult) {
         super.onJsPrompt(view, url, message, defaultValue, jsPromptResult);
     }
-
-
 
 
     @Override

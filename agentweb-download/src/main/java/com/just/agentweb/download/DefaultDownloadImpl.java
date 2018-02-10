@@ -242,7 +242,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
         AgentWebUIController mAgentWebUIController;
         if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
-            mAgentWebUIController.onForceDownloadAlert(url, this.mExtraServiceImpl.mDownloadMsgConfig, createCallback(file));
+            mAgentWebUIController.onForceDownloadAlert(url, createCallback(file));
         }
 
     }

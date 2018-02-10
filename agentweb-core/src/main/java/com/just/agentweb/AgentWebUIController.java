@@ -78,12 +78,9 @@ public abstract class AgentWebUIController {
      * 咨询用户是否前往其他页面
      * @param view
      * @param url
-     * @param message
-     * @param confirm
-     * @param title
      * @param callback
      */
-    public abstract void onAskOpenPage(WebView view, String url, String message, String confirm, String title, Handler.Callback callback);
+    public abstract void onAskOpenPage(WebView view, String url, Handler.Callback callback);
 
     /**
      * WebChromeClient#onJsConfirm
@@ -99,10 +96,9 @@ public abstract class AgentWebUIController {
     /**
      * 强制下载弹窗
      * @param url 当前下载地址。
-     * @param message 对话信息
      * @param callback 用户操作回调回调
      */
-    public abstract void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, Handler.Callback callback);
+    public abstract void onForceDownloadAlert(String url, Handler.Callback callback);
 
     /**
      * WebChromeClient#onJsPrompt

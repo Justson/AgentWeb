@@ -36,24 +36,25 @@ public class DefaultUIController extends AgentWebUIController {
 
 
     @Override
-    public void onAskOpenPage(WebView view, String url, String message, String confirm, String title, final Handler.Callback callback) {
+    public void onAskOpenPage(WebView view, String url, final Handler.Callback callback) {
+
 
         LogUtils.i(TAG, "onAskOpenPage");
         if (askOpenOtherAppDialog == null) {
             askOpenOtherAppDialog = new AlertDialog
                     .Builder(mActivity)//
-                    .setMessage(message)//
-                    .setTitle(title)
+                    .setMessage(mResources.getString(R.string.agentweb_leave_app_and_go_other_page,
+                            AgentWebUtils.getApplicationName(mActivity)))//
+                    .setTitle(mResources.getString(R.string.agentweb_tips))
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (callback != null) {
                                 callback.handleMessage(Message.obtain(null, -1));
                             }
-
                         }
                     })//
-                    .setPositiveButton(confirm, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(mResources.getString(R.string.agentweb_leave), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (callback != null) {
@@ -77,13 +78,13 @@ public class DefaultUIController extends AgentWebUIController {
     }
 
     @Override
-    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, final Handler.Callback callback) {
+    public void onForceDownloadAlert(String url, final Handler.Callback callback) {
 
-        onForceDownloadAlertInternal(message, callback);
+        onForceDownloadAlertInternal(callback);
 
     }
 
-    private void onForceDownloadAlertInternal(DefaultMsgConfig.DownloadMsgConfig message, final Handler.Callback callback) {
+    private void onForceDownloadAlertInternal(final Handler.Callback callback) {
         Activity mActivity;
         if ((mActivity = this.mActivity) == null || mActivity.isFinishing())
             return;
@@ -91,7 +92,7 @@ public class DefaultUIController extends AgentWebUIController {
 
         AlertDialog mAlertDialog = null;
         mAlertDialog = new AlertDialog.Builder(mActivity)//
-                .setTitle(message.getTips())//
+                .setTitle(mResources.getString(R.string.agentweb_tips))//
                 .setMessage(mResources.getString(R.string.agentweb_honeycomblow))//
                 .setNegativeButton(mResources.getString(R.string.agentweb_download), new DialogInterface.OnClickListener() {
                     @Override

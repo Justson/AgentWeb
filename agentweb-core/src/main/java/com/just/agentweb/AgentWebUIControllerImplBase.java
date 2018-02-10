@@ -8,9 +8,8 @@ import android.webkit.WebView;
 
 /**
  * Created by cenxiaozhong on 2017/12/6.
- *
  */
-public  class AgentWebUIControllerImplBase extends AgentWebUIController {
+public class AgentWebUIControllerImplBase extends AgentWebUIController {
 
 
     public static AgentWebUIController build() {
@@ -23,8 +22,8 @@ public  class AgentWebUIControllerImplBase extends AgentWebUIController {
     }
 
     @Override
-    public void onAskOpenPage(WebView view, String url, String message, String confirm, String title, Handler.Callback callback) {
-        getDelegate().onAskOpenPage(view,url,message,confirm,title,callback);
+    public void onAskOpenPage(WebView view, String url, Handler.Callback callback) {
+        getDelegate().onAskOpenPage(view, url, callback);
     }
 
     @Override
@@ -38,8 +37,8 @@ public  class AgentWebUIControllerImplBase extends AgentWebUIController {
     }
 
     @Override
-    public void onForceDownloadAlert(String url, DefaultMsgConfig.DownloadMsgConfig message, Handler.Callback callback) {
-        getDelegate().onForceDownloadAlert(url, message, callback);
+    public void onForceDownloadAlert(String url, Handler.Callback callback) {
+        getDelegate().onForceDownloadAlert(url, callback);
     }
 
     @Override
@@ -49,7 +48,7 @@ public  class AgentWebUIControllerImplBase extends AgentWebUIController {
 
     @Override
     public void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
-        getDelegate().onMainFrameError(view,errorCode,description,failingUrl);
+        getDelegate().onMainFrameError(view, errorCode, description, failingUrl);
     }
 
     @Override
