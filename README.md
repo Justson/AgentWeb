@@ -2,13 +2,13 @@
 
 ## AgentWeb 介绍  [English](./README-ENGLISH.md)
 
-AgentWeb 是一个基于的 Android WebView ，极度容易 ，功能强大的库 。详细使用请参照上面的 Sample 。
+AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库 。详细使用请参照上面的 Sample 。
 
 
 ## AgentWeb Sample 下载
 AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面链接下载体验。
 
-* [GitHub 仓库里APK 文件](./agentweb.apk)
+* [GitHub 仓库里APK文件](./agentweb.apk)
 * [Google Play](https://play.google.com/store/apps/details?id=com.just.agentweb.sample) 
 
 	
@@ -16,12 +16,12 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 ## 引入
 
 
-
 * Gradle 
    
    ```
    compile 'com.just.agentweb:agentweb:3.1.0'
    ```
+   
 * Maven
 	
 	```
@@ -33,6 +33,7 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 	</dependency>
 	
 	```
+	
 * 4.0.0-Alpha
 
 	```
