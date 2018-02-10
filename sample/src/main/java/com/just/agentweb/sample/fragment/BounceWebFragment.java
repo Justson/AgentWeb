@@ -18,7 +18,7 @@ import com.just.agentweb.sample.widget.WebLayout;
 
 /**
  * Created by cenxiaozhong on 2017/7/1.
- *  source CODE  https://github.com/Justson/AgentWeb
+ *  source code  https://github.com/Justson/AgentWeb
  */
 
 public class BounceWebFragment extends AgentWebFragment {

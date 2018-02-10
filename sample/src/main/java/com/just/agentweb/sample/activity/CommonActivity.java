@@ -25,7 +25,7 @@ import static com.just.agentweb.sample.sonic.SonicJavaScriptInterface.PARAM_CLIC
 
 /**
  * Created by cenxiaozhong on 2017/5/23.
- * source CODE  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  */
 
 public class CommonActivity extends AppCompatActivity {

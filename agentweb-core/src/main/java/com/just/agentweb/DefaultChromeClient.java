@@ -65,11 +65,11 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
      */
     private PermissionInterceptor mPermissionInterceptor;
     /**
-     * 当前WebView
+     * 当前 WebView
      */
     private WebView mWebView;
     /**
-     * Web端触发的定位 origin ，全局做保存
+     * Web端触发的定位 origin
      */
     private String origin = null;
     /**

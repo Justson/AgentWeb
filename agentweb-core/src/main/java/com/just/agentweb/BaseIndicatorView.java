@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 
 /**
  * Created by cenxiaozhong on 2017/5/12.
- * source CODE  https://github.com/Justson/AgentWeb
+ * source code  https://github.com/Justson/AgentWeb
  *
  */
 public abstract class BaseIndicatorView extends FrameLayout implements BaseIndicatorSpec,LayoutParamsOffer{

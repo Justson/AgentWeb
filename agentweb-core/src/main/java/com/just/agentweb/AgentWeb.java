@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * https://github.com/Justson/AgentWeb
- * author just -- cxz
+ * Author Just -- cxz
  */
 public final class AgentWeb {
     /**
@@ -484,43 +484,43 @@ public final class AgentWeb {
         Class<?> clazz = null;
         try {
             clazz = Class.forName("com.just.agentweb.download.DefaultDownloadImpl");
-            Object mDefaultDownloadImpl$Builder = clazz.getDeclaredMethod("newExtra", Activity.class).invoke(null, this.mActivity);
+            Object mDefaultDownloadImpl$Extra = clazz.getDeclaredMethod("newExtra", Activity.class).invoke(null, this.mActivity);
 
-            clazz = mDefaultDownloadImpl$Builder.getClass();
+            clazz = mDefaultDownloadImpl$Extra.getClass();
             LogUtils.i(TAG, "clazz:" + clazz.toString());
 
 //            Method mMethod = clazz.getDeclaredMethod("setEnableIndicator", boolean.class);
 //            mMethod.setAccessible(true);
-//            mMethod.invoke(mDefaultDownloadImpl$Builder, new Boolean(true));
+//            mMethod.invoke(mDefaultDownloadImpl$Extra, new Boolean(true));
 //
 //            Method mMethod = clazz.getDeclaredMethod("setForceDownload", boolean.class);
 //            mMethod.setAccessible(true);
-//            mMethod.invoke(mDefaultDownloadImpl$Builder, new Boolean(false));
+//            mMethod.invoke(mDefaultDownloadImpl$Extra, new Boolean(false));
 
             Method mMethod = clazz.getDeclaredMethod("setDownloadListener", DownloadListener.class);
             mMethod.setAccessible(true);
-            mMethod.invoke(mDefaultDownloadImpl$Builder, this.mAgentWebDownloadListener);
+            mMethod.invoke(mDefaultDownloadImpl$Extra, this.mAgentWebDownloadListener);
 
             mMethod = clazz.getDeclaredMethod("setDownloadMsgConfig", DefaultMsgConfig.DownloadMsgConfig.class);
             mMethod.setAccessible(true);
-            mMethod.invoke(mDefaultDownloadImpl$Builder, mDefaultMsgConfig.getDownloadMsgConfig());
+            mMethod.invoke(mDefaultDownloadImpl$Extra, mDefaultMsgConfig.getDownloadMsgConfig());
 
 //            mMethod = clazz.getDeclaredMethod("setOpenBreakPointDownload", boolean.class);
 //            mMethod.setAccessible(true);
-//            mMethod.invoke(mDefaultDownloadImpl$Builder, new Boolean(true));
+//            mMethod.invoke(mDefaultDownloadImpl$Extra, new Boolean(true));
 
             mMethod = clazz.getDeclaredMethod("setPermissionInterceptor", PermissionInterceptor.class);
             mMethod.setAccessible(true);
-            mMethod.invoke(mDefaultDownloadImpl$Builder, this.mPermissionInterceptor);
+            mMethod.invoke(mDefaultDownloadImpl$Extra, this.mPermissionInterceptor);
 
             mMethod = clazz.getDeclaredMethod("setWebView", WebView.class);
             mMethod.setAccessible(true);
-            mMethod.invoke(mDefaultDownloadImpl$Builder, this.mWebCreator.getWebView());
+            mMethod.invoke(mDefaultDownloadImpl$Extra, this.mWebCreator.getWebView());
 
 
             mMethod = clazz.getDeclaredMethod("create");
             mMethod.setAccessible(true);
-            return this.mDownloadListener = mDownloadListener = (android.webkit.DownloadListener) mMethod.invoke(mDefaultDownloadImpl$Builder);
+            return this.mDownloadListener = mDownloadListener = (android.webkit.DownloadListener) mMethod.invoke(mDefaultDownloadImpl$Extra);
         } catch (Throwable ignore) {
             if (LogUtils.isDebug()) {
                 ignore.printStackTrace();
@@ -534,7 +534,11 @@ public final class AgentWeb {
         IndicatorController mIndicatorController = (this.mIndicatorController == null) ? IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer()) : this.mIndicatorController;
 
         DefaultChromeClient mDefaultChromeClient =
-                new DefaultChromeClient(this.mActivity, this.mIndicatorController = mIndicatorController, this.mWebChromeClient, this.mIVideo = getIVideo(), mDefaultMsgConfig.getChromeClientMsgCfg(), this.mPermissionInterceptor, mWebCreator.getWebView());
+                new DefaultChromeClient(this.mActivity,
+                        this.mIndicatorController = mIndicatorController,
+                        this.mWebChromeClient, this.mIVideo = getIVideo(),
+                        mDefaultMsgConfig.getChromeClientMsgCfg(),
+                        this.mPermissionInterceptor, mWebCreator.getWebView());
 
         LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
         MiddlewareWebChromeBase header = this.mMiddlewareWebChromeBaseHeader;

@@ -11,7 +11,7 @@ import com.just.agentweb.AgentWeb;
 
 /**
  * Created by cenxiaozhong on 2017/5/14.
- *  source CODE  https://github.com/Justson/AgentWeb
+ *  source code  https://github.com/Justson/AgentWeb
  */
 
 public class AndroidInterface {
