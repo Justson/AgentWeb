@@ -34,7 +34,6 @@ import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.AgentWebSettings;
-import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.DownloadListener;
 import com.just.agentweb.DownloadingService;

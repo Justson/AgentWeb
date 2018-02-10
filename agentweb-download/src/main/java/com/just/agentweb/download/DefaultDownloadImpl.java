@@ -19,7 +19,6 @@ import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.AgentWebPermissions;
 import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUtils;
-import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DownloadListener;
 import com.just.agentweb.DownloadingService;
 import com.just.agentweb.LogUtils;

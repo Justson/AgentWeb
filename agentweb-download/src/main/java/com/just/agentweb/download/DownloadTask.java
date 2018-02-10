@@ -3,7 +3,6 @@ package com.just.agentweb.download;
 import android.content.Context;
 
 import com.just.agentweb.AgentWebDownloader;
-import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DownloadListener;
 
 import java.io.File;

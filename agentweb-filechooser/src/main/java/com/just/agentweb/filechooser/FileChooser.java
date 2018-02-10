@@ -23,7 +23,6 @@ import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.AgentWebPermissions;
 import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUtils;
-import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
 
