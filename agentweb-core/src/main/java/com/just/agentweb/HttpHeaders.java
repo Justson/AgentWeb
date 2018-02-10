@@ -9,32 +9,33 @@ import java.util.Map;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public  class HttpHeaders {
+public class HttpHeaders {
 
 
-    public static HttpHeaders create(){
-       return new HttpHeaders();
+    public static HttpHeaders create() {
+        return new HttpHeaders();
     }
 
-    private Map<String,String>headers=null;
+    private Map<String, String> headers = null;
 
-    HttpHeaders(){
-        headers= new ArrayMap<>();
+    HttpHeaders() {
+        headers = new ArrayMap<>();
     }
 
-    public Map<String,String> getHeaders(){
+    public Map<String, String> getHeaders() {
         return headers;
     }
 
-    public void additionalHttpHeader(String k,String v){
-        headers.put(k,v);
+    public void additionalHttpHeader(String k, String v) {
+        headers.put(k, v);
     }
-    public void removeHttpHeader(String k){
+
+    public void removeHttpHeader(String k) {
         headers.remove(k);
     }
 
-    public boolean isEmptyHeaders(){
-        return headers==null||headers.isEmpty();
+    public boolean isEmptyHeaders() {
+        return headers == null || headers.isEmpty();
     }
 
 

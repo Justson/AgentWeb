@@ -170,6 +170,8 @@ public final class AgentWeb {
 
     private DownloadListener mAgentWebDownloadListener;
 
+    private JsInterfaceHolder mJsInterfaceHolder = null;
+
 
     private AgentWeb(AgentBuilder agentBuilder) {
         TAG_TARGET = agentBuilder.tag;
@@ -295,7 +297,7 @@ public final class AgentWeb {
         return this.mIEventHandler == null ? (this.mIEventHandler = EventHandlerImpl.getInstantce(mWebCreator.getWebView(), getInterceptor())) : this.mIEventHandler;
     }
 
-    private JsInterfaceHolder mJsInterfaceHolder = null;
+
 
     public AgentWebSettings getAgentWebSettings() {
         return this.mAgentWebSettings;

@@ -38,6 +38,7 @@ import com.just.agentweb.DefaultMsgConfig;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.DownloadListener;
 import com.just.agentweb.DownloadingService;
+import com.just.agentweb.LogUtils;
 import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
@@ -172,16 +173,18 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         /**
          *
          * @param url  下载链接
-         * @param downloaded  已经下载的长度
+         * @param loaded  已经下载的长度
          * @param length    文件的总大小
          * @param usedTime   耗时,单位ms
          * @param downloadingService  开发者可以通过 DownloadingService#shutdownNow 终止下载
          * 注意该方法回调在子线程 ，线程名 AsyncTask #XX or AgentWeb # XX
          */
         @Override
-        public void progress(String url, long downloaded, long length, long usedTime, DownloadingService downloadingService) {
+        public void progress(String url, long loaded, long length, long usedTime, DownloadingService downloadingService) {
+            int mProgress = (int) ((loaded) / Float.valueOf(length) * 100);
+            LogUtils.i(TAG, "progress:" + mProgress);
             mDownloadingService = downloadingService;
-            super.progress(url, downloaded, length, usedTime, downloadingService);
+            super.progress(url, loaded, length, usedTime, downloadingService);
         }
 
         /**
@@ -408,7 +411,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mPopupMenu.show();
     }
 
-    //菜单事件
+    // 菜单事件
     private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {

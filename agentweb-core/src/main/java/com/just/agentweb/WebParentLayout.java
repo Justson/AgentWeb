@@ -30,16 +30,16 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
     private WebView mWebView;
     private FrameLayout mErrorLayout = null;
 
-    public WebParentLayout(@NonNull Context context) {
+    WebParentLayout(@NonNull Context context) {
         this(context, null);
         LogUtils.i(TAG, "WebParentLayout");
     }
 
-    public WebParentLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    WebParentLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, -1);
     }
 
-    public WebParentLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    WebParentLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         if (!(context instanceof Activity)) {
             throw new IllegalArgumentException("WebParentLayout context must be activity or activity sub class .");

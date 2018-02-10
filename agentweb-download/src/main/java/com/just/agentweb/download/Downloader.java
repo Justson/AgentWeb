@@ -212,21 +212,26 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             } else {
                 this.mSpeed = loaded * 1000 / this.mUsedTime;
             }
-            if (mAgentWebNotification != null && currentTime - this.mLastTime > 800) {
-                this.mLastTime = currentTime;
-                if (!mAgentWebNotification.hasDeleteContent())
+
+            if (currentTime - this.mLastTime < 800) {
+                return;
+            }
+            this.mLastTime = currentTime;
+            if (mAgentWebNotification != null) {
+                if (!mAgentWebNotification.hasDeleteContent()){
                     mAgentWebNotification.setDelecte(buildCancelContent(mDownloadTask.getContext().getApplicationContext(), mDownloadTask.getId()));
+                }
 
                 int mProgress = (int) ((tmp + loaded) / Float.valueOf(totals) * 100);
                 mAgentWebNotification.setContentText(String.format(mDownloadTask.getDownloadMsgConfig().getLoading(), mProgress + "%"));
                 mAgentWebNotification.setProgress(100, mProgress, false);
+
             }
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask
                         .getDownloadListener()
                         .progress(mDownloadTask.getUrl(), (tmp + loaded), totals, mUsedTime, this);
             }
-
         } catch (UnknownFormatConversionException e) {
             e.printStackTrace();
         }
@@ -240,6 +245,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         try {
             LogUtils.i(TAG, "onPostExecute:" + integer);
             mObservable.deleteObserver(this);
+
+            if (mDownloadTask.getDownloadListener() != null) {
+                mDownloadTask
+                        .getDownloadListener()
+                        .progress(mDownloadTask.getUrl(), (tmp + loaded), totals, mUsedTime, this);
+            }
+
             boolean t = doCallback(integer);
             if (integer > 200) {
 

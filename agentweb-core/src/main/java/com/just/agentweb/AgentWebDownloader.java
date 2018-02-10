@@ -33,6 +33,7 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
         protected String mimetype;
         protected long contentLength;
 
+
         protected Extra() {
 
         }

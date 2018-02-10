@@ -433,6 +433,12 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         protected long contentLength;
         private boolean isCloneObject = false;
 
+//        public static final int PENDDING = 1001;
+//        public static final int DOWNLOADING = 1002;
+//        public static final int FINISH = 1003;
+//        public static final int ERROR = 1004;
+//        private AtomicInteger state = new AtomicInteger(PENDDING);
+
         @Override
         public String getUrl() {
             return url;
