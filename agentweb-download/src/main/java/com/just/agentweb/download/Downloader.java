@@ -333,7 +333,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             String ticker = mContext.getString(R.string.agentweb_trickter);
             mAgentWebNotification = new AgentWebNotification(mContext, id);
 
-            String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ?mContext.getString(R.string.agentweb_file_downLoad): mDownloadTask.getFile().getName();
+            String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ?mContext.getString(R.string.agentweb_file_download): mDownloadTask.getFile().getName();
 
             if (title.length() > 24) {
                 title = "..." + title.substring(title.length() - 24, title.length());
