@@ -30,6 +30,10 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
         protected String contentDisposition;
         protected String mimetype;
         protected long contentLength;
+        // 超时时长
+        protected long downloadTimeOut = 2 * 60 * 1000 * 60;
+        // 连接超时
+        protected long connectTimeOut = 10 * 1000;
 
 
         protected Extra() {
@@ -90,6 +94,22 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
         }
 
 
+        public long getDownloadTimeOut() {
+            return downloadTimeOut;
+        }
+
+        public void setDownloadTimeOut(long downloadTimeOut) {
+            this.downloadTimeOut = downloadTimeOut;
+        }
+
+        public long getConnectTimeOut() {
+            return connectTimeOut;
+        }
+
+        public void setConnectTimeOut(long connectTimeOut) {
+            this.connectTimeOut = connectTimeOut;
+        }
+
         public int getIcon() {
             return icon;
         }
@@ -116,6 +136,8 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
             this.enableIndicator = enableIndicator;
             return this;
         }
+
+
 
 
         public Extra setIcon(@DrawableRes int icon) {

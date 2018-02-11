@@ -79,7 +79,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 下载最大时长
      */
-    private static final int TIME_OUT = 30000000;
+    private long downloadTimeOut = 30000000l;
+    /**
+     * 连接超时
+     */
+    private long connectTimeOut = 10000l;
     /**
      * 通知
      */
@@ -93,7 +97,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
      */
     private AtomicBoolean isCancel = new AtomicBoolean(false);
     /**
-     * true  表示开发者关闭下载
+     * true  表示终止下载
      */
     private AtomicBoolean isShutdown = new AtomicBoolean(false);
     /**
@@ -107,6 +111,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         }
     };
 
+
     Downloader() {
 
     }
@@ -118,6 +123,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+
+        if(mDownloadTask.getDownloadListener()!=null){
+            mDownloadTask.getDownloadListener().onBindService(mDownloadTask.getUrl(),this);
+        }
+
         mObservable.addObserver(this);
         buildNotify(new Intent(), mDownloadTask.getId(),
                 mDownloadTask.getContext().getString(R.string.agentweb_coming_soon_download));
@@ -224,14 +234,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 int mProgress = (int) ((tmp + loaded) / Float.valueOf(totals) * 100);
                 mAgentWebNotification.setContentText(
                         mDownloadTask.getContext()
-                                .getString(R.string.agentweb_current_downloading_progress,(mProgress + "%"))
-                       );
+                                .getString(R.string.agentweb_current_downloading_progress, (mProgress + "%"))
+                );
                 mAgentWebNotification.setProgress(100, mProgress, false);
             }
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask
                         .getDownloadListener()
-                        .progress(mDownloadTask.getUrl(), (tmp + loaded), totals, mUsedTime, this);
+                        .progress(mDownloadTask.getUrl(), (tmp + loaded), totals, mUsedTime);
             }
         } catch (UnknownFormatConversionException e) {
             e.printStackTrace();
@@ -247,10 +257,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             LogUtils.i(TAG, "onPostExecute:" + integer);
             mObservable.deleteObserver(this);
 
+            if(mDownloadTask.getDownloadListener()!=null){
+                mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(),this);
+            }
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask
                         .getDownloadListener()
-                        .progress(mDownloadTask.getUrl(), (tmp + loaded), totals, mUsedTime, this);
+                        .progress(mDownloadTask.getUrl(), (tmp + loaded), totals, mUsedTime);
+
             }
 
             boolean t = doCallback(integer);
@@ -327,10 +341,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             String ticker = mContext.getString(R.string.agentweb_trickter);
             mAgentWebNotification = new AgentWebNotification(mContext, id);
 
-            String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ?mContext.getString(R.string.agentweb_file_download): mDownloadTask.getFile().getName();
+            String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ? mContext.getString(R.string.agentweb_file_download) : mDownloadTask.getFile().getName();
 
-            if (title.length() > 24) {
-                title = "..." + title.substring(title.length() - 24, title.length());
+            if (title.length() > 20) {
+                title = "..." + title.substring(title.length() - 20, title.length());
             }
             mAgentWebNotification.notify_progress(rightPendIntent, smallIcon, ticker, title, progressHint, false, false, false, buildCancelContent(mContext, id));
             mAgentWebNotification.sent();
@@ -384,7 +398,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                     previousBlockTime = -1;
                 } else if (previousBlockTime == -1) {
                     previousBlockTime = System.currentTimeMillis();
-                } else if ((System.currentTimeMillis() - previousBlockTime) > TIME_OUT) {
+                } else if ((System.currentTimeMillis() - previousBlockTime) > downloadTimeOut) {
                     LogUtils.i(TAG, "timeout");
                     return DownloadMsg.TIME_OUT.code;
                 }
@@ -421,11 +435,15 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     @Override
     public boolean isShutdown() {
-        return isShutdown.get();
+        return isShutdown.get() || isCancel.get();
     }
 
     @Override
     public synchronized AgentWebDownloader.ExtraService shutdownNow() {
+
+        if (getStatus() == Status.FINISHED) {
+            return null;
+        }
         toCancel();
         isShutdown.set(true);
         return mDownloadTask.getExtraServiceImpl();
@@ -433,12 +451,15 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     @Override
     public void download(DownloadTask downloadTask) {
+        downloadInternal(downloadTask);
+    }
 
+    private final void downloadInternal(DownloadTask downloadTask) {
         this.mDownloadTask = downloadTask;
         this.totals = mDownloadTask.getLength();
         checkNullTask(downloadTask);
-
-
+        downloadTimeOut = mDownloadTask.getDownloadTimeOut();
+        connectTimeOut = mDownloadTask.getConnectTimeOut();
         if (downloadTask.isParallelDownload()) {
             this.executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
         } else {

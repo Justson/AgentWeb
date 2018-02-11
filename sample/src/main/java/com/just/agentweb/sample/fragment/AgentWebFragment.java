@@ -123,7 +123,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         initView(view);
 
 
-        //AgentWeb 4.0 开始，删除该类
+        //AgentWeb 4.0 开始，删除该类以及删除相关的API
 //        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
         //  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
 
@@ -172,19 +172,34 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         /**
          *
+         * @param url
+         * @param downloadingService  开发者可以通过 DownloadingService#shutdownNow 终止下载
+         */
+        @Override
+        public void onBindService(String url, DownloadingService downloadingService) {
+            super.onBindService(url, downloadingService);
+            mDownloadingService = downloadingService;
+        }
+
+        @Override
+        public void onUnbindService(String url, DownloadingService downloadingService) {
+            super.onUnbindService(url, downloadingService);
+            mDownloadingService = null;
+        }
+
+        /**
+         *
          * @param url  下载链接
          * @param loaded  已经下载的长度
          * @param length    文件的总大小
          * @param usedTime   耗时,单位ms
-         * @param downloadingService  开发者可以通过 DownloadingService#shutdownNow 终止下载
          * 注意该方法回调在子线程 ，线程名 AsyncTask #XX or AgentWeb # XX
          */
         @Override
-        public void progress(String url, long loaded, long length, long usedTime, DownloadingService downloadingService) {
+        public void progress(String url, long loaded, long length, long usedTime) {
             int mProgress = (int) ((loaded) / Float.valueOf(length) * 100);
             LogUtils.i(TAG, "progress:" + mProgress);
-            mDownloadingService = downloadingService;
-            super.progress(url, loaded, length, usedTime, downloadingService);
+            super.progress(url, loaded, length, usedTime);
         }
 
         /**
@@ -196,7 +211,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          */
         @Override
         public boolean result(String path, String url, Throwable throwable) {
-            if (throwable == null) { //下载成功
+            if (null == throwable) { //下载成功
                 //do you work
             } else {//下载失败
 
