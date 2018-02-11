@@ -1,24 +1,34 @@
 package com.just.agentweb.sample.common;
 
+import android.app.Activity;
 import android.os.Build;
+import android.webkit.DownloadListener;
 import android.webkit.WebView;
 
-import com.just.agentweb.AgentWebSettings;
-import com.just.agentweb.WebDefaultSettingsManager;
+import com.just.agentweb.AbsAgentWebSettings;
+import com.just.agentweb.AgentWeb;
+import com.just.agentweb.IAgentWebSettings;
+import com.just.agentweb.WebListenerManager;
+import com.just.agentweb.download.DefaultDownloadImpl;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class CustomSettings extends WebDefaultSettingsManager {
+public class CustomSettings extends AbsAgentWebSettings {
     public CustomSettings() {
         super();
     }
 
+    @Override
+    protected void bindAgentWebSupport(AgentWeb agentWeb) {
+
+    }
+
 
     @Override
-    public AgentWebSettings toSetting(WebView webView) {
+    public IAgentWebSettings toSetting(WebView webView) {
         super.toSetting(webView);
 
         getWebSettings().setBlockNetworkImage(false);//是否阻塞加载网络图片  协议http or https
@@ -34,5 +44,13 @@ public class CustomSettings extends WebDefaultSettingsManager {
         getWebSettings().setGeolocationEnabled(true);
         getWebSettings().setUserAgentString(getWebSettings().getUserAgentString().concat("agentweb/3.1.0"));
         return this;
+    }
+
+    @Override
+    public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
+        return super.setDownloader(webView,
+                DefaultDownloadImpl.create((Activity) webView.getContext()
+                        , webView, null, mAgentWeb.getPermissionInterceptor(),
+                        null));
     }
 }

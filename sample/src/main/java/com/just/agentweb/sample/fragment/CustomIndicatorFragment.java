@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.DefaultWebClient;
-import com.just.agentweb.WebDefaultSettingsManager;
 import com.just.agentweb.sample.widget.CommonIndicator;
 import com.just.agentweb.sample.R;
 
@@ -45,7 +44,7 @@ public class CustomIndicatorFragment extends AgentWebFragment {
                 .setWebViewClient(mWebViewClient)
                 .setPermissionInterceptor(mPermissionInterceptor)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
-                .interceptUnkownScheme()
+                .interceptUnkownUrl()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .createAgentWeb()//
                 .ready()//

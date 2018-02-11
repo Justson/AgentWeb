@@ -46,6 +46,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     private Context mContext;
     private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
     private DownloadListener mDownloadListener;
+    private DownloadingListener mDownloadingListener;
     private WeakReference<Activity> mActivityWeakReference = null;
     private static final String TAG = DefaultDownloadImpl.class.getSimpleName();
     private PermissionInterceptor mPermissionListener = null;
@@ -326,10 +327,31 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
 
 
     @Override
-    public void progress(String url, long downloaded, long length, long useTime, DownloadingService downloadingService) {
-        if (mDownloadListener != null) {
-            synchronized (mDownloadListener) {
-                mDownloadListener.progress(url, downloaded, length, useTime, downloadingService);
+    public void progress(String url, long downloaded, long length, long useTime) {
+        if (mDownloadingListener != null) {
+            synchronized (mDownloadingListener) {
+                if (mDownloadListener != null) {
+                    mDownloadingListener.progress(url, downloaded, length, useTime);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onBindService(String url, DownloadingService downloadingService) {
+        if (mDownloadingListener != null) {
+            synchronized (mDownloadingListener) {
+                mDownloadingListener.onBindService(url, downloadingService);
+            }
+        }
+
+    }
+
+    @Override
+    public void onUnbindService(String url, DownloadingService downloadingService) {
+        if (mDownloadingListener != null) {
+            synchronized (mDownloadingListener) {
+                mDownloadingListener.onUnbindService(url, downloadingService);
             }
         }
     }
@@ -412,6 +434,20 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         return new ExtraServiceImpl().setActivity(activity);
     }
 
+    public static DefaultDownloadImpl create(Activity activity,
+                                             WebView webView,
+                                             DownloadListener downloadListener,
+                                             PermissionInterceptor permissionInterceptor,
+                                             DownloadingListener downloadingListener
+    ) {
+        return new ExtraServiceImpl()
+                .setActivity(activity)
+                .setWebView(webView)
+                .setDownloadListener(downloadListener)//
+                .setPermissionInterceptor(permissionInterceptor)
+                .setDownloadingListener(downloadingListener)
+                .create();
+    }
 
     public static class ExtraServiceImpl extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
         private transient Activity mActivity;
@@ -429,8 +465,15 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
         protected String mimetype;
         protected long contentLength;
         private boolean isCloneObject = false;
+        private DownloadingListener downloadingListener;
 
-//        public static final int PENDDING = 1001;
+        public ExtraServiceImpl setDownloadingListener(DownloadingListener downloadingListener) {
+            this.downloadingListener = downloadingListener;
+            return this;
+        }
+
+
+        //        public static final int PENDDING = 1001;
 //        public static final int DOWNLOADING = 1002;
 //        public static final int FINISH = 1003;
 //        public static final int ERROR = 1004;
@@ -457,6 +500,7 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
             this.userAgent = userAgent;
             return this;
         }
+
 
         @Override
         public String getContentDisposition() {

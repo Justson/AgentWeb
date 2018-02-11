@@ -18,7 +18,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 
@@ -46,7 +45,7 @@ public final class AgentWeb {
     /**
      * 管理 WebSettings
      */
-    private AgentWebSettings mAgentWebSettings;
+    private IAgentWebSettings mAgentWebSettings;
     /**
      * AgentWeb
      */
@@ -211,7 +210,6 @@ public final class AgentWeb {
     }
 
 
-
     /**
      * @return PermissionInterceptor 权限控制者
      */
@@ -288,7 +286,7 @@ public final class AgentWeb {
     }
 
 
-    public AgentWebSettings getAgentWebSettings() {
+    public IAgentWebSettings getAgentWebSettings() {
         return this.mAgentWebSettings;
     }
 
@@ -436,11 +434,15 @@ public final class AgentWeb {
     private AgentWeb ready() {
 
         AgentWebConfig.initCookiesManager(mActivity.getApplicationContext());
-        AgentWebSettings mAgentWebSettings = this.mAgentWebSettings;
+        IAgentWebSettings mAgentWebSettings = this.mAgentWebSettings;
         if (mAgentWebSettings == null) {
-            this.mAgentWebSettings = mAgentWebSettings = WebDefaultSettingsManager.getInstance();
+            this.mAgentWebSettings = mAgentWebSettings = AgentWebSettingsImpl.getInstance();
         }
-        if (mWebListenerManager == null && mAgentWebSettings instanceof WebDefaultSettingsManager) {
+
+        if (mAgentWebSettings instanceof AgentWebSettingsImpl) {
+            ((AgentWebSettingsImpl) mAgentWebSettings).bindAgentWeb(this);
+        }
+        if (mWebListenerManager == null && mAgentWebSettings instanceof AbsAgentWebSettings) {
             mWebListenerManager = (WebListenerManager) mAgentWebSettings;
         }
         mAgentWebSettings.toSetting(mWebCreator.getWebView());
@@ -453,7 +455,7 @@ public final class AgentWeb {
         }
 
         if (mWebListenerManager != null) {
-            mWebListenerManager.setDownLoader(mWebCreator.getWebView(), getLoadListener());
+            mWebListenerManager.setDownloader(mWebCreator.getWebView(), null);
             mWebListenerManager.setWebChromeClient(mWebCreator.getWebView(), getChromeClient());
             mWebListenerManager.setWebViewClient(mWebCreator.getWebView(), getWebViewClient());
         }
@@ -462,7 +464,7 @@ public final class AgentWeb {
     }
 
 
-    private android.webkit.DownloadListener getLoadListener() {
+    /*private android.webkit.DownloadListener getLoadListener() {
         android.webkit.DownloadListener mDownloadListener = this.mDownloadListener;
         if (mDownloadListener != null) {
             return mDownloadListener;
@@ -509,7 +511,7 @@ public final class AgentWeb {
             }
         }
         return null;
-    }
+    }*/
 
 
     private WebChromeClient getChromeClient() {
@@ -559,7 +561,7 @@ public final class AgentWeb {
         private WebViewClient mWebViewClient;
         private WebChromeClient mWebChromeClient;
         private int mIndicatorColor = -1;
-        private AgentWebSettings mAgentWebSettings;
+        private IAgentWebSettings mAgentWebSettings;
         private WebCreator mWebCreator;
         private HttpHeaders mHttpHeaders = null;
         private IEventHandler mIEventHandler;
@@ -736,7 +738,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilder setAgentWebWebSettings(@Nullable AgentWebSettings agentWebSettings) {
+        public CommonBuilder setAgentWebWebSettings(@Nullable IAgentWebSettings agentWebSettings) {
             this.mAgentBuilder.mAgentWebSettings = agentWebSettings;
             return this;
         }
@@ -803,7 +805,7 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilder interceptUnkownScheme() {
+        public CommonBuilder interceptUnkownUrl() {
             this.mAgentBuilder.isInterceptUnkownScheme = true;
             return this;
         }

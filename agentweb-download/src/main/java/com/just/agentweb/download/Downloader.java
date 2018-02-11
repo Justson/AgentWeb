@@ -124,8 +124,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     protected void onPreExecute() {
         super.onPreExecute();
 
-        if(mDownloadTask.getDownloadListener()!=null){
-            mDownloadTask.getDownloadListener().onBindService(mDownloadTask.getUrl(),this);
+        if (mDownloadTask.getDownloadListener() != null) {
+            mDownloadTask.getDownloadListener().onBindService(mDownloadTask.getUrl(), this);
         }
 
         mObservable.addObserver(this);
@@ -210,7 +210,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 
     @Override
-    protected void onProgressUpdate(Integer... values) {
+    protected synchronized void onProgressUpdate(Integer... values) {
 
         try {
             long currentTime = System.currentTimeMillis();
@@ -257,8 +257,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             LogUtils.i(TAG, "onPostExecute:" + integer);
             mObservable.deleteObserver(this);
 
-            if(mDownloadTask.getDownloadListener()!=null){
-                mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(),this);
+            if (mDownloadTask.getDownloadListener() != null) {
+                mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
             }
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask
@@ -434,8 +434,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
     @Override
-    public boolean isShutdown() {
-        return isShutdown.get() || isCancel.get();
+    public synchronized boolean isShutdown() {
+        return isShutdown.get() || isCancel.get() || getStatus() == Status.FINISHED;
     }
 
     @Override

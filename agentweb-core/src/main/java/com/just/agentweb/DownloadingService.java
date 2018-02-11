@@ -10,5 +10,4 @@ public interface DownloadingService {
 
     AgentWebDownloader.ExtraService shutdownNow();
 
-
 }

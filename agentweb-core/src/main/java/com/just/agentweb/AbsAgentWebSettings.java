@@ -14,24 +14,36 @@ import android.webkit.WebViewClient;
  * Created by cenxiaozhong
  */
 
-public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerManager {
+public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListenerManager {
 
-    private android.webkit.WebSettings mWebSettings;
-    private static final String TAG = WebDefaultSettingsManager.class.getSimpleName();
+    private WebSettings mWebSettings;
+    private static final String TAG = AbsAgentWebSettings.class.getSimpleName();
     public static final String USERAGENT_UC = " UCBrowser/11.6.4.950 ";
     public static final String USERAGENT_QQ_BROWSER = " MQQBrowser/8.0 ";
     public static final String USERAGENT_AGENTWEB = " agentweb/4.0.0-alpha ";
+    protected AgentWeb mAgentWeb;
 
-    public static WebDefaultSettingsManager getInstance() {
-        return new WebDefaultSettingsManager();
+
+    public static AbsAgentWebSettings getInstance() {
+        return new AgentWebSettingsImpl();
     }
 
-    protected WebDefaultSettingsManager() {
+    //WebDefaultSettingsManager
+
+    public AbsAgentWebSettings() {
 
     }
+
+    final void bindAgentWeb(AgentWeb agentWeb) {
+        this.mAgentWeb = agentWeb;
+        this.bindAgentWebSupport(agentWeb);
+
+    }
+
+    protected abstract void bindAgentWebSupport(AgentWeb agentWeb);
 
     @Override
-    public AgentWebSettings toSetting(WebView webView) {
+    public IAgentWebSettings toSetting(WebView webView) {
         settings(webView);
         return this;
     }
@@ -46,15 +58,15 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         mWebSettings.setSavePassword(false);
         if (AgentWebUtils.checkNetwork(webView.getContext())) {
             //根据cache-control获取数据。
-            mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_DEFAULT);
+            mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         } else {
             //没网，则从本地获取，即离线加载
-            mWebSettings.setCacheMode(android.webkit.WebSettings.LOAD_CACHE_ELSE_NETWORK);
+            mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             //适配5.0不允许http和https混合使用情况
-            mWebSettings.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+            mWebSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -76,7 +88,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
         mWebSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
-            mWebSettings.setLayoutAlgorithm(android.webkit.WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+            mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
         } else {
             mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
         }
@@ -113,7 +125,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
     }
 
     @Override
-    public android.webkit.WebSettings getWebSettings() {
+    public WebSettings getWebSettings() {
         return mWebSettings;
     }
 
@@ -131,7 +143,7 @@ public class WebDefaultSettingsManager implements AgentWebSettings, WebListenerM
     }
 
     @Override
-    public WebListenerManager setDownLoader(WebView webView, DownloadListener downloadListener) {
+    public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
         webView.setDownloadListener(downloadListener);
         return this;
     }

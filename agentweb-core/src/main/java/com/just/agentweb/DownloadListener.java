@@ -47,6 +47,11 @@ public interface DownloadListener {
         void progress(String url, long downloaded, long length, long usedTime);
 
 
+        /**
+         *
+         * @param url
+         * @param downloadingService 释放 downloadingService
+         */
         void onUnbindService(String url, DownloadingService downloadingService);
 
     }

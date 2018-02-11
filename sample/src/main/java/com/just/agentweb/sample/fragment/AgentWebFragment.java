@@ -33,15 +33,15 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebDownloader;
-import com.just.agentweb.AgentWebSettings;
+import com.just.agentweb.AgentWebSettingsImpl;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.DownloadListener;
 import com.just.agentweb.DownloadingService;
+import com.just.agentweb.IAgentWebSettings;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
-import com.just.agentweb.WebDefaultSettingsManager;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
@@ -95,7 +95,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
                 .setIndicatorColorWithHeight(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
-                .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings。
+                .setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
@@ -108,7 +108,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 //                .openParallelDownload()// 4.0.0删除该api 打开并行下载 , 默认串行下载。
 //                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) 4.0.0删除该api //下载通知图标。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
-                .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
+                .interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
                 .createAgentWeb()//创建AgentWeb。
                 .ready()//设置 WebSettings。
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
@@ -121,6 +121,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
         initView(view);
+
 
 
         //AgentWeb 4.0 开始，删除该类以及删除相关的API
@@ -173,7 +174,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         /**
          *
          * @param url
-         * @param downloadingService  开发者可以通过 DownloadingService#shutdownNow 终止下载
+         * @param downloadingService  用户可以通过 DownloadingService#shutdownNow 终止下载
          */
         @Override
         public void onBindService(String url, DownloadingService downloadingService) {
@@ -220,8 +221,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
     };
 
-    public AgentWebSettings getSettings() {
-        return WebDefaultSettingsManager.getInstance();
+    public IAgentWebSettings getSettings() {
+        return AgentWebSettingsImpl.getInstance();
     }
 
     /**

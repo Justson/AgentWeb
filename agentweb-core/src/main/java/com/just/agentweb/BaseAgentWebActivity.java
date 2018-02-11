@@ -57,7 +57,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebLayout(getWebLayout())
                 .setAgentWebUIController(getAgentWebUIController())
-                .interceptUnkownScheme()
+                .interceptUnkownUrl()
                 .setOpenOtherPageWays(getOpenOtherAppWay())
                 .useMiddlewareWebChrome(getMiddleWareWebChrome())
                 .useMiddlewareWebClient(getMiddleWareWebClient())
@@ -160,7 +160,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
     }
 
     public @Nullable
-    AgentWebSettings getAgentWebSettings() {
+    IAgentWebSettings getAgentWebSettings() {
         return WebDefaultSettingsManager.getInstance();
     }
 

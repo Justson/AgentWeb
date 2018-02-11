@@ -76,7 +76,7 @@ public class BaseWebActivity extends AppCompatActivity {
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .setWebLayout(new WebLayout(this))
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他应用时，弹窗咨询用户是否前往其他应用
-                .interceptUnkownScheme() //拦截找不到相关页面的Scheme
+                .interceptUnkownUrl() //拦截找不到相关页面的Scheme
                 .createAgentWeb()//
                 .ready()
                 .go(getUrl());

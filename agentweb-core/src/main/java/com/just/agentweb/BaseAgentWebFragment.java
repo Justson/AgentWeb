@@ -40,7 +40,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .setWebViewClient(getWebViewClient())
                 .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebChromeClient(getWebChromeClient())
-                .interceptUnkownScheme()
+                .interceptUnkownUrl()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
                 .setDownloadListener(getDownloadListener())
@@ -127,7 +127,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     protected @Nullable
-    AgentWebSettings getAgentWebSettings() {
+    IAgentWebSettings getAgentWebSettings() {
         return WebDefaultSettingsManager.getInstance();
     }
 

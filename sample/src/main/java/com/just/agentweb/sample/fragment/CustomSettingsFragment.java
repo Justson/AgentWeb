@@ -2,7 +2,7 @@ package com.just.agentweb.sample.fragment;
 
 import android.os.Bundle;
 
-import com.just.agentweb.AgentWebSettings;
+import com.just.agentweb.IAgentWebSettings;
 import com.just.agentweb.sample.common.CustomSettings;
 
 /**
@@ -24,7 +24,7 @@ public class CustomSettingsFragment extends AgentWebFragment {
 
 
     @Override
-    public AgentWebSettings getSettings() {
+    public IAgentWebSettings getSettings() {
         return new CustomSettings();
     }
 }
