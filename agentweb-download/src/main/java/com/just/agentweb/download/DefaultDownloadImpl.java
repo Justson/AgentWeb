@@ -134,7 +134,6 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
                 ActionActivity.setPermissionListener(getPermissionListener());
                 ActionActivity.start(mActivityWeakReference.get(), mAction);
             }
-
         } else {
             preDownload();
         }

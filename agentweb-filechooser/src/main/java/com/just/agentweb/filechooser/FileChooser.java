@@ -248,7 +248,9 @@ public class FileChooser {
         if (this.mAgentWebUIController.get() != null) {
             this.mAgentWebUIController
                     .get()
-                    .showChooser(this.mWebView, mWebView.getUrl(), new String[]{}, getCallBack());
+                    .showChooser(this.mWebView, mWebView.getUrl(),
+                            new String[]{mActivity.getString(R.string.agentweb_camera),
+                            mActivity.getString(R.string.agentweb_file_chooser)}, getCallBack());
             LogUtils.i(TAG, "open");
         }
 

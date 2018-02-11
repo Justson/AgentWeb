@@ -167,9 +167,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
         HttpURLConnection mHttpURLConnection = createUrlConnection(mDownloadTask.getUrl());
 
-
         if (mDownloadTask.getFile().length() > 0) {
-
             mHttpURLConnection.addRequestProperty("Range", "bytes=" + (tmp = mDownloadTask.getFile().length()) + "-");
         }
         try {
@@ -228,11 +226,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                         mDownloadTask.getContext()
                                 .getString(R.string.agentweb_current_downloading_progress,(mProgress + "%"))
                        );
-
-
-
                 mAgentWebNotification.setProgress(100, mProgress, false);
-
             }
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask

@@ -59,7 +59,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     private volatile boolean isParallelDownload = false;
 
 
-    private DefaultDownloadImpl.ExtraServiceImpl mExtraServiceImpl;
+    private WeakReference<DefaultDownloadImpl.ExtraServiceImpl> mExtraServiceImpl = null;
 
 
     private String TAG = this.getClass().getSimpleName();
@@ -80,11 +80,11 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         this.drawableRes = extraServiceImpl.getIcon() == -1 ? R.drawable.ic_file_download_black_24dp : extraServiceImpl.getIcon();
         mDownloadWR = new WeakReference<DownloadListener>(downloadListeners);
         this.isParallelDownload = extraServiceImpl.isParallelDownload();
-        this.mExtraServiceImpl = extraServiceImpl;
+        this.mExtraServiceImpl = new WeakReference<DefaultDownloadImpl.ExtraServiceImpl>(extraServiceImpl);
     }
 
     public DefaultDownloadImpl.ExtraServiceImpl getExtraServiceImpl() {
-        return mExtraServiceImpl;
+        return mExtraServiceImpl.get();
     }
 
     public boolean isParallelDownload() {
