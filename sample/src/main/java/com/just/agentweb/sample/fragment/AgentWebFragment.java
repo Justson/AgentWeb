@@ -153,7 +153,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     private DownloadingService mDownloadingService;
     AgentWebDownloader.ExtraService mExtraService;
     /**
-     * 修改 AgentWeb  4.0.0
+     * 更新于 AgentWeb  4.0.0
      */
     protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
 
@@ -170,7 +170,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
             LogUtils.i(TAG, "start:" + url);
-            extra.setOpenBreakPointDownload(false).setIcon(R.mipmap.app_logo).setForceDownload(true);
+            extra.setOpenBreakPointDownload(true).setIcon(R.mipmap.app_logo).setConnectTimeOut(6000).setDownloadTimeOut(30l).setForceDownload(true);
             return false;
         }
 
@@ -226,6 +226,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
     };
 
+    /**
+     * @return IAgentWebSettings
+     */
     public IAgentWebSettings getSettings() {
         return new AbsAgentWebSettings() {
             private AgentWeb mAgentWeb;
@@ -235,6 +238,13 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 this.mAgentWeb = agentWeb;
             }
 
+            /**
+             * AgentWeb 4.0.0 删除了 Download  以及相关API ，抽离Download部分，
+             * 如果你需要监听的下载的结果，请自定义 AgentWebSetting ， 例如这个例子.
+             * @param webView
+             * @param downloadListener
+             * @return WebListenerManager
+             */
             @Override
             public WebListenerManager setDownloader(WebView webView, android.webkit.DownloadListener downloadListener) {
                 return super.setDownloader(webView,
@@ -474,11 +484,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                     return true;
                 case R.id.error_website:
 //                    loadErrorWebSite();
-                    if (mDownloadingService == null) {
-                        return true;
-                    }
-                    if (!mDownloadingService.isShutdown()) {
+
+                    LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
+                    if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
                         mExtraService = mDownloadingService.shutdownNow();
+                        LogUtils.i(TAG, "mExtraService::" + mExtraService);
                         return true;
                     }
                     if (mExtraService != null) {

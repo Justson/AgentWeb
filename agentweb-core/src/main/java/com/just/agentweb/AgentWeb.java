@@ -354,13 +354,6 @@ public final class AgentWeb {
         }
     }
 
-    private void loadData(String data, String mimeType, String encoding) {
-        mWebCreator.getWebView().loadData(data, mimeType, encoding);
-    }
-
-    private void loadDataWithBaseURL(String baseUrl, String data, String mimeType, String encoding, String history) {
-        mWebCreator.getWebView().loadDataWithBaseURL(baseUrl, data, mimeType, encoding, history);
-    }
 
     private AgentWeb go(String url) {
         this.getLoader().loadUrl(url);

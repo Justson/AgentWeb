@@ -31,9 +31,9 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
         protected String mimetype;
         protected long contentLength;
         // 超时时长
-        protected long downloadTimeOut = 2 * 60 * 1000 * 60;
+        protected long downloadTimeOut = 2l * 60l * 1000l * 60l;
         // 连接超时
-        protected long connectTimeOut = 10 * 1000;
+        protected int connectTimeOut = 10 * 1000;
 
 
         protected Extra() {
@@ -98,16 +98,18 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
             return downloadTimeOut;
         }
 
-        public void setDownloadTimeOut(long downloadTimeOut) {
+        public Extra setDownloadTimeOut(long downloadTimeOut) {
             this.downloadTimeOut = downloadTimeOut;
+            return this;
         }
 
-        public long getConnectTimeOut() {
+        public int getConnectTimeOut() {
             return connectTimeOut;
         }
 
-        public void setConnectTimeOut(long connectTimeOut) {
+        public Extra setConnectTimeOut(int connectTimeOut) {
             this.connectTimeOut = connectTimeOut;
+            return this;
         }
 
         public int getIcon() {
@@ -136,8 +138,6 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
             this.enableIndicator = enableIndicator;
             return this;
         }
-
-
 
 
         public Extra setIcon(@DrawableRes int icon) {

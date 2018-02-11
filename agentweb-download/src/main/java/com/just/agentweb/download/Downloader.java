@@ -81,7 +81,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 连接超时
      */
-    private long connectTimeOut = 10000l;
+    private int connectTimeOut = 10000;
     /**
      * 通知
      */
@@ -163,8 +163,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         } catch (Exception e) {
 
             this.e = e;//发布
-            LogUtils.i(TAG, "doInBackground   Exception:" + e.getMessage());
-            // e.printStackTrace();
+            if (LogUtils.isDebug()) {
+                e.printStackTrace();
+            }
 
         }
 
@@ -202,7 +203,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
         HttpURLConnection mHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
         mHttpURLConnection.setRequestProperty("Accept", "application/*");
-        mHttpURLConnection.setConnectTimeout(5000 * 2);
+        mHttpURLConnection.setConnectTimeout(connectTimeOut);
         return mHttpURLConnection;
     }
 
@@ -256,13 +257,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             mObservable.deleteObserver(this);
 
             if (mDownloadTask.getDownloadListener() != null) {
-                mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
-            }
-            if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask
                         .getDownloadListener()
                         .progress(mDownloadTask.getUrl(), (tmp + loaded), totals, mUsedTime);
 
+            }
+
+            if (mDownloadTask.getDownloadListener() != null) {
+                mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
             }
 
             boolean t = doCallback(integer);
@@ -433,16 +435,17 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     @Override
     public synchronized boolean isShutdown() {
-        return isShutdown.get() || isCancel.get() || getStatus() == Status.FINISHED;
+        LogUtils.i(TAG, "" + isShutdown.get() + "  " + isCancel.get() + "  :" + (getStatus() == Status.FINISHED));
+        return isShutdown.get() || isCancel.get() || (getStatus() == Status.FINISHED);
     }
 
     @Override
     public synchronized AgentWebDownloader.ExtraService shutdownNow() {
 
         if (getStatus() == Status.FINISHED) {
+            LogUtils.e(TAG, "  Termination failed , becauce the downloader already dead !!! ");
             return null;
         }
-        toCancel();
         isShutdown.set(true);
         return mDownloadTask.getExtraServiceImpl();
     }
@@ -458,6 +461,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         checkNullTask(downloadTask);
         downloadTimeOut = mDownloadTask.getDownloadTimeOut();
         connectTimeOut = mDownloadTask.getConnectTimeOut();
+
+        LogUtils.i(TAG, "connectTimeOut:" + connectTimeOut + " downloadTimeOut:" + downloadTimeOut);
         if (downloadTask.isParallelDownload()) {
             this.executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
         } else {

@@ -172,7 +172,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     }
 
     @Override
-    public long getConnectTimeOut() {
+    public int getConnectTimeOut() {
         return mExtraServiceImpl.get().getConnectTimeOut();
     }
 

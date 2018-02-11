@@ -215,7 +215,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         }
 
 
-        if (AgentWebUtils.checkNetworkType(mContext) > 1) { //移动数据
+        if (!this.mCloneExtraServiceImpl.isForceDownload() && AgentWebUtils.checkNetworkType(mContext) > 1) { //移动数据
 
             showDialog(mFile);
             return;
@@ -225,7 +225,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
     private void forceDownload(final File file) {
 
-        this.mCloneExtraServiceImpl.isForceDownload = true;
+        this.mCloneExtraServiceImpl.setForceDownload(true);
         performDownload(file);
 
 
@@ -436,8 +436,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
                                              WebView webView,
                                              DownloadListener downloadListener,
                                              DownloadingListener downloadingListener,
-                                             PermissionInterceptor permissionInterceptor
-    ) {
+                                             PermissionInterceptor permissionInterceptor) {
         return new ExtraServiceImpl()
                 .setActivity(activity)
                 .setWebView(webView)
@@ -470,6 +469,9 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
             return this;
         }
 
+        public boolean isForceDownload() {
+            return isForceDownload;
+        }
 
         //        public static final int PENDDING = 1001;
 //        public static final int DOWNLOADING = 1002;
@@ -610,8 +612,9 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         @Override
         public synchronized void performReDownload() {
 
-            if (mDefaultDownload != null) {
-                mDefaultDownload
+            LogUtils.i(TAG, "performReDownload:" + mDefaultDownload);
+            if (this.mDefaultDownload != null) {
+                this.mDefaultDownload
                         .onDownloadStartInternal(
                                 getUrl(),
                                 getUserAgent(),
