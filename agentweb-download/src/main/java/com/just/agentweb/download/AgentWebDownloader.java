@@ -1,4 +1,4 @@
-package com.just.agentweb;
+package com.just.agentweb.download;
 
 import android.support.annotation.DrawableRes;
 

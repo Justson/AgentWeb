@@ -15,12 +15,9 @@ import android.webkit.WebView;
 
 import com.just.agentweb.Action;
 import com.just.agentweb.ActionActivity;
-import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.AgentWebPermissions;
 import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUtils;
-import com.just.agentweb.DownloadListener;
-import com.just.agentweb.DownloadingService;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
 
@@ -41,7 +38,7 @@ import java.util.regex.Pattern;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapter implements android.webkit.DownloadListener {
+public class DefaultDownloadImpl extends DownloadListenerAdapter implements android.webkit.DownloadListener {
 
     private Context mContext;
     private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
@@ -437,8 +434,8 @@ public class DefaultDownloadImpl extends DownloadListener.DownloadListenerAdapte
     public static DefaultDownloadImpl create(Activity activity,
                                              WebView webView,
                                              DownloadListener downloadListener,
-                                             PermissionInterceptor permissionInterceptor,
-                                             DownloadingListener downloadingListener
+                                             DownloadingListener downloadingListener,
+                                             PermissionInterceptor permissionInterceptor
     ) {
         return new ExtraServiceImpl()
                 .setActivity(activity)

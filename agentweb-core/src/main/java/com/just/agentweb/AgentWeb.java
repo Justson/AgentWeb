@@ -87,10 +87,6 @@ public final class AgentWeb {
      */
     private WebListenerManager mWebListenerManager;
     /**
-     * 下载监听
-     */
-    private android.webkit.DownloadListener mDownloadListener = null;
-    /**
      * 安全把控
      */
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
@@ -163,7 +159,6 @@ public final class AgentWeb {
      */
     private EventInterceptor mEventInterceptor;
 
-    private DownloadListener mAgentWebDownloadListener;
 
     private JsInterfaceHolder mJsInterfaceHolder = null;
 
@@ -205,7 +200,6 @@ public final class AgentWeb {
         }
         this.mMiddleWrareWebClientBaseHeader = agentBuilder.header;
         this.mMiddlewareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
-        this.mAgentWebDownloadListener = agentBuilder.mDownloadListener;
         init();
     }
 
@@ -572,7 +566,6 @@ public final class AgentWeb {
         private boolean webClientHelper = true;
         private IWebLayout mWebLayout = null;
         private PermissionInterceptor mPermissionInterceptor = null;
-        private DownloadListener mDownloadListener = null;
         private AgentWebUIController mAgentWebUIController;
         private DefaultWebClient.OpenOtherPageWays openOtherPage = null;
         private boolean isInterceptUnkownScheme = false;
@@ -789,11 +782,11 @@ public final class AgentWeb {
             return this;
         }
 
-        public CommonBuilder setDownloadListener(@Nullable DownloadListener downloadListener) {
-
-            this.mAgentBuilder.mDownloadListener = downloadListener;
-            return this;
-        }
+//        public CommonBuilder setDownloadListener(@Nullable DownloadListener downloadListener) {
+//
+//            this.mAgentBuilder.mDownloadListener = downloadListener;
+//            return this;
+//        }
 
         public CommonBuilder setAgentWebUIController(@Nullable AgentWebUIControllerImplBase agentWebUIController) {
             this.mAgentBuilder.mAgentWebUIController = agentWebUIController;

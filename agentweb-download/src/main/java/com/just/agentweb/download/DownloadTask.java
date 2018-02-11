@@ -2,9 +2,6 @@ package com.just.agentweb.download;
 
 import android.content.Context;
 
-import com.just.agentweb.AgentWebDownloader;
-import com.just.agentweb.DownloadListener;
-
 import java.io.File;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -49,7 +46,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
      */
     private int drawableRes;
 
-    private WeakReference<DownloadListener.DownloadListenerAdapter> mDownloadWR = null;
+    private WeakReference<DownloadListenerAdapter> mDownloadWR = null;
     /**
      * 表示当前任务是否被销毁了。
      */
@@ -65,7 +62,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     private String TAG = this.getClass().getSimpleName();
 
     public DownloadTask(int id,
-                        DownloadListener.DownloadListenerAdapter downloadListeners,
+                        DownloadListenerAdapter downloadListeners,
                         Context context, File file,
                         DefaultDownloadImpl.ExtraServiceImpl extraServiceImpl) {
         super();
@@ -77,7 +74,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         this.mFile = file;
         this.length = extraServiceImpl.getContentLength();
         this.drawableRes = extraServiceImpl.getIcon() == -1 ? R.drawable.ic_file_download_black_24dp : extraServiceImpl.getIcon();
-        mDownloadWR = new WeakReference<DownloadListener.DownloadListenerAdapter>(downloadListeners);
+        mDownloadWR = new WeakReference<DownloadListenerAdapter>(downloadListeners);
         this.isParallelDownload = extraServiceImpl.isParallelDownload();
         this.mExtraServiceImpl = new WeakReference<DefaultDownloadImpl.ExtraServiceImpl>(extraServiceImpl);
     }
@@ -116,7 +113,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     }
 
 
-    public WeakReference<DownloadListener.DownloadListenerAdapter> getDownloadWR() {
+    public WeakReference<DownloadListenerAdapter> getDownloadWR() {
         return mDownloadWR;
     }
 
@@ -149,7 +146,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         return drawableRes;
     }
 
-    public DownloadListener.DownloadListenerAdapter getDownloadListener() {
+    public DownloadListenerAdapter getDownloadListener() {
         return mDownloadWR.get();
     }
 

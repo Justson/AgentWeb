@@ -8,9 +8,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.AgentWebUtils;
-import com.just.agentweb.DownloadListener;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.Provider;
 

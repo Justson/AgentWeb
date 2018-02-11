@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -43,7 +44,6 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .interceptUnkownUrl()
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
-                .setDownloadListener(getDownloadListener())
                 .setAgentWebUIController(getAgentWebUIController())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
                 .useMiddlewareWebChrome(getMiddleWareWebChrome())
@@ -128,7 +128,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     protected @Nullable
     IAgentWebSettings getAgentWebSettings() {
-        return WebDefaultSettingsManager.getInstance();
+        return AgentWebSettingsImpl.getInstance();
     }
 
     protected @Nullable

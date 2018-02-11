@@ -1,4 +1,4 @@
-package com.just.agentweb;
+package com.just.agentweb.download;
 
 /**
  * Created by cenxiaozhong on 2018/2/4.

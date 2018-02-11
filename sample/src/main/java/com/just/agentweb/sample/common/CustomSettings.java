@@ -50,7 +50,7 @@ public class CustomSettings extends AbsAgentWebSettings {
     public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
         return super.setDownloader(webView,
                 DefaultDownloadImpl.create((Activity) webView.getContext()
-                        , webView, null, mAgentWeb.getPermissionInterceptor(),
-                        null));
+                        , webView, null,
+                        null, mAgentWeb.getPermissionInterceptor()));
     }
 }

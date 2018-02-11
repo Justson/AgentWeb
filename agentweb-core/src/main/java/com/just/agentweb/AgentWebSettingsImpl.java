@@ -25,12 +25,11 @@ public class AgentWebSettingsImpl extends AbsAgentWebSettings {
             clazz = Class.forName("com.just.agentweb.download.DefaultDownloadImpl");
             mDefaultDownloadImpl$Extra =
                     clazz.getDeclaredMethod("create", Activity.class, WebView.class,
-                            com.just.agentweb.DownloadListener.class,
-                            PermissionInterceptor.class,
-                            com.just.agentweb.DownloadListener.DownloadingListener.class)
-                            .invoke((Activity) webView.getContext()
-                                    , webView, null, mAgentWeb.getPermissionInterceptor(),
-                                    null);
+                            Class.forName("com.just.agentweb.download.DownloadListener"),
+                            Class.forName("com.just.agentweb.download.DownloadingListener"),
+                            PermissionInterceptor.class)
+                            .invoke(mDefaultDownloadImpl$Extra, (Activity) webView.getContext()
+                                    , webView, null, null, mAgentWeb.getPermissionInterceptor());
 
         } catch (Throwable ignore) {
             if (LogUtils.isDebug()) {

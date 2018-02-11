@@ -32,16 +32,17 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.just.agentweb.AgentWeb;
-import com.just.agentweb.AgentWebDownloader;
 import com.just.agentweb.AgentWebSettingsImpl;
 import com.just.agentweb.DefaultWebClient;
-import com.just.agentweb.DownloadListener;
-import com.just.agentweb.DownloadingService;
 import com.just.agentweb.IAgentWebSettings;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
+import com.just.agentweb.download.AgentWebDownloader;
+import com.just.agentweb.download.DownloadListener;
+import com.just.agentweb.download.DownloadListenerAdapter;
+import com.just.agentweb.download.DownloadingService;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
@@ -104,7 +105,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
-                .setDownloadListener(mDownloadListener) //下载回调
+//                .setDownloadListener(mDownloadListener) 4.0 删除该API//下载回调
 //                .openParallelDownload()// 4.0.0删除该api 打开并行下载 , 默认串行下载。
 //                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) 4.0.0删除该api //下载通知图标。
                 .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
@@ -153,7 +154,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     /**
      * 修改 AgentWeb  4.0.0
      */
-    protected DownloadListener mDownloadListener = new DownloadListener.DownloadListenerAdapter() {
+    protected DownloadListener mDownloadListener = new DownloadListenerAdapter() {
 
         /**
          *

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -61,7 +62,6 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
                 .setOpenOtherPageWays(getOpenOtherAppWay())
                 .useMiddlewareWebChrome(getMiddleWareWebChrome())
                 .useMiddlewareWebClient(getMiddleWareWebClient())
-                .setDownloadListener(getDownloadListener())
                 .setAgentWebWebSettings(getAgentWebSettings())
                 .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
@@ -161,7 +161,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
     public @Nullable
     IAgentWebSettings getAgentWebSettings() {
-        return WebDefaultSettingsManager.getInstance();
+        return AgentWebSettingsImpl.getInstance();
     }
 
     protected abstract @NonNull
