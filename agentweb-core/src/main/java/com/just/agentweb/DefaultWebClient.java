@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -152,15 +151,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         LogUtils.i(TAG, "HAS_ALIPAY_LIB:" + HAS_ALIPAY_LIB);
     }
 
-    @Deprecated
-    DefaultWebClient(@NonNull Activity activity, WebViewClient client, boolean webClientHelper, PermissionInterceptor permissionInterceptor, WebView webView) {
-        super(client);
-        this.mWebView = webView;
-        this.mWebViewClient = client;
-        mWeakReference = new WeakReference<Activity>(activity);
-        this.webClientHelper = webClientHelper;
-        mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
-    }
 
     DefaultWebClient(Builder builder) {
         super(builder.client);

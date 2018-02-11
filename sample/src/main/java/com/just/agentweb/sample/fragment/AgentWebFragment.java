@@ -170,7 +170,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
             LogUtils.i(TAG, "start:" + url);
-            extra.setOpenBreakPointDownload(true).setIcon(R.mipmap.app_logo).setConnectTimeOut(6000).setDownloadTimeOut(30l).setForceDownload(true);
+            extra.setOpenBreakPointDownload(true).setIcon(R.mipmap.app_logo).setConnectTimeOut(6000).setDownloadTimeOut(5l * 1000l).setForceDownload(true);
             return false;
         }
 
@@ -258,7 +258,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     }
 
     /**
-     * 页面空白，请检查scheme是否加上， scheme://host:port/path?query 。
+     * 页面空白，请检查scheme是否加上， scheme://host:port/path?query&query 。
      *
      * @return url
      */

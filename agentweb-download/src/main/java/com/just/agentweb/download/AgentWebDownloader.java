@@ -30,14 +30,29 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
         protected String contentDisposition;
         protected String mimetype;
         protected long contentLength;
-        // 超时时长
+        /**
+         * 超时时长默认为两小时
+         */
         protected long downloadTimeOut = 2l * 60l * 1000l * 60l;
-        // 连接超时
+        // 连接超时， 默认10s
         protected int connectTimeOut = 10 * 1000;
+        /**
+         * 以1KB位单位，默认60s ， 如果一秒钟无法从网络中读取数据满1KB，则抛出异常 。
+         */
+        protected int blockMaxTime = 10 * 60 * 1000;
 
 
         protected Extra() {
 
+        }
+
+
+        public int getBlockMaxTime() {
+            return blockMaxTime;
+        }
+
+        public void setBlockMaxTime(int blockMaxTime) {
+            this.blockMaxTime = blockMaxTime;
         }
 
         public String getUrl() {

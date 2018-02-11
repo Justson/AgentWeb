@@ -61,6 +61,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
 
     private String TAG = this.getClass().getSimpleName();
 
+
     public DownloadTask(int id,
                         DownloadListenerAdapter downloadListeners,
                         Context context, File file,
@@ -169,6 +170,10 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         mDownloadWR = null;
         this.isParallelDownload = false;
         this.mExtraServiceImpl = null;
+    }
+
+    public int getBlockMaxTime() {
+        return mExtraServiceImpl.get().getBlockMaxTime();
     }
 
     @Override

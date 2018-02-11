@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.SparseArray;
 
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
@@ -57,6 +58,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
      *
      */
     private long tmp = 0;
+    /**
+     * 耗时
+     */
     private long mUsedTime = 0l;
     /**
      * 上一次更新通知的时间
@@ -65,11 +69,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 下载开始时间
      */
-    private long mBeginTime = 0l;
+    private volatile long mBeginTime = 0l;
     /**
-     * 当前下载速度
+     * 当前下载平均速度
      */
-    private long mSpeed = 0;
+    private volatile long mAverageSpeed = 0;
     /**
      * 下载错误，回调给用户的错误
      */
@@ -155,9 +159,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         try {
             this.mBeginTime = System.currentTimeMillis();
             if (!checkDownloadCondition())
-                return DownloadMsg.STORAGE_ERROR.code;
+                return ERROR_STORAGE;
             if (!checkNet())
-                return DownloadMsg.NETWORK_ERROR_CONNECTION.code;
+                return ERROR_NETWORK_CONNECTION;
             result = doDownload();
 
         } catch (Exception e) {
@@ -184,7 +188,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             boolean isSeek = false;
             int resCode = mHttpURLConnection.getResponseCode();
             if (resCode != 200 && resCode != 206) {
-                return DownloadMsg.ERROR_NETWORK_STATUS.code;
+                return ERROR_NETWORK_STATUS;
             } else {
                 isSeek = (resCode == 206);
             }
@@ -204,6 +208,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         HttpURLConnection mHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
         mHttpURLConnection.setRequestProperty("Accept", "application/*");
         mHttpURLConnection.setConnectTimeout(connectTimeOut);
+        LogUtils.i(TAG, "getDownloadTimeOut:" + mDownloadTask.getDownloadTimeOut());
+        mHttpURLConnection.setReadTimeout(mDownloadTask.getBlockMaxTime());
         return mHttpURLConnection;
     }
 
@@ -216,9 +222,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             this.mUsedTime = currentTime - this.mBeginTime;
 
             if (mUsedTime == 0) {
-                this.mSpeed = 0;
+                this.mAverageSpeed = 0;
             } else {
-                this.mSpeed = loaded * 1000 / this.mUsedTime;
+                this.mAverageSpeed = loaded * 1000 / this.mUsedTime;
             }
 
             if (currentTime - this.mLastTime < 800) {
@@ -302,9 +308,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             }
         } finally {
 
-            if (!isShutdown.get()) {
-                return;
-            }
+//            if (!isShutdown.get()) {
+//                return;
+//            }
             if (mDownloadTask != null) {
                 mDownloadTask.destroy();
             }
@@ -324,7 +330,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         return mDownloadListener.result(mDownloadTask.getFile().getAbsolutePath(),
                 mDownloadTask.getUrl(), code <= 200 ? null
                         : this.e == null
-                        ? new RuntimeException("download fail ， cause:" + DownloadMsg.getMsgByCode(code)) : this.e);
+                        ? new RuntimeException("download fail ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.e);
 
     }
 
@@ -366,7 +372,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     private int doDownload(InputStream in, RandomAccessFile out, boolean isSeek) throws IOException {
 
-        this.mBeginTime = System.currentTimeMillis();
         byte[] buffer = new byte[1024 * 10];
         BufferedInputStream bis = new BufferedInputStream(in, 1024 * 10);
         try {
@@ -390,27 +395,28 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 bytes += n;
 
                 if (!checkNet()) {
-                    LogUtils.i(TAG, "network");
-                    return DownloadMsg.NETWORK_ERROR_CONNECTION.code;
+                    return ERROR_NETWORK_CONNECTION;
                 }
 
-                if (mSpeed != 0) {
-                    previousBlockTime = -1;
-                } else if (previousBlockTime == -1) {
-                    previousBlockTime = System.currentTimeMillis();
-                } else if ((System.currentTimeMillis() - previousBlockTime) > downloadTimeOut) {
-                    LogUtils.i(TAG, "timeout");
-                    return DownloadMsg.TIME_OUT.code;
+                if ((System.currentTimeMillis() - this.mBeginTime) > downloadTimeOut) {
+                    return ERROR_TIME_OUT;
                 }
+//                if (mAverageSpeed != 0) {
+//                    previousBlockTime = -1;
+//                } else if (previousBlockTime == -1) {
+//                    previousBlockTime = System.currentTimeMillis();
+//                } else if ((System.currentTimeMillis() - previousBlockTime) > downloadTimeOut) {
+//                    LogUtils.i(TAG, "timeout");
+//                    return DownloadMsg.TIME_OUT.code;
+//                }
             }
-            LogUtils.i(TAG, "isCancel:" + isCancel.get());
             if (isCancel.get()) {
-                return DownloadMsg.USER_CANCEL.code;
+                return ERROR_USER_CANCEL;
             }
             if (isShutdown.get()) {
-                return DownloadMsg.SHUTDOWN.code;
+                return ERROR_SHUTDOWN;
             }
-            return DownloadMsg.SUCCESSFULL.code;
+            return SUCCESSFULL;
         } finally {
             AgentWebUtils.closeIO(out);
             AgentWebUtils.closeIO(bis);
@@ -487,47 +493,25 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
 
-    enum DownloadMsg {
-        NETWORK_ERROR_CONNECTION(400),
-        ERROR_NETWORK_STATUS(401),
-        STORAGE_ERROR(402),
-        SHUTDOWN(405),
-        TIME_OUT(403),
-        USER_CANCEL(404),
-        SUCCESSFULL(200);
-        int code;
+    public static final int ERROR_NETWORK_CONNECTION = 0x400;
+    public static final int ERROR_NETWORK_STATUS = 0x401;
+    public static final int ERROR_STORAGE = 0x402;
+    public static final int ERROR_SHUTDOWN = 0x405;
+    public static final int ERROR_TIME_OUT = 0x403;
+    public static final int ERROR_USER_CANCEL = 0x404;
+    public static final int SUCCESSFULL = 0x200;
 
-        DownloadMsg(int e) {
-            this.code = e;
-        }
+    public static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
 
+    static {
 
-        public static String getMsgByCode(int code) {
-            LogUtils.i(TAG, "  code:" + code);
-            switch (code) {
-
-
-                case 400:
-                    return "Network connection error";
-                case 401:
-                    return "Connection status code result, non-200 or non 206";
-                case 402:
-                    return "Insufficient memory space";
-                case 403:
-                    return "Download time is overtime";
-                case 404:
-                    return "The user canceled the download";
-                case 405:
-                    return "Shutdown";
-                case 200:
-                    return "Download successful";
-                default:
-                    return "Unknown exception";
-
-            }
-        }
-
-
+        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
+        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_STATUS, "Connection status code result, non-200 or non 206 .");
+        DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space.");
+        DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown.");
+        DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime .");
+        DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
+        DOWNLOAD_MESSAGE.append(SUCCESSFULL, "Download successful");
     }
 
 
