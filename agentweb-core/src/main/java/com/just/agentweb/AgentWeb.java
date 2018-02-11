@@ -433,8 +433,8 @@ public final class AgentWeb {
             this.mAgentWebSettings = mAgentWebSettings = AgentWebSettingsImpl.getInstance();
         }
 
-        if (mAgentWebSettings instanceof AgentWebSettingsImpl) {
-            ((AgentWebSettingsImpl) mAgentWebSettings).bindAgentWeb(this);
+        if (mAgentWebSettings instanceof AbsAgentWebSettings) {
+            ((AbsAgentWebSettings) mAgentWebSettings).bindAgentWeb(this);
         }
         if (mWebListenerManager == null && mAgentWebSettings instanceof AbsAgentWebSettings) {
             mWebListenerManager = (WebListenerManager) mAgentWebSettings;

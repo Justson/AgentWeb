@@ -126,7 +126,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         initView(view);
 
 
-
         //AgentWeb 4.0 开始，删除该类以及删除相关的API
 //        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
         //  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
@@ -170,7 +169,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
          */
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
-//            extra.setOpenBreakPointDownload(false).setIcon(R.mipmap.app_logo);
+            LogUtils.i(TAG, "start:" + url);
+            extra.setOpenBreakPointDownload(false).setIcon(R.mipmap.app_logo).setForceDownload(true);
             return false;
         }
 
@@ -183,12 +183,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         public void onBindService(String url, DownloadingService downloadingService) {
             super.onBindService(url, downloadingService);
             mDownloadingService = downloadingService;
+            LogUtils.i(TAG, "onBindService:" + url + "  DownloadingService:" + downloadingService);
         }
 
         @Override
         public void onUnbindService(String url, DownloadingService downloadingService) {
             super.onUnbindService(url, downloadingService);
             mDownloadingService = null;
+            LogUtils.i(TAG, "onUnbindService:" + url);
         }
 
         /**
@@ -227,9 +229,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public IAgentWebSettings getSettings() {
         return new AbsAgentWebSettings() {
             private AgentWeb mAgentWeb;
+
             @Override
             protected void bindAgentWebSupport(AgentWeb agentWeb) {
-                this.mAgentWeb=agentWeb;
+                this.mAgentWeb = agentWeb;
             }
 
             @Override
@@ -239,7 +242,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                                 webView,
                                 mDownloadListenerAdapter,
                                 mDownloadListenerAdapter,
-                                mAgentWeb.getPermissionInterceptor()));
+                                this.mAgentWeb.getPermissionInterceptor()));
             }
         };
     }

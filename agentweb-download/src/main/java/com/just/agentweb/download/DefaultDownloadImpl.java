@@ -43,7 +43,6 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     private Context mContext;
     private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
     private DownloadListener mDownloadListener;
-    private DownloadingListener mDownloadingListener;
     private WeakReference<Activity> mActivityWeakReference = null;
     private static final String TAG = DefaultDownloadImpl.class.getSimpleName();
     private PermissionInterceptor mPermissionListener = null;
@@ -55,6 +54,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     private ExtraServiceImpl mExtraServiceImpl;
     private String userAgent;
     private ExtraServiceImpl mCloneExtraServiceImpl = null;
+    private DownloadingListener mDownloadingListener;
 
     DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
         if (!extraServiceImpl.isCloneObject) {
@@ -69,6 +69,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         this.mActivityWeakReference = new WeakReference<Activity>(extraServiceImpl.mActivity);
         this.mContext = extraServiceImpl.mActivity.getApplicationContext();
         this.mDownloadListener = extraServiceImpl.mDownloadListener;
+        this.mDownloadingListener = extraServiceImpl.downloadingListener;
         this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
         this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
     }

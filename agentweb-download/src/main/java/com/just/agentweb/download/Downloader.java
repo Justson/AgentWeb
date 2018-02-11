@@ -547,6 +547,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                     LogUtils.i(TAG, "size:" + mObservable.countObservers());
                 } catch (Throwable ignore) {
 //                    ignore.printStackTrace();
+                    if (LogUtils.isDebug()) {
+                        ignore.printStackTrace();
+                    }
                 }
 
             }
