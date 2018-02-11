@@ -483,9 +483,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                     toCleanWebCache();
                     return true;
                 case R.id.error_website:
-//                    loadErrorWebSite();
-
-                    LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
+                    loadErrorWebSite();
+                    // test DownloadService
+                    /*LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
                     if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
                         mExtraService = mDownloadingService.shutdownNow();
                         LogUtils.i(TAG, "mExtraService::" + mExtraService);
@@ -493,7 +493,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                     }
                     if (mExtraService != null) {
                         mExtraService.performReDownload();
-                    }
+                    }*/
 
                     return true;
                 default:
