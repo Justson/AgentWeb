@@ -1,6 +1,7 @@
 package com.just.agentweb.sample.fragment;
 
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -31,16 +32,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
-import com.just.agentweb.AgentWebSettingsImpl;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.IAgentWebSettings;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
+import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.download.AgentWebDownloader;
-import com.just.agentweb.download.DownloadListener;
+import com.just.agentweb.download.DefaultDownloadImpl;
 import com.just.agentweb.download.DownloadListenerAdapter;
 import com.just.agentweb.download.DownloadingService;
 import com.just.agentweb.sample.R;
@@ -154,7 +156,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     /**
      * 修改 AgentWeb  4.0.0
      */
-    protected DownloadListener mDownloadListener = new DownloadListenerAdapter() {
+    protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
 
         /**
          *
@@ -223,7 +225,23 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     };
 
     public IAgentWebSettings getSettings() {
-        return AgentWebSettingsImpl.getInstance();
+        return new AbsAgentWebSettings() {
+            private AgentWeb mAgentWeb;
+            @Override
+            protected void bindAgentWebSupport(AgentWeb agentWeb) {
+                this.mAgentWeb=agentWeb;
+            }
+
+            @Override
+            public WebListenerManager setDownloader(WebView webView, android.webkit.DownloadListener downloadListener) {
+                return super.setDownloader(webView,
+                        DefaultDownloadImpl.create((Activity) webView.getContext(),
+                                webView,
+                                mDownloadListenerAdapter,
+                                mDownloadListenerAdapter,
+                                mAgentWeb.getPermissionInterceptor()));
+            }
+        };
     }
 
     /**
