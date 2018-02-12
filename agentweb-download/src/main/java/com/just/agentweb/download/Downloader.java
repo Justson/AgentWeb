@@ -2,7 +2,6 @@ package com.just.agentweb.download;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -18,11 +17,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -32,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class Downloader extends AsyncTask<Void, Integer, Integer> implements AgentWebDownloader<DownloadTask>, Observer {
+public class Downloader extends AsyncTask<Void, Integer, Integer> implements AgentWebDownloader<DownloadTask>, CancelRecipient {
 
     /**
      * 下载参数
@@ -94,17 +90,28 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
      * true  表示终止下载
      */
     private AtomicBoolean isShutdown = new AtomicBoolean(false);
-    /**
-     * Observable 缓存当前Downloader，如果用户滑动通知取消下载，通知所有 Downloader 找到
-     * 相应的 Downloader 取消下载。
-     */
-    private static Observable mObservable = new Observable() {
-        @Override
-        public synchronized void setChanged() {
-            super.setChanged();
-        }
-    };
 
+
+    public static final int ERROR_NETWORK_CONNECTION = 0x400;
+    public static final int ERROR_NETWORK_STATUS = 0x401;
+    public static final int ERROR_STORAGE = 0x402;
+    public static final int ERROR_SHUTDOWN = 0x405;
+    public static final int ERROR_TIME_OUT = 0x403;
+    public static final int ERROR_USER_CANCEL = 0x404;
+    public static final int SUCCESSFULL = 0x200;
+
+    public static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
+
+    static {
+
+        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
+        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_STATUS, "Connection status code result, non-200 or non 206 .");
+        DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
+        DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
+        DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
+        DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
+        DOWNLOAD_MESSAGE.append(SUCCESSFULL, "Download successful . ");
+    }
 
     Downloader() {
 
@@ -122,7 +129,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             mDownloadTask.getDownloadListener().onBindService(mDownloadTask.getUrl(), this);
         }
 
-        mObservable.addObserver(this);
+        CancelInformer.getInformer().addRecipient(mDownloadTask.getUrl(), this);
         buildNotify(new Intent(), mDownloadTask.getId(),
                 mDownloadTask.getContext().getString(R.string.agentweb_coming_soon_download));
     }
@@ -248,7 +255,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
         try {
             LogUtils.i(TAG, "onPostExecute:" + integer);
-            mObservable.deleteObserver(this);
+            CancelInformer.getInformer().removeRecipient(mDownloadTask.getUrl());
 
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask
@@ -262,7 +269,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             }
 
             boolean isCancelHandle = doCallback(integer);
-            if (integer > 200) {
+            if (integer > 0x200) {
 
                 if (mAgentWebNotification != null)
                     mAgentWebNotification.cancel(mDownloadTask.getId());
@@ -350,7 +357,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     private PendingIntent buildCancelContent(Context context, int id) {
 
-        Intent intentCancel = new Intent(context, NotificationBroadcastReceiver.class);
+        Intent intentCancel = new Intent(context, NotificationCancelReceiver.class);
         intentCancel.setAction("com.agentweb.cancelled");
         intentCancel.putExtra("type", "type");
         intentCancel.putExtra("TAG", mDownloadTask.getUrl());
@@ -403,19 +410,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     }
 
-    private final void toCancel() {
+    private final void cancel() {
         isCancel.set(true);
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        //LogUtils.i(TAG, "update Object    ... ");
-        String url = "";
-        if (arg instanceof String && !TextUtils.isEmpty(url = (String) arg) && url.equals(mDownloadTask.getUrl())) {
-            toCancel();
-        }
-
-
     }
 
     @Override
@@ -446,9 +442,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
     private final void downloadInternal(DownloadTask downloadTask) {
+        checkNullTask(downloadTask);
         this.mDownloadTask = downloadTask;
         this.totals = mDownloadTask.getLength();
-        checkNullTask(downloadTask);
         downloadTimeOut = mDownloadTask.getDownloadTimeOut();
         connectTimeOut = mDownloadTask.getConnectTimeOut();
 
@@ -458,6 +454,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         } else {
             this.execute();
         }
+    }
+
+    @Override
+    public void receiveAction() {
+        cancel();
     }
 
     private final class LoadingRandomAccessFile extends RandomAccessFile {
@@ -475,56 +476,5 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
         }
     }
-
-
-    public static final int ERROR_NETWORK_CONNECTION = 0x400;
-    public static final int ERROR_NETWORK_STATUS = 0x401;
-    public static final int ERROR_STORAGE = 0x402;
-    public static final int ERROR_SHUTDOWN = 0x405;
-    public static final int ERROR_TIME_OUT = 0x403;
-    public static final int ERROR_USER_CANCEL = 0x404;
-    public static final int SUCCESSFULL = 0x200;
-
-    public static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
-
-    static {
-
-        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
-        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_STATUS, "Connection status code result, non-200 or non 206 .");
-        DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
-        DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
-        DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
-        DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
-        DOWNLOAD_MESSAGE.append(SUCCESSFULL, "Download successful . ");
-    }
-
-    public static class NotificationBroadcastReceiver extends BroadcastReceiver {
-
-
-        public NotificationBroadcastReceiver() {
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals("com.agentweb.cancelled")) {
-                try {
-                    String url = intent.getStringExtra("TAG");
-                    Class<?> mClazz = mObservable.getClass();
-                    Method mMethod = mClazz.getMethod("setChanged", (Class<?>[]) null);
-                    mMethod.setAccessible(true);
-                    mMethod.invoke(mObservable, (Object[]) null);
-                    mObservable.notifyObservers(url);
-                    LogUtils.i(TAG, "size:" + mObservable.countObservers());
-                } catch (Throwable ignore) {
-                    if (LogUtils.isDebug()) {
-                        ignore.printStackTrace();
-                    }
-                }
-
-            }
-        }
-    }
-
 
 }

@@ -140,7 +140,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
 
-        //AgentWeb 在触发某些敏感的 Action 时候会回调该方法， 比如定位触发 。
+        //AgentWeb 在触发某些敏感的 CancelRecipient 时候会回调该方法， 比如定位触发 。
         //例如 https//:www.baidu.com 该 Url 需要定位权限， 返回false ，如果版本大于等于23 ， agentWeb 会动态申请权限 ，true 该Url对应页面请求定位失败。
         //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
         @Override
@@ -170,7 +170,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         @Override
         public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
             LogUtils.i(TAG, "start:" + url);
-            extra.setOpenBreakPointDownload(true).setIcon(R.mipmap.app_logo).setConnectTimeOut(6000).setDownloadTimeOut(5l * 1000l).setForceDownload(true);
+            extra.setOpenBreakPointDownload(true)
+                    .setIcon(R.drawable.ic_file_download_black_24dp)
+                    .setConnectTimeOut(6000)
+                    .setDownloadTimeOut(60l * 5l * 1000l)
+                    .setForceDownload(true);
             return false;
         }
 

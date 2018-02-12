@@ -205,7 +205,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         }
 
 
-        //该链接是否正在下载
+        // 该链接是否正在下载
         if (ExecuteTasksMap.getInstance().contains(url)
                 || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
             if (mAgentWebUIController.get() != null) {
@@ -218,8 +218,9 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         }
 
 
+        // 移动数据
         if (!this.mCloneExtraServiceImpl.isForceDownload() &&
-                AgentWebUtils.checkNetworkType(mContext) > 1) { //移动数据
+                AgentWebUtils.checkNetworkType(mContext) > 1) {
 
             showDialog(mFile);
             return;
@@ -360,7 +361,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     @Override
     public boolean result(String path, String url, Throwable e) {
         ExecuteTasksMap.getInstance().removeTask(path);
-        return mDownloadListener != null && mDownloadListener.result(path, url, e);
+        return null != mDownloadListener && mDownloadListener.result(path, url, e);
     }
 
 

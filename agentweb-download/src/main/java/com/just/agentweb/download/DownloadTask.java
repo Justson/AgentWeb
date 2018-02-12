@@ -158,18 +158,19 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
 
 
     public void destroy() {
-        isDestroy.set(true);
+        this.isDestroy.set(true);
         this.id = -1;
         this.url = null;
         this.isForce = false;
         this.enableIndicator = false;
-        mContext = null;
-        mFile = null;
+        this.mContext = null;
+        this.mFile = null;
         this.length = -1;
         this.drawableRes = -1;
-        mDownloadWR = null;
+        this.mDownloadWR = null;
         this.isParallelDownload = false;
         this.mExtraServiceImpl = null;
+        this.isDestroy = null;
     }
 
     public int getBlockMaxTime() {
@@ -187,6 +188,6 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     }
 
     public boolean isDestroy() {
-        return isDestroy.get();
+        return null == this.isDestroy || isDestroy.get();
     }
 }
