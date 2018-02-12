@@ -56,8 +56,8 @@ public class AgentWebNotification {
     }
 
 
-    public void notify_progress(PendingIntent pendingIntent, int smallIcon,
-                                String ticker, String title, String content, boolean sound, boolean vibrate, boolean lights, PendingIntent pendingIntentCancel) {
+    public void notifyProgress(PendingIntent pendingIntent, int smallIcon,
+                               String ticker, String title, String content, boolean sound, boolean vibrate, boolean lights, PendingIntent pendingIntentCancel) {
 
         setCompatBuilder(pendingIntent, smallIcon, ticker, title, content, sound, vibrate, lights, pendingIntentCancel);
 

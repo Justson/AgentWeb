@@ -33,7 +33,7 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
         /**
          * 超时时长默认为两小时
          */
-        protected long downloadTimeOut = 2l * 60l * 1000l * 60l;
+        protected long downloadTimeOut = Long.MAX_VALUE;
         // 连接超时， 默认10s
         protected int connectTimeOut = 10 * 1000;
         /**

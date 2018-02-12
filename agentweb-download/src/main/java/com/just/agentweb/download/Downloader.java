@@ -11,7 +11,6 @@ import android.util.SparseArray;
 
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
-import com.just.agentweb.Provider;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -25,14 +24,7 @@ import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.UnknownFormatConversionException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -135,7 +127,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 mDownloadTask.getContext().getString(R.string.agentweb_coming_soon_download));
     }
 
-    private boolean checkDownloadCondition() {
+    private boolean checkSpace() {
 
         if (mDownloadTask.getLength() - mDownloadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
             LogUtils.i(TAG, " 空间不足");
@@ -158,14 +150,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         int result = ERROR_LOAD;
         try {
             this.mBeginTime = System.currentTimeMillis();
-            if (!checkDownloadCondition())
+            if (!checkSpace())
                 return ERROR_STORAGE;
             if (!checkNet())
                 return ERROR_NETWORK_CONNECTION;
             result = doDownload();
-
         } catch (Exception e) {
-
             this.e = e;//发布
             if (LogUtils.isDebug()) {
                 e.printStackTrace();
@@ -179,7 +169,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     private int doDownload() throws IOException {
 
         HttpURLConnection mHttpURLConnection = createUrlConnection(mDownloadTask.getUrl());
-
         if (mDownloadTask.getFile().length() > 0) {
             mHttpURLConnection.addRequestProperty("Range", "bytes=" + (tmp = mDownloadTask.getFile().length()) + "-");
         }
@@ -235,7 +224,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 if (!mAgentWebNotification.hasDeleteContent()) {
                     mAgentWebNotification.setDelecte(buildCancelContent(mDownloadTask.getContext().getApplicationContext(), mDownloadTask.getId()));
                 }
-
                 int mProgress = (int) ((tmp + loaded) / Float.valueOf(totals) * 100);
                 mAgentWebNotification.setContentText(
                         mDownloadTask.getContext()
@@ -273,7 +261,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
             }
 
-            boolean t = doCallback(integer);
+            boolean isCancelHandle = doCallback(integer);
             if (integer > 200) {
 
                 if (mAgentWebNotification != null)
@@ -284,7 +272,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 if (mAgentWebNotification != null)
                     mAgentWebNotification.cancel(mDownloadTask.getId());
 
-                if (t) {
+                if (isCancelHandle) {
                     return;
                 }
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
@@ -292,8 +280,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                     if (mIntent != null) {
                         if (!(mDownloadTask.getContext() instanceof Activity))
                             mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        PendingIntent rightPendIntent = PendingIntent.getActivity(mDownloadTask.getContext(),
-                                mDownloadTask.getId() << 4, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent rightPendIntent = PendingIntent
+                                .getActivity(mDownloadTask.getContext(),
+                                        mDownloadTask.getId() << 4, mIntent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT);
                         mAgentWebNotification.setProgressFinish(mDownloadTask.getContext().getString(R.string.agentweb_click_open), rightPendIntent);
                     }
                     return;
@@ -352,7 +342,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             if (title.length() > 20) {
                 title = "..." + title.substring(title.length() - 20, title.length());
             }
-            mAgentWebNotification.notify_progress(rightPendIntent, smallIcon, ticker, title, progressHint, false, false, false, buildCancelContent(mContext, id));
+            mAgentWebNotification.notifyProgress(rightPendIntent, smallIcon, ticker, title, progressHint, false, false, false, buildCancelContent(mContext, id));
             mAgentWebNotification.sent();
         }
     }
@@ -370,11 +360,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
 
-    private int doDownload(InputStream in, RandomAccessFile out, boolean isSeek) throws IOException {
+    private int doDownload(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
 
         byte[] buffer = new byte[1024 * 10];
-        BufferedInputStream bis = new BufferedInputStream(in, 1024 * 10);
-        try {
+        try (BufferedInputStream bis = new BufferedInputStream(inputStream, 1024 * 10);
+             RandomAccessFile out = randomAccessFile) {
 
             if (isSeek) {
                 LogUtils.i(TAG, "seek -- >" + isSeek + "  length:" + out.length());
@@ -384,7 +374,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 out.seek(0l);
             }
             int bytes = 0;
-            long previousBlockTime = -1;
 
             while (!isCancel.get() && !isShutdown.get()) {
                 int n = bis.read(buffer, 0, 1024 * 10);
@@ -401,14 +390,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 if ((System.currentTimeMillis() - this.mBeginTime) > downloadTimeOut) {
                     return ERROR_TIME_OUT;
                 }
-//                if (mAverageSpeed != 0) {
-//                    previousBlockTime = -1;
-//                } else if (previousBlockTime == -1) {
-//                    previousBlockTime = System.currentTimeMillis();
-//                } else if ((System.currentTimeMillis() - previousBlockTime) > downloadTimeOut) {
-//                    LogUtils.i(TAG, "timeout");
-//                    return DownloadMsg.TIME_OUT.code;
-//                }
+
             }
             if (isCancel.get()) {
                 return ERROR_USER_CANCEL;
@@ -417,9 +399,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 return ERROR_SHUTDOWN;
             }
             return SUCCESSFULL;
-        } finally {
-            AgentWebUtils.closeIO(out);
-            AgentWebUtils.closeIO(bis);
         }
 
     }
@@ -452,8 +431,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             LogUtils.e(TAG, "  Termination failed , becauce the downloader already dead !!! ");
             return null;
         }
-        isShutdown.set(true);
-        return mDownloadTask.getExtraServiceImpl();
+        try {
+            ExtraService mExtraService = mDownloadTask.getExtraServiceImpl();
+            return mExtraService;
+        } finally {
+            isShutdown.set(true);
+        }
+
     }
 
     @Override
@@ -507,13 +491,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
         DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
         DOWNLOAD_MESSAGE.append(ERROR_NETWORK_STATUS, "Connection status code result, non-200 or non 206 .");
-        DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space.");
-        DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown.");
-        DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime .");
+        DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
+        DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
+        DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
         DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
-        DOWNLOAD_MESSAGE.append(SUCCESSFULL, "Download successful");
+        DOWNLOAD_MESSAGE.append(SUCCESSFULL, "Download successful . ");
     }
-
 
     public static class NotificationBroadcastReceiver extends BroadcastReceiver {
 
@@ -525,7 +508,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals("com.agentweb.cancelled")) {
-
                 try {
                     String url = intent.getStringExtra("TAG");
                     Class<?> mClazz = mObservable.getClass();
@@ -535,7 +517,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                     mObservable.notifyObservers(url);
                     LogUtils.i(TAG, "size:" + mObservable.countObservers());
                 } catch (Throwable ignore) {
-//                    ignore.printStackTrace();
                     if (LogUtils.isDebug()) {
                         ignore.printStackTrace();
                     }
@@ -543,68 +524,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
             }
         }
-
-
-    }
-
-
-    static class ExecutorProvider implements Provider<Executor> {
-
-
-        private final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-        private final int CORE_POOL_SIZE = (int) (Math.max(2, Math.min(CPU_COUNT - 1, 4)) * 1.5);
-        private final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
-        private final int KEEP_ALIVE_SECONDS = 15;
-
-        private final ThreadFactory sThreadFactory = new ThreadFactory() {
-            private final AtomicInteger mCount = new AtomicInteger(1);
-            private SecurityManager securityManager = System.getSecurityManager();
-            private ThreadGroup group = securityManager != null ? securityManager.getThreadGroup() : Thread.currentThread().getThreadGroup();
-
-            public Thread newThread(Runnable r) {
-                Thread mThread = new Thread(group, r, "pool-agentweb-thread-" + mCount.getAndIncrement());
-                if (mThread.isDaemon()) {
-                    mThread.setDaemon(false);
-                }
-                mThread.setPriority(Thread.MIN_PRIORITY);
-                LogUtils.i(TAG, "Thread Name:" + mThread.getName());
-                LogUtils.i(TAG, "live:" + mThreadPoolExecutor.getActiveCount() + "    getCorePoolSize:" + mThreadPoolExecutor.getCorePoolSize() + "  getPoolSize:" + mThreadPoolExecutor.getPoolSize());
-                return mThread;
-            }
-        };
-
-        private static final BlockingQueue<Runnable> sPoolWorkQueue =
-                new LinkedBlockingQueue<Runnable>(128);
-        private ThreadPoolExecutor mThreadPoolExecutor;
-
-        private ExecutorProvider() {
-            internalInit();
-        }
-
-        private void internalInit() {
-            if (mThreadPoolExecutor != null && !mThreadPoolExecutor.isShutdown()) {
-                mThreadPoolExecutor.shutdownNow();
-            }
-            mThreadPoolExecutor = new ThreadPoolExecutor(
-                    CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_SECONDS, TimeUnit.SECONDS,
-                    sPoolWorkQueue, sThreadFactory);
-            mThreadPoolExecutor.allowCoreThreadTimeOut(true);
-        }
-
-
-        public static ExecutorProvider getInstance() {
-            return InnerHolder.M_EXECUTOR_PROVIDER;
-        }
-
-        static class InnerHolder {
-            private static final ExecutorProvider M_EXECUTOR_PROVIDER = new ExecutorProvider();
-        }
-
-        @Override
-        public Executor provide() {
-            return mThreadPoolExecutor;
-        }
-
     }
 
 
