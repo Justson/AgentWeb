@@ -29,7 +29,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,10 +85,10 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
     private synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
 
-        if (mActivityWeakReference.get() == null || mActivityWeakReference.get().isFinishing()) {
+        if (null == mActivityWeakReference.get() || mActivityWeakReference.get().isFinishing()) {
             return;
         }
-        if (this.mPermissionListener != null) {
+        if (null != this.mPermissionListener) {
             if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
                 return;
             }
@@ -102,7 +101,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         this.mimetype = mimetype;
         this.userAgent = userAgent;
         ExtraServiceImpl mCloneExtraServiceImpl = null;
-        if (extraServiceImpl == null) {
+        if (null == extraServiceImpl) {
             try {
                 mCloneExtraServiceImpl = (ExtraServiceImpl) this.mExtraServiceImpl.clone();
             } catch (CloneNotSupportedException ignore) {
@@ -165,8 +164,8 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
     private void preDownload() {
 
-        //true 表示用户取消了该下载事件。
-        if (mDownloadListener != null
+        // true 表示用户取消了该下载事件。
+        if (null != mDownloadListener
                 && mDownloadListener
                 .start(this.url,
                         this.userAgent,
@@ -177,15 +176,15 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
             return;
         }
         File mFile = getFile(contentDisposition, url);
-        //File 创建文件失败
+        // File 创建文件失败
         if (mFile == null) {
             LogUtils.i(TAG, "新建文件失败");
             return;
         }
         if (mFile.exists() && mFile.length() >= contentLength) {
 
-            //true 表示用户处理了下载完成后续的通知用户事件
-            if (mDownloadListener != null && mDownloadListener.result(mFile.getAbsolutePath(), url, null)) {
+            // true 表示用户处理了下载完成后续的通知用户事件
+            if (null != mDownloadListener && mDownloadListener.result(mFile.getAbsolutePath(), url, null)) {
                 return;
             }
 
@@ -207,16 +206,20 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
 
         //该链接是否正在下载
-        if (ExecuteTasksMap.getInstance().contains(url) || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
+        if (ExecuteTasksMap.getInstance().contains(url)
+                || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
-                        mActivityWeakReference.get().getString(R.string.agentweb_download_task_has_been_exist), TAG.concat("|preDownload"));
+                        mActivityWeakReference.get()
+                                .getString(R.string.agentweb_download_task_has_been_exist),
+                        TAG.concat("|preDownload"));
             }
             return;
         }
 
 
-        if (!this.mCloneExtraServiceImpl.isForceDownload() && AgentWebUtils.checkNetworkType(mContext) > 1) { //移动数据
+        if (!this.mCloneExtraServiceImpl.isForceDownload() &&
+                AgentWebUtils.checkNetworkType(mContext) > 1) { //移动数据
 
             showDialog(mFile);
             return;
@@ -235,7 +238,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     private void showDialog(final File file) {
 
         Activity mActivity;
-        if ((mActivity = mActivityWeakReference.get()) == null || mActivity.isFinishing())
+        if (null == (mActivity = mActivityWeakReference.get()) || mActivity.isFinishing())
             return;
 
         AgentWebUIController mAgentWebUIController;
@@ -260,11 +263,10 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         try {
 
             ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
-            if (mAgentWebUIController.get() != null) {
+            if (null != mAgentWebUIController.get()) {
                 mAgentWebUIController.get()
                         .showMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
             }
-
             DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
                     this,
                     mContext, file,
@@ -288,7 +290,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     private File getFile(String contentDisposition, String url) {
 
         try {
-            String fileName = getFileName(contentDisposition);
+            String fileName = getFileNameByContentDisposition(contentDisposition);
             if (TextUtils.isEmpty(fileName) && !TextUtils.isEmpty(url)) {
                 Uri mUri = Uri.parse(url);
                 fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/') + 1);
@@ -312,7 +314,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         return null;
     }
 
-    private String getFileName(String contentDisposition) {
+    private String getFileNameByContentDisposition(String contentDisposition) {
         if (TextUtils.isEmpty(contentDisposition)) {
             return "";
         }
@@ -327,9 +329,9 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
     @Override
     public void progress(String url, long downloaded, long length, long useTime) {
-        if (mDownloadingListener != null) {
+        if (null != mDownloadingListener) {
             synchronized (mDownloadingListener) {
-                if (mDownloadListener != null) {
+                if (null != mDownloadingListener) {
                     mDownloadingListener.progress(url, downloaded, length, useTime);
                 }
             }
@@ -338,7 +340,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
     @Override
     public void onBindService(String url, DownloadingService downloadingService) {
-        if (mDownloadingListener != null) {
+        if (null != mDownloadingListener) {
             synchronized (mDownloadingListener) {
                 mDownloadingListener.onBindService(url, downloadingService);
             }
@@ -348,7 +350,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
     @Override
     public void onUnbindService(String url, DownloadingService downloadingService) {
-        if (mDownloadingListener != null) {
+        if (null != mDownloadingListener) {
             synchronized (mDownloadingListener) {
                 mDownloadingListener.onUnbindService(url, downloadingService);
             }
@@ -362,7 +364,11 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     }
 
 
-    //静态缓存当前正在下载的任务url
+    /**
+     * 静态缓存当前正在下载的任务 url
+     * i -> url
+     * i+1 -> path
+     */
     public static class ExecuteTasksMap extends ReentrantLock {
 
         private LinkedList<String> mTasks = null;
@@ -378,9 +384,9 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         static ExecuteTasksMap getInstance() {
 
 
-            if (sInstance == null) {
+            if (null == sInstance) {
                 synchronized (ExecuteTasksMap.class) {
-                    if (sInstance == null)
+                    if (null == sInstance)
                         sInstance = new ExecuteTasksMap();
                 }
             }
@@ -429,9 +435,6 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         }
     }
 
-    public static ExtraServiceImpl newExtra(Activity activity) {
-        return new ExtraServiceImpl().setActivity(activity);
-    }
 
     public static DefaultDownloadImpl create(Activity activity,
                                              WebView webView,
@@ -596,7 +599,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
 
         @Override
-        protected Object clone() throws CloneNotSupportedException {
+        protected ExtraServiceImpl clone() throws CloneNotSupportedException {
             ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
             mExtraServiceImpl.isCloneObject = true;
             mExtraServiceImpl.mActivity = null;
@@ -614,7 +617,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         public synchronized void performReDownload() {
 
             LogUtils.i(TAG, "performReDownload:" + mDefaultDownload);
-            if (this.mDefaultDownload != null) {
+            if (null != this.mDefaultDownload) {
                 this.mDefaultDownload
                         .onDownloadStartInternal(
                                 getUrl(),
