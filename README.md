@@ -43,6 +43,12 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 	```	
 	
 
+## README 版本
+如果你使用的是稳定版`agentweb:3.1.0`请点击下面相应的版本查看 README ，当前 README 只会显示最新的API文档和介绍（4.0.0-beta）。
+
+- [AgentWeb 3.1.0](https://github.com/Justson/AgentWeb/tree/3.1.0)
+- [AgentWeb 2.0.1](https://github.com/Justson/AgentWeb/tree/2.0.1)
+
 
 ## 使用
 #### 基础用法
@@ -123,14 +129,6 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
     }    
 ```
 
-* #### <del>文件上传处理<del>
-```
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mAgentWeb.uploadFileResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-```
 
 * #### 全屏视频播放
 ```
@@ -152,7 +150,6 @@ android:configChanges="orientation|screenSize"
 mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )//
                 .useDefaultIndicator()//
-                .defaultProgressBarColor()
                 .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
@@ -262,9 +259,10 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 * #### AgentWeb 完整用法
 ```java
 mAgentWeb = AgentWeb.with(this)//
+        mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
                 .setIndicatorColorWithHeight(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
-                .setAgentWebWebSettings(getSettings())//设置 AgentWebSettings。
+                .setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
                 .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
                 .setWebChromeClient(mWebChromeClient) //WebChromeClient
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
@@ -273,11 +271,8 @@ mAgentWeb = AgentWeb.with(this)//
                 .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
-                .addDownloadResultListener(mDownloadListener) //下载回调
-                .openParallelDownload()//打开并行下载 , 默认串行下载。
-                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) //下载通知图标。
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
-                .interceptUnkownScheme() //拦截找不到相关页面的Scheme AgentWeb 3.0.0 加入。
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
+                .interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
                 .createAgentWeb()//创建AgentWeb。
                 .ready()//设置 WebSettings。
                 .go(getUrl()); //WebView载入该url地址的页面并显示。
