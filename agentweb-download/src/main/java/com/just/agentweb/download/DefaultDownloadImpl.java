@@ -77,9 +77,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
 
     @Override
     public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-
         onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength, null);
-
     }
 
 
@@ -115,7 +113,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
             mCloneExtraServiceImpl = extraServiceImpl;
         }
         mCloneExtraServiceImpl
-                .setUrl(url)
+                .setUrl(this.url)
                 .setMimetype(this.mimetype)
                 .setContentDisposition(this.contentDisposition)
                 .setContentLength(this.contentLength)
@@ -153,9 +151,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     }
 
     private List<String> checkNeedPermission() {
-
         List<String> deniedPermissions = new ArrayList<>();
-
         if (!AgentWebUtils.hasPermission(mActivityWeakReference.get(), AgentWebPermissions.STORAGE)) {
             deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
         }

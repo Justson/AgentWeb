@@ -23,6 +23,9 @@ public class ExecutorProvider implements Provider<Executor> {
     private final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
     private final int KEEP_ALIVE_SECONDS = 15;
     public String TAG = this.getClass().getSimpleName();
+    private static final BlockingQueue<Runnable> sPoolWorkQueue =
+            new LinkedBlockingQueue<Runnable>(128);
+    private ThreadPoolExecutor mThreadPoolExecutor;
 
     private final ThreadFactory sThreadFactory = new ThreadFactory() {
         private final AtomicInteger mCount = new AtomicInteger(1);
@@ -41,9 +44,6 @@ public class ExecutorProvider implements Provider<Executor> {
         }
     };
 
-    private static final BlockingQueue<Runnable> sPoolWorkQueue =
-            new LinkedBlockingQueue<Runnable>(128);
-    private ThreadPoolExecutor mThreadPoolExecutor;
 
     private ExecutorProvider() {
         internalInit();
@@ -60,7 +60,7 @@ public class ExecutorProvider implements Provider<Executor> {
     }
 
 
-    public static ExecutorProvider getInstance() {
+    static ExecutorProvider getInstance() {
         return InnerHolder.M_EXECUTOR_PROVIDER;
     }
 

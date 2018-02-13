@@ -243,8 +243,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             }
 
             /**
-             * AgentWeb 4.0.0 删除了 Download  以及相关API ，抽离Download部分，
-             * 如果你需要监听的下载的结果，请自定义 AgentWebSetting ， 例如这个例子.
+             * AgentWeb 4.0.0 内部删除了 Download 监听 ，以及相关API ，将 Download 部分完全抽离出来独立一个库，
+             * 如果你需要使用 AgentWeb Download 部分 ， 请依赖上 compile 'com.just.agentweb:download:4.0.0 ，
+             * 如果你需要监听下载结果，请自定义 AgentWebSetting ， New 出 DefaultDownloadImpl，传入DownloadListenerAdapter
+             * 实现进度或者结果监听，例如下面这个例子，如果你不需要监听进度，或者下载结果，下面 setDownloader 的例子可以不管.
              * @param webView
              * @param downloadListener
              * @return WebListenerManager
@@ -252,7 +254,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             @Override
             public WebListenerManager setDownloader(WebView webView, android.webkit.DownloadListener downloadListener) {
                 return super.setDownloader(webView,
-                        DefaultDownloadImpl.create((Activity) webView.getContext(),
+                        DefaultDownloadImpl
+                                .create((Activity) webView.getContext(),
                                 webView,
                                 mDownloadListenerAdapter,
                                 mDownloadListenerAdapter,
@@ -488,7 +491,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                     return true;
                 case R.id.error_website:
                     loadErrorWebSite();
-                    // test DownloadService
+                    // test DownloadingService
                     /*LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
                     if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
                         mExtraService = mDownloadingService.shutdownNow();

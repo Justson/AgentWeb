@@ -47,7 +47,7 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'filechooser'
-    version = '4.0.0-alpha-3'
+    version = '4.0.0-beta'
     description = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 

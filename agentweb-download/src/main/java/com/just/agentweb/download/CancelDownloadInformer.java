@@ -21,20 +21,20 @@ public final class CancelDownloadInformer {
         return InformerHolder.INSTANCE;
     }
 
-    public void cancelAction(String url) {
+    void cancelAction(String url) {
         CancelDownloadRecipient mCancelDownloadRecipient = mRecipients.get(url);
         if (null != mCancelDownloadRecipient) {
             mCancelDownloadRecipient.cancelDownload();
         }
     }
 
-    public void addRecipient(String url, CancelDownloadRecipient recipient) {
+    void addRecipient(String url, CancelDownloadRecipient recipient) {
         if (null != url && null != recipient) {
             mRecipients.put(url, recipient);
         }
     }
 
-    public void removeRecipient(String url) {
+    void removeRecipient(String url) {
         if (null != null) {
             this.mRecipients.remove(url);
         }
