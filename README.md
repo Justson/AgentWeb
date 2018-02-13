@@ -340,7 +340,8 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 	* 重新设计了 `AgentWeb-Download` 。
 	* 删除了 `DownloadListener` 、`DefaultMsgConfig` 以及相关API。
 	* 旧废弃的API，4.0.0 直接删除，不在提供兼容。
-	* 大量类和API重命名 。
+	* 部分类和API重命名 。
+	* `Fragment`和`Activity`构建一致。[#227](https://github.com/Justson/AgentWeb/issues/227)
 * v_3.1.0 更新
 	* `WebProgress` 进度条动画更细腻。
 	* 修复部分机型拍照文件大小为0情况。
