@@ -69,6 +69,8 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     public static final int STARTED = 1;
     public static final int FINISH = 2;
 
+    private float target = 0f;
+
     /**
      * 默认的高度
      */
@@ -189,7 +191,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     }
 
 
-    private float target = 0f;
+
 
 
     private void startAnim(boolean isFinished) {

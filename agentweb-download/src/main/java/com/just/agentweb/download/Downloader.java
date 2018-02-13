@@ -168,7 +168,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             if (LogUtils.isDebug()) {
                 e.printStackTrace();
             }
-
         }
 
         return result;

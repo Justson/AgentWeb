@@ -34,12 +34,12 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 	
 	```
 	
-* 4.0.0-Alpha
+* 4.0.0-beta
 
 	```
-    compile 'com.just.agentweb:agentweb:4.0.0-alpha-3'(必选)
-    compile 'com.just.agentweb:download:4.0.0-alpha-3'(可选)
-    compile 'com.just.agentweb:filechooser:4.0.0-alpha-3'(可选) 
+    compile 'com.just.agentweb:agentweb:4.0.0-beta'(必选)
+    compile 'com.just.agentweb:download:4.0.0-beta'(可选)
+    compile 'com.just.agentweb:filechooser:4.0.0-beta'(可选) 
 	```	
 	
 
@@ -335,6 +335,12 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * `Sample`(推荐，详细) 
 
 ## 更新日志
+* v_4.0.0 更新
+	* `AgentWeb` 拆分出 `AgentWeb-Download` 、 `AgentWeb-FileChooser` 、`AgentWeb-core` 三个库，用户可以按需选择。
+	* 重新设计了 `AgentWeb-Download` 。
+	* 删除了 `DownloadListener` 、`DefaultMsgConfig` 以及相关API。
+	* 旧废弃的API，4.0.0 直接删除，不在提供兼容。
+	* 大量类和API重命名 。
 * v_3.1.0 更新
 	* `WebProgress` 进度条动画更细腻。
 	* 修复部分机型拍照文件大小为0情况。
