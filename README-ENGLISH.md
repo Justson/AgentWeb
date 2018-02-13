@@ -3,9 +3,16 @@
 
 ## Introduction to AgentWeb
 
-AgentWeb is an Android WebView based, easy to use with progress bar to support file upload, download, streamline communication with Javascript, chained calls, with result pages, permission blocking, targeting, support for multiple WebViewClient, WebChromeClient, Web safe library. Let you integrate a few lines of code into a lightweight browser in your application. For more use, please refer to the above sample. [Download AgentWeb] (./ agentweb.apk)
+
+AgentWeb is an Android WebView based, extremely easy to use and powerful library. Please refer to Sample above for detailed usage. 
 
 
+
+## AgentWeb Sample Download
+AgentWeb Sample shows AgentWeb library powerful features, detailed link, please click the download experience
+
+* [Download AgentWeb] (./ agentweb.apk)
+* [Google Play](https://play.google.com/store/apps/details?id=com.just.agentweb.sample) 
 
 ## download
 
@@ -30,9 +37,9 @@ AgentWeb is an Android WebView based, easy to use with progress bar to support f
 * 4.0.0-beta
 
 	```
-    compile 'com.just.agentweb:agentweb:4.0.0-beta'(必选)
-    compile 'com.just.agentweb:download:4.0.0-beta'(可选)
-    compile 'com.just.agentweb:filechooser:4.0.0-beta'(可选) 
+    compile 'com.just.agentweb:agentweb:4.0.0-beta'
+    compile 'com.just.agentweb:download:4.0.0-beta'
+    compile 'com.just.agentweb:filechooser:4.0.0-beta'
 	```	
 		
 	
