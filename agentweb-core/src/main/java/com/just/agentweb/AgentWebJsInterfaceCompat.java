@@ -45,7 +45,9 @@ public class AgentWebJsInterfaceCompat {
                         @Override
                         public boolean handleMessage(Message msg) {
                             if (mReference.get() != null) {
-                                mReference.get().getJsAccessEntrace().quickCallJs("uploadFileResult", msg.obj instanceof String ? (String) msg.obj : null);
+                                mReference.get().getJsAccessEntrace()
+                                        .quickCallJs("uploadFileResult",
+                                                msg.obj instanceof String ? (String) msg.obj : null);
                             }
                             return true;
                         }

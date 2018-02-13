@@ -15,7 +15,7 @@ import com.just.agentweb.download.DefaultDownloadImpl;
  * Created by cenxiaozhong on 2017/5/26.
  * source code  https://github.com/Justson/AgentWeb
  */
-
+//WebDefaultSettingsManager 重命名为 AbsAgentWebSettings 并且抽象出bindAgentWebSupport方法
 public class CustomSettings extends AbsAgentWebSettings {
     public CustomSettings() {
         super();

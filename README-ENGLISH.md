@@ -7,14 +7,6 @@ AgentWeb is an Android WebView based, easy to use with progress bar to support f
 
 
 
-
-## Why use AgentWeb?
-
-Web | File Download | File Upload | Js Communication | Ease of Use | Progress Bar | Full Screen Video | ...... |
-|:-----------:|:---------:|:---------|:---------|:----------- |:-----------|:--------|:--------|
-| WebView     |  Not supported   | Not supported		|  Support      |    trouble      | Not supported       |Not supported|Not supported|
-| AgentWeb	 |  Support		| Support		|  Simpler    |   Simple    | Available        |Support|Support|
-
 ## download
 
 
@@ -34,6 +26,15 @@ Web | File Download | File Upload | Js Communication | Ease of Use | Progress Ba
 	</dependency>
 	
 	```
+	
+* 4.0.0-beta
+
+	```
+    compile 'com.just.agentweb:agentweb:4.0.0-beta'(必选)
+    compile 'com.just.agentweb:download:4.0.0-beta'(可选)
+    compile 'com.just.agentweb:filechooser:4.0.0-beta'(可选) 
+	```	
+		
 	
 ## use
 #### Common use

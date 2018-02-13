@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
@@ -38,7 +39,7 @@ import java.util.regex.Pattern;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class DefaultDownloadImpl extends DownloadListenerAdapter implements android.webkit.DownloadListener {
+public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
     private Context mContext;
     private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
@@ -265,7 +266,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
                         .showMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
             }
             DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
-                    this,
+                    this.mDownloadListenerAdapter,
                     mContext, file,
                     this.mCloneExtraServiceImpl);
             new Downloader().download(mDownloadTask);
@@ -323,42 +324,43 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
         }
     }
 
-
-    @Override
-    public void progress(String url, long downloaded, long length, long useTime) {
-        if (null != mDownloadingListener) {
-            synchronized (mDownloadingListener) {
-                if (null != mDownloadingListener) {
-                    mDownloadingListener.progress(url, downloaded, length, useTime);
+    private DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
+        @Override
+        public void progress(String url, long downloaded, long length, long useTime) {
+            if (null != mDownloadingListener) {
+                synchronized (mDownloadingListener) {
+                    if (null != mDownloadingListener) {
+                        mDownloadingListener.progress(url, downloaded, length, useTime);
+                    }
                 }
             }
         }
-    }
 
-    @Override
-    public void onBindService(String url, DownloadingService downloadingService) {
-        if (null != mDownloadingListener) {
-            synchronized (mDownloadingListener) {
-                mDownloadingListener.onBindService(url, downloadingService);
+        @Override
+        public void onBindService(String url, DownloadingService downloadingService) {
+            if (null != mDownloadingListener) {
+                synchronized (mDownloadingListener) {
+                    mDownloadingListener.onBindService(url, downloadingService);
+                }
+            }
+
+        }
+
+        @Override
+        public void onUnbindService(String url, DownloadingService downloadingService) {
+            if (null != mDownloadingListener) {
+                synchronized (mDownloadingListener) {
+                    mDownloadingListener.onUnbindService(url, downloadingService);
+                }
             }
         }
 
-    }
-
-    @Override
-    public void onUnbindService(String url, DownloadingService downloadingService) {
-        if (null != mDownloadingListener) {
-            synchronized (mDownloadingListener) {
-                mDownloadingListener.onUnbindService(url, downloadingService);
-            }
+        @Override
+        public boolean result(String path, String url, Throwable e) {
+            ExecuteTasksMap.getInstance().removeTask(path);
+            return null != mDownloadListener && mDownloadListener.result(path, url, e);
         }
-    }
-
-    @Override
-    public boolean result(String path, String url, Throwable e) {
-        ExecuteTasksMap.getInstance().removeTask(path);
-        return null != mDownloadListener && mDownloadListener.result(path, url, e);
-    }
+    };
 
 
     /**
@@ -433,11 +435,11 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
     }
 
 
-    public static DefaultDownloadImpl create(Activity activity,
-                                             WebView webView,
-                                             DownloadListener downloadListener,
-                                             DownloadingListener downloadingListener,
-                                             PermissionInterceptor permissionInterceptor) {
+    public static DefaultDownloadImpl create(@NonNull Activity activity,
+                                             @NonNull WebView webView,
+                                             @Nullable DownloadListener downloadListener,
+                                             @NonNull DownloadingListener downloadingListener,
+                                             @Nullable PermissionInterceptor permissionInterceptor) {
         return new ExtraServiceImpl()
                 .setActivity(activity)
                 .setWebView(webView)
