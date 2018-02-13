@@ -22,7 +22,7 @@ public class NotificationCancelReceiver extends BroadcastReceiver {
         if (action.equals("com.agentweb.cancelled")) {
             try {
                 String url = intent.getStringExtra("TAG");
-                CancelInformer.getInformer().cancelAction(url);
+                CancelDownloadInformer.getInformer().cancelAction(url);
             } catch (Throwable ignore) {
                 if (LogUtils.isDebug()) {
                     ignore.printStackTrace();

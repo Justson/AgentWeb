@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class Downloader extends AsyncTask<Void, Integer, Integer> implements AgentWebDownloader<DownloadTask>, CancelRecipient {
+public class Downloader extends AsyncTask<Void, Integer, Integer> implements AgentWebDownloader<DownloadTask>, CancelDownloadRecipient {
 
     /**
      * 下载参数
@@ -37,7 +37,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 已经下载的大小
      */
-    private long loaded = 0l;
+    private volatile long loaded = 0l;
     /**
      * 总大小
      */
@@ -69,7 +69,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 下载最大时长
      */
-    private long downloadTimeOut = 30000000l;
+    private long downloadTimeOut = Long.MAX_VALUE;
     /**
      * 连接超时
      */
@@ -100,12 +100,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     public static final int ERROR_USER_CANCEL = 0x404;
     public static final int SUCCESSFULL = 0x200;
 
-    public static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
+    private static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
 
     static {
 
         DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
-        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_STATUS, "Connection status code result, non-200 or non 206 .");
+        DOWNLOAD_MESSAGE.append(ERROR_NETWORK_STATUS, "Connection status code non-200 and non-206 .");
         DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
         DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
         DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
@@ -129,7 +129,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             mDownloadTask.getDownloadListener().onBindService(mDownloadTask.getUrl(), this);
         }
 
-        CancelInformer.getInformer().addRecipient(mDownloadTask.getUrl(), this);
+        CancelDownloadInformer.getInformer().addRecipient(mDownloadTask.getUrl(), this);
         buildNotify(new Intent(), mDownloadTask.getId(),
                 mDownloadTask.getContext().getString(R.string.agentweb_coming_soon_download));
     }
@@ -255,7 +255,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
         try {
             LogUtils.i(TAG, "onPostExecute:" + integer);
-            CancelInformer.getInformer().removeRecipient(mDownloadTask.getUrl());
+            CancelDownloadInformer.getInformer().removeRecipient(mDownloadTask.getUrl());
 
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask
@@ -295,8 +295,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                     }
                     return;
                 } catch (Throwable throwable) {
-                    if (LogUtils.isDebug())
+                    if (LogUtils.isDebug()) {
                         throwable.printStackTrace();
+                    }
                 }
             }
         } catch (Exception e) {
@@ -304,17 +305,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 e.printStackTrace();
             }
         } finally {
-
-//            if (!isShutdown.get()) {
-//                return;
-//            }
             if (mDownloadTask != null) {
                 mDownloadTask.destroy();
             }
-
         }
-
-
     }
 
     private boolean doCallback(Integer code) {
@@ -327,7 +321,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         return mDownloadListener.result(mDownloadTask.getFile().getAbsolutePath(),
                 mDownloadTask.getUrl(), code <= 200 ? null
                         : this.e == null
-                        ? new RuntimeException("download fail ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.e);
+                        ? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.e);
 
     }
 
@@ -457,7 +451,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     }
 
     @Override
-    public void receiveAction() {
+    public void cancelDownload() {
         cancel();
     }
 
