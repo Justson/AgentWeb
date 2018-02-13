@@ -79,7 +79,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
      */
     private AgentWebNotification mAgentWebNotification;
 
-    private static final int ERROR_LOAD = 406;
+    private static final int ERROR_LOAD = 0x406;
 
     private static final String TAG = Downloader.class.getSimpleName();
     /**
@@ -98,7 +98,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     public static final int ERROR_SHUTDOWN = 0x405;
     public static final int ERROR_TIME_OUT = 0x403;
     public static final int ERROR_USER_CANCEL = 0x404;
-    public static final int SUCCESSFULL = 0x200;
+    public static final int SUCCESSFUL = 0x200;
 
     private static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
 
@@ -110,7 +110,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
         DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
         DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
-        DOWNLOAD_MESSAGE.append(SUCCESSFULL, "Download successful . ");
+        DOWNLOAD_MESSAGE.append(ERROR_LOAD, "Unkown Error . ");
+        DOWNLOAD_MESSAGE.append(SUCCESSFUL, "Download successful . ");
     }
 
     Downloader() {
@@ -125,7 +126,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     protected void onPreExecute() {
         super.onPreExecute();
 
-        if (mDownloadTask.getDownloadListener() != null) {
+        if (null != mDownloadTask.getDownloadListener()) {
             mDownloadTask.getDownloadListener().onBindService(mDownloadTask.getUrl(), this);
         }
 
@@ -227,7 +228,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 return;
             }
             this.mLastTime = currentTime;
-            if (mAgentWebNotification != null) {
+            if (null != mAgentWebNotification) {
                 if (!mAgentWebNotification.hasDeleteContent()) {
                     mAgentWebNotification.setDelecte(buildCancelContent(mDownloadTask.getContext().getApplicationContext(), mDownloadTask.getId()));
                 }
@@ -267,8 +268,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             if (mDownloadTask.getDownloadListener() != null) {
                 mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
             }
-
-            boolean isCancelHandle = doCallback(integer);
+            boolean isCancelDispose = doCallback(integer);
             if (integer > 0x200) {
 
                 if (mAgentWebNotification != null)
@@ -279,7 +279,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 if (mAgentWebNotification != null)
                     mAgentWebNotification.cancel(mDownloadTask.getId());
 
-                if (isCancelHandle) {
+                if (isCancelDispose) {
                     return;
                 }
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
@@ -399,7 +399,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             if (isShutdown.get()) {
                 return ERROR_SHUTDOWN;
             }
-            return SUCCESSFULL;
+            return SUCCESSFUL;
         }
 
     }

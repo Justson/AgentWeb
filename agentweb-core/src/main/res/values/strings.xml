@@ -1,22 +1,20 @@
 <resources>
     <string name="app_name">AgentWeb</string>
-
-
     <string name="agentweb_download_task_has_been_exist">The task already exists, do not repeat click to download!</string>
-    <string name="agentweb_tips">Tips</string>
-    <string name="agentweb_honeycomblow">You are using mobile phone traffic, continue to download the file?</string>
+    <string name="agentweb_tips">Note</string>
+    <string name="agentweb_honeycomblow">Wi-Fi disconnected. Continue the download via mobile data network?</string>
     <string name="agentweb_download">Download</string>
     <string name="agentweb_cancel">Cancel</string>
     <string name="agentweb_download_fail">Download failed!</string>
-    <string name="agentweb_current_downloading_progress">Current progress:%s</string>
+    <string name="agentweb_current_downloading_progress">Downloading:%s</string>
     <string name="agentweb_trickter">You have a new notice</string>
     <string name="agentweb_file_download">Download</string>
-    <string name="agentweb_click_open">Click to open</string>
+    <string name="agentweb_click_open">Tap to continue</string>
     <string name="agentweb_coming_soon_download">Coming soon to download the file</string>
     <string name="agentweb_camera">Camera</string>
     <string name="agentweb_file_chooser">File</string>
     <string name="agentweb_loading">Loading ...</string>
-    <string name="agentweb_leave_app_and_go_other_page">Do you need to leave %s for other apps?</string>
+    <string name="agentweb_leave_app_and_go_other_page">leaving %s and opening another app?</string>
     <string name="agentweb_leave">Go away</string>
     <string name="agentweb_max_file_length_limit">The selected file can not be larger than %s MB</string>
 </resources>

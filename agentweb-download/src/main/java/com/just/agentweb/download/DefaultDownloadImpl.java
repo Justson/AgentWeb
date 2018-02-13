@@ -167,13 +167,13 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
                         this.userAgent,
                         this.contentDisposition,
                         this.mimetype,
-                        contentLength,
+                        this.contentLength,
                         this.mCloneExtraServiceImpl)) {
             return;
         }
         File mFile = getFile(contentDisposition, url);
         // File 创建文件失败
-        if (mFile == null) {
+        if (null == mFile) {
             LogUtils.i(TAG, "新建文件失败");
             return;
         }
@@ -187,7 +187,7 @@ public class DefaultDownloadImpl extends DownloadListenerAdapter implements andr
             Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
             try {
 //                mContext.getPackageManager().resolveActivity(mIntent)
-                if (mIntent != null) {
+                if (null != mIntent) {
                     if (!(mContext instanceof Activity))
                         mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     mContext.startActivity(mIntent);

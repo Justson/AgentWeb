@@ -35,7 +35,7 @@ public final class CancelDownloadInformer {
     }
 
     void removeRecipient(String url) {
-        if (null != null) {
+        if (null != url) {
             this.mRecipients.remove(url);
         }
     }
