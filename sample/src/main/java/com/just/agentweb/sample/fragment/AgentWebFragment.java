@@ -180,6 +180,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
         /**
          *
+         * 不需要暂停或者停止下载该方法可以不必实现
          * @param url
          * @param downloadingService  用户可以通过 DownloadingService#shutdownNow 终止下载
          */
@@ -190,6 +191,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             LogUtils.i(TAG, "onBindService:" + url + "  DownloadingService:" + downloadingService);
         }
 
+        /**
+         * 回调onUnbindService方法，让用户释放掉 DownloadingService。
+         * @param url
+         * @param downloadingService
+         */
         @Override
         public void onUnbindService(String url, DownloadingService downloadingService) {
             super.onUnbindService(url, downloadingService);
@@ -243,10 +249,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             }
 
             /**
-             * AgentWeb 4.0.0 内部删除了 Download 监听 ，以及相关API ，将 Download 部分完全抽离出来独立一个库，
+             * AgentWeb 4.0.0 内部删除了 DownloadListener 监听 ，以及相关API ，将 Download 部分完全抽离出来独立一个库，
              * 如果你需要使用 AgentWeb Download 部分 ， 请依赖上 compile 'com.just.agentweb:download:4.0.0 ，
              * 如果你需要监听下载结果，请自定义 AgentWebSetting ， New 出 DefaultDownloadImpl，传入DownloadListenerAdapter
-             * 实现进度或者结果监听，例如下面这个例子，如果你不需要监听进度，或者下载结果，下面 setDownloader 的例子可以不管.
+             * 实现进度或者结果监听，例如下面这个例子，如果你不需要监听进度，或者下载结果，下面 setDownloader 的例子可以忽略。
              * @param webView
              * @param downloadListener
              * @return WebListenerManager
@@ -564,7 +570,13 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         super.onDestroyView();
     }
 
-    //
+    /**
+     * MiddlewareWebClientBase 是 AgentWeb 3.0.0 提供一个强大的功能，
+     * 如果用户需要使用 AgentWeb 提供的功能， 不想重写 WebClientView方
+     * 法覆盖AgentWeb提供的功能，那么 MiddlewareWebClientBase 是一个
+     * 不错的选择 。
+     * @return
+     */
     protected MiddlewareWebClientBase getMiddlewareWebClient() {
         return this.mMiddleWareWebClient = new MiddlewareWebViewClient();
     }
