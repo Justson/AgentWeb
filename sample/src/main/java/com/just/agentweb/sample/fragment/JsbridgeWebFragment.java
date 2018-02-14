@@ -24,8 +24,9 @@ public class JsbridgeWebFragment extends AgentWebFragment {
     public static JsbridgeWebFragment getInstance(Bundle bundle){
 
         JsbridgeWebFragment mJsbridgeWebFragment =new JsbridgeWebFragment();
-        if(mJsbridgeWebFragment !=null)
+        if(mJsbridgeWebFragment !=null){
             mJsbridgeWebFragment.setArguments(bundle);
+        }
 
         return mJsbridgeWebFragment;
     }

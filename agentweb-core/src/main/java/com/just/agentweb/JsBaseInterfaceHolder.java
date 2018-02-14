@@ -22,10 +22,12 @@ public abstract class JsBaseInterfaceHolder implements JsInterfaceHolder {
     @Override
     public boolean checkObject(Object v) {
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1){
             return true;
-        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE)
+        }
+        if (AgentWebConfig.WEBVIEW_TYPE == AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE){
             return true;
+        }
         boolean tag = false;
         Class clazz = v.getClass();
 
@@ -43,8 +45,9 @@ public abstract class JsBaseInterfaceHolder implements JsInterfaceHolder {
                 }
 
             }
-            if (tag)
+            if (tag){
                 break;
+            }
         }
 
         return tag;

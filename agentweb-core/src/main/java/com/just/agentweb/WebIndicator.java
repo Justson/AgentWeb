@@ -145,7 +145,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     protected void dispatchDraw(Canvas canvas) {
         canvas.drawRect(0, 0, currentProgress / 100 * Float.valueOf(this.getWidth()), this.getHeight(), mPaint);
     }
-
+    @Override
     public void show() {
 
         if (getVisibility() == View.GONE) {
@@ -179,13 +179,14 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         if (getVisibility() == View.GONE) {
             setVisibility(View.VISIBLE);
         }
-        if (progress < 95f)
+        if (progress < 95f){
             return;
+        }
         if (TAG != FINISH) {
             startAnim(true);
         }
     }
-
+    @Override
     public void hide() {
         TAG = FINISH;
     }
@@ -293,8 +294,9 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     @Override
     public void reset() {
         currentProgress = 0;
-        if (mAnimator != null && mAnimator.isStarted())
+        if (mAnimator != null && mAnimator.isStarted()){
             mAnimator.cancel();
+        }
     }
 
     @Override

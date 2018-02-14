@@ -54,9 +54,9 @@ public class DefaultDesignUIController extends DefaultUIController {
                     -1,
                     null);
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            if (LogUtils.isDebug())
-                LogUtils.i(TAG, throwable.getMessage());
+            if (LogUtils.isDebug()){
+                throwable.printStackTrace();
+            }
         }
     }
 

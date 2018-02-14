@@ -218,9 +218,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
             return true;
         }
 
-        if (tag > 0)
+        if (tag > 0) {
             return false;
-
+        }
         return super.shouldOverrideUrlLoading(view, request);
     }
 
@@ -305,8 +305,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
             return true;
         }
 
-        if (tag > 0)
+        if (tag > 0) {
             return false;
+        }
 
 
         return super.shouldOverrideUrlLoading(view, url);
@@ -335,15 +336,17 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         try {
 
             Intent intent = null;
-            if (TextUtils.isEmpty(intentUrl) || !intentUrl.startsWith(INTENT_SCHEME))
+            if (TextUtils.isEmpty(intentUrl) || !intentUrl.startsWith(INTENT_SCHEME)) {
                 return;
+            }
 
             if (openOtherPage(intentUrl)) {
                 return;
             }
         } catch (Throwable e) {
-            if (LogUtils.isDebug())
+            if (LogUtils.isDebug()) {
                 e.printStackTrace();
+            }
         }
 
 
@@ -353,10 +356,11 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         try {
             Intent intent;
             Activity mActivity = null;
-            if ((mActivity = mWeakReference.get()) == null)
+            if ((mActivity = mWeakReference.get()) == null) {
                 return true;
+            }
             PackageManager packageManager = mActivity.getPackageManager();
-            intent = new Intent().parseUri(intentUrl, Intent.URI_INTENT_SCHEME);
+            intent = Intent.parseUri(intentUrl, Intent.URI_INTENT_SCHEME);
             ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
             LogUtils.i(TAG, "resolveInfo:" + info + "   package:" + intent.getPackage());
             if (info != null) {  //跳到该应用
@@ -377,8 +381,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         try {
 
             Activity mActivity = null;
-            if ((mActivity = mWeakReference.get()) == null)
+            if ((mActivity = mWeakReference.get()) == null) {
                 return false;
+            }
             /**
              * 推荐采用的新的二合一接口(payInterceptorWithUrl),只需调用一次
              */
@@ -420,8 +425,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
                 || url.startsWith(WebView.SCHEME_GEO)) {
             try {
                 Activity mActivity = null;
-                if ((mActivity = mWeakReference.get()) == null)
+                if ((mActivity = mWeakReference.get()) == null) {
                     return false;
+                }
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(url));
                 mActivity.startActivity(intent);
@@ -534,9 +540,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
         try {
 
-            if (mWeakReference.get() == null)
+            if (mWeakReference.get() == null) {
                 return;
-
+            }
             LogUtils.i(TAG, "start wechat pay Activity");
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);

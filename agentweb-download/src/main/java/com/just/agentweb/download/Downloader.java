@@ -37,11 +37,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 已经下载的大小
      */
-    private volatile long loaded = 0l;
+    private volatile long loaded = 0L;
     /**
      * 总大小
      */
-    private long totals = -1l;
+    private long totals = -1L;
     /**
      *
      */
@@ -49,15 +49,15 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
     /**
      * 耗时
      */
-    private long mUsedTime = 0l;
+    private long mUsedTime = 0L;
     /**
      * 上一次更新通知的时间
      */
-    private long mLastTime = 0l;
+    private long mLastTime = 0L;
     /**
      * 下载开始时间
      */
-    private volatile long mBeginTime = 0l;
+    private volatile long mBeginTime = 0L;
     /**
      * 当前下载平均速度
      */

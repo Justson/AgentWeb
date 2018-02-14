@@ -87,8 +87,6 @@ public class BaseWebActivity extends AppCompatActivity {
         Log.i("Info", "init used time:" + (n - p));
 
 
-
-
     }
 
     private WebViewClient mWebViewClient = new WebViewClient() {
@@ -113,8 +111,9 @@ public class BaseWebActivity extends AppCompatActivity {
         @Override
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
-            if (mTitleTextView != null)
+            if (mTitleTextView != null) {
                 mTitleTextView.setText(title);
+            }
         }
     };
 

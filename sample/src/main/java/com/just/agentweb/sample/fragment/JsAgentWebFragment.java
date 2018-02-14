@@ -26,8 +26,9 @@ public class JsAgentWebFragment extends AgentWebFragment {
     public static final JsAgentWebFragment getInstance(Bundle bundle) {
 
         JsAgentWebFragment mJsAgentWebFragment = new JsAgentWebFragment();
-        if (bundle != null)
+        if (bundle != null){
             mJsAgentWebFragment.setArguments(bundle);
+        }
 
         return mJsAgentWebFragment;
 

@@ -240,8 +240,9 @@ public final class AgentWeb {
 
 
     public static AgentBuilder with(@NonNull Activity activity) {
-        if (activity == null)
+        if (activity == null){
             throw new NullPointerException("activity can not be null .");
+        }
         return new AgentBuilder(activity);
     }
 
@@ -249,8 +250,9 @@ public final class AgentWeb {
 
 
         Activity mActivity = null;
-        if ((mActivity = fragment.getActivity()) == null)
+        if ((mActivity = fragment.getActivity()) == null){
             throw new NullPointerException("activity can not be null .");
+        }
         return new AgentBuilder(mActivity, fragment);
     }
 
@@ -366,8 +368,9 @@ public final class AgentWeb {
 
     private EventInterceptor getInterceptor() {
 
-        if (this.mEventInterceptor != null)
+        if (this.mEventInterceptor != null){
             return this.mEventInterceptor;
+        }
 
         if (mIVideo instanceof VideoImpl) {
             return this.mEventInterceptor = (EventInterceptor) this.mIVideo;
@@ -591,21 +594,24 @@ public final class AgentWeb {
         }
 
         private PreAgentWeb buildAgentWeb() {
-            if (tag == AgentWeb.FRAGMENT_TAG && this.mViewGroup == null)
+            if (tag == AgentWeb.FRAGMENT_TAG && this.mViewGroup == null){
                 throw new NullPointerException("ViewGroup is null,please check you params");
+            }
             return new PreAgentWeb(HookManager.hookAgentWeb(new AgentWeb(this), this));
         }
 
         private void addJavaObject(String key, Object o) {
-            if (mJavaObject == null)
+            if (mJavaObject == null){
                 mJavaObject = new ArrayMap<>();
+            }
             mJavaObject.put(key, o);
         }
 
         private void addHeader(String k, String v) {
 
-            if (mHttpHeaders == null)
+            if (mHttpHeaders == null){
                 mHttpHeaders = HttpHeaders.create();
+            }
             mHttpHeaders.additionalHttpHeader(k, v);
 
         }

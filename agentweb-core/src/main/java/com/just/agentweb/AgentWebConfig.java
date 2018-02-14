@@ -106,8 +106,9 @@ public class AgentWebConfig {
 
     public static void removeSessionCookies(ValueCallback<Boolean> callback) {
 
-        if (callback == null)
+        if (callback == null){
             callback = getDefaultIgnoreCallback();
+        }
         if (CookieManager.getInstance() == null) {
             callback.onReceiveValue(new Boolean(false));
             return;
@@ -143,8 +144,9 @@ public class AgentWebConfig {
     //Android  4.4  NoSuchMethodError: android.webkit.CookieManager.removeAllCookies
     public static void removeAllCookies(@Nullable ValueCallback<Boolean> callback) {
 
-        if (callback == null)
+        if (callback == null){
             callback = getDefaultIgnoreCallback();
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().removeAllCookie();
             toSyncCookies();

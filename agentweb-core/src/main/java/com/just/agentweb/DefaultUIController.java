@@ -86,8 +86,9 @@ public class DefaultUIController extends AgentWebUIController {
 
     private void onForceDownloadAlertInternal(final Handler.Callback callback) {
         Activity mActivity;
-        if ((mActivity = this.mActivity) == null || mActivity.isFinishing())
+        if ((mActivity = this.mActivity) == null || mActivity.isFinishing()){
             return;
+        }
 
 
         AlertDialog mAlertDialog = null;
@@ -97,18 +98,21 @@ public class DefaultUIController extends AgentWebUIController {
                 .setNegativeButton(mResources.getString(R.string.agentweb_download), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (dialog != null)
+                        if (dialog != null){
                             dialog.dismiss();
-                        if (callback != null)
+                        }
+                        if (callback != null){
                             callback.handleMessage(Message.obtain());
+                        }
                     }
                 })//
                 .setPositiveButton(mResources.getString(R.string.agentweb_cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        if (dialog != null)
+                        if (dialog != null){
                             dialog.dismiss();
+                        }
                     }
                 }).create();
 

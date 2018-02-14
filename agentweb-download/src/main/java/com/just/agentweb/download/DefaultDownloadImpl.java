@@ -471,7 +471,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             this.downloadingListener = downloadingListener;
             return this;
         }
-
+        @Override
         public boolean isForceDownload() {
             return isForceDownload;
         }

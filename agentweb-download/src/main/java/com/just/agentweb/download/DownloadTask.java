@@ -66,7 +66,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     public DefaultDownloadImpl.ExtraServiceImpl getExtraServiceImpl() {
         return mExtraServiceImpl.get();
     }
-
+    @Override
     public boolean isParallelDownload() {
         return mCloneExtraService.isParallelDownload();
     }
@@ -79,6 +79,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     /**
      * 下载的地址
      */
+    @Override
     public String getUrl() {
         return mCloneExtraService.getUrl();
     }
@@ -94,6 +95,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     /**
      * 如否需要需要指示器
      */
+    @Override
     public boolean isEnableIndicator() {
         return mCloneExtraService.isEnableIndicator();
     }
@@ -138,7 +140,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     public DownloadListenerAdapter getDownloadListener() {
         return mDownloadWR.get();
     }
-
+    @Override
     public int getBlockMaxTime() {
         return this.mCloneExtraService.getBlockMaxTime();
     }
