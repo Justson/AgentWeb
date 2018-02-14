@@ -258,7 +258,6 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 
 * #### AgentWeb 完整用法
 ```java
-mAgentWeb = AgentWeb.with(this)//
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
                 .setIndicatorColorWithHeight(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
