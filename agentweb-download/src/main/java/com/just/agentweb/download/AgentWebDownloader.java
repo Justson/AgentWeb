@@ -51,8 +51,9 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
             return blockMaxTime;
         }
 
-        public void setBlockMaxTime(int blockMaxTime) {
+        public Extra setBlockMaxTime(int blockMaxTime) {
             this.blockMaxTime = blockMaxTime;
+            return this;
         }
 
         public String getUrl() {

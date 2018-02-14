@@ -6,7 +6,7 @@ package com.just.agentweb.download;
 
 public interface DownloadingService {
     /**
-     * 当前正在下载的任务是否已经终止
+     * 当前任务是否已经终止
      * @return
      */
     boolean isShutdown();

@@ -110,7 +110,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
         DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
         DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
-        DOWNLOAD_MESSAGE.append(ERROR_LOAD, "Unkown Error . ");
+        DOWNLOAD_MESSAGE.append(ERROR_LOAD, "IO Error . ");
         DOWNLOAD_MESSAGE.append(SUCCESSFUL, "Download successful . ");
     }
 
@@ -200,7 +200,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
     private HttpURLConnection createUrlConnection(String url) throws IOException {
 
-
         HttpURLConnection mHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
         mHttpURLConnection.setRequestProperty("Accept", "application/*");
         mHttpURLConnection.setConnectTimeout(connectTimeOut);
@@ -282,26 +281,20 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                     return;
                 }
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
-                try {
-                    if (mIntent != null) {
-                        if (!(mDownloadTask.getContext() instanceof Activity))
-                            mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        PendingIntent rightPendIntent = PendingIntent
-                                .getActivity(mDownloadTask.getContext(),
-                                        mDownloadTask.getId() << 4, mIntent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT);
-                        mAgentWebNotification.setProgressFinish(mDownloadTask.getContext().getString(R.string.agentweb_click_open), rightPendIntent);
-                    }
-                    return;
-                } catch (Throwable throwable) {
-                    if (LogUtils.isDebug()) {
-                        throwable.printStackTrace();
-                    }
+                if (mIntent != null) {
+                    if (!(mDownloadTask.getContext() instanceof Activity))
+                        mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    PendingIntent rightPendIntent = PendingIntent
+                            .getActivity(mDownloadTask.getContext(),
+                                    mDownloadTask.getId() << 4, mIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                    mAgentWebNotification.setProgressFinish(mDownloadTask.getContext().getString(R.string.agentweb_click_open), rightPendIntent);
                 }
+                return;
             }
-        } catch (Exception e) {
+        } catch (Throwable throwable) {
             if (LogUtils.isDebug()) {
-                e.printStackTrace();
+                throwable.printStackTrace();
             }
         } finally {
             if (mDownloadTask != null) {
@@ -372,6 +365,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             } else {
                 LogUtils.i(TAG, "seek -- >" + false + "  , length : 0");
                 out.seek(0l);
+                tmp = 0l;
             }
             int bytes = 0;
 

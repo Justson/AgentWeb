@@ -173,6 +173,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             extra.setOpenBreakPointDownload(true)
                     .setIcon(R.drawable.ic_file_download_black_24dp)
                     .setConnectTimeOut(6000)
+                    .setBlockMaxTime(2000)
                     .setDownloadTimeOut(60l * 5l * 1000l)
                     .setForceDownload(false);
             return false;
@@ -262,10 +263,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 return super.setDownloader(webView,
                         DefaultDownloadImpl
                                 .create((Activity) webView.getContext(),
-                                webView,
-                                mDownloadListenerAdapter,
-                                mDownloadListenerAdapter,
-                                this.mAgentWeb.getPermissionInterceptor()));
+                                        webView,
+                                        mDownloadListenerAdapter,
+                                        mDownloadListenerAdapter,
+                                        this.mAgentWeb.getPermissionInterceptor()));
             }
         };
     }
@@ -391,7 +392,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-//        mAgentWeb.uploadFileResult(requestCode, resultCode, data); //2.0.0开始 废弃该api ，没有api代替 ,使用 ActionActivity 绕过该方法 ,降低使用门槛
+        /**
+         * 2.0.0开始 废弃该api ，没有api代替 ,使用 ActionActivity 绕过该方法 ,降低使用门槛,4.0.0 删除该API。
+         */
+//        mAgentWeb.uploadFileResult(requestCode, resultCode, data);
     }
 
     protected void initView(View view) {
@@ -575,6 +579,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
      * 如果用户需要使用 AgentWeb 提供的功能， 不想重写 WebClientView方
      * 法覆盖AgentWeb提供的功能，那么 MiddlewareWebClientBase 是一个
      * 不错的选择 。
+     *
      * @return
      */
     protected MiddlewareWebClientBase getMiddlewareWebClient() {
