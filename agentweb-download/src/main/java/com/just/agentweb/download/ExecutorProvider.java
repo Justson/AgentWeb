@@ -32,6 +32,7 @@ public class ExecutorProvider implements Provider<Executor> {
         private SecurityManager securityManager = System.getSecurityManager();
         private ThreadGroup group = securityManager != null ? securityManager.getThreadGroup() : Thread.currentThread().getThreadGroup();
 
+        @Override
         public Thread newThread(Runnable r) {
             Thread mThread = new Thread(group, r, "pool-agentweb-thread-" + mCount.getAndIncrement());
             if (mThread.isDaemon()) {

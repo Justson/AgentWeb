@@ -250,7 +250,7 @@ public class FileChooser {
                     .get()
                     .showChooser(this.mWebView, mWebView.getUrl(),
                             new String[]{mActivity.getString(R.string.agentweb_camera),
-                            mActivity.getString(R.string.agentweb_file_chooser)}, getCallBack());
+                                    mActivity.getString(R.string.agentweb_file_chooser)}, getCallBack());
             LogUtils.i(TAG, "open");
         }
 
@@ -283,8 +283,9 @@ public class FileChooser {
 
     private void onCameraAction() {
 
-        if (mActivity == null)
+        if (mActivity == null) {
             return;
+        }
 
         if (mPermissionInterceptor != null) {
             if (mPermissionInterceptor.intercept(FileChooser.this.mWebView.getUrl(), AgentWebPermissions.CAMERA, "camera")) {
@@ -349,9 +350,9 @@ public class FileChooser {
                 LogUtils.i(TAG, "permission denied");
             }
         } else if (from_intention == FROM_INTENTION_CODE >> 3) {
-            if (grant)
+            if (grant) {
                 openCameraAction();
-            else {
+            } else {
                 cancel();
                 LogUtils.i(TAG, "permission denied");
             }
@@ -422,10 +423,12 @@ public class FileChooser {
             mJsChannelCallback.call(null);
             return;
         }
-        if (mUriValueCallback != null)
+        if (mUriValueCallback != null) {
             mUriValueCallback.onReceiveValue(null);
-        if (mUriValueCallbacks != null)
+        }
+        if (mUriValueCallbacks != null) {
             mUriValueCallbacks.onReceiveValue(null);
+        }
         return;
     }
 
@@ -434,14 +437,16 @@ public class FileChooser {
 
 
         if (data == null) {
-            if (mUriValueCallback != null)
+            if (mUriValueCallback != null) {
                 mUriValueCallback.onReceiveValue(Uri.EMPTY);
+            }
             return;
         }
         Uri mUri = data.getData();
         LogUtils.i(TAG, "handleBelowLollipop  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
-        if (mUriValueCallback != null)
+        if (mUriValueCallback != null) {
             mUriValueCallback.onReceiveValue(mUri);
+        }
 
     }
 
@@ -628,8 +633,9 @@ public class FileChooser {
     //必须执行在子线程, 会阻塞直到文件转换完成;
     public static Queue<FileParcel> convertFile(String[] paths) throws Exception {
 
-        if (paths == null || paths.length == 0)
+        if (paths == null || paths.length == 0) {
             return null;
+        }
         int tmp = Runtime.getRuntime().availableProcessors() + 1;
         int result = paths.length > tmp ? tmp : paths.length;
         Executor mExecutor = Executors.newFixedThreadPool(result);
@@ -650,9 +656,9 @@ public class FileChooser {
         }
         mCountDownLatch.await();
 
-        if (!((ThreadPoolExecutor) mExecutor).isShutdown())
+        if (!((ThreadPoolExecutor) mExecutor).isShutdown()) {
             ((ThreadPoolExecutor) mExecutor).shutdownNow();
-
+        }
         LogUtils.i(TAG, "convertFile isShutDown:" + (((ThreadPoolExecutor) mExecutor).isShutdown()));
         return mQueue;
     }
@@ -682,9 +688,9 @@ public class FileChooser {
                 if (mFile.exists()) {
 
                     is = new FileInputStream(mFile);
-                    if (is == null)
+                    if (is == null) {
                         return;
-
+                    }
                     os = new ByteArrayOutputStream();
                     byte[] b = new byte[1024];
                     int len;
@@ -712,28 +718,25 @@ public class FileChooser {
 
     public static String convertFileParcelObjectsToJson(Collection<FileParcel> collection) {
 
-        if (collection == null || collection.size() == 0)
+        if (collection == null || collection.size() == 0) {
             return null;
-
-
+        }
         Iterator<FileParcel> mFileParcels = collection.iterator();
         JSONArray mJSONArray = new JSONArray();
         try {
             while (mFileParcels.hasNext()) {
                 JSONObject jo = new JSONObject();
                 FileParcel mFileParcel = mFileParcels.next();
-
                 jo.put("contentPath", mFileParcel.getContentPath());
                 jo.put("fileBase64", mFileParcel.getFileBase64());
                 jo.put("id", mFileParcel.getId());
                 mJSONArray.put(jo);
             }
-
-        } catch (Exception e) {
-
+        } catch (Throwable throwable) {
+            if (LogUtils.isDebug()) {
+                throwable.printStackTrace();
+            }
         }
-
-//        Log.i("Info","json:"+mJSONArray);
         return mJSONArray + "";
     }
 
@@ -755,8 +758,9 @@ public class FileChooser {
                 Queue<FileParcel> mQueue = convertFile(paths);
                 String result = convertFileParcelObjectsToJson(mQueue);
 //                LogUtils.i(TAG, "result:" + result);
-                if (mJsChannelCallback != null && mJsChannelCallback.get() != null)
+                if (mJsChannelCallback != null && mJsChannelCallback.get() != null){
                     mJsChannelCallback.get().call(result);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();

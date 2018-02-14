@@ -30,6 +30,7 @@ public class WrapperWebViewClient extends WebViewClient {
         this.mWebViewClient=webViewClient;
     }
     @Deprecated
+    @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
 
@@ -40,7 +41,7 @@ public class WrapperWebViewClient extends WebViewClient {
         return super.shouldOverrideUrlLoading(view,  url) ;
     }
 
-
+    @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
 //        LogUtils.i(TAG,"this:"+this+"   wrapper:"+this.mWebViewClient);
@@ -50,7 +51,7 @@ public class WrapperWebViewClient extends WebViewClient {
         return super.shouldOverrideUrlLoading(view, request);
     }
 
-
+    @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
         if(mWebViewClient!=null){
@@ -60,7 +61,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.onPageStarted(view,url,favicon);
     }
 
-
+    @Override
     public void onPageFinished(WebView view, String url) {
         if(mWebViewClient!=null){
             mWebViewClient.onPageFinished(view,url);
@@ -69,7 +70,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.onPageFinished(view,url);
     }
 
-
+    @Override
     public void onLoadResource(WebView view, String url) {
         if(mWebViewClient!=null){
             mWebViewClient.onLoadResource(view,url);
@@ -78,7 +79,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.onLoadResource(view,url);
     }
 
-
+    @Override
     public void onPageCommitVisible(WebView view, String url) {
         if(mWebViewClient!=null){
             mWebViewClient.onPageCommitVisible(view,url);return;
@@ -96,7 +97,7 @@ public class WrapperWebViewClient extends WebViewClient {
         return  super.shouldInterceptRequest(view,url);
     }
 
-
+    @Override
     public WebResourceResponse shouldInterceptRequest(WebView view,
                                                       WebResourceRequest request) {
 
@@ -106,7 +107,7 @@ public class WrapperWebViewClient extends WebViewClient {
         return super.shouldInterceptRequest(view, request);
     }
 
-
+    @Override
     @Deprecated
     public void onTooManyRedirects(WebView view, Message cancelMsg,
                                    Message continueMsg) {
@@ -117,7 +118,7 @@ public class WrapperWebViewClient extends WebViewClient {
        super.onTooManyRedirects(view,cancelMsg,continueMsg);
     }
 
-
+    @Override
     @Deprecated
     public void onReceivedError(WebView view, int errorCode,
                                 String description, String failingUrl) {
@@ -129,7 +130,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.onReceivedError(view,errorCode,description,failingUrl);
     }
 
-
+    @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
 
         if(mWebViewClient!=null){
@@ -139,7 +140,7 @@ public class WrapperWebViewClient extends WebViewClient {
 
         super.onReceivedError(view,request,error);
     }
-
+    @Override
     public void onReceivedHttpError(
             WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
 
@@ -151,7 +152,7 @@ public class WrapperWebViewClient extends WebViewClient {
 
     }
 
-
+    @Override
     public void onFormResubmission(WebView view, Message dontResend,
                                    Message resend) {
 
@@ -163,7 +164,7 @@ public class WrapperWebViewClient extends WebViewClient {
     }
 
 
-
+    @Override
     public void doUpdateVisitedHistory(WebView view, String url,
                                        boolean isReload) {
 
@@ -174,7 +175,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.doUpdateVisitedHistory(view,url,isReload);
     }
 
-
+    @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler,
                                    SslError error) {
         if(mWebViewClient!=null){
@@ -184,7 +185,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.onReceivedSslError(view,handler,error);
     }
 
-
+    @Override
     public void onReceivedClientCertRequest(WebView view, ClientCertRequest request) {
         if(mWebViewClient!=null){
             mWebViewClient.onReceivedClientCertRequest(view,request);
@@ -193,7 +194,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.onReceivedClientCertRequest(view,request);
     }
 
-
+    @Override
     public void onReceivedHttpAuthRequest(WebView view,
                                           HttpAuthHandler handler, String host, String realm) {
         if(mWebViewClient!=null){
@@ -203,7 +204,7 @@ public class WrapperWebViewClient extends WebViewClient {
         super.onReceivedHttpAuthRequest(view,handler,host,realm);
     }
 
-
+    @Override
     public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
         if(mWebViewClient!=null){
            return mWebViewClient.shouldOverrideKeyEvent(view,event);
@@ -213,7 +214,7 @@ public class WrapperWebViewClient extends WebViewClient {
         return super.shouldOverrideKeyEvent(view,event);
     }
 
-
+    @Override
     public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
 
         if(mWebViewClient!=null){

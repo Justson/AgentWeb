@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTitleTextView;
 
 
-    public static final String[] datas = new String[]{"Activity 使用 AgentWeb", "Fragment 使用 AgentWeb ", "文件下载", "input标签文件上传", "Js 通信文件上传,兼用Android 4.4Kitkat", "Js 通信","Video 视频全屏播放", "自定义进度条", "自定义设置","电话 ， 信息 ， 邮件","自定义 WebView","下拉回弹效果","Jsbridge 例子","继承 BaseAgentWebActivity","继承 BaseAgentWebFragment","SmartRefresh 下拉刷新","地图","VasSonic 首屏秒开"};
+    public static final String[] datas = new String[]{"Activity 使用 AgentWeb", "Fragment 使用 AgentWeb ", "文件下载", "input标签文件上传", "Js 通信文件上传,兼用Android 4.4Kitkat", "Js 通信", "Video 视频全屏播放", "自定义进度条", "自定义设置", "电话 ， 信息 ， 邮件", "自定义 WebView", "下拉回弹效果", "Jsbridge 例子", "继承 BaseAgentWebActivity", "继承 BaseAgentWebFragment", "SmartRefresh 下拉刷新", "地图", "VasSonic 首屏秒开"};
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -49,9 +49,10 @@ public class MainActivity extends AppCompatActivity {
         mTitleTextView = (TextView) this.findViewById(R.id.toolbar_title);
         mTitleTextView.setText("AgentWeb 使用指南");
         this.setSupportActionBar(mToolbar);
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
             // Enable the Up button
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,11 +72,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-        if(AgentWebConfig.DEBUG){
-            Log.i("Info","Debug 模式");
-        }else{
-            Log.i("Info","release 模式");
+        if (AgentWebConfig.DEBUG) {
+            Log.i("Info", "Debug 模式");
+        } else {
+            Log.i("Info", "release 模式");
         }
 
     }
@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
 
         switch (position) {
 
-            /*Activity agentWeb*/
-            case 0://项目中请使用常量替代
+            /* Activity agentWeb */
+            case 0:// 项目中请使用常量替代
 
                 startActivity(new Intent(this, WebActivity.class));
                 break;
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 13));
                 break;
             case 17:
-                startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 14).putExtra(PARAM_CLICK_TIME,System.currentTimeMillis()));
+                startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 14).putExtra(PARAM_CLICK_TIME, System.currentTimeMillis()));
 
         }
 

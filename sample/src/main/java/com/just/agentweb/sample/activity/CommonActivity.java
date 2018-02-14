@@ -138,7 +138,7 @@ public class CommonActivity extends AppCompatActivity {
                 /*首屏秒开*/
             case 14:
                 ft.add(R.id.container_framelayout, mAgentWebFragment = VasSonicFragment.create(mBundle = new Bundle()), AgentWebFragment.class.getName());
-                mBundle.putLong(PARAM_CLICK_TIME,getIntent().getLongExtra(PARAM_CLICK_TIME,-1l));
+                mBundle.putLong(PARAM_CLICK_TIME,getIntent().getLongExtra(PARAM_CLICK_TIME,-1L));
                 mBundle.putString(AgentWebFragment.URL_KEY, "http://mc.vip.qq.com/demo/indexv3");
                 break;
 

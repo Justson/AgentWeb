@@ -18,8 +18,9 @@ public class UrlLoaderImpl implements IUrlLoader {
 
     UrlLoaderImpl(WebView webView, HttpHeaders httpHeaders) {
         this.mWebView = webView;
-        if (this.mWebView == null)
-            new NullPointerException("webview is null");
+        if (this.mWebView == null){
+            new NullPointerException("webview cannot be null .");
+        }
 
         this.mHttpHeaders = httpHeaders;
         mHandler = new Handler(Looper.getMainLooper());

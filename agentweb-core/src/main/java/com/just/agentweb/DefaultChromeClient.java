@@ -115,8 +115,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
 
-        if (mIndicatorController != null)
+        if (mIndicatorController != null){
             mIndicatorController.progress(view, newProgress);
+        }
 
     }
 
@@ -262,15 +263,17 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
 
     private void toDismissDialog(Dialog dialog) {
-        if (dialog != null)
+        if (dialog != null){
             dialog.dismiss();
+        }
 
     }
 
 
     private void toCancelJsresult(JsResult result) {
-        if (result != null)
+        if (result != null){
             result.cancel();
+        }
     }
 
 
@@ -335,6 +338,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     }
 
     // Android  >= 4.1
+    @Override
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
         LogUtils.i(TAG, "openFileChooser>=4.1");
@@ -346,6 +350,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     }
 
     //  Android < 3.0
+    @Override
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "openFileChooser", ANDROID_WEBCHROMECLIENT_PATH + ".openFileChooser", ValueCallback.class)) {
             super.openFileChooser(valueCallback);
@@ -356,6 +361,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     }
 
     //  Android  >= 3.0
+    @Override
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         Log.i(TAG, "openFileChooser>3.0");
 
@@ -405,8 +411,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         }
 
 
-        if (mIVideo != null)
+        if (mIVideo != null){
             mIVideo.onShowCustomView(view, callback);
+        }
 
 
     }
@@ -419,8 +426,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             return;
         }
 
-        if (mIVideo != null)
+        if (mIVideo != null){
             mIVideo.onHideCustomView();
+        }
 
     }
 

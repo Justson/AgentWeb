@@ -174,7 +174,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                     .setIcon(R.drawable.ic_file_download_black_24dp)
                     .setConnectTimeOut(6000)
                     .setBlockMaxTime(2000)
-                    .setDownloadTimeOut(60l * 5l * 1000l)
+                    .setDownloadTimeOut(60L * 5L * 1000L)
                     .setForceDownload(false);
             return false;
         }

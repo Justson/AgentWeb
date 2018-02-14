@@ -81,8 +81,9 @@ public final class ActionActivity extends Activity {
 
     private void fetchFile(Action action) {
 
-        if (mChooserListener == null)
+        if (mChooserListener == null) {
             finish();
+        }
 
         realOpenFileChooser();
     }
@@ -145,7 +146,9 @@ public final class ActionActivity extends Activity {
             boolean rationale = false;
             for (String permission : permissions) {
                 rationale = shouldShowRequestPermissionRationale(permission);
-                if (rationale) break;
+                if (rationale) {
+                    break;
+                }
             }
             mRationaleListener.onRationaleResult(rationale, new Bundle());
             mRationaleListener = null;
