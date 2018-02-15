@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DownloadTask extends AgentWebDownloader.Extra implements Serializable {
 
 
-    private int id;
+    private int mId;
 
     /**
      * Context
@@ -33,7 +33,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     /**
      * 表示当前任务是否被销毁了。
      */
-    private AtomicBoolean isDestroy = new AtomicBoolean(false);
+    private AtomicBoolean mIsDestroyed = new AtomicBoolean(false);
 
     private WeakReference<DefaultDownloadImpl.ExtraServiceImpl> mExtraServiceImpl = null;
 
@@ -47,7 +47,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
                         DefaultDownloadImpl.ExtraServiceImpl extraServiceImpl) {
         super();
 
-        this.id = id;
+        this.mId = id;
         this.mContext = context;
         this.mFile = file;
         this.mDownloadWR = new WeakReference<DownloadListenerAdapter>(downloadListeners);
@@ -72,7 +72,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     }
 
     public int getId() {
-        return id;
+        return this.mId;
     }
 
 
@@ -156,13 +156,13 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     }
 
     public boolean isDestroy() {
-        return null == this.isDestroy || this.isDestroy.get();
+        return null == this.mIsDestroyed || this.mIsDestroyed.get();
     }
 
 
     public void destroy() {
-        this.isDestroy.set(true);
-        this.id = -1;
+        this.mIsDestroyed.set(true);
+        this.mId = -1;
         this.url = null;
         this.mContext = null;
         this.mFile = null;
@@ -172,7 +172,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
             this.mExtraServiceImpl.clear();
         }
         this.mExtraServiceImpl = null;
-        this.isDestroy = null;
+        this.mIsDestroyed = null;
         this.mCloneExtraService = null;
     }
 }

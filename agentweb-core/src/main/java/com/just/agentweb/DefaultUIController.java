@@ -20,13 +20,13 @@ import android.widget.EditText;
 public class DefaultUIController extends AgentWebUIController {
 
     private AlertDialog mAlertDialog;
-    protected AlertDialog confirmDialog;
-    private JsPromptResult pJsResult = null;
+    protected AlertDialog mConfirmDialog;
+    private JsPromptResult mPJsResult = null;
     private JsResult cJsResult = null;
-    private AlertDialog promptDialog = null;
+    private AlertDialog mPromptDialog = null;
     private Activity mActivity;
     private WebParentLayout mWebParentLayout;
-    private AlertDialog askOpenOtherAppDialog = null;
+    private AlertDialog mAskOpenOtherAppDialog = null;
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -40,8 +40,8 @@ public class DefaultUIController extends AgentWebUIController {
 
 
         LogUtils.i(TAG, "onAskOpenPage");
-        if (askOpenOtherAppDialog == null) {
-            askOpenOtherAppDialog = new AlertDialog
+        if (mAskOpenOtherAppDialog == null) {
+            mAskOpenOtherAppDialog = new AlertDialog
                     .Builder(mActivity)//
                     .setMessage(mResources.getString(R.string.agentweb_leave_app_and_go_other_page,
                             AgentWebUtils.getApplicationName(mActivity)))//
@@ -64,7 +64,7 @@ public class DefaultUIController extends AgentWebUIController {
                     })
                     .create();
         }
-        askOpenOtherAppDialog.show();
+        mAskOpenOtherAppDialog.show();
     }
 
     @Override
@@ -153,20 +153,20 @@ public class DefaultUIController extends AgentWebUIController {
             return;
         }
 
-        if (confirmDialog == null) {
-            confirmDialog = new AlertDialog.Builder(mActivity)//
+        if (mConfirmDialog == null) {
+            mConfirmDialog = new AlertDialog.Builder(mActivity)//
                     .setMessage(message)//
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(confirmDialog);
+                            toDismissDialog(mConfirmDialog);
                             toCancelJsresult(cJsResult);
                         }
                     })//
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(confirmDialog);
+                            toDismissDialog(mConfirmDialog);
                             if (cJsResult != null) {
                                 cJsResult.confirm();
                             }
@@ -183,9 +183,9 @@ public class DefaultUIController extends AgentWebUIController {
                     .create();
 
         }
-        confirmDialog.setMessage(message);
+        mConfirmDialog.setMessage(message);
         this.cJsResult = jsResult;
-        confirmDialog.show();
+        mConfirmDialog.show();
     }
 
 
@@ -195,27 +195,27 @@ public class DefaultUIController extends AgentWebUIController {
             jsPromptResult.cancel();
             return;
         }
-        if (promptDialog == null) {
+        if (mPromptDialog == null) {
 
             final EditText et = new EditText(mActivity);
             et.setText(defaultValue);
-            promptDialog = new AlertDialog.Builder(mActivity)//
+            mPromptDialog = new AlertDialog.Builder(mActivity)//
                     .setView(et)//
                     .setTitle(message)
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(promptDialog);
-                            toCancelJsresult(pJsResult);
+                            toDismissDialog(mPromptDialog);
+                            toCancelJsresult(mPJsResult);
                         }
                     })//
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            toDismissDialog(promptDialog);
+                            toDismissDialog(mPromptDialog);
 
-                            if (pJsResult != null){
-                                pJsResult.confirm(et.getText().toString());
+                            if (mPJsResult != null){
+                                mPJsResult.confirm(et.getText().toString());
                             }
 
                         }
@@ -224,13 +224,13 @@ public class DefaultUIController extends AgentWebUIController {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             dialog.dismiss();
-                            toCancelJsresult(pJsResult);
+                            toCancelJsresult(mPJsResult);
                         }
                     })
                     .create();
         }
-        this.pJsResult = jsPromptResult;
-        promptDialog.show();
+        this.mPJsResult = jsPromptResult;
+        mPromptDialog.show();
     }
 
     @Override

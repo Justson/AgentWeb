@@ -70,7 +70,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
      */
     private String mUrl;
     /**
-     * mContentDisposition ，提取文件名 ，如果contentDisposition不指定文件名，则从url中提取文件名
+     * mContentDisposition ，提取文件名 ，如果ContentDisposition不指定文件名，则从url中提取文件名
      */
     private String mContentDisposition;
     /**
@@ -211,8 +211,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     private void preDownload() {
 
         // true 表示用户取消了该下载事件。
-        if (null != mDownloadListener
-                && mDownloadListener
+        if (null != this.mDownloadListener
+                && this.mDownloadListener
                 .start(this.mUrl,
                         this.mUserAgent,
                         this.mContentDisposition,
@@ -230,7 +230,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         if (mFile.exists() && mFile.length() >= mContentLength) {
 
             // true 表示用户处理了下载完成后续的通知用户事件
-            if (null != mDownloadListener && mDownloadListener.result(mFile.getAbsolutePath(), mUrl, null)) {
+            if (null != this.mDownloadListener && this.mDownloadListener.result(mFile.getAbsolutePath(), mUrl, null)) {
                 return;
             }
 
