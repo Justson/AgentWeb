@@ -1,4 +1,4 @@
-package com.just.agentweb;
+package com.just.agentweb.sample.base;
 
 import android.view.KeyEvent;
 

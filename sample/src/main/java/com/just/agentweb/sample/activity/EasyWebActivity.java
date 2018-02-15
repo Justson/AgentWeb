@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.just.agentweb.sample.R;
+import com.just.agentweb.sample.base.BaseAgentWebActivity;
 
 /**
  * Created by cenxiaozhong on 2017/7/22.
