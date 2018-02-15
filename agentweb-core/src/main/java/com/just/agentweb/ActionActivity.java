@@ -156,8 +156,9 @@ public final class ActionActivity extends Activity {
             return;
         }
 
-        if (mPermissionListener != null)
+        if (mPermissionListener != null){
             requestPermissions(permissions.toArray(new String[]{}), 1);
+        }
 
         LogUtils.i(TAG, "request permission send");
     }
@@ -167,8 +168,9 @@ public final class ActionActivity extends Activity {
     private void realOpenCamera() {
 
         try {
-            if (mChooserListener == null)
+            if (mChooserListener == null){
                 finish();
+            }
             File mFile = AgentWebUtils.createImageFile(this);
             if (mFile == null) {
                 mChooserListener.onChoiceResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
@@ -186,8 +188,9 @@ public final class ActionActivity extends Activity {
                 mChooserListener.onChoiceResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
             }
             mChooserListener = null;
-            if (LogUtils.isDebug())
+            if (LogUtils.isDebug()){
                 ignore.printStackTrace();
+            }
         }
 
 

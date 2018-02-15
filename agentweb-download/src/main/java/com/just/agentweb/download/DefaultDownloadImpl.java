@@ -56,6 +56,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     private String userAgent;
     private ExtraServiceImpl mCloneExtraServiceImpl = null;
     private DownloadingListener mDownloadingListener;
+    Pattern mPattern = Pattern.compile(".*filename=(.*)");
 
     DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
         if (!extraServiceImpl.isCloneObject) {
@@ -189,14 +190,16 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             try {
 //                mContext.getPackageManager().resolveActivity(mIntent)
                 if (null != mIntent) {
-                    if (!(mContext instanceof Activity))
+                    if (!(mContext instanceof Activity)) {
                         mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    }
                     mContext.startActivity(mIntent);
                 }
                 return;
             } catch (Throwable throwable) {
-                if (LogUtils.isDebug())
+                if (LogUtils.isDebug()) {
                     throwable.printStackTrace();
+                }
             }
 
         }
@@ -236,9 +239,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     private void showDialog(final File file) {
 
         Activity mActivity;
-        if (null == (mActivity = mActivityWeakReference.get()) || mActivity.isFinishing())
+        if (null == (mActivity = mActivityWeakReference.get()) || mActivity.isFinishing()) {
             return;
-
+        }
         AgentWebUIController mAgentWebUIController;
         if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
             mAgentWebUIController.onForceDownloadAlert(url, createCallback(file));
@@ -316,7 +319,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         if (TextUtils.isEmpty(contentDisposition)) {
             return "";
         }
-        Matcher m = Pattern.compile(".*filename=(.*)").matcher(contentDisposition.toLowerCase());
+        Matcher m = mPattern.matcher(contentDisposition.toLowerCase());
         if (m.find()) {
             return m.group(1);
         } else {
@@ -385,8 +388,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
             if (null == sInstance) {
                 synchronized (ExecuteTasksMap.class) {
-                    if (null == sInstance)
+                    if (null == sInstance) {
                         sInstance = new ExecuteTasksMap();
+                    }
                 }
             }
             return sInstance;
@@ -395,13 +399,15 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         void removeTask(String path) {
 
             int index = mTasks.indexOf(path);
-            if (index == -1)
+            if (index == -1) {
                 return;
+            }
             try {
                 lock();
                 int position = -1;
-                if ((position = mTasks.indexOf(path)) == -1)
+                if ((position = mTasks.indexOf(path)) == -1) {
                     return;
+                }
                 mTasks.remove(position);
                 mTasks.remove(position - 1);
             } finally {
@@ -471,6 +477,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             this.downloadingListener = downloadingListener;
             return this;
         }
+
         @Override
         public boolean isForceDownload() {
             return isForceDownload;

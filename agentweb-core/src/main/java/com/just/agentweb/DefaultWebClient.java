@@ -320,7 +320,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
             if (mWeakReference.get() == null) {
                 return 0;
             }
-            Intent intent = new Intent().parseUri(url, Intent.URI_INTENT_SCHEME);
+            Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
             PackageManager mPackageManager = mWeakReference.get().getPackageManager();
             List<ResolveInfo> mResolveInfos = mPackageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
             return mResolveInfos == null ? 0 : mResolveInfos.size();
@@ -593,6 +593,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
                     case 1:
                         openOtherPage(url);
                         break;
+                    default:
+                        return true;
                 }
                 return true;
             }

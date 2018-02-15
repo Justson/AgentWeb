@@ -88,18 +88,22 @@ public class AgentWebUtils {
 
     static final void clearWebView(WebView m) {
 
-        if (m == null)
+        if (m == null) {
             return;
-        if (Looper.myLooper() != Looper.getMainLooper())
+        }
+        if (Looper.myLooper() != Looper.getMainLooper()) {
             return;
+        }
         m.loadUrl("about:blank");
         m.stopLoading();
-        if (m.getHandler() != null)
+        if (m.getHandler() != null) {
             m.getHandler().removeCallbacksAndMessages(null);
+        }
         m.removeAllViews();
         ViewGroup mViewGroup = null;
-        if ((mViewGroup = ((ViewGroup) m.getParent())) != null)
+        if ((mViewGroup = ((ViewGroup) m.getParent())) != null) {
             mViewGroup.removeView(m);
+        }
         m.setWebChromeClient(null);
         m.setWebViewClient(null);
         m.setTag(null);
@@ -111,13 +115,15 @@ public class AgentWebUtils {
     }
 
     static String getAgentWebFilePath(Context context) {
-        if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH))
+        if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH)) {
             return AGENTWEB_FILE_PATH;
+        }
         String dir = getDiskExternalCacheDir(context);
         File mFile = new File(dir, FILE_CACHE_PATH);
         try {
-            if (!mFile.exists())
+            if (!mFile.exists()) {
                 mFile.mkdirs();
+            }
         } catch (Throwable throwable) {
             LogUtils.i(TAG, "create dir exception");
         }
@@ -130,8 +136,9 @@ public class AgentWebUtils {
     public static File createFileByName(Context context, String name, boolean cover) throws IOException {
 
         String path = getAgentWebFilePath(context);
-        if (TextUtils.isEmpty(path))
+        if (TextUtils.isEmpty(path)) {
             return null;
+        }
         File mFile = new File(path, name);
         if (mFile.exists()) {
             if (cover) {
@@ -152,8 +159,9 @@ public class AgentWebUtils {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         //获取NetworkInfo对象
         @SuppressLint("MissingPermission") NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (networkInfo == null)
+        if (networkInfo == null) {
             return netType;
+        }
         switch (networkInfo.getType()) {
             case ConnectivityManager.TYPE_WIFI:
             case ConnectivityManager.TYPE_WIMAX:
@@ -253,8 +261,9 @@ public class AgentWebUtils {
     static String getDiskExternalCacheDir(Context context) {
 
         File mFile = context.getExternalCacheDir();
-        if (Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(mFile)))
+        if (Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(mFile))) {
             return mFile.getAbsolutePath();
+        }
         return null;
     }
 
@@ -359,8 +368,9 @@ public class AgentWebUtils {
     static boolean isOverriedMethod(Object currentObject, String methodName, String method, Class... clazzs) {
         LogUtils.i(TAG, "  methodName:" + methodName + "   method:" + method);
         boolean tag = false;
-        if (currentObject == null)
+        if (currentObject == null) {
             return tag;
+        }
         try {
             Class clazz = currentObject.getClass();
             Method mMethod = clazz.getMethod(methodName, clazzs);
@@ -420,8 +430,9 @@ public class AgentWebUtils {
 
         } catch (Exception ignore) {
             //ignore.printStackTrace();
-            if (AgentWebConfig.DEBUG)
+            if (AgentWebConfig.DEBUG) {
                 ignore.printStackTrace();
+            }
         }
     }
 
@@ -489,8 +500,9 @@ public class AgentWebUtils {
             }
             return paths;
         } catch (Throwable throwable) {
-            if (LogUtils.isDebug())
+            if (LogUtils.isDebug()) {
                 throwable.printStackTrace();
+            }
         }
         return null;
 
@@ -536,8 +548,9 @@ public class AgentWebUtils {
     public static void closeIO(Closeable closeable) {
         try {
 
-            if (closeable != null)
+            if (closeable != null) {
                 closeable.close();
+            }
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -549,8 +562,9 @@ public class AgentWebUtils {
     @TargetApi(19)
     static String getFileAbsolutePath(Activity context, Uri fileUri) {
 
-        if (context == null || fileUri == null)
+        if (context == null || fileUri == null) {
             return null;
+        }
 
         LogUtils.i(TAG, "getAuthority:" + fileUri.getAuthority() + "  getHost:" + fileUri.getHost() + "   getPath:" + fileUri.getPath() + "  getScheme:" + fileUri.getScheme() + "  query:" + fileUri.getQuery());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
@@ -590,8 +604,9 @@ public class AgentWebUtils {
             return getAgentWebFilePath(context) + File.separator + path.substring(index + 1, path.length());
         } else if ("content".equalsIgnoreCase(fileUri.getScheme())) {
             // Return the remote address
-            if (isGooglePhotosUri(fileUri))
+            if (isGooglePhotosUri(fileUri)) {
                 return fileUri.getLastPathSegment();
+            }
             return getDataColumn(context, fileUri, null, null);
         }
         // File
@@ -611,8 +626,9 @@ public class AgentWebUtils {
                 return cursor.getString(index);
             }
         } finally {
-            if (cursor != null)
+            if (cursor != null) {
                 cursor.close();
+            }
         }
         return null;
     }
@@ -672,16 +688,17 @@ public class AgentWebUtils {
 
 
     static boolean isJson(String target) {
-        if (TextUtils.isEmpty(target))
+        if (TextUtils.isEmpty(target)) {
             return false;
+        }
 
         boolean tag = false;
         try {
-            if (target.startsWith("["))
+            if (target.startsWith("[")) {
                 new JSONArray(target);
-            else
+            } else {
                 new JSONObject(target);
-
+            }
             tag = true;
         } catch (JSONException ignore) {
 //            ignore.printStackTrace();
@@ -694,9 +711,7 @@ public class AgentWebUtils {
 
 
     public static boolean isUIThread() {
-
         return Looper.myLooper() == Looper.getMainLooper();
-
     }
 
     static boolean isEmptyCollection(Collection collection) {
@@ -740,15 +755,23 @@ public class AgentWebUtils {
     }
 
     public static boolean hasPermission(@NonNull Context context, @NonNull List<String> permissions) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        }
         for (String permission : permissions) {
             int result = ContextCompat.checkSelfPermission(context, permission);
-            if (result == PackageManager.PERMISSION_DENIED) return false;
+            if (result == PackageManager.PERMISSION_DENIED) {
+                return false;
+            }
 
             String op = AppOpsManagerCompat.permissionToOp(permission);
-            if (TextUtils.isEmpty(op)) continue;
+            if (TextUtils.isEmpty(op)) {
+                continue;
+            }
             result = AppOpsManagerCompat.noteProxyOp(context, op, context.getPackageName());
-            if (result != AppOpsManagerCompat.MODE_ALLOWED) return false;
+            if (result != AppOpsManagerCompat.MODE_ALLOWED) {
+                return false;
+            }
 
         }
         return true;
@@ -756,8 +779,9 @@ public class AgentWebUtils {
 
     public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
 
-        if (permissions == null || permissions.length == 0)
+        if (permissions == null || permissions.length == 0) {
             return null;
+        }
         List<String> deniedPermissions = new ArrayList<>();
         for (int i = 0; i < permissions.length; i++) {
 
@@ -817,8 +841,9 @@ public class AgentWebUtils {
     }
 
     public static void runInUiThread(Runnable runnable) {
-        if (mHandler == null)
+        if (mHandler == null) {
             mHandler = new Handler(Looper.getMainLooper());
+        }
         mHandler.post(runnable);
     }
 
@@ -907,8 +932,9 @@ public class AgentWebUtils {
             md.update(str.getBytes());
             return new BigInteger(1, md.digest()).toString(16);
         } catch (Exception e) {
-            if (LogUtils.isDebug())
+            if (LogUtils.isDebug()) {
                 e.printStackTrace();
+            }
         }
         return "";
     }

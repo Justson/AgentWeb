@@ -45,8 +45,9 @@ public abstract class BaseJsAccessEntrace implements JsAccessEntrace {
         mWebView.evaluateJavascript(js, new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                if (callback != null)
+                if (callback != null){
                     callback.onReceiveValue(value);
+                }
             }
         });
     }

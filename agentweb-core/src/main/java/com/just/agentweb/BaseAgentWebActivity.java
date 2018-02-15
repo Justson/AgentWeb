@@ -51,7 +51,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
         ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(-1, -1))//
-                .setIndicatorColorWithHeight(getIndicatorColor(),getIndicatorHeight())//
+                .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())//
                 .setWebChromeClient(getWebChromeClient())
                 .setWebViewClient(getWebViewClient())
                 .setWebView(getWebView())
@@ -116,16 +116,18 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        if (mAgentWeb != null)
+        if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onPause();
+        }
         super.onPause();
 
     }
 
     @Override
     protected void onResume() {
-        if (mAgentWeb != null)
+        if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onResume();
+        }
         super.onResume();
     }
 
@@ -137,8 +139,9 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (mAgentWeb != null)
+        if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onDestroy();
+        }
         super.onDestroy();
     }
 
