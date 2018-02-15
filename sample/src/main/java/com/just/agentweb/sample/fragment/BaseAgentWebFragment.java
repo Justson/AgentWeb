@@ -1,4 +1,4 @@
-package com.just.agentweb;
+package com.just.agentweb.sample.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,16 @@ import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.just.agentweb.AgentWeb;
+import com.just.agentweb.AgentWebSettingsImpl;
+import com.just.agentweb.AgentWebUIControllerImplBase;
+import com.just.agentweb.DefaultWebClient;
+import com.just.agentweb.IAgentWebSettings;
+import com.just.agentweb.IWebLayout;
+import com.just.agentweb.MiddlewareWebChromeBase;
+import com.just.agentweb.MiddlewareWebClientBase;
+import com.just.agentweb.PermissionInterceptor;
 
 /**
  * Created by cenxiaozhong on 2017/7/22.
@@ -74,7 +84,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     protected static class ErrorLayoutEntity {
-        private int layoutRes = R.layout.agentweb_error_page;
+        private int layoutRes = com.just.agentweb.R.layout.agentweb_error_page;
         private int reloadId;
 
         public void setLayoutRes(int layoutRes) {

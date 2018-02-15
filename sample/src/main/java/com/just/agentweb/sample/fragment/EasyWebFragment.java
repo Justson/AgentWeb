@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.just.agentweb.BaseAgentWebFragment;
 import com.just.agentweb.sample.R;
 
 /**
