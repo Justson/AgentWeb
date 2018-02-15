@@ -18,7 +18,7 @@ public class UrlLoaderImpl implements IUrlLoader {
 
     UrlLoaderImpl(WebView webView, HttpHeaders httpHeaders) {
         this.mWebView = webView;
-        if (this.mWebView == null){
+        if (this.mWebView == null) {
             new NullPointerException("webview cannot be null .");
         }
 
@@ -55,9 +55,9 @@ public class UrlLoaderImpl implements IUrlLoader {
             return;
         }
 
-        if (mHttpHeaders==null|| mHttpHeaders.isEmptyHeaders())
+        if (mHttpHeaders == null || mHttpHeaders.isEmptyHeaders()) {
             this.mWebView.loadUrl(url);
-        else {
+        } else {
             this.mWebView.loadUrl(url, mHttpHeaders.getHeaders());
         }
     }
@@ -133,17 +133,17 @@ public class UrlLoaderImpl implements IUrlLoader {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    postUrl(url,postData);
+                    postUrl(url, postData);
                 }
             });
             return;
         }
 
-        this.mWebView.postUrl(url,postData);
+        this.mWebView.postUrl(url, postData);
     }
 
     @Override
     public HttpHeaders getHttpHeaders() {
-        return this.mHttpHeaders==null?this.mHttpHeaders=HttpHeaders.create():this.mHttpHeaders;
+        return this.mHttpHeaders == null ? this.mHttpHeaders = HttpHeaders.create() : this.mHttpHeaders;
     }
 }

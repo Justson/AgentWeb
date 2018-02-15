@@ -214,8 +214,9 @@ public class DefaultUIController extends AgentWebUIController {
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(promptDialog);
 
-                            if (pJsResult != null)
+                            if (pJsResult != null){
                                 pJsResult.confirm(et.getText().toString());
+                            }
 
                         }
                     })
@@ -285,8 +286,9 @@ public class DefaultUIController extends AgentWebUIController {
     }
 
     private void toCancelJsresult(JsResult result) {
-        if (result != null)
+        if (result != null){
             result.cancel();
+        }
     }
 
     Resources mResources = null;

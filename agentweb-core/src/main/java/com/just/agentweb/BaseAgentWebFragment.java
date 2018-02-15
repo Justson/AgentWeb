@@ -32,12 +32,12 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
 
         ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
-        mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
-                .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())//
+        mAgentWeb = AgentWeb.with(this)
+                .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())
                 .setWebView(getWebView())
                 .setWebLayout(getWebLayout())
-                .setAgentWebWebSettings(getAgentWebSettings())//
+                .setAgentWebWebSettings(getAgentWebSettings())
                 .setWebViewClient(getWebViewClient())
                 .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebChromeClient(getWebChromeClient())
@@ -94,16 +94,18 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if (mAgentWeb != null)
+        if (mAgentWeb != null){
             mAgentWeb.getWebLifeCycle().onPause();
+        }
         super.onPause();
 
     }
 
     @Override
     public void onResume() {
-        if (mAgentWeb != null)
+        if (mAgentWeb != null){
             mAgentWeb.getWebLifeCycle().onResume();
+        }
         super.onResume();
     }
 
@@ -121,8 +123,9 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (mAgentWeb != null)
+        if (mAgentWeb != null){
             mAgentWeb.getWebLifeCycle().onDestroy();
+        }
         super.onDestroy();
     }
 

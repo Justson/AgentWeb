@@ -158,10 +158,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
         int result = ERROR_LOAD;
         try {
             this.mBeginTime = System.currentTimeMillis();
-            if (!checkSpace())
+            if (!checkSpace()) {
                 return ERROR_STORAGE;
-            if (!checkNet())
+            }
+            if (!checkNet()) {
                 return ERROR_NETWORK_CONNECTION;
+            }
             result = doDownload();
         } catch (Exception e) {
             this.e = e;//发布
@@ -192,8 +194,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             LogUtils.i(TAG, "response code:" + mHttpURLConnection.getResponseCode());
             return doDownload(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownloadTask.getFile()), isSeek);
         } finally {
-            if (mHttpURLConnection != null)
+            if (mHttpURLConnection != null) {
                 mHttpURLConnection.disconnect();
+            }
         }
 
     }
@@ -269,21 +272,23 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
             boolean isCancelDispose = doCallback(integer);
             if (integer > 0x200) {
 
-                if (mAgentWebNotification != null)
+                if (mAgentWebNotification != null) {
                     mAgentWebNotification.cancel(mDownloadTask.getId());
+                }
                 return;
             }
             if (mDownloadTask.isEnableIndicator()) {
-                if (mAgentWebNotification != null)
+                if (mAgentWebNotification != null) {
                     mAgentWebNotification.cancel(mDownloadTask.getId());
-
+                }
                 if (isCancelDispose) {
                     return;
                 }
                 Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
                 if (mIntent != null) {
-                    if (!(mDownloadTask.getContext() instanceof Activity))
+                    if (!(mDownloadTask.getContext() instanceof Activity)) {
                         mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    }
                     PendingIntent rightPendIntent = PendingIntent
                             .getActivity(mDownloadTask.getContext(),
                                     mDownloadTask.getId() << 4, mIntent,
@@ -364,8 +369,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
                 out.seek(out.length());
             } else {
                 LogUtils.i(TAG, "seek -- >" + false + "  , length : 0");
-                out.seek(0l);
-                tmp = 0l;
+                out.seek(0);
+                tmp = 0L;
             }
             int bytes = 0;
 

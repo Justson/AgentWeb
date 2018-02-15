@@ -38,18 +38,19 @@ public class IndicatorHandler implements IndicatorController {
         }
     }
 
+    @Override
     public void finish() {
         if (mBaseIndicatorSpec != null) {
             mBaseIndicatorSpec.hide();
         }
     }
-
+    @Override
     public void setProgressBar(int n) {
         if (mBaseIndicatorSpec != null) {
             mBaseIndicatorSpec.setProgress(n);
         }
     }
-
+    @Override
     public void showProgressBar() {
 
         if (mBaseIndicatorSpec != null) {

@@ -4,33 +4,34 @@ import android.webkit.WebChromeClient;
 
 /**
  * Created by cenxiaozhong on 2017/12/16.
- *  https://github.com/Justson/AgentWeb
+ * https://github.com/Justson/AgentWeb
  */
 
 public class MiddlewareWebChromeBase extends WebChromeClientWrapper {
 
     private MiddlewareWebChromeBase mMiddlewareWebChromeBase;
 
-    public MiddlewareWebChromeBase(WebChromeClient webChromeClient) {
+    MiddlewareWebChromeBase(WebChromeClient webChromeClient) {
         super(webChromeClient);
     }
 
-    public MiddlewareWebChromeBase(){
+    MiddlewareWebChromeBase() {
         super(null);
     }
+
     @Override
     final void setWebChromeClient(WebChromeClient webChromeClient) {
         super.setWebChromeClient(webChromeClient);
     }
 
-    public MiddlewareWebChromeBase enq(MiddlewareWebChromeBase middlewareWebChromeBase) {
+    final MiddlewareWebChromeBase enq(MiddlewareWebChromeBase middlewareWebChromeBase) {
         setWebChromeClient(middlewareWebChromeBase);
         this.mMiddlewareWebChromeBase = middlewareWebChromeBase;
         return this.mMiddlewareWebChromeBase;
     }
 
 
-    public MiddlewareWebChromeBase next() {
+    final MiddlewareWebChromeBase next() {
         return this.mMiddlewareWebChromeBase;
     }
 
