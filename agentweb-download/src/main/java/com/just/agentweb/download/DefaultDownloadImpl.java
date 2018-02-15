@@ -40,23 +40,71 @@ import java.util.regex.Pattern;
  */
 
 public class DefaultDownloadImpl implements android.webkit.DownloadListener {
-
+    /**
+     * Application Context
+     */
     private Context mContext;
+    /**
+     * 通知ID，默认从1开始
+     */
     private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
+    /**
+     * 下载监听，DownloadListener#start 下载的时候触发，DownloadListener#result下载结束的时候触发
+     * 4.0.0 每一次下载都会触发这两个方法，4.0.0以下只有触发下载才会回调这两个方法。
+     */
     private DownloadListener mDownloadListener;
+    /**
+     * Activity
+     */
     private WeakReference<Activity> mActivityWeakReference = null;
+    /**
+     * TAG 用于打印，标识
+     */
     private static final String TAG = DefaultDownloadImpl.class.getSimpleName();
+    /**
+     * 权限拦截
+     */
     private PermissionInterceptor mPermissionListener = null;
-    private String url;
-    private String contentDisposition;
-    private long contentLength;
-    private String mimetype;
+    /**
+     * 当前下载链接
+     */
+    private String mUrl;
+    /**
+     * mContentDisposition ，提取文件名 ，如果contentDisposition不指定文件名，则从url中提取文件名
+     */
+    private String mContentDisposition;
+    /**
+     * 文件大小
+     */
+    private long mContentLength;
+    /**
+     * 文件类型
+     */
+    private String mMimetype;
+    /**
+     * AgentWebUIController
+     */
     private WeakReference<AgentWebUIController> mAgentWebUIController;
+    /**
+     * ExtraServiceImpl
+     */
     private ExtraServiceImpl mExtraServiceImpl;
-    private String userAgent;
+    /**
+     * UA
+     */
+    private String mUserAgent;
+    /**
+     * ExtraServiceImpl
+     */
     private ExtraServiceImpl mCloneExtraServiceImpl = null;
+    /**
+     * 进度回调
+     */
     private DownloadingListener mDownloadingListener;
-    Pattern mPattern = Pattern.compile(".*filename=(.*)");
+    /**
+     * 根据p3c，预编译正则，提升性能。
+     */
+    private Pattern mPattern = Pattern.compile(".*filename=(.*)");
 
     DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
         if (!extraServiceImpl.isCloneObject) {
@@ -94,12 +142,12 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             }
         }
 
-        LogUtils.i(TAG, "mimetype:" + mimetype);
-        this.url = url;
-        this.contentDisposition = contentDisposition;
-        this.contentLength = contentLength;
-        this.mimetype = mimetype;
-        this.userAgent = userAgent;
+        LogUtils.i(TAG, "mMimetype:" + mimetype);
+        this.mUrl = url;
+        this.mContentDisposition = contentDisposition;
+        this.mContentLength = contentLength;
+        this.mMimetype = mimetype;
+        this.mUserAgent = userAgent;
         ExtraServiceImpl mCloneExtraServiceImpl = null;
         if (null == extraServiceImpl) {
             try {
@@ -115,11 +163,11 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             mCloneExtraServiceImpl = extraServiceImpl;
         }
         mCloneExtraServiceImpl
-                .setUrl(this.url)
-                .setMimetype(this.mimetype)
-                .setContentDisposition(this.contentDisposition)
-                .setContentLength(this.contentLength)
-                .setUserAgent(this.userAgent);
+                .setUrl(this.mUrl)
+                .setMimetype(this.mMimetype)
+                .setContentDisposition(this.mContentDisposition)
+                .setContentLength(this.mContentLength)
+                .setUserAgent(this.mUserAgent);
         this.mCloneExtraServiceImpl = mCloneExtraServiceImpl;
 
         LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  :" + this.mCloneExtraServiceImpl.getMimetype());
@@ -165,24 +213,24 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         // true 表示用户取消了该下载事件。
         if (null != mDownloadListener
                 && mDownloadListener
-                .start(this.url,
-                        this.userAgent,
-                        this.contentDisposition,
-                        this.mimetype,
-                        this.contentLength,
+                .start(this.mUrl,
+                        this.mUserAgent,
+                        this.mContentDisposition,
+                        this.mMimetype,
+                        this.mContentLength,
                         this.mCloneExtraServiceImpl)) {
             return;
         }
-        File mFile = getFile(contentDisposition, url);
+        File mFile = getFile(mContentDisposition, mUrl);
         // File 创建文件失败
         if (null == mFile) {
             LogUtils.i(TAG, "新建文件失败");
             return;
         }
-        if (mFile.exists() && mFile.length() >= contentLength) {
+        if (mFile.exists() && mFile.length() >= mContentLength) {
 
             // true 表示用户处理了下载完成后续的通知用户事件
-            if (null != mDownloadListener && mDownloadListener.result(mFile.getAbsolutePath(), url, null)) {
+            if (null != mDownloadListener && mDownloadListener.result(mFile.getAbsolutePath(), mUrl, null)) {
                 return;
             }
 
@@ -206,7 +254,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 
         // 该链接是否正在下载
-        if (ExecuteTasksMap.getInstance().contains(url)
+        if (ExecuteTasksMap.getInstance().contains(mUrl)
                 || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
             if (mAgentWebUIController.get() != null) {
                 mAgentWebUIController.get().showMessage(
@@ -244,7 +292,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         }
         AgentWebUIController mAgentWebUIController;
         if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
-            mAgentWebUIController.onForceDownloadAlert(url, createCallback(file));
+            mAgentWebUIController.onForceDownloadAlert(mUrl, createCallback(file));
         }
 
     }
@@ -263,7 +311,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
         try {
 
-            ExecuteTasksMap.getInstance().addTask(url, file.getAbsolutePath());
+            ExecuteTasksMap.getInstance().addTask(mUrl, file.getAbsolutePath());
             if (null != mAgentWebUIController.get()) {
                 mAgentWebUIController.get()
                         .showMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
@@ -273,11 +321,11 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                     mContext, file,
                     this.mCloneExtraServiceImpl);
             new Downloader().download(mDownloadTask);
-            this.url = null;
-            this.contentDisposition = null;
-            this.contentLength = -1;
-            this.mimetype = null;
-            this.userAgent = null;
+            this.mUrl = null;
+            this.mContentDisposition = null;
+            this.mContentLength = -1;
+            this.mMimetype = null;
+            this.mUserAgent = null;
 
         } catch (Throwable ignore) {
             if (LogUtils.isDebug()) {
@@ -367,8 +415,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 
     /**
-     * 静态缓存当前正在下载的任务 url
-     * i -> url
+     * 静态缓存当前正在下载的任务 mUrl
+     * i -> mUrl
      * i+1 -> path
      */
     public static class ExecuteTasksMap extends ReentrantLock {

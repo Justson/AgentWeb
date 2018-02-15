@@ -1,11 +1,13 @@
-package com.just.agentweb.sample.fragment;
+package com.just.agentweb.sample.base;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
@@ -25,50 +27,61 @@ import com.just.agentweb.PermissionInterceptor;
 
 /**
  * Created by cenxiaozhong on 2017/7/22.
+ * <p>
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public abstract class BaseAgentWebFragment extends Fragment {
+public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
     protected AgentWeb mAgentWeb;
+    private AgentWebUIControllerImplBase mAgentWebUIController;
+    private ErrorLayoutEntity mErrorLayoutEntity;
     private MiddlewareWebChromeBase mMiddleWareWebChrome;
     private MiddlewareWebClientBase mMiddleWareWebClient;
-    private ErrorLayoutEntity mErrorLayoutEntity;
-    private AgentWebUIControllerImplBase mAgentWebUIController;
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+    }
 
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
+        buildAgentWeb();
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        buildAgentWeb();
+    }
+
+    protected void buildAgentWeb() {
         ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
         mAgentWeb = AgentWeb.with(this)
-                .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(-1, -1))
                 .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())
-                .setWebView(getWebView())
-                .setWebLayout(getWebLayout())
-                .setAgentWebWebSettings(getAgentWebSettings())
-                .setWebViewClient(getWebViewClient())
-                .setPermissionInterceptor(getPermissionInterceptor())
                 .setWebChromeClient(getWebChromeClient())
-                .interceptUnkownUrl()
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
-                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
+                .setWebViewClient(getWebViewClient())
+                .setWebView(getWebView())
+                .setPermissionInterceptor(getPermissionInterceptor())
+                .setWebLayout(getWebLayout())
                 .setAgentWebUIController(getAgentWebUIController())
-                .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
+                .interceptUnkownUrl()
+                .setOpenOtherPageWays(getOpenOtherAppWay())
                 .useMiddlewareWebChrome(getMiddleWareWebChrome())
                 .useMiddlewareWebClient(getMiddleWareWebClient())
-                .createAgentWeb()//
-                .ready()//
+                .setAgentWebWebSettings(getAgentWebSettings())
+                .setMainFrameErrorView(mErrorLayoutEntity.layoutRes, mErrorLayoutEntity.reloadId)
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
+                .createAgentWeb()
+                .ready()
                 .go(getUrl());
 
 
     }
 
-
-    protected void setTitle(WebView view, String title) {
-
-    }
 
     protected @NonNull
     ErrorLayoutEntity getErrorLayoutEntity() {
@@ -78,10 +91,10 @@ public abstract class BaseAgentWebFragment extends Fragment {
         return mErrorLayoutEntity;
     }
 
-    protected @Nullable
-    AgentWebUIControllerImplBase getAgentWebUIController() {
-        return mAgentWebUIController;
+    protected AgentWeb getAgentWeb() {
+        return this.mAgentWeb;
     }
+
 
     protected static class ErrorLayoutEntity {
         private int layoutRes = com.just.agentweb.R.layout.agentweb_error_page;
@@ -103,7 +116,16 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (mAgentWeb != null && mAgentWeb.handleKeyEvent(keyCode, event)) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onPause() {
         if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onPause();
         }
@@ -112,50 +134,56 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onResume();
         }
         super.onResume();
     }
 
-
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
 
-    protected @Nullable
-    String getUrl() {
-        return "";
-    }
-
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onDestroy();
         }
         super.onDestroy();
     }
 
-    protected @Nullable
-    IAgentWebSettings getAgentWebSettings() {
-        return AgentWebSettingsImpl.getInstance();
-    }
 
     protected @Nullable
     DownloadListener getDownloadListener() {
         return null;
     }
 
-    protected @Nullable
-    WebChromeClient getWebChromeClient() {
+
+    protected void setTitle(WebView view, String title) {
+
+    }
+
+    protected
+    @Nullable
+    String getUrl() {
         return null;
+    }
+
+    public @Nullable
+    IAgentWebSettings getAgentWebSettings() {
+        return AgentWebSettingsImpl.getInstance();
     }
 
     protected abstract @NonNull
     ViewGroup getAgentWebParent();
+
+    protected @Nullable
+    WebChromeClient getWebChromeClient() {
+        return null;
+    }
 
     protected @ColorInt
     int getIndicatorColor() {
@@ -171,6 +199,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
         return null;
     }
 
+
     protected @Nullable
     WebView getWebView() {
         return null;
@@ -183,6 +212,16 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     protected @Nullable
     PermissionInterceptor getPermissionInterceptor() {
+        return null;
+    }
+
+    public @Nullable
+    AgentWebUIControllerImplBase getAgentWebUIController() {
+        return null;
+    }
+
+    public @Nullable
+    DefaultWebClient.OpenOtherPageWays getOpenOtherAppWay() {
         return null;
     }
 
