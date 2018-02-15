@@ -11,11 +11,11 @@ public class MiddlewareWebChromeBase extends WebChromeClientWrapper {
 
     private MiddlewareWebChromeBase mMiddlewareWebChromeBase;
 
-    MiddlewareWebChromeBase(WebChromeClient webChromeClient) {
+    protected MiddlewareWebChromeBase(WebChromeClient webChromeClient) {
         super(webChromeClient);
     }
 
-    MiddlewareWebChromeBase() {
+    protected MiddlewareWebChromeBase() {
         super(null);
     }
 

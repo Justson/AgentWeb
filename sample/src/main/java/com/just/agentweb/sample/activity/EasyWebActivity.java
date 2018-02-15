@@ -12,7 +12,6 @@ import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.just.agentweb.BaseAgentWebActivity;
 import com.just.agentweb.sample.R;
 
 /**

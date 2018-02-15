@@ -104,7 +104,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     @Override
     public void onPause() {
-        if (mAgentWeb != null){
+        if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onPause();
         }
         super.onPause();
@@ -113,7 +113,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     @Override
     public void onResume() {
-        if (mAgentWeb != null){
+        if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onResume();
         }
         super.onResume();
@@ -133,7 +133,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        if (mAgentWeb != null){
+        if (mAgentWeb != null) {
             mAgentWeb.getWebLifeCycle().onDestroy();
         }
         super.onDestroy();
@@ -188,11 +188,13 @@ public abstract class BaseAgentWebFragment extends Fragment {
 
     protected @NonNull
     MiddlewareWebChromeBase getMiddleWareWebChrome() {
-        return this.mMiddleWareWebChrome = new MiddlewareWebChromeBase();
+        return this.mMiddleWareWebChrome = new MiddlewareWebChromeBase() {
+        };
     }
 
     protected @NonNull
     MiddlewareWebClientBase getMiddleWareWebClient() {
-        return this.mMiddleWareWebClient = new MiddlewareWebClientBase();
+        return this.mMiddleWareWebClient = new MiddlewareWebClientBase() {
+        };
     }
 }

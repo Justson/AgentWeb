@@ -1,4 +1,4 @@
-package com.just.agentweb;
+package com.just.agentweb.sample.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,16 @@ import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.just.agentweb.AgentWeb;
+import com.just.agentweb.AgentWebSettingsImpl;
+import com.just.agentweb.AgentWebUIControllerImplBase;
+import com.just.agentweb.DefaultWebClient;
+import com.just.agentweb.IAgentWebSettings;
+import com.just.agentweb.IWebLayout;
+import com.just.agentweb.MiddlewareWebChromeBase;
+import com.just.agentweb.MiddlewareWebClientBase;
+import com.just.agentweb.PermissionInterceptor;
 
 /**
  * Created by cenxiaozhong on 2017/7/22.
@@ -87,7 +97,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
 
     protected static class ErrorLayoutEntity {
-        private int layoutRes = R.layout.agentweb_error_page;
+        private int layoutRes = com.just.agentweb.R.layout.agentweb_error_page;
         private int reloadId;
 
         public void setLayoutRes(int layoutRes) {
@@ -217,11 +227,13 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
 
     protected @NonNull
     MiddlewareWebChromeBase getMiddleWareWebChrome() {
-        return this.mMiddleWareWebChrome = new MiddlewareWebChromeBase();
+        return this.mMiddleWareWebChrome = new MiddlewareWebChromeBase() {
+        };
     }
 
     protected @NonNull
     MiddlewareWebClientBase getMiddleWareWebClient() {
-        return this.mMiddleWareWebClient = new MiddlewareWebClientBase();
+        return this.mMiddleWareWebClient = new MiddlewareWebClientBase() {
+        };
     }
 }
