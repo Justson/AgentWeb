@@ -51,7 +51,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     /**
      * 是否被包装过
      */
-    private boolean isWrapper = false;
+    private boolean mIsWrapper = false;
     /**
      * Video 处理类
      */
@@ -65,9 +65,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
      */
     private WebView mWebView;
     /**
-     * Web端触发的定位 origin
+     * Web端触发的定位 mOrigin
      */
-    private String origin = null;
+    private String mOrigin = null;
     /**
      * Web 端触发的定位 Callback 回调成功，或者失败
      */
@@ -100,7 +100,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
                         PermissionInterceptor permissionInterceptor, WebView webView) {
         super(chromeClient);
         this.mIndicatorController = indicatorController;
-        isWrapper = chromeClient != null ? true : false;
+        mIsWrapper = chromeClient != null ? true : false;
         this.mWebChromeClient = chromeClient;
         mActivityWeakReference = new WeakReference<Activity>(activity);
         this.mIVideo = iVideo;
@@ -123,7 +123,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
     @Override
     public void onReceivedTitle(WebView view, String title) {
-        if (isWrapper) {
+        if (mIsWrapper) {
             super.onReceivedTitle(view, title);
         }
     }
@@ -195,7 +195,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             mAction.setFromIntention(FROM_CODE_INTENTION_LOCATION);
             ActionActivity.setPermissionListener(mPermissionListener);
             this.mCallback = callback;
-            this.origin = origin;
+            this.mOrigin = origin;
             ActionActivity.start(mActivity, mAction);
         }
 
@@ -212,13 +212,13 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
                 if (mCallback != null) {
                     if (t) {
-                        mCallback.invoke(origin, true, false);
+                        mCallback.invoke(mOrigin, true, false);
                     } else {
-                        mCallback.invoke(origin, false, false);
+                        mCallback.invoke(mOrigin, false, false);
                     }
 
                     mCallback = null;
-                    origin = null;
+                    mOrigin = null;
                 }
 
             }

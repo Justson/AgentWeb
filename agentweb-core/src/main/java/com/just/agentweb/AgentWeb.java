@@ -65,11 +65,7 @@ public final class AgentWeb {
     /**
      * 是否启动进度条
      */
-    private boolean enableIndicator;
-    /**
-     * Fragment
-     */
-    private Fragment mFragment;
+    private boolean mEnableIndicator;
     /**
      * IEventHandler 处理WebView相关返回事件
      */
@@ -91,7 +87,7 @@ public final class AgentWeb {
      */
     private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
     /**
-     * 检查逻辑
+     * 检查
      */
     private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
     /**
@@ -103,7 +99,7 @@ public final class AgentWeb {
      */
     private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
     /**
-     * Activity  标识
+     * Activity 标识
      */
     private static final int ACTIVITY_TAG = 0;
     /**
@@ -133,7 +129,7 @@ public final class AgentWeb {
     /**
      * WebViewClient 辅助控制开关
      */
-    private boolean webClientHelper = true;
+    private boolean mWebClientHelper = true;
     /**
      * PermissionInterceptor 权限拦截
      */
@@ -141,11 +137,11 @@ public final class AgentWeb {
     /**
      * 是否拦截未知的scheme， 用于 DefaultWebClient
      */
-    private boolean isInterceptUnkownScheme = false;
+    private boolean mIsInterceptUnkownScheme = false;
     /**
      * 该变量控制了是否咨询用户页面跳转，或者直接拦截
      */
-    private int openOtherAppWays = -1;
+    private int mOpenOtherAppWays = -1;
     /**
      * MiddlewareWebClientBase WebViewClient 中间件
      */
@@ -166,10 +162,9 @@ public final class AgentWeb {
     private AgentWeb(AgentBuilder agentBuilder) {
         TAG_TARGET = agentBuilder.tag;
         this.mActivity = agentBuilder.mActivity;
-        this.mFragment = agentBuilder.mFragment;
         this.mViewGroup = agentBuilder.mViewGroup;
         this.mIEventHandler = agentBuilder.mIEventHandler;
-        this.enableIndicator = agentBuilder.enableIndicator;
+        this.mEnableIndicator = agentBuilder.enableIndicator;
         mWebCreator = agentBuilder.mWebCreator == null ? configWebCreator(agentBuilder.v, agentBuilder.index, agentBuilder.mLayoutParams, agentBuilder.mIndicatorColor, agentBuilder.height_dp, agentBuilder.mWebView, agentBuilder.mWebLayout) : agentBuilder.mWebCreator;
         mIndicatorController = agentBuilder.mIndicatorController;
         this.mWebChromeClient = agentBuilder.mWebChromeClient;
@@ -193,10 +188,10 @@ public final class AgentWeb {
         }
         this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.getWebView());
         mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.getWebView(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
-        this.webClientHelper = agentBuilder.webClientHelper;
-        this.isInterceptUnkownScheme = agentBuilder.isInterceptUnkownScheme;
+        this.mWebClientHelper = agentBuilder.webClientHelper;
+        this.mIsInterceptUnkownScheme = agentBuilder.isInterceptUnkownScheme;
         if (agentBuilder.openOtherPage != null) {
-            this.openOtherAppWays = agentBuilder.openOtherPage.code;
+            this.mOpenOtherAppWays = agentBuilder.openOtherPage.code;
         }
         this.mMiddleWrareWebClientBaseHeader = agentBuilder.header;
         this.mMiddlewareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
@@ -347,10 +342,10 @@ public final class AgentWeb {
 
     private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
 
-        if (progressView != null && enableIndicator) {
+        if (progressView != null && mEnableIndicator) {
             return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView, webLayout);
         } else {
-            return enableIndicator ?
+            return mEnableIndicator ?
                     new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp, webView, webLayout)
                     : new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView, webLayout);
         }
@@ -396,11 +391,11 @@ public final class AgentWeb {
                 .createBuilder()
                 .setActivity(this.mActivity)
                 .setClient(this.mWebViewClient)
-                .setWebClientHelper(this.webClientHelper)
+                .setWebClientHelper(this.mWebClientHelper)
                 .setPermissionInterceptor(this.mPermissionInterceptor)
                 .setWebView(this.mWebCreator.getWebView())
-                .setInterceptUnkownScheme(this.isInterceptUnkownScheme)
-                .setSchemeHandleType(this.openOtherAppWays)
+                .setInterceptUnkownScheme(this.mIsInterceptUnkownScheme)
+                .setSchemeHandleType(this.mOpenOtherAppWays)
                 .build();
         MiddlewareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
         if (header != null) {

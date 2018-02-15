@@ -27,10 +27,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- *
- */
+
 public class AgentWebView extends WebView {
     private static final String TAG = AgentWebView.class.getSimpleName();
     private Map<String, JsCallJava> mJsCallJavas;
