@@ -16,11 +16,11 @@ public class MiddlewareWebClientBase extends WrapperWebViewClient {
         this.mMiddleWrareWebClientBase = client;
     }
 
-    MiddlewareWebClientBase(WebViewClient client) {
+    protected MiddlewareWebClientBase(WebViewClient client) {
         super(client);
     }
 
-    public MiddlewareWebClientBase() {
+    protected MiddlewareWebClientBase() {
         super(null);
     }
 
