@@ -26,12 +26,12 @@ public class VideoImpl implements IVideo, EventInterceptor {
     private Activity mActivity;
     private WebView mWebView;
     private static final String TAG = VideoImpl.class.getSimpleName();
-    private Set<Pair<Integer, Integer>> flags = null;
+    private Set<Pair<Integer, Integer>> mFlags = null;
 
     public VideoImpl(Activity mActivity, WebView webView) {
         this.mActivity = mActivity;
         this.mWebView = webView;
-        flags = new HashSet<>();
+        mFlags = new HashSet<>();
 
     }
 
@@ -57,13 +57,13 @@ public class VideoImpl implements IVideo, EventInterceptor {
         if ((mWindow.getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) == 0) {
             mPair = new Pair<>(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 0);
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            flags.add(mPair);
+            mFlags.add(mPair);
         }
 
         if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) && (mWindow.getAttributes().flags & WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED) == 0) {
             mPair = new Pair<>(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, 0);
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
-            flags.add(mPair);
+            mFlags.add(mPair);
         }
 
 
@@ -99,12 +99,12 @@ public class VideoImpl implements IVideo, EventInterceptor {
             mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
-        if (!flags.isEmpty()) {
-            for (Pair<Integer, Integer> mPair : flags) {
+        if (!mFlags.isEmpty()) {
+            for (Pair<Integer, Integer> mPair : mFlags) {
                 mActivity.getWindow().setFlags(mPair.second, mPair.first);
                 LogUtils.i(TAG, "f:" + mPair.first + "  s:" + mPair.second);
             }
-            flags.clear();
+            mFlags.clear();
         }
 
         moiveView.setVisibility(View.GONE);

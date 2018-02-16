@@ -16,33 +16,33 @@ public class HttpHeaders {
         return new HttpHeaders();
     }
 
-    private Map<String, String> headers = null;
+    private Map<String, String> mHeaders = null;
 
     HttpHeaders() {
-        headers = new ArrayMap<>();
+        mHeaders = new ArrayMap<>();
     }
 
     public Map<String, String> getHeaders() {
-        return headers;
+        return mHeaders;
     }
 
     public void additionalHttpHeader(String k, String v) {
-        headers.put(k, v);
+        mHeaders.put(k, v);
     }
 
     public void removeHttpHeader(String k) {
-        headers.remove(k);
+        mHeaders.remove(k);
     }
 
     public boolean isEmptyHeaders() {
-        return headers == null || headers.isEmpty();
+        return mHeaders == null || mHeaders.isEmpty();
     }
 
 
     @Override
     public String toString() {
         return "HttpHeaders{" +
-                "headers=" + headers +
+                "mHeaders=" + mHeaders +
                 '}';
     }
 }

@@ -16,7 +16,7 @@ public abstract class AgentWebUIController {
     public static boolean HAS_DESIGN_LIB = false;
     private Activity mActivity;
     private WebParentLayout mWebParentLayout;
-    private volatile boolean isBindWebParent = false;
+    private volatile boolean mIsBindWebParent = false;
     protected AgentWebUIController mAgentWebUIControllerDelegate;
     protected String TAG = this.getClass().getSimpleName();
 
@@ -44,8 +44,8 @@ public abstract class AgentWebUIController {
     }
 
     final synchronized void bindWebParent(WebParentLayout webParentLayout, Activity activity) {
-        if (!isBindWebParent) {
-            isBindWebParent = true;
+        if (!mIsBindWebParent) {
+            mIsBindWebParent = true;
             this.mWebParentLayout = webParentLayout;
             this.mActivity = activity;
             bindSupportWebParent(webParentLayout, activity);
