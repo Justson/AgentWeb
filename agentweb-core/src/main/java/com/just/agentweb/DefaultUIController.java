@@ -250,7 +250,7 @@ public class DefaultUIController extends AgentWebUIController {
     @Override
     public void onShowMainFrame() {
         if (mWebParentLayout != null) {
-            mWebParentLayout.hidePageMainFrameError();
+            mWebParentLayout.hideErrorLayout();
         }
     }
 
