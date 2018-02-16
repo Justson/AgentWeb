@@ -21,11 +21,11 @@ import android.widget.FrameLayout;
 
 public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIController> {
 	private AgentWebUIController mAgentWebUIController = null;
-	private String TAG = this.getClass().getSimpleName();
+	private static final String TAG = WebParentLayout.class.getSimpleName();
 	@LayoutRes
-	private int errorLayoutRes;
+	private int mErrorLayoutRes;
 	@IdRes
-	private int clickId = -1;
+	private int mClickId = -1;
 	private View mErrorView;
 	private WebView mWebView;
 	private FrameLayout mErrorLayout = null;
@@ -44,8 +44,8 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 		if (!(context instanceof Activity)) {
 			throw new IllegalArgumentException("WebParentLayout context must be activity or activity sub class .");
 		}
-		this.errorLayoutRes = R.layout.agentweb_error_page;
-		LogUtils.i(TAG, "errorLayoutRes:" + errorLayoutRes);
+		this.mErrorLayoutRes = R.layout.agentweb_error_page;
+		LogUtils.i(TAG, "mErrorLayoutRes:" + mErrorLayoutRes);
 	}
 
 	void bindController(AgentWebUIController agentWebUIController) {
@@ -64,7 +64,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 			container = this.mErrorLayout;
 		}
 		View clickView = null;
-		if (clickId != -1 && (clickView = container.findViewById(clickId)) != null) {
+		if (mClickId != -1 && (clickView = container.findViewById(mClickId)) != null) {
 			clickView.setClickable(true);
 		} else {
 			container.setClickable(true);
@@ -78,8 +78,8 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 		mFrameLayout.setId(R.id.mainframe_error_container_id);
 		if (this.mErrorView == null) {
 			LayoutInflater mLayoutInflater = LayoutInflater.from(getContext());
-			LogUtils.i(TAG, "errorLayoutRes:" + errorLayoutRes);
-			mLayoutInflater.inflate(errorLayoutRes, mFrameLayout, true);
+			LogUtils.i(TAG, "mErrorLayoutRes:" + mErrorLayoutRes);
+			mLayoutInflater.inflate(mErrorLayoutRes, mFrameLayout, true);
 		} else {
 			mFrameLayout.addView(mErrorView);
 		}
@@ -95,8 +95,8 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 		}
 
 		mFrameLayout.setVisibility(View.VISIBLE);
-		if (clickId != -1) {
-			final View clickView = mFrameLayout.findViewById(clickId);
+		if (mClickId != -1) {
+			final View clickView = mFrameLayout.findViewById(mClickId);
 			if (clickView != null) {
 				clickView.setOnClickListener(new OnClickListener() {
 					@Override
@@ -141,13 +141,13 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 	}
 
 	void setErrorLayoutRes(@LayoutRes int resLayout, @IdRes int id) {
-		this.clickId = id;
-		if (this.clickId <= 0) {
-			this.clickId = -1;
+		this.mClickId = id;
+		if (this.mClickId <= 0) {
+			this.mClickId = -1;
 		}
-		this.errorLayoutRes = resLayout;
-		if (this.errorLayoutRes <= 0) {
-			this.errorLayoutRes = R.layout.agentweb_error_page;
+		this.mErrorLayoutRes = resLayout;
+		if (this.mErrorLayoutRes <= 0) {
+			this.mErrorLayoutRes = R.layout.agentweb_error_page;
 		}
 	}
 

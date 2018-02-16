@@ -10,20 +10,20 @@ import android.os.Parcelable;
 
 public class FileParcel implements Parcelable {
 
-    int id;
-    private String contentPath;
-    private String fileBase64;
+    private int mId;
+    private String mContentPath;
+    private String mFileBase64;
 
     protected FileParcel(Parcel in) {
-        id = in.readInt();
-        contentPath = in.readString();
-        fileBase64 = in.readString();
+        mId = in.readInt();
+        mContentPath = in.readString();
+        mFileBase64 = in.readString();
     }
 
     public FileParcel(int id, String contentPath, String fileBase64) {
-        this.id = id;
-        this.contentPath = contentPath;
-        this.fileBase64 = fileBase64;
+        this.mId = id;
+        this.mContentPath = contentPath;
+        this.mFileBase64 = fileBase64;
 
     }
 
@@ -40,27 +40,27 @@ public class FileParcel implements Parcelable {
     };
 
     public int getId() {
-        return id;
+        return mId;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.mId = id;
     }
 
     public String getContentPath() {
-        return contentPath;
+        return mContentPath;
     }
 
     public void setContentPath(String contentPath) {
-        this.contentPath = contentPath;
+        this.mContentPath = contentPath;
     }
 
     public String getFileBase64() {
-        return fileBase64;
+        return mFileBase64;
     }
 
     public void setFileBase64(String fileBase64) {
-        this.fileBase64 = fileBase64;
+        this.mFileBase64 = fileBase64;
     }
 
     @Override
@@ -70,17 +70,17 @@ public class FileParcel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(contentPath);
-        dest.writeString(fileBase64);
+        dest.writeInt(mId);
+        dest.writeString(mContentPath);
+        dest.writeString(mFileBase64);
     }
 
     @Override
     public String toString() {
         return "FileParcel{" +
-                "id=" + id +
-                ", contentPath='" + contentPath + '\'' +
-                ", fileBase64='" + fileBase64 + '\'' +
+                "mId=" + mId +
+                ", mContentPath='" + mContentPath + '\'' +
+                ", mFileBase64='" + mFileBase64 + '\'' +
                 '}';
     }
 }

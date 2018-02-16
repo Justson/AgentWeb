@@ -20,29 +20,32 @@ public class DefaultWebCreator implements WebCreator {
 
     private Activity mActivity;
     private ViewGroup mViewGroup;
-    private boolean isNeedDefaultProgress;
-    private int index;
-    private BaseIndicatorView progressView;
+    private boolean mIsNeedDefaultProgress;
+    private int mIndex;
+    private BaseIndicatorView mProgressView;
     private ViewGroup.LayoutParams mLayoutParams = null;
-    private int color = -1;
-    private int height_dp;
-    private boolean isCreated = false;
+    private int mColor = -1;
+    /**
+     * 单位dp
+     */
+    private int mHeight;
+    private boolean mIsCreated = false;
     private IWebLayout mIWebLayout;
     private BaseIndicatorSpec mBaseIndicatorSpec;
     private WebView mWebView = null;
     private FrameLayout mFrameLayout = null;
-    private View targetProgress;
+    private View mTargetProgress;
     private static final String TAG = DefaultWebCreator.class.getSimpleName();
 
 
-    protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int height_dp, WebView webView, IWebLayout webLayout) {
+    protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int mHeight, WebView webView, IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
-        this.isNeedDefaultProgress = true;
-        this.index = index;
-        this.color = color;
+        this.mIsNeedDefaultProgress = true;
+        this.mIndex = index;
+        this.mColor = color;
         this.mLayoutParams = lp;
-        this.height_dp = height_dp;
+        this.mHeight = mHeight;
         this.mWebView = webView;
         this.mIWebLayout = webLayout;
     }
@@ -50,8 +53,8 @@ public class DefaultWebCreator implements WebCreator {
     protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, @Nullable WebView webView, IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
-        this.isNeedDefaultProgress = false;
-        this.index = index;
+        this.mIsNeedDefaultProgress = false;
+        this.mIndex = index;
         this.mLayoutParams = lp;
         this.mWebView = webView;
         this.mIWebLayout = webLayout;
@@ -60,10 +63,10 @@ public class DefaultWebCreator implements WebCreator {
     protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView, WebView webView, IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
-        this.isNeedDefaultProgress = false;
-        this.index = index;
+        this.mIsNeedDefaultProgress = false;
+        this.mIndex = index;
         this.mLayoutParams = lp;
-        this.progressView = progressView;
+        this.mProgressView = progressView;
         this.mWebView = webView;
         this.mIWebLayout = webLayout;
     }
@@ -79,30 +82,30 @@ public class DefaultWebCreator implements WebCreator {
 
 
     public View getTargetProgress() {
-        return targetProgress;
+        return mTargetProgress;
     }
 
     public void setTargetProgress(View targetProgress) {
-        this.targetProgress = targetProgress;
+        this.mTargetProgress = targetProgress;
     }
 
     @Override
     public DefaultWebCreator create() {
 
 
-        if (isCreated) {
+        if (mIsCreated) {
             return this;
         }
-        isCreated = true;
+        mIsCreated = true;
         ViewGroup mViewGroup = this.mViewGroup;
         if (mViewGroup == null) {
             mViewGroup = this.mFrameLayout = (FrameLayout) createLayout();
             mActivity.setContentView(mViewGroup);
         } else {
-            if (index == -1) {
+            if (mIndex == -1) {
                 mViewGroup.addView(this.mFrameLayout = (FrameLayout) createLayout(), mLayoutParams);
             } else {
-                mViewGroup.addView(this.mFrameLayout = (FrameLayout) createLayout(), index, mLayoutParams);
+                mViewGroup.addView(this.mFrameLayout = (FrameLayout) createLayout(), mIndex, mLayoutParams);
             }
         }
         return this;
@@ -135,23 +138,23 @@ public class DefaultWebCreator implements WebCreator {
         ViewStub mViewStub = new ViewStub(mActivity);
         mViewStub.setId(R.id.mainframe_error_viewsub_id);
         mFrameLayout.addView(mViewStub, new FrameLayout.LayoutParams(-1, -1));
-        if (isNeedDefaultProgress) {
+        if (mIsNeedDefaultProgress) {
             FrameLayout.LayoutParams lp = null;
             WebIndicator mWebIndicator = new WebIndicator(mActivity);
-            if (height_dp > 0) {
-                lp = new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, height_dp));
+            if (mHeight > 0) {
+                lp = new FrameLayout.LayoutParams(-2, AgentWebUtils.dp2px(mActivity, mHeight));
             } else {
                 lp = mWebIndicator.offerLayoutParams();
             }
-            if (color != -1) {
-                mWebIndicator.setColor(color);
+            if (mColor != -1) {
+                mWebIndicator.setColor(mColor);
             }
             lp.gravity = Gravity.TOP;
             mFrameLayout.addView((View) (this.mBaseIndicatorSpec = mWebIndicator), lp);
             mWebIndicator.setVisibility(View.GONE);
-        } else if (!isNeedDefaultProgress && progressView != null) {
-            mFrameLayout.addView((View) (this.mBaseIndicatorSpec = (BaseIndicatorSpec) progressView), progressView.offerLayoutParams());
-            progressView.setVisibility(View.GONE);
+        } else if (!mIsNeedDefaultProgress && mProgressView != null) {
+            mFrameLayout.addView((View) (this.mBaseIndicatorSpec = (BaseIndicatorSpec) mProgressView), mProgressView.offerLayoutParams());
+            mProgressView.setVisibility(View.GONE);
         }
         return mFrameLayout;
 

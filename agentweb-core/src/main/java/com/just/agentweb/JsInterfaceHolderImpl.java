@@ -14,14 +14,15 @@ import java.util.Set;
 public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
     private static final String TAG = JsInterfaceHolderImpl.class.getSimpleName();
+    private WebView mWebView;
+    private AgentWeb.SecurityType mSecurityType;
 
     static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
 
         return new JsInterfaceHolderImpl(webView, securityType);
     }
 
-    private WebView mWebView;
-    private AgentWeb.SecurityType mSecurityType;
+
 
     JsInterfaceHolderImpl(WebView webView, AgentWeb.SecurityType securityType) {
         super(securityType);

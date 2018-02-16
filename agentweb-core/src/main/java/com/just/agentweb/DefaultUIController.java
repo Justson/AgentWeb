@@ -21,8 +21,8 @@ public class DefaultUIController extends AgentWebUIController {
 
     private AlertDialog mAlertDialog;
     protected AlertDialog mConfirmDialog;
-    private JsPromptResult mPJsResult = null;
-    private JsResult cJsResult = null;
+    private JsPromptResult mJsPromptResult = null;
+    private JsResult mJsResult = null;
     private AlertDialog mPromptDialog = null;
     private Activity mActivity;
     private WebParentLayout mWebParentLayout;
@@ -160,15 +160,15 @@ public class DefaultUIController extends AgentWebUIController {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(mConfirmDialog);
-                            toCancelJsresult(cJsResult);
+                            toCancelJsresult(mJsResult);
                         }
                     })//
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(mConfirmDialog);
-                            if (cJsResult != null) {
-                                cJsResult.confirm();
+                            if (mJsResult != null) {
+                                mJsResult.confirm();
                             }
 
                         }
@@ -177,14 +177,14 @@ public class DefaultUIController extends AgentWebUIController {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             dialog.dismiss();
-                            toCancelJsresult(cJsResult);
+                            toCancelJsresult(mJsResult);
                         }
                     })
                     .create();
 
         }
         mConfirmDialog.setMessage(message);
-        this.cJsResult = jsResult;
+        this.mJsResult = jsResult;
         mConfirmDialog.show();
     }
 
@@ -206,7 +206,7 @@ public class DefaultUIController extends AgentWebUIController {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(mPromptDialog);
-                            toCancelJsresult(mPJsResult);
+                            toCancelJsresult(mJsPromptResult);
                         }
                     })//
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -214,8 +214,8 @@ public class DefaultUIController extends AgentWebUIController {
                         public void onClick(DialogInterface dialog, int which) {
                             toDismissDialog(mPromptDialog);
 
-                            if (mPJsResult != null){
-                                mPJsResult.confirm(et.getText().toString());
+                            if (mJsPromptResult != null){
+                                mJsPromptResult.confirm(et.getText().toString());
                             }
 
                         }
@@ -224,12 +224,12 @@ public class DefaultUIController extends AgentWebUIController {
                         @Override
                         public void onCancel(DialogInterface dialog) {
                             dialog.dismiss();
-                            toCancelJsresult(mPJsResult);
+                            toCancelJsresult(mJsPromptResult);
                         }
                     })
                     .create();
         }
-        this.mPJsResult = jsPromptResult;
+        this.mJsPromptResult = jsPromptResult;
         mPromptDialog.show();
     }
 

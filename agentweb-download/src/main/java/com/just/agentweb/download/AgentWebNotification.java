@@ -25,9 +25,9 @@ public class AgentWebNotification {
     private static final int FLAG = Notification.FLAG_INSISTENT;
     int requestCode = (int) SystemClock.uptimeMillis();
     private int NOTIFICATION_ID;
-    private NotificationManager nm;
-    private Notification notification;
-    private NotificationCompat.Builder cBuilder;
+    private NotificationManager mNotificationManager;
+    private Notification mNotification;
+    private NotificationCompat.Builder mBuilder;
     private Context mContext;
     private String mChannelId = "";
 
@@ -35,17 +35,17 @@ public class AgentWebNotification {
         this.NOTIFICATION_ID = ID;
         mContext = context;
         // 获取系统服务来初始化对象
-        nm = (NotificationManager) mContext
+        mNotificationManager = (NotificationManager) mContext
                 .getSystemService(NOTIFICATION_SERVICE);
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                cBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
+                mBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
                 NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId, AgentWebUtils.getApplicationName(context), NotificationManager.IMPORTANCE_DEFAULT);
                 NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
                 mNotificationManager.createNotificationChannel(mNotificationChannel);
             } else {
-                cBuilder = new NotificationCompat.Builder(mContext);
+                mBuilder = new NotificationCompat.Builder(mContext);
             }
         } catch (Throwable ignore) {
             if (LogUtils.isDebug()) {
@@ -80,27 +80,27 @@ public class AgentWebNotification {
 //        PendingIntent pIntent = PendingIntent.getActivity(mContext,
 //                requestCode, intent, FLAG);
 
-        cBuilder.setContentIntent(pendingIntent);// 该通知要启动的Intent
-        cBuilder.setSmallIcon(smallIcon);// 设置顶部状态栏的小图标
-        cBuilder.setTicker(ticker);// 在顶部状态栏中的提示信息
+        mBuilder.setContentIntent(pendingIntent);// 该通知要启动的Intent
+        mBuilder.setSmallIcon(smallIcon);// 设置顶部状态栏的小图标
+        mBuilder.setTicker(ticker);// 在顶部状态栏中的提示信息
 
-        cBuilder.setContentTitle(title);// 设置通知中心的标题
-        cBuilder.setContentText(content);// 设置通知中心中的内容
-        cBuilder.setWhen(System.currentTimeMillis());
+        mBuilder.setContentTitle(title);// 设置通知中心的标题
+        mBuilder.setContentText(content);// 设置通知中心中的内容
+        mBuilder.setWhen(System.currentTimeMillis());
 
 
 		/*
          * 将AutoCancel设为true后，当你点击通知栏的notification后，它会自动被取消消失,
 		 * 不设置的话点击消息后也不清除，但可以滑动删除
 		 */
-        cBuilder.setAutoCancel(true);
+        mBuilder.setAutoCancel(true);
         // 将Ongoing设为true 那么notification将不能滑动删除
         // notifyBuilder.setOngoing(true);
         /*
          * 从Android4.1开始，可以通过以下方法，设置notification的优先级，
 		 * 优先级越高的，通知排的越靠前，优先级低的，不会在手机最顶部的状态栏显示图标
 		 */
-        cBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+        mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
         /*
          * Notification.DEFAULT_ALL：铃声、闪光、震动均系统默认。
 		 * Notification.DEFAULT_SOUND：系统默认铃声。
@@ -110,7 +110,7 @@ public class AgentWebNotification {
 		 */
         int defaults = 0;
 
-        cBuilder.setDeleteIntent(pendingIntentCancel);
+        mBuilder.setDeleteIntent(pendingIntentCancel);
 
 
         if (sound) {
@@ -124,31 +124,31 @@ public class AgentWebNotification {
         }
 
 
-        cBuilder.setDefaults(defaults);
+        mBuilder.setDefaults(defaults);
     }
 
     public void setProgress(int maxprogress, int currentprogress, boolean exc) {
-        cBuilder.setProgress(maxprogress, currentprogress, exc);
+        mBuilder.setProgress(maxprogress, currentprogress, exc);
         sent();
     }
 
     public void setContentText(String text) {
 
-        cBuilder.setContentText(text);
+        mBuilder.setContentText(text);
     }
 
     public boolean hasDeleteContent() {
-        return cBuilder.getNotification().deleteIntent != null;
+        return mBuilder.getNotification().deleteIntent != null;
     }
 
     public void setDelecte(PendingIntent intent) {
-        cBuilder.getNotification().deleteIntent = intent;
+        mBuilder.getNotification().deleteIntent = intent;
     }
 
     public void setProgressFinish(String content, PendingIntent pendingIntent) {
-        cBuilder.setContentText(content);
-        cBuilder.setProgress(100, 100, false);
-        cBuilder.setContentIntent(pendingIntent);
+        mBuilder.setContentText(content);
+        mBuilder.setProgress(100, 100, false);
+        mBuilder.setContentIntent(pendingIntent);
         sent();
     }
 
@@ -158,10 +158,10 @@ public class AgentWebNotification {
     void sent() {
 
 
-        notification = cBuilder.build();
-        //LogUtils.i("Info","send:"+NOTIFICATION_ID+"  nocation:"+notification+"  ");
+        mNotification = mBuilder.build();
+        //LogUtils.i("Info","send:"+NOTIFICATION_ID+"  nocation:"+mNotification+"  ");
         // 发送该通知
-        nm.notify(NOTIFICATION_ID, notification);
+        mNotificationManager.notify(NOTIFICATION_ID, mNotification);
     }
 
 
@@ -169,6 +169,6 @@ public class AgentWebNotification {
      * 根据id清除通知
      */
     public void cancel(int id) {
-        nm.cancel(id);
+        mNotificationManager.cancel(id);
     }
 }
