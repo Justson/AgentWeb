@@ -7,7 +7,7 @@ import android.webkit.WebView;
  * Created by cenxiaozhong .
  * source code  https://github.com/Justson/AgentWeb
  *
- * 该类封装了 WebView 对事件的处理，主要是针对
+ * IEventHandler 对事件的处理，主要是针对
  * 视屏状态进行了处理 ， 如果当前状态为 视频状态
  * 则先退出视频。
  */

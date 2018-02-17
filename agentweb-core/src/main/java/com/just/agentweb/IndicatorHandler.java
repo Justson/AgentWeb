@@ -8,7 +8,7 @@ import android.webkit.WebView;
  */
 
 public class IndicatorHandler implements IndicatorController {
-    BaseIndicatorSpec mBaseIndicatorSpec;
+    private BaseIndicatorSpec mBaseIndicatorSpec;
 
     @Override
     public void progress(WebView v, int newProgress) {

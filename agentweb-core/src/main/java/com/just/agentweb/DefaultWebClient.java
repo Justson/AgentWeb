@@ -55,7 +55,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	private boolean webClientHelper = true;
 	/**
-	 * Android  WebViewClient ' path 用于反射，判断用户是否重写了某一个方法
+	 * Android  WebViewClient ' path 用于反射，判断用户是否重写了WebViewClient的某一个方法
 	 */
 	private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
 	/**
@@ -67,7 +67,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	public static final String WEBCHAT_PAY_SCHEME = "weixin://wap/pay?";
 	/**
-	 * 唤醒支付宝支付
+	 * 支付宝
 	 */
 	public static final String ALIPAYS_SCHEME = "alipays://";
 	/**
@@ -123,11 +123,11 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	private Method onMainFrameErrorMethod = null;
 	/**
-	 * PayTask 对象
+	 * Alipay PayTask 对象
 	 */
-	private Object mPayTask; //alipay
+	private Object mPayTask;
 	/**
-	 * sms scheme
+	 * SMS scheme
 	 */
 	public static final String SCHEME_SMS = "sms:";
 	/**
@@ -192,8 +192,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		}
 
 		LogUtils.i(TAG, "helper:" + webClientHelper + "  isInterceptUnkownScheme:" + isInterceptUnkownScheme);
-
-		if (url.startsWith(INTENT_SCHEME)) { // intent
+		// intent
+		if (url.startsWith(INTENT_SCHEME)) {
 			LogUtils.i(TAG, "" + INTENT_SCHEME + "   intercept:" + true);
 			handleIntentUrl(url);
 			return true;
@@ -238,11 +238,12 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 		LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
 		switch (schemeHandleType) {
-
-			case DERECT_OPEN_OTHER_PAGE: //直接打开其他App
+			//直接打开其他App
+			case DERECT_OPEN_OTHER_PAGE:
 				openOtherPage(url);
 				return true;
-			case ASK_USER_OPEN_OTHER_PAGE:  //咨询用户是否打开其他App
+			//咨询用户是否打开其他App
+			case ASK_USER_OPEN_OTHER_PAGE:
 				if (mAgentWebUIController.get() != null) {
 					mAgentWebUIController.get()
 							.onAskOpenPage(this.mWebView,
@@ -250,7 +251,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 									getCallback(url));
 				}
 				return true;
-			default://默认不打开
+			//默认不打开
+			default:
 				return false;
 		}
 	}
@@ -279,27 +281,31 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		if (!webClientHelper) {
 			return false;
 		}
-		if (handleLinked(url)) { //电话 ， 邮箱 ， 短信
+		//电话 ， 邮箱 ， 短信
+		if (handleLinked(url)) {
 			return true;
 		}
-		if (url.startsWith(INTENT_SCHEME)) { //Intent scheme
+		//Intent scheme
+		if (url.startsWith(INTENT_SCHEME)) {
 			handleIntentUrl(url);
 			return true;
 		}
-
-		if (url.startsWith(WEBCHAT_PAY_SCHEME)) { //微信支付
+		//微信支付
+		if (url.startsWith(WEBCHAT_PAY_SCHEME)) {
 			startActivity(url);
 			return true;
 		}
-		if (url.startsWith(ALIPAYS_SCHEME) && openOtherPage(url)) {//支付宝
+		//支付宝
+		if (url.startsWith(ALIPAYS_SCHEME) && openOtherPage(url)) {
 			return true;
 		}
-
-		if (queryActivies(url) > 0 && handleOtherScheme(url)) { //打开Scheme 相对应的页面
+		//打开Scheme 相对应的页面
+		if (queryActivies(url) > 0 && handleOtherScheme(url)) {
 			LogUtils.i(TAG, "intercept OtherAppScheme");
 			return true;
 		}
-		if (isInterceptUnkownScheme) { // 手机里面没有页面能匹配到该链接 ， 也就是无法处理的scheme返回True，拦截下来。
+		// 手机里面没有页面能匹配到该链接 ， 也就是无法处理的scheme返回True，拦截下来。
+		if (isInterceptUnkownScheme) {
 			LogUtils.i(TAG, "intercept InterceptUnkownScheme : " + url);
 			return true;
 		}
@@ -452,7 +458,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	}
 
 
-	//MainFrame Error
+	/**
+	 * MainFrame Error
+	 * @param view
+	 * @param errorCode
+	 * @param description
+	 * @param failingUrl
+	 */
 	@Override
 	public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 
@@ -480,11 +492,11 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		LogUtils.i(TAG, "onReceivedError:" + error.toString());
 	}
 
-	//
 	private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
 		LogUtils.i(TAG, "onMainFrameError:" + failingUrl + "  mWebViewClient:" + mWebViewClient);
 		mErrorUrlsSet.add(failingUrl);
-		if (this.mWebViewClient != null && webClientHelper) {  //下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
+		// 下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
+		if (this.mWebViewClient != null && webClientHelper) {
 			Method mMethod = this.onMainFrameErrorMethod;
 			if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, int.class, String.class, String.class)) != null) {
 				try {
