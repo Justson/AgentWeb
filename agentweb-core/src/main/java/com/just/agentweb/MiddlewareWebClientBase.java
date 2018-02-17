@@ -23,7 +23,7 @@ import android.webkit.WebViewClient;
  * @date 2017/12/15
  * @since 1.0.0
  */
-public class MiddlewareWebClientBase extends WrapperWebViewClient {
+public class MiddlewareWebClientBase extends WebViewClientDelegate {
     private MiddlewareWebClientBase mMiddleWrareWebClientBase;
     private String TAG = this.getClass().getSimpleName();
 
@@ -47,13 +47,13 @@ public class MiddlewareWebClientBase extends WrapperWebViewClient {
 
 
     @Override
-    final void setWebViewClient(WebViewClient webViewClient) {
-        super.setWebViewClient(webViewClient);
+    final void setDelegate(WebViewClient delegate) {
+        super.setDelegate(delegate);
 
     }
 
     final MiddlewareWebClientBase enq(MiddlewareWebClientBase middleWrareWebClientBase) {
-        setWebViewClient(middleWrareWebClientBase);
+        setDelegate(middleWrareWebClientBase);
         this.mMiddleWrareWebClientBase = middleWrareWebClientBase;
         return middleWrareWebClientBase;
     }

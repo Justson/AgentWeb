@@ -19,7 +19,7 @@ package com.just.agentweb;
 import android.support.v4.content.FileProvider;
 
 /**
- * @since 1.0.0
+ * @since 2.0.0
  * @author cenxiaozhong
  */
 public class AgentWebFileProvider extends FileProvider {

@@ -27,8 +27,7 @@ import android.webkit.WebView;
 /**
  *
  * 该类统一控制了与用户交互的界面
- * @update 4.0.0 ,WebDefaultSettingsManager rename to AbsAgentWebSettings
- * @since 1.0.0
+ * @since 3.0.0
  * @author cenxiaozhong
  */
 public abstract class AgentWebUIController {

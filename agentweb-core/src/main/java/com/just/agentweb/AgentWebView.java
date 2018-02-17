@@ -44,7 +44,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-
+/**
+ * @author cenxiaozhong
+ * @since 1.0.0
+ */
 public class AgentWebView extends WebView {
     private static final String TAG = AgentWebView.class.getSimpleName();
     private Map<String, JsCallJava> mJsCallJavas;
@@ -103,7 +106,7 @@ public class AgentWebView extends WebView {
     @Override
     public final void setWebChromeClient(WebChromeClient client) {
         AgentWebChrome mAgentWebChrome = new AgentWebChrome(this);
-        mAgentWebChrome.setWebChromeClient(client);
+        mAgentWebChrome.setDelegate(client);
         mFixedOnReceivedTitle.setWebChromeClient(client);
         super.setWebChromeClient(mAgentWebChrome);
         setWebChromeClientSupport(mAgentWebChrome);
@@ -116,7 +119,7 @@ public class AgentWebView extends WebView {
     @Override
     public final void setWebViewClient(WebViewClient client) {
         AgentWebClient mAgentWebClient = new AgentWebClient(this);
-        mAgentWebClient.setWebViewClient(client);
+        mAgentWebClient.setDelegate(client);
         super.setWebViewClient(mAgentWebClient);
         setWebViewClientSupport(mAgentWebClient);
     }

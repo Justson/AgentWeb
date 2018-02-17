@@ -26,7 +26,7 @@ import android.webkit.WebView;
 /**
  * @author cenxiaozhong
  * @date 2017/12/6
- * @since 1.0.0
+ * @since 3.0.0
  */
 public class AgentWebUIControllerImplBase extends AgentWebUIController {
 
