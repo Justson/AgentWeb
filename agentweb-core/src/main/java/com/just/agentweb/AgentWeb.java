@@ -305,7 +305,7 @@ public final class AgentWeb {
 		return this.mJsInterfaceHolder;
 	}
 
-	public IUrlLoader getLoader() {
+	public IUrlLoader getUrlLoader() {
 		return this.mIUrlLoader;
 	}
 
@@ -356,20 +356,19 @@ public final class AgentWeb {
 		mJavaObjects.put("agentWeb", mAgentWebJsInterfaceCompat = new AgentWebJsInterfaceCompat(this, mActivity));
 	}
 
-	private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int mIndicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
+	private WebCreator configWebCreator(BaseIndicatorView progressView, int index, ViewGroup.LayoutParams lp, int indicatorColor, int height_dp, WebView webView, IWebLayout webLayout) {
 
 		if (progressView != null && mEnableIndicator) {
 			return new DefaultWebCreator(mActivity, mViewGroup, lp, index, progressView, webView, webLayout);
 		} else {
 			return mEnableIndicator ?
-					new DefaultWebCreator(mActivity, mViewGroup, lp, index, mIndicatorColor, height_dp, webView, webLayout)
+					new DefaultWebCreator(mActivity, mViewGroup, lp, index, indicatorColor, height_dp, webView, webLayout)
 					: new DefaultWebCreator(mActivity, mViewGroup, lp, index, webView, webLayout);
 		}
 	}
 
-
 	private AgentWeb go(String url) {
-		this.getLoader().loadUrl(url);
+		this.getUrlLoader().loadUrl(url);
 		IndicatorController mIndicatorController = null;
 		if (!TextUtils.isEmpty(url) && (mIndicatorController = getIndicatorController()) != null && mIndicatorController.offerIndicator() != null) {
 			getIndicatorController().offerIndicator().show();
