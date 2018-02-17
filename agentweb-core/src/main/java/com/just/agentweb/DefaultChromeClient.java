@@ -338,7 +338,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
-//            valueCallbacks.onReceiveValue(new Uri[]{});
             return false;
         }
 
@@ -354,7 +353,12 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
     }
 
-    // Android  >= 4.1
+    /**
+     * Android  >= 4.1
+     * @param uploadFile ValueCallback ,  File URI callback
+     * @param acceptType
+     * @param capture
+     */
     @Override
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         /*believe me , i never want to do this */
@@ -427,11 +431,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
             return;
         }
 
-
         if (mIVideo != null){
             mIVideo.onShowCustomView(view, callback);
         }
-
 
     }
 

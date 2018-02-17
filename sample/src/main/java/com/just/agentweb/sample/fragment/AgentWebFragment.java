@@ -97,7 +97,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 		mAgentWeb = AgentWeb.with(this)//
 				.setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
-				.setIndicatorColorWithHeight(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
+				.useDefaultIndicator(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
 				.setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
 				.setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
 				.setWebChromeClient(mWebChromeClient) //WebChromeClient
@@ -120,7 +120,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		AgentWebConfig.debug();
 
 		initView(view);
-
 
 		//AgentWeb 4.0 开始，删除该类以及删除相关的API
 //        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
@@ -325,7 +324,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			//优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
 			if (url.startsWith("intent://") && url.contains("com.youku.phone"))
 				return true;
-	        /*else if (isAlipay(view, url))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
+		    /*else if (isAlipay(view, url))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
                 return true;*/
 
 

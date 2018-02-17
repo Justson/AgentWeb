@@ -48,7 +48,6 @@ public class AgentWebJsInterfaceCompat {
 		LogUtils.i(TAG, acceptType + "  " + mActivityWeakReference.get() + "  " + mReference.get());
 		if (mActivityWeakReference.get() != null && mReference.get() != null) {
 
-
 			AgentWebUtils.showFileChooserCompat(mActivityWeakReference.get(),
 					mReference.get().getWebCreator().getWebView(),
 					null,
