@@ -12,7 +12,7 @@
     <string name="agentweb_click_open">Tap to continue</string>
     <string name="agentweb_coming_soon_download">Coming soon to download the file</string>
     <string name="agentweb_camera">Camera</string>
-    <string name="agentweb_file_chooser">File</string>
+    <string name="agentweb_file_chooser">Files</string>
     <string name="agentweb_loading">Loading ...</string>
     <string name="agentweb_leave_app_and_go_other_page">leaving %s and opening another app?</string>
     <string name="agentweb_leave">Go away</string>

@@ -39,13 +39,13 @@ public class SonicSessionClientImpl extends SonicSessionClient {
 
     @Override
     public void loadUrl(String url, Bundle extraData) {
-        this.mAgentWeb.getLoader().loadUrl(url);
+        this.mAgentWeb.getUrlLoader().loadUrl(url);
 
     }
 
     @Override
     public void loadDataWithBaseUrl(String baseUrl, String data, String mimeType, String encoding, String historyUrl) {
-        this.mAgentWeb.getLoader().loadDataWithBaseURL(baseUrl,data,mimeType,encoding,historyUrl);
+        this.mAgentWeb.getUrlLoader().loadDataWithBaseURL(baseUrl,data,mimeType,encoding,historyUrl);
 
     }
 

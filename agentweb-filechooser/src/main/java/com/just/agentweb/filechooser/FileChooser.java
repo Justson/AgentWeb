@@ -636,7 +636,7 @@ public class FileChooser {
 		}
 	}
 
-	//必须执行在子线程, 会阻塞直到文件转换完成;
+	// 必须执行在子线程, 会阻塞直到文件转换完成;
 	public static Queue<FileParcel> convertFile(String[] paths) throws Exception {
 
 		if (paths == null || paths.length == 0) {

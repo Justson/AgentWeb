@@ -52,8 +52,25 @@ public class DefaultWebCreator implements WebCreator {
     private View mTargetProgress;
     private static final String TAG = DefaultWebCreator.class.getSimpleName();
 
-
-    protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, int color, int mHeight, WebView webView, IWebLayout webLayout) {
+	/**
+	 * 使用默认的进度条
+	 * @param activity
+	 * @param viewGroup
+	 * @param lp
+	 * @param index
+	 * @param color
+	 * @param mHeight
+	 * @param webView
+	 * @param webLayout
+	 */
+    protected DefaultWebCreator(@NonNull Activity activity,
+                                @Nullable ViewGroup viewGroup,
+                                ViewGroup.LayoutParams lp,
+                                int index,
+                                int color,
+                                int mHeight,
+                                WebView webView,
+                                IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
         this.mIsNeedDefaultProgress = true;
@@ -65,6 +82,15 @@ public class DefaultWebCreator implements WebCreator {
         this.mIWebLayout = webLayout;
     }
 
+	/**
+	 * 关闭进度条
+	 * @param activity
+	 * @param viewGroup
+	 * @param lp
+	 * @param index
+	 * @param webView
+	 * @param webLayout
+	 */
     protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, @Nullable WebView webView, IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;
@@ -75,6 +101,16 @@ public class DefaultWebCreator implements WebCreator {
         this.mIWebLayout = webLayout;
     }
 
+    /**
+     * 自定义Indicator
+     * @param activity
+     * @param viewGroup
+     * @param lp
+     * @param index
+     * @param progressView
+     * @param webView
+     * @param webLayout
+     */
     protected DefaultWebCreator(@NonNull Activity activity, @Nullable ViewGroup viewGroup, ViewGroup.LayoutParams lp, int index, BaseIndicatorView progressView, WebView webView, IWebLayout webLayout) {
         this.mActivity = activity;
         this.mViewGroup = viewGroup;

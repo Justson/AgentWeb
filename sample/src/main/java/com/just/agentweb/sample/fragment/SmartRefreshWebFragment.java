@@ -48,7 +48,7 @@ public class SmartRefreshWebFragment extends BounceWebFragment {
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                mAgentWeb.getLoader().reload();
+                mAgentWeb.getUrlLoader().reload();
 
                 mSmartRefreshLayout.postDelayed(new Runnable() {
                     @Override

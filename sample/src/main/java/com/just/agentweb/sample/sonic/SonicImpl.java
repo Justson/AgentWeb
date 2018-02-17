@@ -61,7 +61,7 @@ public class SonicImpl {
             sonicSessionClient.bindWebView(agentWeb);
             sonicSessionClient.clientReady();
         } else { // default mode
-            agentWeb.getLoader().loadUrl(url);
+            agentWeb.getUrlLoader().loadUrl(url);
         }
     }
 
