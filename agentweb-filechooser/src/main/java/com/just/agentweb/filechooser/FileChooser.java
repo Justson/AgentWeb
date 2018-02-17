@@ -77,7 +77,7 @@ public class FileChooser {
 	/**
 	 * 当前系统是否高于 Android 5.0 ；
 	 */
-	private boolean isAboveLollipop = false;
+	private boolean mIsAboveLollipop = false;
 	/**
 	 * WebChromeClient.FileChooserParams 封装了 Intent ，mAcceptType  等参数
 	 */
@@ -130,7 +130,7 @@ public class FileChooser {
 		this.mActivity = builder.mActivity;
 		this.mUriValueCallback = builder.mUriValueCallback;
 		this.mUriValueCallbacks = builder.mUriValueCallbacks;
-		this.isAboveLollipop = builder.isL;
+		this.mIsAboveLollipop = builder.mIsAboveLollipop;
 		this.mJsChannel = builder.mJsChannel;
 		this.mFileChooserParams = builder.mFileChooserParams;
 		if (this.mJsChannel) {
@@ -184,9 +184,9 @@ public class FileChooser {
 
 	private Intent getFilechooserIntent() {
 		Intent mIntent = null;
-		if (isAboveLollipop && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
+		if (mIsAboveLollipop && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
 			// 多选
-	        /*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
+		    /*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
                 mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }*/
 			return mIntent;
@@ -220,7 +220,7 @@ public class FileChooser {
 
 
 		// 是否直接打开文件选择器
-		if (this.isAboveLollipop && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
+		if (this.mIsAboveLollipop && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
 			boolean needCamera = false;
 			String[] types = this.mFileChooserParams.getAcceptTypes();
 			for (String typeTmp : types) {
@@ -257,7 +257,7 @@ public class FileChooser {
 	}
 
 
-	public Handler.Callback getCallBack() {
+	private Handler.Callback getCallBack() {
 		return new Handler.Callback() {
 			@Override
 			public boolean handleMessage(Message msg) {
@@ -386,7 +386,7 @@ public class FileChooser {
 		}
 
 		//5.0以上系统通过input标签获取文件
-		if (isAboveLollipop) {
+		if (mIsAboveLollipop) {
 			handleAboveLollipop(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), mCameraState);
 			return;
 		}
@@ -404,7 +404,7 @@ public class FileChooser {
 			handleBelowLollipop(data);
 		}
 
-        /*if (isAboveLollipop)
+        /*if (mIsAboveLollipop)
             handleAboveLollipop(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
         else if (mJsChannel)
             convertFileAndCallBack(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
@@ -706,7 +706,7 @@ public class FileChooser {
 		}
 	}
 
-	public static String convertFileParcelObjectsToJson(Collection<FileParcel> collection) {
+	static String convertFileParcelObjectsToJson(Collection<FileParcel> collection) {
 
 		if (collection == null || collection.size() == 0) {
 			return null;
@@ -785,7 +785,7 @@ public class FileChooser {
 		private Activity mActivity;
 		private ValueCallback<Uri> mUriValueCallback;
 		private ValueCallback<Uri[]> mUriValueCallbacks;
-		private boolean isL = false;
+		private boolean mIsAboveLollipop = false;
 		private WebChromeClient.FileChooserParams mFileChooserParams;
 		private boolean mJsChannel = false;
 		private WebView mWebView;
@@ -810,7 +810,7 @@ public class FileChooser {
 
 		public Builder setUriValueCallback(ValueCallback<Uri> uriValueCallback) {
 			mUriValueCallback = uriValueCallback;
-			isL = false;
+			mIsAboveLollipop = false;
 			mJsChannel = false;
 			mUriValueCallbacks = null;
 			return this;
@@ -818,7 +818,7 @@ public class FileChooser {
 
 		public Builder setUriValueCallbacks(ValueCallback<Uri[]> uriValueCallbacks) {
 			mUriValueCallbacks = uriValueCallbacks;
-			isL = true;
+			mIsAboveLollipop = true;
 			mUriValueCallback = null;
 			mJsChannel = false;
 			return this;
