@@ -44,7 +44,7 @@ public abstract class BaseAgentWebFragment extends Fragment {
         ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
         mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())
+                .useDefaultIndicator(getIndicatorColor(), getIndicatorHeight())
                 .setWebView(getWebView())
                 .setWebLayout(getWebLayout())
                 .setAgentWebWebSettings(getAgentWebSettings())

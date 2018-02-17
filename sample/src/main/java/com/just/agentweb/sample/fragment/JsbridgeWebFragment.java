@@ -44,7 +44,7 @@ public class JsbridgeWebFragment extends AgentWebFragment {
         mBridgeWebView=new BridgeWebView(getActivity());
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//
-                .setIndicatorColorWithHeight(-1, 2)//
+                .useDefaultIndicator(-1, 2)//
                 .setAgentWebWebSettings(getSettings())//
                 .setWebViewClient(new BridgeWebViewClient(mBridgeWebView))
                 .setWebChromeClient(mWebChromeClient)

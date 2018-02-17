@@ -51,7 +51,7 @@ public class CustomWebViewFragment extends AgentWebFragment {
         lp.weight=1f;
         mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent((ViewGroup) view, lp)//
-                .closeDefaultIndicator()//
+                .closeIndicator()//
                 .setWebViewClient(mWebViewClient)
                 .setWebView(mMarkdownWebView)
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)

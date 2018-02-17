@@ -61,7 +61,7 @@ public abstract class BaseAgentWebActivity extends AppCompatActivity {
         ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
         mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(-1, -1))
-                .setIndicatorColorWithHeight(getIndicatorColor(), getIndicatorHeight())
+                .useDefaultIndicator(getIndicatorColor(), getIndicatorHeight())
                 .setWebChromeClient(getWebChromeClient())
                 .setWebViewClient(getWebViewClient())
                 .setWebView(getWebView())
