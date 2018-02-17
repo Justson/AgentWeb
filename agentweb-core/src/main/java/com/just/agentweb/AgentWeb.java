@@ -402,7 +402,7 @@ public final class AgentWeb {
 
     private WebViewClient getWebViewClient() {
 
-        LogUtils.i(TAG, "getWebViewClient:" + this.mMiddleWrareWebClientBaseHeader);
+        LogUtils.i(TAG, "getDelegate:" + this.mMiddleWrareWebClientBaseHeader);
         DefaultWebClient mDefaultWebClient = DefaultWebClient
                 .createBuilder()
                 .setActivity(this.mActivity)
@@ -423,7 +423,7 @@ public final class AgentWeb {
                 count++;
             }
             LogUtils.i(TAG, "MiddlewareWebClientBase middleware count:" + count);
-            tail.setWebViewClient(mDefaultWebClient);
+            tail.setDelegate(mDefaultWebClient);
             return header;
         } else {
             return mDefaultWebClient;
@@ -535,7 +535,7 @@ public final class AgentWeb {
                 count++;
             }
             LogUtils.i(TAG, "MiddlewareWebClientBase middleware count:" + count);
-            tail.setWebChromeClient(mDefaultChromeClient);
+            tail.setDelegate(mDefaultChromeClient);
             return this.mTargetChromeClient = header;
         } else {
             return this.mTargetChromeClient = mDefaultChromeClient;

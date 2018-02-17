@@ -23,7 +23,7 @@ import android.webkit.WebChromeClient;
  * @date 2017/12/16
  * @since 3.0.0
  */
-public class MiddlewareWebChromeBase extends WebChromeClientWrapper {
+public class MiddlewareWebChromeBase extends WebChromeClientDelegate {
 
     private MiddlewareWebChromeBase mMiddlewareWebChromeBase;
 
@@ -36,12 +36,12 @@ public class MiddlewareWebChromeBase extends WebChromeClientWrapper {
     }
 
     @Override
-    final void setWebChromeClient(WebChromeClient webChromeClient) {
-        super.setWebChromeClient(webChromeClient);
+    final void setDelegate(WebChromeClient delegate) {
+        super.setDelegate(delegate);
     }
 
     final MiddlewareWebChromeBase enq(MiddlewareWebChromeBase middlewareWebChromeBase) {
-        setWebChromeClient(middlewareWebChromeBase);
+        setDelegate(middlewareWebChromeBase);
         this.mMiddlewareWebChromeBase = middlewareWebChromeBase;
         return this.mMiddlewareWebChromeBase;
     }

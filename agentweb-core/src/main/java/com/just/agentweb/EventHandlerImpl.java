@@ -26,7 +26,7 @@ import android.webkit.WebView;
  *
  * @author cenxiaozhong
  * @date 2017/6/3
- * @since 3.0.0
+ * @since 2.0.0
  */
 public class EventHandlerImpl implements IEventHandler {
 	private WebView mWebView;

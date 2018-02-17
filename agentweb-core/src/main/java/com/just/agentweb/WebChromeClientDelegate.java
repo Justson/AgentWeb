@@ -35,29 +35,30 @@ import android.webkit.WebView;
 import java.lang.reflect.Method;
 
 /**
+ * @update WebChromeClientWrapper rename to WebChromeClientDelegate
  * @author cenxiaozhong
  * @since 1.0.0
  */
-public class WebChromeClientWrapper extends WebChromeClient {
-    private WebChromeClient mWebChromeClient;
+public class WebChromeClientDelegate extends WebChromeClient {
+    private WebChromeClient mDelegate;
 
-    protected WebChromeClient getWebChromeClient() {
-        return mWebChromeClient;
+    protected WebChromeClient getDelegate() {
+        return mDelegate;
     }
 
-    public WebChromeClientWrapper(WebChromeClient webChromeClient) {
-        this.mWebChromeClient = webChromeClient;
+    public WebChromeClientDelegate(WebChromeClient webChromeClient) {
+        this.mDelegate = webChromeClient;
     }
 
-    void setWebChromeClient(WebChromeClient webChromeClient) {
-        this.mWebChromeClient = webChromeClient;
+    void setDelegate(WebChromeClient delegate) {
+        this.mDelegate = delegate;
     }
 
     @Override
     public void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onProgressChanged(view, newProgress);
+        if (this.mDelegate != null) {
+            this.mDelegate.onProgressChanged(view, newProgress);
             return;
         }
 
@@ -65,8 +66,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
 
     @Override
     public void onReceivedTitle(WebView view, String title) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onReceivedTitle(view, title);
+        if (this.mDelegate != null) {
+            this.mDelegate.onReceivedTitle(view, title);
             return;
         }
         super.onReceivedTitle(view, title);
@@ -74,8 +75,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
 
     @Override
     public void onReceivedIcon(WebView view, Bitmap icon) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onReceivedIcon(view, icon);
+        if (this.mDelegate != null) {
+            this.mDelegate.onReceivedIcon(view, icon);
             return;
         }
         super.onReceivedIcon(view, icon);
@@ -85,8 +86,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public void onReceivedTouchIconUrl(WebView view, String url,
                                        boolean precomposed) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onReceivedTouchIconUrl(view, url, precomposed);
+        if (this.mDelegate != null) {
+            this.mDelegate.onReceivedTouchIconUrl(view, url, precomposed);
             return;
         }
         super.onReceivedTouchIconUrl(view, url, precomposed);
@@ -94,8 +95,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
 
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onShowCustomView(view, callback);
+        if (this.mDelegate != null) {
+            this.mDelegate.onShowCustomView(view, callback);
             return;
         }
         super.onShowCustomView(view, callback);
@@ -105,8 +106,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public void onShowCustomView(View view, int requestedOrientation,
                                  CustomViewCallback callback) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onShowCustomView(view, requestedOrientation, callback);
+        if (this.mDelegate != null) {
+            this.mDelegate.onShowCustomView(view, requestedOrientation, callback);
             return;
         }
         super.onShowCustomView(view, requestedOrientation, callback);
@@ -115,8 +116,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
 
     @Override
     public void onHideCustomView() {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onHideCustomView();
+        if (this.mDelegate != null) {
+            this.mDelegate.onHideCustomView();
             return;
         }
         super.onHideCustomView();
@@ -125,16 +126,16 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public boolean onCreateWindow(WebView view, boolean isDialog,
                                   boolean isUserGesture, Message resultMsg) {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
+        if (this.mDelegate != null) {
+            return this.mDelegate.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
         }
         return super.onCreateWindow(view, isDialog, isUserGesture, resultMsg);
     }
 
     @Override
     public void onRequestFocus(WebView view) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onRequestFocus(view);
+        if (this.mDelegate != null) {
+            this.mDelegate.onRequestFocus(view);
             return;
         }
         super.onRequestFocus(view);
@@ -142,8 +143,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
 
     @Override
     public void onCloseWindow(WebView window) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onCloseWindow(window);
+        if (this.mDelegate != null) {
+            this.mDelegate.onCloseWindow(window);
             return;
         }
         super.onCloseWindow(window);
@@ -152,8 +153,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public boolean onJsAlert(WebView view, String url, String message,
                              JsResult result) {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onJsAlert(view, url, message, result);
+        if (this.mDelegate != null) {
+            return this.mDelegate.onJsAlert(view, url, message, result);
         }
         return super.onJsAlert(view, url, message, result);
     }
@@ -161,8 +162,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public boolean onJsConfirm(WebView view, String url, String message,
                                JsResult result) {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onJsConfirm(view, url, message, result);
+        if (this.mDelegate != null) {
+            return this.mDelegate.onJsConfirm(view, url, message, result);
         }
         return super.onJsConfirm(view, url, message, result);
     }
@@ -170,8 +171,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public boolean onJsPrompt(WebView view, String url, String message,
                               String defaultValue, JsPromptResult result) {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onJsPrompt(view, url, message, defaultValue, result);
+        if (this.mDelegate != null) {
+            return this.mDelegate.onJsPrompt(view, url, message, defaultValue, result);
         }
         return super.onJsPrompt(view, url, message, defaultValue, result);
     }
@@ -179,8 +180,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public boolean onJsBeforeUnload(WebView view, String url, String message,
                                     JsResult result) {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onJsBeforeUnload(view, url, message, result);
+        if (this.mDelegate != null) {
+            return this.mDelegate.onJsBeforeUnload(view, url, message, result);
         }
         return super.onJsBeforeUnload(view, url, message, result);
     }
@@ -194,8 +195,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
         // WebCore will interpret this that new quota was declined.
         //注掉
 //        quotaUpdater.updateQuota(quota);
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
+        if (this.mDelegate != null) {
+            this.mDelegate.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             return;
         }
         super.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
@@ -206,8 +207,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Deprecated
     public void onReachedMaxAppCacheSize(long requiredStorage, long quota,
                                          WebStorage.QuotaUpdater quotaUpdater) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
+        if (this.mDelegate != null) {
+            this.mDelegate.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
             return;
         }
         super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
@@ -216,8 +217,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin,
                                                    GeolocationPermissions.Callback callback) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onGeolocationPermissionsShowPrompt(origin, callback);
+        if (this.mDelegate != null) {
+            this.mDelegate.onGeolocationPermissionsShowPrompt(origin, callback);
             return;
         }
         super.onGeolocationPermissionsShowPrompt(origin, callback);
@@ -233,8 +234,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     public void onGeolocationPermissionsHidePrompt() {
 
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onGeolocationPermissionsHidePrompt();
+        if (this.mDelegate != null) {
+            this.mDelegate.onGeolocationPermissionsHidePrompt();
             return;
         }
 
@@ -245,8 +246,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onPermissionRequest(PermissionRequest request) {
 //        request.deny();
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onPermissionRequest(request);
+        if (this.mDelegate != null) {
+            this.mDelegate.onPermissionRequest(request);
             return;
         }
         super.onPermissionRequest(request);
@@ -256,8 +257,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onPermissionRequestCanceled(PermissionRequest request) {
 
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onPermissionRequestCanceled(request);
+        if (this.mDelegate != null) {
+            this.mDelegate.onPermissionRequestCanceled(request);
             return;
         }
         super.onPermissionRequestCanceled(request);
@@ -265,8 +266,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
 
     @Override
     public boolean onJsTimeout() {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onJsTimeout();
+        if (this.mDelegate != null) {
+            return this.mDelegate.onJsTimeout();
         }
         return super.onJsTimeout();
     }
@@ -274,8 +275,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @Override
     @Deprecated
     public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.onConsoleMessage(message, lineNumber, sourceID);
+        if (this.mDelegate != null) {
+            this.mDelegate.onConsoleMessage(message, lineNumber, sourceID);
             return;
         }
         super.onConsoleMessage(message, lineNumber, sourceID);
@@ -286,32 +287,32 @@ public class WebChromeClientWrapper extends WebChromeClient {
         /*onConsoleMessage(consoleMessage.message(), consoleMessage.lineNumber(),
                 consoleMessage.sourceId());*/
 
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onConsoleMessage(consoleMessage);
+        if (this.mDelegate != null) {
+            return this.mDelegate.onConsoleMessage(consoleMessage);
         }
         return super.onConsoleMessage(consoleMessage);
     }
 
     @Override
     public Bitmap getDefaultVideoPoster() {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.getDefaultVideoPoster();
+        if (this.mDelegate != null) {
+            return this.mDelegate.getDefaultVideoPoster();
         }
         return super.getDefaultVideoPoster();
     }
 
     @Override
     public View getVideoLoadingProgressView() {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.getVideoLoadingProgressView();
+        if (this.mDelegate != null) {
+            return this.mDelegate.getVideoLoadingProgressView();
         }
         return super.getVideoLoadingProgressView();
     }
 
     @Override
     public void getVisitedHistory(ValueCallback<String[]> callback) {
-        if (this.mWebChromeClient != null) {
-            this.mWebChromeClient.getVisitedHistory(callback);
+        if (this.mDelegate != null) {
+            this.mDelegate.getVisitedHistory(callback);
             return;
         }
         super.getVisitedHistory(callback);
@@ -321,8 +322,8 @@ public class WebChromeClientWrapper extends WebChromeClient {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
                                      FileChooserParams fileChooserParams) {
-        if (this.mWebChromeClient != null) {
-            return this.mWebChromeClient.onShowFileChooser(webView, filePathCallback, fileChooserParams);
+        if (this.mDelegate != null) {
+            return this.mDelegate.onShowFileChooser(webView, filePathCallback, fileChooserParams);
         }
         return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
     }
@@ -330,17 +331,17 @@ public class WebChromeClientWrapper extends WebChromeClient {
 
     // Android  >= 4.1
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
-        commonRefect(this.mWebChromeClient, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, ValueCallback.class, String.class, String.class);
+        commonRefect(this.mDelegate, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, ValueCallback.class, String.class, String.class);
     }
 
     //  Android < 3.0
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
-        commonRefect(this.mWebChromeClient, "openFileChooser", new Object[]{valueCallback}, ValueCallback.class);
+        commonRefect(this.mDelegate, "openFileChooser", new Object[]{valueCallback}, ValueCallback.class);
     }
 
     //  Android  >= 3.0
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
-        commonRefect(this.mWebChromeClient, "openFileChooser", new Object[]{valueCallback, acceptType}, ValueCallback.class, String.class);
+        commonRefect(this.mDelegate, "openFileChooser", new Object[]{valueCallback, acceptType}, ValueCallback.class, String.class);
     }
 
 
