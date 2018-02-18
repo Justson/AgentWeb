@@ -658,7 +658,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
         @Override
         public ExtraServiceImpl setOpenBreakPointDownload(boolean openBreakPointDownload) {
-            isOpenBreakPointDownload = openBreakPointDownload;
+            mIsOpenBreakPointDownload = openBreakPointDownload;
             return this;
         }
 

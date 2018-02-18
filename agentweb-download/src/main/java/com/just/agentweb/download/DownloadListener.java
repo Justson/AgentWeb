@@ -27,8 +27,8 @@ public interface DownloadListener {
 
     /**
      * @param url                下载链接
-     * @param userAgent          userAgent
-     * @param contentDisposition contentDisposition
+     * @param userAgent          mUserAgent
+     * @param contentDisposition mContentDisposition
      * @param mimetype           资源的媒体类型
      * @param contentLength      文件长度
      * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 或者是否强制下载。
