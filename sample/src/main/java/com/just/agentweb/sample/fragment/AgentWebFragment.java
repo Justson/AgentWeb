@@ -141,7 +141,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		//该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
 		@Override
 		public boolean intercept(String url, String[] permissions, String action) {
-			Log.i(TAG, "url:" + url + "  permission:" + mGson.toJson(permissions) + " action:" + action);
+			Log.i(TAG, "mUrl:" + url + "  permission:" + mGson.toJson(permissions) + " action:" + action);
 			return false;
 		}
 	};
@@ -156,8 +156,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		/**
 		 *
 		 * @param url                下载链接
-		 * @param userAgent          userAgent
-		 * @param contentDisposition contentDisposition
+		 * @param userAgent          mUserAgent
+		 * @param contentDisposition mContentDisposition
 		 * @param mimetype           资源的媒体类型
 		 * @param contentLength      文件长度
 		 * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 是否强制下载。
@@ -270,7 +270,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	/**
 	 * 页面空白，请检查scheme是否加上， scheme://host:port/path?query&query 。
 	 *
-	 * @return url
+	 * @return mUrl
 	 */
 	public String getUrl() {
 		String target = "";
@@ -325,8 +325,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			//优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
 			if (url.startsWith("intent://") && url.contains("com.youku.phone"))
 				return true;
-			/*else if (isAlipay(view, url))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
-                return true;*/
+			/*else if (isAlipay(view, mUrl))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
+	            return true;*/
 
 
 			return false;
@@ -335,7 +335,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		@Override
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
 
-			Log.i(TAG, "url:" + url + " onPageStarted  target:" + getUrl());
+			Log.i(TAG, "mUrl:" + url + " onPageStarted  target:" + getUrl());
 			timer.put(url, System.currentTimeMillis());
 			if (url.equals(getUrl())) {
 				pageNavigator(View.GONE);
@@ -356,7 +356,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			if (timer.get(url) != null) {
 				long overTime = System.currentTimeMillis();
 				Long startTime = timer.get(url);
-				Log.i(TAG, "  page url:" + url + "  used time:" + (overTime - startTime));
+				Log.i(TAG, "  page mUrl:" + url + "  used time:" + (overTime - startTime));
 			}
 
 		}
@@ -480,18 +480,18 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			switch (item.getItemId()) {
 
 				case R.id.refresh:
-					if (mAgentWeb != null){
+					if (mAgentWeb != null) {
 						mAgentWeb.getUrlLoader().reload(); //刷新
 					}
 					return true;
 
 				case R.id.copy:
-					if (mAgentWeb != null){
+					if (mAgentWeb != null) {
 						toCopy(AgentWebFragment.this.getContext(), mAgentWeb.getWebCreator().getWebView().getUrl());
 					}
 					return true;
 				case R.id.default_browser:
-					if (mAgentWeb != null){
+					if (mAgentWeb != null) {
 						openBrowser(mAgentWeb.getWebCreator().getWebView().getUrl());
 					}
 					return true;
@@ -582,10 +582,12 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	 * @return
 	 */
 	protected MiddlewareWebClientBase getMiddlewareWebClient() {
-		return this.mMiddleWareWebClient = new MiddlewareWebViewClient();
+		return this.mMiddleWareWebClient = new MiddlewareWebViewClient() {
+		};
 	}
 
 	protected MiddlewareWebChromeBase getMiddlewareWebChrome() {
-		return this.mMiddleWareWebChrome = new MiddlewareChromeClient();
+		return this.mMiddleWareWebChrome = new MiddlewareChromeClient() {
+		};
 	}
 }

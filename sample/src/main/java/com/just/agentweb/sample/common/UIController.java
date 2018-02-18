@@ -36,8 +36,8 @@ public class UIController extends AgentWebUIControllerImplBase {
 
     //修改文件选择器的弹窗
    /* @Override
-    public void showChooser(WebView view, String url, String[] ways, final Handler.Callback callback) {
-        //super.showChooser(view,url,ways,callback); //这行应该注释或者删除掉
+    public void showChooser(WebView view, String mUrl, String[] ways, final Handler.Callback callback) {
+        //super.showChooser(view,mUrl,ways,callback); //这行应该注释或者删除掉
         final AlertDialog mAlertDialog = new AlertDialog.Extra(mActivity)//
                 .setSingleChoiceItems(ways, -1, new DialogInterface.OnClickListener() {
                     @Override

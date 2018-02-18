@@ -66,7 +66,7 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
         this.mContext = context;
         this.mFile = file;
         this.mDownloadWR = new WeakReference<DownloadListenerAdapter>(downloadListeners);
-        this.isParallelDownload = extraServiceImpl.isParallelDownload();
+        this.mIsParallelDownload = extraServiceImpl.isParallelDownload();
         try {
             this.mCloneExtraService = extraServiceImpl.clone();
             this.mExtraServiceImpl = new WeakReference<DefaultDownloadImpl.ExtraServiceImpl>(extraServiceImpl);
@@ -178,11 +178,11 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
     public void destroy() {
         this.mIsDestroyed.set(true);
         this.mId = -1;
-        this.url = null;
+        this.mUrl = null;
         this.mContext = null;
         this.mFile = null;
         this.mDownloadWR = null;
-        this.isParallelDownload = false;
+        this.mIsParallelDownload = false;
         if (this.mExtraServiceImpl.get() != null) {
             this.mExtraServiceImpl.clear();
         }

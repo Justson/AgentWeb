@@ -17,8 +17,10 @@
 package com.just.agentweb.download;
 
 import android.support.annotation.DrawableRes;
+import android.util.ArrayMap;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author cenxiaozhong
@@ -26,169 +28,188 @@ import java.io.Serializable;
  */
 public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends DownloadingService {
 
-    void download(T t);
+	void download(T t);
 
 
-    /**
-     *
-     */
-    abstract class Extra implements Serializable {
+	/**
+	 *
+	 */
+	abstract class Extra implements Serializable {
 
 
-        protected boolean isForceDownload = false;
-        protected boolean enableIndicator = true;
-        @DrawableRes
-        protected int icon = -1;
-        protected boolean isParallelDownload = true;
-        protected boolean isOpenBreakPointDownload = true;
-        protected String url;
-        protected String userAgent;
-        protected String contentDisposition;
-        protected String mimetype;
-        protected long contentLength;
-        /**
-         * 超时时长默认为两小时
-         */
-        protected long downloadTimeOut = Long.MAX_VALUE;
-        // 连接超时， 默认10s
-        protected int connectTimeOut = 10 * 1000;
-        /**
-         * 以1KB位单位，默认60s ， 如果一秒钟无法从网络中读取数据满1KB，则抛出异常 。
-         */
-        protected int blockMaxTime = 10 * 60 * 1000;
+		protected boolean mIsForceDownload = false;
+		protected boolean mEnableIndicator = true;
+		@DrawableRes
+		protected int mIcon = -1;
+		protected boolean mIsParallelDownload = true;
+		protected boolean mIsOpenBreakPointDownload = true;
+		protected String mUrl;
+		protected String mUserAgent;
+		protected String mContentDisposition;
+		protected String mMimetype;
+		protected long mContentLength;
+		private Map<String, String> mHeaders;
+
+		public Map<String, String> getHeaders() {
+			return mHeaders;
+		}
+
+		public Extra setHeaders(Map<String, String> headers) {
+			mHeaders = headers;
+			return this;
+		}
+
+		/**
+		 * 超时时长默认为两小时
+		 */
+		protected long downloadTimeOut = Long.MAX_VALUE;
+		// 连接超时， 默认10s
+		protected int connectTimeOut = 10 * 1000;
+		/**
+		 * 以1KB位单位，默认60s ， 如果一秒钟无法从网络中读取数据满1KB，则抛出异常 。
+		 */
+		protected int blockMaxTime = 10 * 60 * 1000;
 
 
-        protected Extra() {
+		protected Extra() {
 
-        }
-
-
-        public int getBlockMaxTime() {
-            return blockMaxTime;
-        }
-
-        public Extra setBlockMaxTime(int blockMaxTime) {
-            this.blockMaxTime = blockMaxTime;
-            return this;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        protected Extra setUrl(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public String getUserAgent() {
-            return userAgent;
-        }
-
-        protected Extra setUserAgent(String userAgent) {
-            this.userAgent = userAgent;
-            return this;
-        }
-
-        public String getContentDisposition() {
-            return contentDisposition;
-        }
-
-        protected Extra setContentDisposition(String contentDisposition) {
-            this.contentDisposition = contentDisposition;
-            return this;
-        }
-
-        public String getMimetype() {
-            return mimetype;
-        }
-
-        protected Extra setMimetype(String mimetype) {
-            this.mimetype = mimetype;
-            return this;
-        }
-
-        public long getContentLength() {
-            return contentLength;
-        }
-
-        protected Extra setContentLength(long contentLength) {
-            this.contentLength = contentLength;
-            return this;
-        }
-
-        public boolean isForceDownload() {
-            return isForceDownload;
-        }
-
-        public boolean isEnableIndicator() {
-            return enableIndicator;
-        }
+		}
 
 
-        public long getDownloadTimeOut() {
-            return downloadTimeOut;
-        }
+		public int getBlockMaxTime() {
+			return blockMaxTime;
+		}
 
-        public Extra setDownloadTimeOut(long downloadTimeOut) {
-            this.downloadTimeOut = downloadTimeOut;
-            return this;
-        }
+		public Extra setBlockMaxTime(int blockMaxTime) {
+			this.blockMaxTime = blockMaxTime;
+			return this;
+		}
 
-        public int getConnectTimeOut() {
-            return connectTimeOut;
-        }
+		public String getUrl() {
+			return mUrl;
+		}
 
-        public Extra setConnectTimeOut(int connectTimeOut) {
-            this.connectTimeOut = connectTimeOut;
-            return this;
-        }
+		protected Extra setUrl(String url) {
+			this.mUrl = url;
+			return this;
+		}
 
-        public int getIcon() {
-            return icon;
-        }
+		public String getUserAgent() {
+			return mUserAgent;
+		}
 
-        public boolean isParallelDownload() {
-            return isParallelDownload;
-        }
+		protected Extra setUserAgent(String userAgent) {
+			this.mUserAgent = userAgent;
+			return this;
+		}
 
-        public boolean isOpenBreakPointDownload() {
-            return isOpenBreakPointDownload;
-        }
+		public String getContentDisposition() {
+			return mContentDisposition;
+		}
 
-        public Extra setOpenBreakPointDownload(boolean openBreakPointDownload) {
-            isOpenBreakPointDownload = openBreakPointDownload;
-            return this;
-        }
+		protected Extra setContentDisposition(String contentDisposition) {
+			this.mContentDisposition = contentDisposition;
+			return this;
+		}
 
-        public Extra setForceDownload(boolean force) {
-            isForceDownload = force;
-            return this;
-        }
+		public String getMimetype() {
+			return mMimetype;
+		}
 
-        public Extra setEnableIndicator(boolean enableIndicator) {
-            this.enableIndicator = enableIndicator;
-            return this;
-        }
+		protected Extra setMimetype(String mimetype) {
+			this.mMimetype = mimetype;
+			return this;
+		}
+
+		public long getContentLength() {
+			return mContentLength;
+		}
+
+		protected Extra setContentLength(long contentLength) {
+			this.mContentLength = contentLength;
+			return this;
+		}
+
+		public boolean isForceDownload() {
+			return mIsForceDownload;
+		}
+
+		public boolean isEnableIndicator() {
+			return mEnableIndicator;
+		}
 
 
-        public Extra setIcon(@DrawableRes int icon) {
-            this.icon = icon;
-            return this;
-        }
+		public long getDownloadTimeOut() {
+			return downloadTimeOut;
+		}
 
-        public Extra setParallelDownload(boolean parallelDownload) {
-            isParallelDownload = parallelDownload;
-            return this;
-        }
+		public Extra setDownloadTimeOut(long downloadTimeOut) {
+			this.downloadTimeOut = downloadTimeOut;
+			return this;
+		}
+
+		public int getConnectTimeOut() {
+			return connectTimeOut;
+		}
+
+		public Extra setConnectTimeOut(int connectTimeOut) {
+			this.connectTimeOut = connectTimeOut;
+			return this;
+		}
+
+		public int getIcon() {
+			return mIcon;
+		}
+
+		public boolean isParallelDownload() {
+			return mIsParallelDownload;
+		}
+
+		public boolean isOpenBreakPointDownload() {
+			return mIsOpenBreakPointDownload;
+		}
+
+		public Extra setOpenBreakPointDownload(boolean openBreakPointDownload) {
+			mIsOpenBreakPointDownload = openBreakPointDownload;
+			return this;
+		}
+
+		public Extra setForceDownload(boolean force) {
+			mIsForceDownload = force;
+			return this;
+		}
+
+		public Extra setEnableIndicator(boolean enableIndicator) {
+			this.mEnableIndicator = enableIndicator;
+			return this;
+		}
 
 
-    }
+		public Extra setIcon(@DrawableRes int icon) {
+			this.mIcon = icon;
+			return this;
+		}
 
-    abstract class ExtraService extends Extra {
+		public Extra setParallelDownload(boolean parallelDownload) {
+			mIsParallelDownload = parallelDownload;
+			return this;
+		}
 
-        public abstract void performReDownload();
-    }
+		public Extra addHeader(String key, String value) {
+			if (this.mHeaders == null) {
+				this.mHeaders = new ArrayMap<>();
+			}
+			this.mHeaders.put(key, value);
+			return this;
+		}
+
+
+	}
+
+	abstract class ExtraService extends Extra {
+
+		public abstract void performReDownload();
+	}
 
 
 }

@@ -24,6 +24,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
+import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
 
@@ -35,8 +36,17 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_MOVED_PERM;
+import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.HTTP_PARTIAL;
+import static java.net.HttpURLConnection.HTTP_SEE_OTHER;
+import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
 
 /**
  * @author cenxiaozhong
@@ -107,11 +117,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 
 	public static final int ERROR_NETWORK_CONNECTION = 0x400;
-	public static final int ERROR_NETWORK_STATUS = 0x401;
+	public static final int ERROR_CONNECTION_STATUS = 0x401;
 	public static final int ERROR_STORAGE = 0x402;
-	public static final int ERROR_SHUTDOWN = 0x405;
 	public static final int ERROR_TIME_OUT = 0x403;
 	public static final int ERROR_USER_CANCEL = 0x404;
+	public static final int ERROR_SHUTDOWN = 0x405;
+	public static final int ERROR_TOO_MANY_REDIRECTS = 0x406;
+	public static final int ERROR_SERVICE = 0x503;
 	public static final int SUCCESSFUL = 0x200;
 
 	private static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
@@ -119,12 +131,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	static {
 
 		DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
-		DOWNLOAD_MESSAGE.append(ERROR_NETWORK_STATUS, "Connection status code non-200 and non-206 .");
+		DOWNLOAD_MESSAGE.append(ERROR_CONNECTION_STATUS, "Response code non-200 and non-206 .");
 		DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
 		DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
 		DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
 		DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
 		DOWNLOAD_MESSAGE.append(ERROR_LOAD, "IO Error . ");
+		DOWNLOAD_MESSAGE.append(ERROR_SERVICE, "Service Unavailable .");
+		DOWNLOAD_MESSAGE.append(ERROR_TOO_MANY_REDIRECTS, "Too many redirects .");
 		DOWNLOAD_MESSAGE.append(SUCCESSFUL, "Download successful . ");
 	}
 
@@ -180,7 +194,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			}
 			result = doDownload();
 		} catch (IOException e) {
-			this.mThrowable = e;//发布
+			this.mThrowable = e;
 			if (LogUtils.isDebug()) {
 				e.printStackTrace();
 			}
@@ -189,39 +203,88 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		return result;
 	}
 
+	private static final int MAX_REDIRECTS = 6;
+	private static final int HTTP_TEMP_REDIRECT = 307;
+
 	private int doDownload() throws IOException {
 
-		HttpURLConnection mHttpURLConnection = createUrlConnection(mDownloadTask.getUrl());
-		if (mDownloadTask.getFile().length() > 0) {
-			mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mTmp = mDownloadTask.getFile().length()) + "-");
-		}
+		int redirectionCount = 1;
+		URL url = new URL(mDownloadTask.getUrl());
+		HttpURLConnection mHttpURLConnection = null;
 		try {
-			mHttpURLConnection.connect();
-			boolean isSeek = false;
-			int resCode = mHttpURLConnection.getResponseCode();
-			if (resCode != 200 && resCode != 206) {
-				return ERROR_NETWORK_STATUS;
-			} else {
-				isSeek = (resCode == 206);
-			}
 
-			LogUtils.i(TAG, "response code:" + mHttpURLConnection.getResponseCode());
-			return doDownload(mHttpURLConnection.getInputStream(), new LoadingRandomAccessFile(mDownloadTask.getFile()), isSeek);
+			for (; redirectionCount++ < MAX_REDIRECTS; ) {
+				if (null != mHttpURLConnection) {
+					mHttpURLConnection.disconnect();
+				}
+				mHttpURLConnection = createUrlConnection(url);
+				if (mDownloadTask.getFile().length() > 0) {
+					mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mTmp = mDownloadTask.getFile().length()) + "-");
+				}
+
+				final boolean isConnectionClose = "close".equalsIgnoreCase(
+						mHttpURLConnection.getHeaderField("Connection"));
+				final boolean isEncodingChunked = "chunked".equalsIgnoreCase(
+						mHttpURLConnection.getHeaderField("Transfer-Encoding"));
+
+				final boolean finishKnown = isConnectionClose || isEncodingChunked;
+				if (!finishKnown) {
+					LogUtils.e(TAG, "can't know size of download, giving up");
+					return ERROR_LOAD;
+				}
+				mHttpURLConnection.connect();
+				int responseCode = mHttpURLConnection.getResponseCode();
+				switch (responseCode) {
+
+					case HTTP_OK:
+					case HTTP_PARTIAL:
+						return transferData(mHttpURLConnection.getInputStream(),
+								new LoadingRandomAccessFile(mDownloadTask.getFile()),
+								(responseCode == HTTP_PARTIAL));
+					case HTTP_MOVED_PERM:
+					case HTTP_MOVED_TEMP:
+					case HTTP_SEE_OTHER:
+					case HTTP_TEMP_REDIRECT:
+						final String location = mHttpURLConnection.getHeaderField("Location");
+						url = new URL(url, location);
+						continue;
+					case HTTP_UNAVAILABLE:
+					case HTTP_INTERNAL_ERROR:
+						return ERROR_SERVICE;
+					default:
+						return ERROR_CONNECTION_STATUS;
+				}
+			}
+			return ERROR_TOO_MANY_REDIRECTS;
 		} finally {
-			if (mHttpURLConnection != null) {
+			if (null != mHttpURLConnection) {
 				mHttpURLConnection.disconnect();
 			}
 		}
-
 	}
 
-	private HttpURLConnection createUrlConnection(String url) throws IOException {
+	private HttpURLConnection createUrlConnection(URL url) throws IOException {
 
-		HttpURLConnection mHttpURLConnection = (HttpURLConnection) new URL(url).openConnection();
+		HttpURLConnection mHttpURLConnection = (HttpURLConnection) url.openConnection();
 		mHttpURLConnection.setRequestProperty("Accept", "application/*");
 		mHttpURLConnection.setConnectTimeout(mConnectTimeOut);
-		LogUtils.i(TAG, "getDownloadTimeOut:" + mDownloadTask.getDownloadTimeOut());
+		mHttpURLConnection.setInstanceFollowRedirects(false);
 		mHttpURLConnection.setReadTimeout(mDownloadTask.getBlockMaxTime());
+		mHttpURLConnection.setRequestProperty("Accept-Encoding", "identity");
+		mHttpURLConnection.setRequestProperty("Connection", "close");
+
+		mHttpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
+		Map<String, String> mHeaders = null;
+		if (null != (mHeaders = mDownloadTask.getExtraServiceImpl().getHeaders()) &&
+				!mHeaders.isEmpty()) {
+			for (Map.Entry<String, String> entry : mHeaders.entrySet()) {
+				if (TextUtils.isEmpty(entry.getKey()) || TextUtils.isEmpty(entry.getValue())) {
+					continue;
+				}
+				mHttpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+			}
+		}
+
 		return mHttpURLConnection;
 	}
 
@@ -372,7 +435,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 
-	private int doDownload(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
+	private int transferData(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
 
 		byte[] buffer = new byte[4 * 1024 * 10];
 		try (BufferedInputStream bis = new BufferedInputStream(inputStream, 4 * 1024 * 10);
