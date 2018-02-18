@@ -34,7 +34,7 @@ import static com.just.agentweb.AgentWebConfig.AGENTWEB_VERSION;
  * @author cenxiaozhong
  * @date 2018/5/13
  */
-public class AgentWebNotification {
+public class DownloadNotifier {
 
     private static final int FLAG = Notification.FLAG_INSISTENT;
     int requestCode = (int) SystemClock.uptimeMillis();
@@ -45,7 +45,7 @@ public class AgentWebNotification {
     private Context mContext;
     private String mChannelId = "";
 
-    public AgentWebNotification(Context context, int ID) {
+    public DownloadNotifier(Context context, int ID) {
         this.NOTIFICATION_ID = ID;
         mContext = context;
         // 获取系统服务来初始化对象
