@@ -16,12 +16,8 @@
 
 package com.just.agentweb.download;
 
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -116,6 +112,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	 */
 	private AtomicBoolean mIsShutdown = new AtomicBoolean(false);
 
+	private static final int MAX_REDIRECTS = 6;
+	private static final int HTTP_TEMP_REDIRECT = 307;
 
 	public static final int ERROR_NETWORK_CONNECTION = 0x400;
 	public static final int ERROR_CONNECTION_STATUS = 0x401;
@@ -160,14 +158,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		}
 
 		CancelDownloadInformer.getInformer().addRecipient(mDownloadTask.getUrl(), this);
-		buildNotifier(new Intent(), mDownloadTask.getId(),
-				mDownloadTask.getContext().getString(R.string.agentweb_coming_soon_download));
+		buildNotifier();
 	}
 
 	private boolean checkSpace() {
 
 		if (mDownloadTask.getLength() - mDownloadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
-			LogUtils.i(TAG, " 空间不足");
+			LogUtils.e(TAG, " 空间不足");
 			return false;
 		}
 		return true;
@@ -204,8 +201,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		return result;
 	}
 
-	private static final int MAX_REDIRECTS = 6;
-	private static final int HTTP_TEMP_REDIRECT = 307;
+
 
 	private int doDownload() throws IOException {
 
@@ -308,15 +304,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			}
 			this.mLastTime = currentTime;
 			if (null != mDownloadNotifier) {
-				if (!mDownloadNotifier.hasDeleteContent()) {
-					mDownloadNotifier.setDelecte(buildCancelContent(mDownloadTask.getContext().getApplicationContext(), mDownloadTask.getId()));
-				}
 				int mProgress = (int) ((mTmp + mLoaded) / Float.valueOf(mTotals) * 100);
-				mDownloadNotifier.setContentText(
-						mDownloadTask.getContext()
-								.getString(R.string.agentweb_current_downloading_progress, (mProgress + "%"))
-				);
-				mDownloadNotifier.setProgress(100, mProgress, false);
+				mDownloadNotifier.onDownloading(mProgress);
 			}
 			if (mDownloadTask.getDownloadListener() != null) {
 				mDownloadTask
@@ -334,7 +323,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	protected void onPostExecute(Integer integer) {
 
 		try {
-			LogUtils.i(TAG, "onPostExecute:" + integer);
 			CancelDownloadInformer.getInformer().removeRecipient(mDownloadTask.getUrl());
 
 			if (mDownloadTask.getDownloadListener() != null) {
@@ -348,32 +336,38 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
 			}
 			boolean isCancelDispose = doCallback(integer);
+			// Error
 			if (integer > 0x200) {
 
-				if (mDownloadNotifier != null) {
-					mDownloadNotifier.cancel(mDownloadTask.getId());
+				if (null != mDownloadNotifier) {
+					mDownloadNotifier.cancel();
 				}
 				return;
 			}
 			if (mDownloadTask.isEnableIndicator()) {
-				if (mDownloadNotifier != null) {
-					mDownloadNotifier.cancel(mDownloadTask.getId());
-				}
+//				if (null != mDownloadNotifier) {
+//
+//				}
 				if (isCancelDispose) {
+					mDownloadNotifier.cancel();
 					return;
 				}
-				Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
-				if (mIntent != null) {
-					if (!(mDownloadTask.getContext() instanceof Activity)) {
-						mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					}
-					PendingIntent rightPendIntent = PendingIntent
-							.getActivity(mDownloadTask.getContext(),
-									mDownloadTask.getId() << 4, mIntent,
-									PendingIntent.FLAG_UPDATE_CURRENT);
-					mDownloadNotifier.setProgressFinish(mDownloadTask.getContext().getString(R.string.agentweb_click_open), rightPendIntent);
+//				Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
+//				if (mIntent != null) {
+//					if (!(mDownloadTask.getContext() instanceof Activity)) {
+//						mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//					}
+//					PendingIntent rightPendIntent = PendingIntent
+//							.getActivity(mDownloadTask.getContext(),
+//									mDownloadTask.getId() << 4, mIntent,
+//									PendingIntent.FLAG_UPDATE_CURRENT);
+//					mDownloadNotifier.setProgressFinish(mDownloadTask.getContext().getString(R.string.agentweb_click_open), rightPendIntent);
+//				}
+//				return;
+
+				if (null != mDownloadNotifier) {
+					mDownloadNotifier.onDownloadFinished();
 				}
-				return;
 			}
 		} catch (Throwable throwable) {
 			if (LogUtils.isDebug()) {
@@ -401,54 +395,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 
-	private void buildNotifier(Intent intent, int id, String progressHint) {
+	private void buildNotifier() {
 
 		Context mContext = mDownloadTask.getContext().getApplicationContext();
 		if (mContext != null && mDownloadTask.isEnableIndicator()) {
-
-			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			PendingIntent rightPendIntent = PendingIntent.getActivity(mContext,
-					0x33 * id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-			int smallIcon = mDownloadTask.getDrawableRes();
-			String ticker = mContext.getString(R.string.agentweb_trickter);
-			mDownloadNotifier = new DownloadNotifier(mContext, id);
-
-			String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ?
-					mContext.getString(R.string.agentweb_file_download) :
-					mDownloadTask.getFile().getName();
-
-			if (title.length() > 20) {
-				title = "..." + title.substring(title.length() - 20, title.length());
-			}
-			mDownloadNotifier.notifyProgress(rightPendIntent,
-					smallIcon,
-					ticker,
-					title,
-					progressHint,
-					false,
-					false,
-					false,
-					buildCancelContent(mContext, id));
-
-			Intent cancelBroadcastIntent = new Intent(NotificationCancelReceiver.ACTION);
-			NotificationCompat.Action mAction = new NotificationCompat.Action(-1,
-					mContext.getString(android.R.string.cancel),
-					buildCancelContent(mContext, mDownloadTask.getId()));
-			mDownloadNotifier.addAction(mAction);
-			mDownloadNotifier.sent();
+			mDownloadNotifier = new DownloadNotifier(mContext, mDownloadTask.getId());
+			mDownloadNotifier.initBuilder(mDownloadTask);
+			mDownloadNotifier.onPreDownload();
 		}
-	}
-
-
-	private PendingIntent buildCancelContent(Context context, int id) {
-
-		Intent intentCancel = new Intent(context, NotificationCancelReceiver.class);
-		intentCancel.setAction("com.agentweb.cancelled");
-		intentCancel.putExtra("type", "type");
-		intentCancel.putExtra("TAG", mDownloadTask.getUrl());
-		PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id << 3, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
-		LogUtils.i(TAG, "id<<3:" + (id << 3));
-		return pendingIntentCancel;
 	}
 
 
@@ -559,7 +513,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			super.write(buffer, offset, count);
 			mLoaded += count;
 			publishProgress(0);
-
 		}
 	}
 

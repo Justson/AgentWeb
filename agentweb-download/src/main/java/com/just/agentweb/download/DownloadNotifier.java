@@ -16,17 +16,24 @@
 
 package com.just.agentweb.download;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.just.agentweb.AgentWebConfig.AGENTWEB_VERSION;
@@ -39,15 +46,18 @@ public class DownloadNotifier {
 
 	private static final int FLAG = Notification.FLAG_INSISTENT;
 	int requestCode = (int) SystemClock.uptimeMillis();
-	private int NOTIFICATION_ID;
+	private int mNotificationId;
 	private NotificationManager mNotificationManager;
 	private Notification mNotification;
 	private NotificationCompat.Builder mBuilder;
 	private Context mContext;
 	private String mChannelId = "";
 
-	DownloadNotifier(Context context, int ID) {
-		this.NOTIFICATION_ID = ID;
+	private static final String TAG = DownloadNotifier.class.getSimpleName();
+	private NotificationCompat.Action mAction;
+
+	DownloadNotifier(Context context, int id) {
+		this.mNotificationId = id;
 		mContext = context;
 		// 获取系统服务来初始化对象
 		mNotificationManager = (NotificationManager) mContext
@@ -66,83 +76,52 @@ public class DownloadNotifier {
 			if (LogUtils.isDebug()) {
 				ignore.printStackTrace();
 			}
+			throw ignore;
+
 		}
-
 	}
 
+	private String url;
+	private File mFile;
 
-	public void notifyProgress(PendingIntent pendingIntent, int smallIcon,
-	                           String ticker, String title, String content, boolean sound, boolean vibrate, boolean lights, PendingIntent pendingIntentCancel) {
+	void initBuilder(DownloadTask downloadTask) {
+		String title = TextUtils.isEmpty(downloadTask.getFile().getName()) ?
+				mContext.getString(R.string.agentweb_file_download) :
+				downloadTask.getFile().getName();
 
-		setCompatBuilder(pendingIntent, smallIcon, ticker, title, content, sound, vibrate, lights, pendingIntentCancel);
-
-	}
-
-	/**
-	 * 设置在顶部通知栏中的各种信息
-	 *
-	 * @param pendingIntent
-	 * @param smallIcon
-	 * @param ticker
-	 * @param pendingIntentCancel
-	 */
-	private void setCompatBuilder(PendingIntent pendingIntent, int smallIcon, String ticker,
-	                              String title, String content, boolean sound, boolean vibrate, boolean lights, PendingIntent pendingIntentCancel) {
-//        // 如果当前Activity启动在前台，则不开启新的Activity。
-//        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//        // 当设置下面PendingIntent.FLAG_UPDATE_CURRENT这个参数的时候，常常使得点击通知栏没效果，你需要给notification设置一个独一无二的requestCode
-//        // 将Intent封装进PendingIntent中，点击通知的消息后，就会启动对应的程序
-//        PendingIntent pIntent = PendingIntent.getActivity(mContext,
-//                requestCode, intent, FLAG);
-//		mBuilder.setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), smallIcon));
-		mBuilder.setContentIntent(pendingIntent);// 该通知要启动的Intent
-		mBuilder.setSmallIcon(smallIcon);// 设置顶部状态栏的小图标
-		mBuilder.setTicker(ticker);// 在顶部状态栏中的提示信息
-
-		mBuilder.setContentTitle(title);// 设置通知中心的标题
-		mBuilder.setContentText(content);// 设置通知中心中的内容
+		if (title.length() > 20) {
+			title = "..." + title.substring(title.length() - 20, title.length());
+		}
+		mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 200, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT));
+		// 设置顶部状态栏的小图标
+		mBuilder.setSmallIcon(downloadTask.getDrawableRes());
+		// 在顶部状态栏中的提示信息
+		mBuilder.setTicker(mContext.getString(R.string.agentweb_trickter));
+		// 设置通知中心的标题
+		mBuilder.setContentTitle(title);
+		// 设置通知中心中的内容
+		mBuilder.setContentText(mContext.getString(R.string.agentweb_coming_soon_download));
 		mBuilder.setWhen(System.currentTimeMillis());
-
-
-		/*
-		 * 将AutoCancel设为true后，当你点击通知栏的notification后，它会自动被取消消失,
-		 * 不设置的话点击消息后也不清除，但可以滑动删除
-		 */
 		mBuilder.setAutoCancel(true);
-		// 将Ongoing设为true 那么notification将不能滑动删除
-		// notifyBuilder.setOngoing(true);
-		/*
-		 * 从Android4.1开始，可以通过以下方法，设置notification的优先级，
-		 * 优先级越高的，通知排的越靠前，优先级低的，不会在手机最顶部的状态栏显示图标
-		 */
 		mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
-	    /*
-         * Notification.DEFAULT_ALL：铃声、闪光、震动均系统默认。
-		 * Notification.DEFAULT_SOUND：系统默认铃声。
-		 * Notification.DEFAULT_VIBRATE：系统默认震动。
-		 * Notification.DEFAULT_LIGHTS：系统默认闪光。
-		 * notifyBuilder.setDefaults(Notification.DEFAULT_ALL);
-		 */
 		int defaults = 0;
-
-		mBuilder.setDeleteIntent(pendingIntentCancel);
-
-
-		if (sound) {
-			defaults |= Notification.DEFAULT_SOUND;
-		}
-		if (vibrate) {
-			defaults |= Notification.DEFAULT_VIBRATE;
-		}
-		if (lights) {
-			defaults |= Notification.DEFAULT_LIGHTS;
-		}
-
+		this.url = downloadTask.getUrl();
+		this.mFile = downloadTask.getFile();
+		mBuilder.setDeleteIntent(buildCancelContent(mContext, downloadTask.getId(), downloadTask.getUrl()));
 		mBuilder.setDefaults(defaults);
-
 	}
 
-	public void setProgress(int maxprogress, int currentprogress, boolean exc) {
+	private PendingIntent buildCancelContent(Context context, int id, String url) {
+
+		Intent intentCancel = new Intent(context, NotificationCancelReceiver.class);
+		intentCancel.setAction(NotificationCancelReceiver.ACTION);
+		intentCancel.putExtra("type", "type");
+		intentCancel.putExtra("TAG", url);
+		PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id << 3, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
+		LogUtils.i(TAG, "id<<3:" + (id << 3));
+		return pendingIntentCancel;
+	}
+	private void setProgress(int maxprogress, int currentprogress, boolean exc) {
 		mBuilder.setProgress(maxprogress, currentprogress, exc);
 		sent();
 	}
@@ -160,11 +139,8 @@ public class DownloadNotifier {
 		mBuilder.getNotification().deleteIntent = intent;
 	}
 
-	public void setProgressFinish(String content, PendingIntent pendingIntent) {
-		mBuilder.setContentText(content);
-		mBuilder.setProgress(100, 100, false);
-		mBuilder.setContentIntent(pendingIntent);
-		sent();
+	private void setProgressFinish(String content, PendingIntent pendingIntent) {
+
 	}
 
 	public void addAction(NotificationCompat.Action action) {
@@ -174,32 +150,87 @@ public class DownloadNotifier {
 	/**
 	 * 发送通知
 	 */
-	void sent() {
+	private void sent() {
 
 
 		mNotification = mBuilder.build();
-		//LogUtils.i("Info","send:"+NOTIFICATION_ID+"  nocation:"+mNotification+"  ");
+		//LogUtils.i("Info","send:"+mNotificationId+"  nocation:"+mNotification+"  ");
 		// 发送该通知
-		mNotificationManager.notify(NOTIFICATION_ID, mNotification);
+		mNotificationManager.notify(mNotificationId, mNotification);
 	}
 
 
-	void onPreDownload(){
-
+	void onPreDownload() {
+		sent();
 	}
 
-	void onDownloading(int progress){
+	private volatile boolean mAddedCancelAction = false;
 
+	void onDownloading(int progress) {
+
+		if (!this.hasDeleteContent()) {
+			this.setDelecte(buildCancelContent(mContext, mNotificationId, url));
+		}
+		if (!mAddedCancelAction) {
+			mAddedCancelAction = true;
+			mAction = new NotificationCompat.Action(-1,
+					mContext.getString(android.R.string.cancel),
+					buildCancelContent(mContext, mNotificationId, url));
+			mBuilder.addAction(mAction);
+		}
+		this.setContentText(
+				mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
+		this.setProgress(100, progress, false);
+		sent();
 	}
-	void onDownloadFinished(){
 
+	void onDownloadFinished() {
+
+		Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
+
+
+		try {
+			/**
+			 * 用反射获取 mActions 该Field
+			 */
+			Class<? extends NotificationCompat.Builder> clazz = mBuilder.getClass();
+			Field mField = clazz.getDeclaredField("mActions");
+			ArrayList<NotificationCompat.Action> mActions = null;
+			if (null != mField) {
+				mActions = (ArrayList<NotificationCompat.Action>) mField.get(mBuilder);
+			}
+			int index = -1;
+			if (null != mActions && (index = mActions.indexOf(mAction)) != -1) {
+				mActions.remove(index);
+			}
+
+		} catch (Throwable ignore) {
+			if (LogUtils.isDebug()) {
+				ignore.printStackTrace();
+			}
+		}
+
+		if (null != mIntent) {
+			if (!(mContext instanceof Activity)) {
+				mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			}
+			PendingIntent rightPendIntent = PendingIntent
+					.getActivity(mContext,
+							mNotificationId << 4, mIntent,
+							PendingIntent.FLAG_UPDATE_CURRENT);
+
+			mBuilder.setContentText(mContext.getString(R.string.agentweb_click_open));
+			mBuilder.setProgress(100, 100, false);
+			mBuilder.setContentIntent(rightPendIntent);
+			sent();
+		}
 	}
 
 
 	/**
 	 * 根据id清除通知
 	 */
-	public void cancel(int id) {
-		mNotificationManager.cancel(id);
+	public void cancel() {
+		mNotificationManager.cancel(mNotificationId);
 	}
 }
