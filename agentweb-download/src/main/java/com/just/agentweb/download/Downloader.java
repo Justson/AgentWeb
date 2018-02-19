@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -159,7 +160,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		}
 
 		CancelDownloadInformer.getInformer().addRecipient(mDownloadTask.getUrl(), this);
-		buildNotify(new Intent(), mDownloadTask.getId(),
+		buildNotifier(new Intent(), mDownloadTask.getId(),
 				mDownloadTask.getContext().getString(R.string.agentweb_coming_soon_download));
 	}
 
@@ -400,7 +401,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 
-	private void buildNotify(Intent intent, int id, String progressHint) {
+	private void buildNotifier(Intent intent, int id, String progressHint) {
 
 		Context mContext = mDownloadTask.getContext().getApplicationContext();
 		if (mContext != null && mDownloadTask.isEnableIndicator()) {
@@ -412,12 +413,28 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			String ticker = mContext.getString(R.string.agentweb_trickter);
 			mDownloadNotifier = new DownloadNotifier(mContext, id);
 
-			String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ? mContext.getString(R.string.agentweb_file_download) : mDownloadTask.getFile().getName();
+			String title = TextUtils.isEmpty(mDownloadTask.getFile().getName()) ?
+					mContext.getString(R.string.agentweb_file_download) :
+					mDownloadTask.getFile().getName();
 
 			if (title.length() > 20) {
 				title = "..." + title.substring(title.length() - 20, title.length());
 			}
-			mDownloadNotifier.notifyProgress(rightPendIntent, smallIcon, ticker, title, progressHint, false, false, false, buildCancelContent(mContext, id));
+			mDownloadNotifier.notifyProgress(rightPendIntent,
+					smallIcon,
+					ticker,
+					title,
+					progressHint,
+					false,
+					false,
+					false,
+					buildCancelContent(mContext, id));
+
+			Intent cancelBroadcastIntent = new Intent(NotificationCancelReceiver.ACTION);
+			NotificationCompat.Action mAction = new NotificationCompat.Action(-1,
+					mContext.getString(android.R.string.cancel),
+					buildCancelContent(mContext, mDownloadTask.getId()));
+			mDownloadNotifier.addAction(mAction);
 			mDownloadNotifier.sent();
 		}
 	}
