@@ -115,36 +115,28 @@ public class DownloadNotifier {
 
 		Intent intentCancel = new Intent(context, NotificationCancelReceiver.class);
 		intentCancel.setAction(NotificationCancelReceiver.ACTION);
-		intentCancel.putExtra("type", "type");
 		intentCancel.putExtra("TAG", url);
 		PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id << 3, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
 		LogUtils.i(TAG, "id<<3:" + (id << 3));
 		return pendingIntentCancel;
 	}
+
 	private void setProgress(int maxprogress, int currentprogress, boolean exc) {
 		mBuilder.setProgress(maxprogress, currentprogress, exc);
 		sent();
 	}
 
-	public void setContentText(String text) {
+	private void setContentText(String text) {
 
-		mBuilder.setContentText(text);
+
 	}
 
-	public boolean hasDeleteContent() {
+	private boolean hasDeleteContent() {
 		return mBuilder.getNotification().deleteIntent != null;
 	}
 
-	public void setDelecte(PendingIntent intent) {
+	private void setDelecte(PendingIntent intent) {
 		mBuilder.getNotification().deleteIntent = intent;
-	}
-
-	private void setProgressFinish(String content, PendingIntent pendingIntent) {
-
-	}
-
-	public void addAction(NotificationCompat.Action action) {
-		mBuilder.addAction(action);
 	}
 
 	/**
@@ -178,15 +170,14 @@ public class DownloadNotifier {
 					buildCancelContent(mContext, mNotificationId, url));
 			mBuilder.addAction(mAction);
 		}
-		this.setContentText(
-				mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
+		mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
 		this.setProgress(100, progress, false);
 		sent();
 	}
 
 	void onDownloadFinished() {
 
-		Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
+
 
 
 		try {
@@ -209,7 +200,8 @@ public class DownloadNotifier {
 				ignore.printStackTrace();
 			}
 		}
-
+		Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
+		setDelecte(null);
 		if (null != mIntent) {
 			if (!(mContext instanceof Activity)) {
 				mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

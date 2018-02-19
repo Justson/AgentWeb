@@ -66,7 +66,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	/**
 	 *
 	 */
-	private long mTmp = 0;
+	private long mLastLoaded = 0L;
 	/**
 	 * 耗时
 	 */
@@ -216,7 +216,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				}
 				mHttpURLConnection = createUrlConnection(url);
 				if (mDownloadTask.getFile().length() > 0) {
-					mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mTmp = mDownloadTask.getFile().length()) + "-");
+					mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mLastLoaded = mDownloadTask.getFile().length()) + "-");
 				}
 
 				final boolean isConnectionClose = "close".equalsIgnoreCase(
@@ -304,13 +304,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			}
 			this.mLastTime = currentTime;
 			if (null != mDownloadNotifier) {
-				int mProgress = (int) ((mTmp + mLoaded) / Float.valueOf(mTotals) * 100);
+				int mProgress = (int) ((mLastLoaded + mLoaded) / Float.valueOf(mTotals) * 100);
 				mDownloadNotifier.onDownloading(mProgress);
 			}
 			if (mDownloadTask.getDownloadListener() != null) {
 				mDownloadTask
 						.getDownloadListener()
-						.progress(mDownloadTask.getUrl(), (mTmp + mLoaded), mTotals, mUsedTime);
+						.progress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 			}
 		} catch (UnknownFormatConversionException e) {
 			e.printStackTrace();
@@ -328,7 +328,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (mDownloadTask.getDownloadListener() != null) {
 				mDownloadTask
 						.getDownloadListener()
-						.progress(mDownloadTask.getUrl(), (mTmp + mLoaded), mTotals, mUsedTime);
+						.progress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 
 			}
 
@@ -418,7 +418,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			} else {
 				LogUtils.i(TAG, "seek -- >" + false + "  , length : 0");
 				out.seek(0);
-				mTmp = 0L;
+				mLastLoaded = 0L;
 			}
 			int bytes = 0;
 
