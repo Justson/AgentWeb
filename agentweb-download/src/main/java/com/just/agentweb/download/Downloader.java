@@ -17,6 +17,7 @@
 package com.just.agentweb.download;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.SparseArray;
@@ -202,7 +203,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 
-
 	private int doDownload() throws IOException {
 
 		int redirectionCount = 1;
@@ -214,30 +214,34 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				if (null != mHttpURLConnection) {
 					mHttpURLConnection.disconnect();
 				}
-				mHttpURLConnection = createUrlConnection(url);
-				if (mDownloadTask.getFile().length() > 0) {
-					mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mLastLoaded = mDownloadTask.getFile().length()) + "-");
-				}
+				mHttpURLConnection = createUrlConnectionAndAddHeaders(url);
 
+				mHttpURLConnection.connect();
 				final boolean isConnectionClose = "close".equalsIgnoreCase(
 						mHttpURLConnection.getHeaderField("Connection"));
 				final boolean isEncodingChunked = "chunked".equalsIgnoreCase(
 						mHttpURLConnection.getHeaderField("Transfer-Encoding"));
-
-				final boolean finishKnown = isConnectionClose || isEncodingChunked;
+				final boolean isZero = (mHttpURLConnection.getHeaderFieldLong("Content-Length", -1L) == -1);
+				// 获取不到文件长度
+				final boolean finishKnown = isConnectionClose || isEncodingChunked || isZero;
 				if (!finishKnown) {
 					LogUtils.e(TAG, "can't know size of download, giving up");
 					return ERROR_LOAD;
 				}
-				mHttpURLConnection.connect();
+
 				int responseCode = mHttpURLConnection.getResponseCode();
 				switch (responseCode) {
 
 					case HTTP_OK:
-					case HTTP_PARTIAL:
+						saveEtag(mHttpURLConnection);
 						return transferData(mHttpURLConnection.getInputStream(),
 								new LoadingRandomAccessFile(mDownloadTask.getFile()),
-								(responseCode == HTTP_PARTIAL));
+								false);
+					case HTTP_PARTIAL:
+
+						return transferData(mHttpURLConnection.getInputStream(),
+								new LoadingRandomAccessFile(mDownloadTask.getFile()),
+								true);
 					case HTTP_MOVED_PERM:
 					case HTTP_MOVED_TEMP:
 					case HTTP_SEE_OTHER:
@@ -260,7 +264,25 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		}
 	}
 
-	private HttpURLConnection createUrlConnection(URL url) throws IOException {
+	private void saveEtag(HttpURLConnection httpURLConnection) {
+		String etag = httpURLConnection.getHeaderField("ETag");
+		SharedPreferences mSharedPreferences = mDownloadTask.getContext().getSharedPreferences(AgentWebConfig.AGENTWEB_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = mSharedPreferences.edit();
+		editor.putString(mDownloadTask.getFile().getName(), etag);
+		editor.apply();
+	}
+
+	private String getEtag() {
+		SharedPreferences mSharedPreferences = mDownloadTask.getContext().getSharedPreferences(AgentWebConfig.AGENTWEB_NAME, Context.MODE_PRIVATE);
+		String mEtag = mSharedPreferences.getString(mDownloadTask.getFile().getName(), "-1");
+		if (!TextUtils.isEmpty(mEtag) && !"-1".equals(mEtag)) {
+			return mEtag;
+		} else {
+			return null;
+		}
+	}
+
+	private HttpURLConnection createUrlConnectionAndAddHeaders(URL url) throws IOException {
 
 		HttpURLConnection mHttpURLConnection = (HttpURLConnection) url.openConnection();
 		mHttpURLConnection.setRequestProperty("Accept", "application/*");
@@ -280,6 +302,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				}
 				mHttpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
 			}
+		}
+
+		if (mDownloadTask.getFile().length() > 0) {
+			String mEtag = "";
+			if (!TextUtils.isEmpty((mEtag = getEtag()))) {
+				mHttpURLConnection.addRequestProperty("If-Match", getEtag());
+			}
+			mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mLastLoaded = mDownloadTask.getFile().length()) + "-");
 		}
 
 		return mHttpURLConnection;

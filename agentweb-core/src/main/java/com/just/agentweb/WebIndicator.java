@@ -111,7 +111,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
 
         mPaint = new Paint();
         mColor = Color.parseColor("#1aad19");
-
         mPaint.setAntiAlias(true);
         mPaint.setColor(mColor);
         mPaint.setDither(true);

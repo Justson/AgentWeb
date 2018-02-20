@@ -141,7 +141,6 @@ public final class ActionActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 
-        LogUtils.i(TAG, "mChooserListener:" + mChooserListener);
         if (requestCode == REQUEST_CODE) {
             chooserActionCallback(resultCode, mUri != null ? new Intent().putExtra(KEY_URI, mUri) : data);
         }
@@ -177,7 +176,6 @@ public final class ActionActivity extends Activity {
             requestPermissions(permissions.toArray(new String[]{}), 1);
         }
 
-        LogUtils.i(TAG, "request permission send");
     }
 
     private Uri mUri;
@@ -195,7 +193,6 @@ public final class ActionActivity extends Activity {
                 finish();
             }
             Intent intent = AgentWebUtils.getIntentCaptureCompat(this, mFile);
-            LogUtils.i(TAG, "listener:" + mChooserListener + "  file:" + mFile.getAbsolutePath());
             // 指定开启系统相机的Action
             mUri = intent.getParcelableExtra(EXTRA_OUTPUT);
             this.startActivityForResult(intent, REQUEST_CODE);

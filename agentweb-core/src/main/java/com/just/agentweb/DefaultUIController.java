@@ -110,9 +110,9 @@ public class DefaultUIController extends AgentWebUIController {
 
 
         AlertDialog mAlertDialog = null;
-        mAlertDialog = new AlertDialog.Builder(mActivity)//
-                .setTitle(mResources.getString(R.string.agentweb_tips))//
-                .setMessage(mResources.getString(R.string.agentweb_honeycomblow))//
+        mAlertDialog = new AlertDialog.Builder(mActivity)
+                .setTitle(mResources.getString(R.string.agentweb_tips))
+                .setMessage(mResources.getString(R.string.agentweb_honeycomblow))
                 .setNegativeButton(mResources.getString(R.string.agentweb_download), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
