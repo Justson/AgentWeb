@@ -51,654 +51,655 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * @author cenxiaozhong
  * @date 2017/5/13
  */
 public class DefaultDownloadImpl implements android.webkit.DownloadListener {
-    /**
-     * Application Context
-     */
-    private Context mContext;
-    /**
-     * 通知ID，默认从1开始
-     */
-    private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
-    /**
-     * 下载监听，DownloadListener#start 下载的时候触发，DownloadListener#result下载结束的时候触发
-     * 4.0.0 每一次下载都会触发这两个方法，4.0.0以下只有触发下载才会回调这两个方法。
-     */
-    private DownloadListener mDownloadListener;
-    /**
-     * Activity
-     */
-    private WeakReference<Activity> mActivityWeakReference = null;
-    /**
-     * TAG 用于打印，标识
-     */
-    private static final String TAG = DefaultDownloadImpl.class.getSimpleName();
-    /**
-     * 权限拦截
-     */
-    private PermissionInterceptor mPermissionListener = null;
-    /**
-     * 当前下载链接
-     */
-    private String mUrl;
-    /**
-     * mContentDisposition ，提取文件名 ，如果ContentDisposition不指定文件名，则从url中提取文件名
-     */
-    private String mContentDisposition;
-    /**
-     * 文件大小
-     */
-    private long mContentLength;
-    /**
-     * 文件类型
-     */
-    private String mMimetype;
-    /**
-     * AgentWebUIController
-     */
-    private WeakReference<AgentWebUIController> mAgentWebUIController;
-    /**
-     * ExtraServiceImpl
-     */
-    private ExtraServiceImpl mExtraServiceImpl;
-    /**
-     * UA
-     */
-    private String mUserAgent;
-    /**
-     * ExtraServiceImpl
-     */
-    private ExtraServiceImpl mCloneExtraServiceImpl = null;
-    /**
-     * 进度回调
-     */
-    private DownloadingListener mDownloadingListener;
-    /**
-     * 根据p3c，预编译正则，提升性能。
-     */
-    private Pattern mPattern = Pattern.compile(".*filename=(.*)");
+	/**
+	 * Application Context
+	 */
+	private Context mContext;
+	/**
+	 * 通知ID，默认从1开始
+	 */
+	private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
+	/**
+	 * 下载监听，DownloadListener#start 下载的时候触发，DownloadListener#result下载结束的时候触发
+	 * 4.0.0 每一次下载都会触发这两个方法，4.0.0以下只有触发下载才会回调这两个方法。
+	 */
+	private DownloadListener mDownloadListener;
+	/**
+	 * Activity
+	 */
+	private WeakReference<Activity> mActivityWeakReference = null;
+	/**
+	 * TAG 用于打印，标识
+	 */
+	private static final String TAG = DefaultDownloadImpl.class.getSimpleName();
+	/**
+	 * 权限拦截
+	 */
+	private PermissionInterceptor mPermissionListener = null;
+	/**
+	 * 当前下载链接
+	 */
+	private String mUrl;
+	/**
+	 * mContentDisposition ，提取文件名 ，如果ContentDisposition不指定文件名，则从url中提取文件名
+	 */
+	private String mContentDisposition;
+	/**
+	 * 文件大小
+	 */
+	private long mContentLength;
+	/**
+	 * 文件类型
+	 */
+	private String mMimetype;
+	/**
+	 * AgentWebUIController
+	 */
+	private WeakReference<AgentWebUIController> mAgentWebUIController;
+	/**
+	 * ExtraServiceImpl
+	 */
+	private ExtraServiceImpl mExtraServiceImpl;
+	/**
+	 * UA
+	 */
+	private String mUserAgent;
+	/**
+	 * ExtraServiceImpl
+	 */
+	private ExtraServiceImpl mCloneExtraServiceImpl = null;
+	/**
+	 * 进度回调
+	 */
+	private DownloadingListener mDownloadingListener;
+	/**
+	 * 根据p3c，预编译正则，提升性能。
+	 */
+	private Pattern mPattern = Pattern.compile(".*filename=(.*)");
 
-    DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
-        if (!extraServiceImpl.isCloneObject) {
-            this.bind(extraServiceImpl);
-            this.mExtraServiceImpl = extraServiceImpl;
-        } else {
-            this.mCloneExtraServiceImpl = extraServiceImpl;
-        }
-    }
+	DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
+		if (!extraServiceImpl.isCloneObject) {
+			this.bind(extraServiceImpl);
+			this.mExtraServiceImpl = extraServiceImpl;
+		} else {
+			this.mCloneExtraServiceImpl = extraServiceImpl;
+		}
+	}
 
-    private void bind(ExtraServiceImpl extraServiceImpl) {
-        this.mActivityWeakReference = new WeakReference<Activity>(extraServiceImpl.mActivity);
-        this.mContext = extraServiceImpl.mActivity.getApplicationContext();
-        this.mDownloadListener = extraServiceImpl.mDownloadListener;
-        this.mDownloadingListener = extraServiceImpl.downloadingListener;
-        this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
-        this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
-    }
-
-
-    @Override
-    public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-        onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength, null);
-    }
+	private void bind(ExtraServiceImpl extraServiceImpl) {
+		this.mActivityWeakReference = new WeakReference<Activity>(extraServiceImpl.mActivity);
+		this.mContext = extraServiceImpl.mActivity.getApplicationContext();
+		this.mDownloadListener = extraServiceImpl.mDownloadListener;
+		this.mDownloadingListener = extraServiceImpl.downloadingListener;
+		this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
+		this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
+	}
 
 
-    private synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
+	@Override
+	public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+		onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength, null);
+	}
 
-        if (null == mActivityWeakReference.get() || mActivityWeakReference.get().isFinishing()) {
-            return;
-        }
-        if (null != this.mPermissionListener) {
-            if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
-                return;
-            }
-        }
 
-        LogUtils.i(TAG, "mMimetype:" + mimetype);
-        this.mUrl = url;
-        this.mContentDisposition = contentDisposition;
-        this.mContentLength = contentLength;
-        this.mMimetype = mimetype;
-        this.mUserAgent = userAgent;
-        ExtraServiceImpl mCloneExtraServiceImpl = null;
-        if (null == extraServiceImpl) {
-            try {
-                mCloneExtraServiceImpl = (ExtraServiceImpl) this.mExtraServiceImpl.clone();
-            } catch (CloneNotSupportedException ignore) {
-                if (LogUtils.isDebug()) {
-                    ignore.printStackTrace();
-                }
-                LogUtils.i(TAG, " clone object failure !!! ");
-                return;
-            }
-        } else {
-            mCloneExtraServiceImpl = extraServiceImpl;
-        }
-        mCloneExtraServiceImpl
-                .setUrl(this.mUrl)
-                .setMimetype(this.mMimetype)
-                .setContentDisposition(this.mContentDisposition)
-                .setContentLength(this.mContentLength)
-                .setUserAgent(this.mUserAgent);
-        this.mCloneExtraServiceImpl = mCloneExtraServiceImpl;
+	private synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
 
-        LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  :" + this.mCloneExtraServiceImpl.getMimetype());
+		if (null == mActivityWeakReference.get() || mActivityWeakReference.get().isFinishing()) {
+			return;
+		}
+		if (null != this.mPermissionListener) {
+			if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
+				return;
+			}
+		}
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            List<String> mList = null;
-            if ((mList = checkNeedPermission()).isEmpty()) {
-                preDownload();
-            } else {
-                Action mAction = Action.createPermissionsAction(mList.toArray(new String[]{}));
-                ActionActivity.setPermissionListener(getPermissionListener());
-                ActionActivity.start(mActivityWeakReference.get(), mAction);
-            }
-        } else {
-            preDownload();
-        }
-    }
+		LogUtils.i(TAG, "mMimetype:" + mimetype);
+		this.mUrl = url;
+		this.mContentDisposition = contentDisposition;
+		this.mContentLength = contentLength;
+		this.mMimetype = mimetype;
+		this.mUserAgent = userAgent;
+		ExtraServiceImpl mCloneExtraServiceImpl = null;
+		if (null == extraServiceImpl) {
+			try {
+				mCloneExtraServiceImpl = (ExtraServiceImpl) this.mExtraServiceImpl.clone();
+			} catch (CloneNotSupportedException ignore) {
+				if (LogUtils.isDebug()) {
+					ignore.printStackTrace();
+				}
+				LogUtils.i(TAG, " clone object failure !!! ");
+				return;
+			}
+		} else {
+			mCloneExtraServiceImpl = extraServiceImpl;
+		}
+		mCloneExtraServiceImpl
+				.setUrl(this.mUrl)
+				.setMimetype(this.mMimetype)
+				.setContentDisposition(this.mContentDisposition)
+				.setContentLength(this.mContentLength)
+				.setUserAgent(this.mUserAgent);
+		this.mCloneExtraServiceImpl = mCloneExtraServiceImpl;
 
-    private ActionActivity.PermissionListener getPermissionListener() {
-        return new ActionActivity.PermissionListener() {
-            @Override
-            public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
-                if (checkNeedPermission().isEmpty()) {
-                    preDownload();
-                } else {
-                    LogUtils.e(TAG, "储存权限获取失败~");
-                }
+		LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  :" + this.mCloneExtraServiceImpl.getMimetype());
 
-            }
-        };
-    }
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			List<String> mList = null;
+			if ((mList = checkNeedPermission()).isEmpty()) {
+				preDownload();
+			} else {
+				Action mAction = Action.createPermissionsAction(mList.toArray(new String[]{}));
+				ActionActivity.setPermissionListener(getPermissionListener());
+				ActionActivity.start(mActivityWeakReference.get(), mAction);
+			}
+		} else {
+			preDownload();
+		}
+	}
 
-    private List<String> checkNeedPermission() {
-        List<String> deniedPermissions = new ArrayList<>();
-        if (!AgentWebUtils.hasPermission(mActivityWeakReference.get(), AgentWebPermissions.STORAGE)) {
-            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
-        }
-        return deniedPermissions;
-    }
+	private ActionActivity.PermissionListener getPermissionListener() {
+		return new ActionActivity.PermissionListener() {
+			@Override
+			public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
+				if (checkNeedPermission().isEmpty()) {
+					preDownload();
+				} else {
+					LogUtils.e(TAG, "储存权限获取失败~");
+				}
 
-    private void preDownload() {
+			}
+		};
+	}
 
-        // true 表示用户取消了该下载事件。
-        if (null != this.mDownloadListener
-                && this.mDownloadListener
-                .start(this.mUrl,
-                        this.mUserAgent,
-                        this.mContentDisposition,
-                        this.mMimetype,
-                        this.mContentLength,
-                        this.mCloneExtraServiceImpl)) {
-            return;
-        }
-        File mFile = getFile(mContentDisposition, mUrl);
-        // File 创建文件失败
-        if (null == mFile) {
-            LogUtils.i(TAG, "新建文件失败");
-            return;
-        }
-        if (mFile.exists() && mFile.length() >= mContentLength) {
+	private List<String> checkNeedPermission() {
+		List<String> deniedPermissions = new ArrayList<>();
+		if (!AgentWebUtils.hasPermission(mActivityWeakReference.get(), AgentWebPermissions.STORAGE)) {
+			deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
+		}
+		return deniedPermissions;
+	}
 
-            // true 表示用户处理了下载完成后续的通知用户事件
-            if (null != this.mDownloadListener && this.mDownloadListener.result(mFile.getAbsolutePath(), mUrl, null)) {
-                return;
-            }
+	private void preDownload() {
 
-            Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
-            try {
+		// true 表示用户取消了该下载事件。
+		if (null != this.mDownloadListener
+				&& this.mDownloadListener
+				.start(this.mUrl,
+						this.mUserAgent,
+						this.mContentDisposition,
+						this.mMimetype,
+						this.mContentLength,
+						this.mCloneExtraServiceImpl)) {
+			return;
+		}
+		File mFile = getFile(mContentDisposition, mUrl);
+		// File 创建文件失败
+		if (null == mFile) {
+			LogUtils.i(TAG, "新建文件失败");
+			return;
+		}
+		if (mFile.exists() && mFile.length() >= mContentLength) {
+
+			// true 表示用户处理了下载完成后续的通知用户事件
+			if (null != this.mDownloadListener && this.mDownloadListener.result(mFile.getAbsolutePath(), mUrl, null)) {
+				return;
+			}
+
+			Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
+			try {
 //                mContext.getPackageManager().resolveActivity(mIntent)
-                if (null != mIntent) {
-                    if (!(mContext instanceof Activity)) {
-                        mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    }
-                    mContext.startActivity(mIntent);
-                }
-                return;
-            } catch (Throwable throwable) {
-                if (LogUtils.isDebug()) {
-                    throwable.printStackTrace();
-                }
-            }
+				if (null != mIntent) {
+					if (!(mContext instanceof Activity)) {
+						mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					}
+					mContext.startActivity(mIntent);
+				}
+				return;
+			} catch (Throwable throwable) {
+				if (LogUtils.isDebug()) {
+					throwable.printStackTrace();
+				}
+			}
 
-        }
-
-
-        // 该链接是否正在下载
-        if (ExecuteTasksMap.getInstance().contains(mUrl)
-                || ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
-            if (mAgentWebUIController.get() != null) {
-                mAgentWebUIController.get().showMessage(
-                        mActivityWeakReference.get()
-                                .getString(R.string.agentweb_download_task_has_been_exist),
-                        TAG.concat("|preDownload"));
-            }
-            return;
-        }
+		}
 
 
-        // 移动数据
-        if (!this.mCloneExtraServiceImpl.isForceDownload() &&
-                AgentWebUtils.checkNetworkType(mContext) > 1) {
-
-            showDialog(mFile);
-            return;
-        }
-        performDownload(mFile);
-    }
-
-    private void forceDownload(final File file) {
-
-        this.mCloneExtraServiceImpl.setForceDownload(true);
-        performDownload(file);
+		// 该链接是否正在下载
+		if (ExecuteTasksMap.getInstance().contains(mUrl)
+				|| ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
+			if (mAgentWebUIController.get() != null) {
+				mAgentWebUIController.get().showMessage(
+						mActivityWeakReference.get()
+								.getString(R.string.agentweb_download_task_has_been_exist),
+						TAG.concat("|preDownload"));
+			}
+			return;
+		}
 
 
-    }
+		// 移动数据
+		if (!this.mCloneExtraServiceImpl.isForceDownload() &&
+				AgentWebUtils.checkNetworkType(mContext) > 1) {
 
-    private void showDialog(final File file) {
+			showDialog(mFile);
+			return;
+		}
+		performDownload(mFile);
+	}
 
-        Activity mActivity;
-        if (null == (mActivity = mActivityWeakReference.get()) || mActivity.isFinishing()) {
-            return;
-        }
-        AgentWebUIController mAgentWebUIController;
-        if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
-            mAgentWebUIController.onForceDownloadAlert(mUrl, createCallback(file));
-        }
+	private void forceDownload(final File file) {
 
-    }
-
-    private Handler.Callback createCallback(final File file) {
-        return new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                forceDownload(file);
-                return true;
-            }
-        };
-    }
-
-    private void performDownload(File file) {
-
-        try {
-
-            ExecuteTasksMap.getInstance().addTask(mUrl, file.getAbsolutePath());
-            if (null != mAgentWebUIController.get()) {
-                mAgentWebUIController.get()
-                        .showMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
-            }
-            DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
-                    this.mDownloadListenerAdapter,
-                    mContext, file,
-                    this.mCloneExtraServiceImpl);
-            new Downloader().download(mDownloadTask);
-            this.mUrl = null;
-            this.mContentDisposition = null;
-            this.mContentLength = -1;
-            this.mMimetype = null;
-            this.mUserAgent = null;
-
-        } catch (Throwable ignore) {
-            if (LogUtils.isDebug()) {
-                ignore.printStackTrace();
-            }
-        }
-
-    }
+		this.mCloneExtraServiceImpl.setForceDownload(true);
+		performDownload(file);
 
 
-    private File getFile(String contentDisposition, String url) {
+	}
 
-        try {
-            String fileName = getFileNameByContentDisposition(contentDisposition);
-            if (TextUtils.isEmpty(fileName) && !TextUtils.isEmpty(url)) {
-                Uri mUri = Uri.parse(url);
-                fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/') + 1);
-            }
-            if (!TextUtils.isEmpty(fileName) && fileName.length() > 64) {
-                fileName = fileName.substring(fileName.length() - 64, fileName.length());
-            }
-            if (TextUtils.isEmpty(fileName)) {
-                fileName = AgentWebUtils.md5(url);
-            }
-            if (fileName.contains("\"")) {
-                fileName = fileName.replace("\"", "");
-            }
-            return AgentWebUtils.createFileByName(mContext, fileName, !this.mCloneExtraServiceImpl.isOpenBreakPointDownload());
-        } catch (Throwable e) {
-            if (LogUtils.isDebug()) {
-                e.printStackTrace();
-            }
-        }
+	private void showDialog(final File file) {
 
-        return null;
-    }
+		Activity mActivity;
+		if (null == (mActivity = mActivityWeakReference.get()) || mActivity.isFinishing()) {
+			return;
+		}
+		AgentWebUIController mAgentWebUIController;
+		if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
+			mAgentWebUIController.onForceDownloadAlert(mUrl, createCallback(file));
+		}
 
-    private String getFileNameByContentDisposition(String contentDisposition) {
-        if (TextUtils.isEmpty(contentDisposition)) {
-            return "";
-        }
-        Matcher m = mPattern.matcher(contentDisposition.toLowerCase());
-        if (m.find()) {
-            return m.group(1);
-        } else {
-            return "";
-        }
-    }
+	}
 
-    private DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
-        @Override
-        public void progress(String url, long downloaded, long length, long useTime) {
-            if (null != mDownloadingListener) {
-                synchronized (mDownloadingListener) {
-                    if (null != mDownloadingListener) {
-                        mDownloadingListener.progress(url, downloaded, length, useTime);
-                    }
-                }
-            }
-        }
+	private Handler.Callback createCallback(final File file) {
+		return new Handler.Callback() {
+			@Override
+			public boolean handleMessage(Message msg) {
+				forceDownload(file);
+				return true;
+			}
+		};
+	}
 
-        @Override
-        public void onBindService(String url, DownloadingService downloadingService) {
-            if (null != mDownloadingListener) {
-                synchronized (mDownloadingListener) {
-                    mDownloadingListener.onBindService(url, downloadingService);
-                }
-            }
+	private void performDownload(File file) {
 
-        }
+		try {
 
-        @Override
-        public void onUnbindService(String url, DownloadingService downloadingService) {
-            if (null != mDownloadingListener) {
-                synchronized (mDownloadingListener) {
-                    mDownloadingListener.onUnbindService(url, downloadingService);
-                }
-            }
-        }
+			ExecuteTasksMap.getInstance().addTask(mUrl, file.getAbsolutePath());
+			if (null != mAgentWebUIController.get()) {
+				mAgentWebUIController.get()
+						.showMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
+			}
+			DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
+					this.mDownloadListenerAdapter,
+					mContext, file,
+					this.mCloneExtraServiceImpl);
+			new Downloader().download(mDownloadTask);
+			this.mUrl = null;
+			this.mContentDisposition = null;
+			this.mContentLength = -1;
+			this.mMimetype = null;
+			this.mUserAgent = null;
 
-        @Override
-        public boolean result(String path, String url, Throwable e) {
-            ExecuteTasksMap.getInstance().removeTask(path);
-            return null != mDownloadListener && mDownloadListener.result(path, url, e);
-        }
-    };
+		} catch (Throwable ignore) {
+			if (LogUtils.isDebug()) {
+				ignore.printStackTrace();
+			}
+		}
+
+	}
 
 
-    /**
-     * 静态缓存当前正在下载的任务 mUrl
-     * i -> mUrl
-     * i+1 -> path
-     */
-    public static class ExecuteTasksMap extends ReentrantLock {
+	private File getFile(String contentDisposition, String url) {
 
-        private LinkedList<String> mTasks = null;
+		String fileName = "";
+		try {
+			fileName = getFileNameByContentDisposition(contentDisposition);
+			if (TextUtils.isEmpty(fileName) && !TextUtils.isEmpty(url)) {
+				Uri mUri = Uri.parse(url);
+				fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/') + 1);
+			}
+			if (!TextUtils.isEmpty(fileName) && fileName.length() > 64) {
+				fileName = fileName.substring(fileName.length() - 64, fileName.length());
+			}
+			if (TextUtils.isEmpty(fileName)) {
+				fileName = AgentWebUtils.md5(url);
+			}
+			if (fileName.contains("\"")) {
+				fileName = fileName.replace("\"", "");
+			}
+			return AgentWebUtils.createFileByName(mContext, fileName, !this.mCloneExtraServiceImpl.isOpenBreakPointDownload());
+		} catch (Throwable e) {
+			if (LogUtils.isDebug()) {
+				LogUtils.i(TAG, "fileName:" + fileName);
+				e.printStackTrace();
+			}
+		}
 
-        private ExecuteTasksMap() {
-            super(false);
-            mTasks = new LinkedList();
-        }
+		return null;
+	}
 
-        private static ExecuteTasksMap sInstance = null;
+	private String getFileNameByContentDisposition(String contentDisposition) {
+		if (TextUtils.isEmpty(contentDisposition)) {
+			return "";
+		}
+		Matcher m = mPattern.matcher(contentDisposition.toLowerCase());
+		if (m.find()) {
+			return m.group(1);
+		} else {
+			return "";
+		}
+	}
 
+	private DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
+		@Override
+		public void progress(String url, long downloaded, long length, long useTime) {
+			if (null != mDownloadingListener) {
+				synchronized (mDownloadingListener) {
+					if (null != mDownloadingListener) {
+						mDownloadingListener.progress(url, downloaded, length, useTime);
+					}
+				}
+			}
+		}
 
-        static ExecuteTasksMap getInstance() {
+		@Override
+		public void onBindService(String url, DownloadingService downloadingService) {
+			if (null != mDownloadingListener) {
+				synchronized (mDownloadingListener) {
+					mDownloadingListener.onBindService(url, downloadingService);
+				}
+			}
 
+		}
 
-            if (null == sInstance) {
-                synchronized (ExecuteTasksMap.class) {
-                    if (null == sInstance) {
-                        sInstance = new ExecuteTasksMap();
-                    }
-                }
-            }
-            return sInstance;
-        }
+		@Override
+		public void onUnbindService(String url, DownloadingService downloadingService) {
+			if (null != mDownloadingListener) {
+				synchronized (mDownloadingListener) {
+					mDownloadingListener.onUnbindService(url, downloadingService);
+				}
+			}
+		}
 
-        void removeTask(String path) {
-
-            int index = mTasks.indexOf(path);
-            if (index == -1) {
-                return;
-            }
-            try {
-                lock();
-                int position = -1;
-                if ((position = mTasks.indexOf(path)) == -1) {
-                    return;
-                }
-                mTasks.remove(position);
-                mTasks.remove(position - 1);
-            } finally {
-                unlock();
-            }
-
-        }
-
-        void addTask(String url, String path) {
-            try {
-                lock();
-                mTasks.add(url);
-                mTasks.add(path);
-            } finally {
-                unlock();
-            }
-
-        }
-
-        //加锁读
-        boolean contains(String url) {
-
-            try {
-                lock();
-                return mTasks.contains(url);
-            } finally {
-                unlock();
-            }
-
-        }
-    }
+		@Override
+		public boolean result(String path, String url, Throwable e) {
+			ExecuteTasksMap.getInstance().removeTask(path);
+			return null != mDownloadListener && mDownloadListener.result(path, url, e);
+		}
+	};
 
 
-    public static DefaultDownloadImpl create(@NonNull Activity activity,
-                                             @NonNull WebView webView,
-                                             @Nullable DownloadListener downloadListener,
-                                             @NonNull DownloadingListener downloadingListener,
-                                             @Nullable PermissionInterceptor permissionInterceptor) {
-        return new ExtraServiceImpl()
-                .setActivity(activity)
-                .setWebView(webView)
-                .setDownloadListener(downloadListener)//
-                .setPermissionInterceptor(permissionInterceptor)
-                .setDownloadingListener(downloadingListener)
-                .create();
-    }
+	/**
+	 * 静态缓存当前正在下载的任务 mUrl
+	 * i -> mUrl
+	 * i+1 -> path
+	 */
+	public static class ExecuteTasksMap extends ReentrantLock {
 
-    public static class ExtraServiceImpl extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
-        private transient Activity mActivity;
-        private boolean isForceDownload = false;
-        private boolean enableIndicator = true;
-        private transient DownloadListener mDownloadListener;
-        private transient PermissionInterceptor mPermissionInterceptor;
-        private boolean isParallelDownload = true;
-        private transient WebView mWebView;
-        protected int icon = R.drawable.ic_file_download_black_24dp;
-        private DefaultDownloadImpl mDefaultDownload;
-        protected String url;
-        protected String userAgent;
-        protected String contentDisposition;
-        protected String mimetype;
-        protected long contentLength;
-        private boolean isCloneObject = false;
-        private DownloadingListener downloadingListener;
+		private LinkedList<String> mTasks = null;
 
-        public ExtraServiceImpl setDownloadingListener(DownloadingListener downloadingListener) {
-            this.downloadingListener = downloadingListener;
-            return this;
-        }
+		private ExecuteTasksMap() {
+			super(false);
+			mTasks = new LinkedList();
+		}
 
-        @Override
-        public boolean isForceDownload() {
-            return isForceDownload;
-        }
+		private static ExecuteTasksMap sInstance = null;
 
-        //        public static final int PENDDING = 1001;
+
+		static ExecuteTasksMap getInstance() {
+
+
+			if (null == sInstance) {
+				synchronized (ExecuteTasksMap.class) {
+					if (null == sInstance) {
+						sInstance = new ExecuteTasksMap();
+					}
+				}
+			}
+			return sInstance;
+		}
+
+		void removeTask(String path) {
+
+			int index = mTasks.indexOf(path);
+			if (index == -1) {
+				return;
+			}
+			try {
+				lock();
+				int position = -1;
+				if ((position = mTasks.indexOf(path)) == -1) {
+					return;
+				}
+				mTasks.remove(position);
+				mTasks.remove(position - 1);
+			} finally {
+				unlock();
+			}
+
+		}
+
+		void addTask(String url, String path) {
+			try {
+				lock();
+				mTasks.add(url);
+				mTasks.add(path);
+			} finally {
+				unlock();
+			}
+
+		}
+
+		//加锁读
+		boolean contains(String url) {
+
+			try {
+				lock();
+				return mTasks.contains(url);
+			} finally {
+				unlock();
+			}
+
+		}
+	}
+
+
+	public static DefaultDownloadImpl create(@NonNull Activity activity,
+	                                         @NonNull WebView webView,
+	                                         @Nullable DownloadListener downloadListener,
+	                                         @NonNull DownloadingListener downloadingListener,
+	                                         @Nullable PermissionInterceptor permissionInterceptor) {
+		return new ExtraServiceImpl()
+				.setActivity(activity)
+				.setWebView(webView)
+				.setDownloadListener(downloadListener)//
+				.setPermissionInterceptor(permissionInterceptor)
+				.setDownloadingListener(downloadingListener)
+				.create();
+	}
+
+	public static class ExtraServiceImpl extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
+		private transient Activity mActivity;
+		private boolean isForceDownload = false;
+		private boolean enableIndicator = true;
+		private transient DownloadListener mDownloadListener;
+		private transient PermissionInterceptor mPermissionInterceptor;
+		private boolean isParallelDownload = true;
+		private transient WebView mWebView;
+		protected int icon = R.drawable.ic_file_download_black_24dp;
+		private DefaultDownloadImpl mDefaultDownload;
+		protected String url;
+		protected String userAgent;
+		protected String contentDisposition;
+		protected String mimetype;
+		protected long contentLength;
+		private boolean isCloneObject = false;
+		private DownloadingListener downloadingListener;
+
+		public ExtraServiceImpl setDownloadingListener(DownloadingListener downloadingListener) {
+			this.downloadingListener = downloadingListener;
+			return this;
+		}
+
+		@Override
+		public boolean isForceDownload() {
+			return isForceDownload;
+		}
+
+		//        public static final int PENDDING = 1001;
 //        public static final int DOWNLOADING = 1002;
 //        public static final int FINISH = 1003;
 //        public static final int ERROR = 1004;
 //        private AtomicInteger state = new AtomicInteger(PENDDING);
 
-        @Override
-        public String getUrl() {
-            return url;
-        }
+		@Override
+		public String getUrl() {
+			return url;
+		}
 
-        @Override
-        protected ExtraServiceImpl setUrl(String url) {
-            this.url = url;
-            return this;
-        }
+		@Override
+		protected ExtraServiceImpl setUrl(String url) {
+			this.url = url;
+			return this;
+		}
 
-        @Override
-        public String getUserAgent() {
-            return userAgent;
-        }
+		@Override
+		public String getUserAgent() {
+			return userAgent;
+		}
 
-        @Override
-        protected ExtraServiceImpl setUserAgent(String userAgent) {
-            this.userAgent = userAgent;
-            return this;
-        }
-
-
-        @Override
-        public String getContentDisposition() {
-            return contentDisposition;
-        }
-
-        @Override
-        protected ExtraServiceImpl setContentDisposition(String contentDisposition) {
-            this.contentDisposition = contentDisposition;
-            return this;
-        }
-
-        @Override
-        @DrawableRes
-        public int getIcon() {
-            return icon;
-        }
-
-        @Override
-        public String getMimetype() {
-            return mimetype;
-        }
-
-        @Override
-        protected ExtraServiceImpl setMimetype(String mimetype) {
-            this.mimetype = mimetype;
-            return this;
-        }
-
-        @Override
-        public long getContentLength() {
-            return contentLength;
-        }
-
-        @Override
-        protected ExtraServiceImpl setContentLength(long contentLength) {
-            this.contentLength = contentLength;
-            return this;
-        }
+		@Override
+		protected ExtraServiceImpl setUserAgent(String userAgent) {
+			this.userAgent = userAgent;
+			return this;
+		}
 
 
-        ExtraServiceImpl setActivity(Activity activity) {
-            mActivity = activity;
-            return this;
-        }
+		@Override
+		public String getContentDisposition() {
+			return contentDisposition;
+		}
+
+		@Override
+		protected ExtraServiceImpl setContentDisposition(String contentDisposition) {
+			this.contentDisposition = contentDisposition;
+			return this;
+		}
+
+		@Override
+		@DrawableRes
+		public int getIcon() {
+			return icon;
+		}
+
+		@Override
+		public String getMimetype() {
+			return mimetype;
+		}
+
+		@Override
+		protected ExtraServiceImpl setMimetype(String mimetype) {
+			this.mimetype = mimetype;
+			return this;
+		}
+
+		@Override
+		public long getContentLength() {
+			return contentLength;
+		}
+
+		@Override
+		protected ExtraServiceImpl setContentLength(long contentLength) {
+			this.contentLength = contentLength;
+			return this;
+		}
 
 
-        @Override
-        public ExtraServiceImpl setForceDownload(boolean force) {
-            isForceDownload = force;
-            return this;
-        }
-
-        @Override
-        public ExtraServiceImpl setEnableIndicator(boolean enableIndicator) {
-            this.enableIndicator = enableIndicator;
-            return this;
-        }
-
-        ExtraServiceImpl setDownloadListener(DownloadListener downloadListeners) {
-            this.mDownloadListener = downloadListeners;
-            return this;
-        }
-
-        ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
-            mPermissionInterceptor = permissionInterceptor;
-            return this;
-        }
-
-        @Override
-        public ExtraServiceImpl setIcon(@DrawableRes int icon) {
-            this.icon = icon;
-            return this;
-        }
-
-        @Override
-        public ExtraServiceImpl setParallelDownload(boolean parallelDownload) {
-            isParallelDownload = parallelDownload;
-            return this;
-        }
-
-        @Override
-        public ExtraServiceImpl setOpenBreakPointDownload(boolean openBreakPointDownload) {
-            mIsOpenBreakPointDownload = openBreakPointDownload;
-            return this;
-        }
-
-        ExtraServiceImpl setWebView(WebView webView) {
-            this.mWebView = webView;
-            return this;
-        }
+		ExtraServiceImpl setActivity(Activity activity) {
+			mActivity = activity;
+			return this;
+		}
 
 
-        @Override
-        protected ExtraServiceImpl clone() throws CloneNotSupportedException {
-            ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
-            mExtraServiceImpl.isCloneObject = true;
-            mExtraServiceImpl.mActivity = null;
-            mExtraServiceImpl.mDownloadListener = null;
-            mExtraServiceImpl.mPermissionInterceptor = null;
-            mExtraServiceImpl.mWebView = null;
-            return mExtraServiceImpl;
-        }
+		@Override
+		public ExtraServiceImpl setForceDownload(boolean force) {
+			isForceDownload = force;
+			return this;
+		}
 
-        DefaultDownloadImpl create() {
-            return this.mDefaultDownload = new DefaultDownloadImpl(this);
-        }
+		@Override
+		public ExtraServiceImpl setEnableIndicator(boolean enableIndicator) {
+			this.enableIndicator = enableIndicator;
+			return this;
+		}
 
-        @Override
-        public synchronized void performReDownload() {
+		ExtraServiceImpl setDownloadListener(DownloadListener downloadListeners) {
+			this.mDownloadListener = downloadListeners;
+			return this;
+		}
 
-            LogUtils.i(TAG, "performReDownload:" + mDefaultDownload);
-            if (null != this.mDefaultDownload) {
-                this.mDefaultDownload
-                        .onDownloadStartInternal(
-                                getUrl(),
-                                getUserAgent(),
-                                getContentDisposition(),
-                                getMimetype(),
-                                getContentLength(), this);
-            }
-        }
+		ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+			mPermissionInterceptor = permissionInterceptor;
+			return this;
+		}
 
-    }
+		@Override
+		public ExtraServiceImpl setIcon(@DrawableRes int icon) {
+			this.icon = icon;
+			return this;
+		}
+
+		@Override
+		public ExtraServiceImpl setParallelDownload(boolean parallelDownload) {
+			isParallelDownload = parallelDownload;
+			return this;
+		}
+
+		@Override
+		public ExtraServiceImpl setOpenBreakPointDownload(boolean openBreakPointDownload) {
+			mIsOpenBreakPointDownload = openBreakPointDownload;
+			return this;
+		}
+
+		ExtraServiceImpl setWebView(WebView webView) {
+			this.mWebView = webView;
+			return this;
+		}
+
+
+		@Override
+		protected ExtraServiceImpl clone() throws CloneNotSupportedException {
+			ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
+			mExtraServiceImpl.isCloneObject = true;
+			mExtraServiceImpl.mActivity = null;
+			mExtraServiceImpl.mDownloadListener = null;
+			mExtraServiceImpl.mPermissionInterceptor = null;
+			mExtraServiceImpl.mWebView = null;
+			return mExtraServiceImpl;
+		}
+
+		DefaultDownloadImpl create() {
+			return this.mDefaultDownload = new DefaultDownloadImpl(this);
+		}
+
+		@Override
+		public synchronized void performReDownload() {
+
+			LogUtils.i(TAG, "performReDownload:" + mDefaultDownload);
+			if (null != this.mDefaultDownload) {
+				this.mDefaultDownload
+						.onDownloadStartInternal(
+								getUrl(),
+								getUserAgent(),
+								getContentDisposition(),
+								getMimetype(),
+								getContentLength(), this);
+			}
+		}
+
+	}
 
 
 }
