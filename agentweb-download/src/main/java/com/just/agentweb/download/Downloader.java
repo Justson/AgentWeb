@@ -19,6 +19,7 @@ package com.just.agentweb.download;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
@@ -184,7 +185,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	protected Integer doInBackground(Void... params) {
 		int result = ERROR_LOAD;
 		try {
-			this.mBeginTime = System.currentTimeMillis();
+			this.mBeginTime = SystemClock.elapsedRealtime();
 			if (!checkSpace()) {
 				return ERROR_STORAGE;
 			}
@@ -225,7 +226,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				// 获取不到文件长度
 				final boolean finishKnown = isConnectionClose || isEncodingChunked || isZero;
 				if (!finishKnown) {
-					LogUtils.e(TAG, "can't know size of download, giving up");
+					LogUtils.e(TAG, "can't know size of download, giving up ,"
+							+ " Connection close:"
+							+ isConnectionClose
+							+ "EncodingChunked:" + isEncodingChunked
+							+ " isZero:" + isZero);
 					return ERROR_LOAD;
 				}
 
@@ -326,9 +331,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	protected synchronized void onProgressUpdate(Integer... values) {
 
 		try {
-			long currentTime = System.currentTimeMillis();
+			long currentTime = SystemClock.elapsedRealtime();
 			this.mUsedTime = currentTime - this.mBeginTime;
-
 			if (mUsedTime == 0) {
 				this.mAverageSpeed = 0;
 			} else {
@@ -338,6 +342,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (currentTime - this.mLastTime < 800) {
 				return;
 			}
+			LogUtils.i(TAG, " UsedTime:" + mUsedTime / 1000 + "");
 			this.mLastTime = currentTime;
 			if (null != mDownloadNotifier) {
 				int mProgress = (int) ((mLastLoaded + mLoaded) / Float.valueOf(mTotals) * 100);
@@ -428,7 +433,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 
 	private int transferData(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
-		// 40960 这么写性能更优 ， 4 * 1024 * 10 这么写语义更清晰我也很纠结呀！
+		// 40960 这么写性能更优 ， 4 * 1024 * 10 这么写语义更清晰 ，我也很纠结呀！
 		byte[] buffer = new byte[4 * 1024 * 10];
 		try (BufferedInputStream bis = new BufferedInputStream(inputStream, 4 * 1024 * 10);
 		     RandomAccessFile out = randomAccessFile) {
@@ -451,11 +456,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				out.write(buffer, 0, n);
 				bytes += n;
 
-				if (!checkNet()) {
-					return ERROR_NETWORK_CONNECTION;
-				}
-
-				if ((System.currentTimeMillis() - this.mBeginTime) > mDownloadTimeOut) {
+				if ((SystemClock.elapsedRealtime() - this.mBeginTime) > mDownloadTimeOut) {
 					return ERROR_TIME_OUT;
 				}
 
