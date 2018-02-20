@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * @author cenxiaozhong
  * @date 2017/7/5
- * @since 3.0.0
+ * @since 2.0.0
  */
 public class HttpHeaders {
 

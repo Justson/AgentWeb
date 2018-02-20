@@ -24,8 +24,8 @@ import android.webkit.JavascriptInterface;
 import java.lang.ref.WeakReference;
 
 /**
- * @since 1.0.0
  * @author cenxiaozhong
+ * @since 1.0.0
  */
 public class AgentWebJsInterfaceCompat {
 
@@ -44,6 +44,7 @@ public class AgentWebJsInterfaceCompat {
 		uploadFile("*/*");
 	}
 
+	@JavascriptInterface
 	public void uploadFile(String acceptType) {
 		LogUtils.i(TAG, acceptType + "  " + mActivityWeakReference.get() + "  " + mReference.get());
 		if (mActivityWeakReference.get() != null && mReference.get() != null) {
