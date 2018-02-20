@@ -266,6 +266,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	private void saveEtag(HttpURLConnection httpURLConnection) {
 		String etag = httpURLConnection.getHeaderField("ETag");
+		LogUtils.i(TAG, "save etag:" + etag);
+
+		if (TextUtils.isEmpty(etag)) {
+			return;
+		}
 		SharedPreferences mSharedPreferences = mDownloadTask.getContext().getSharedPreferences(AgentWebConfig.AGENTWEB_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putString(mDownloadTask.getFile().getName(), etag);
@@ -307,6 +312,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		if (mDownloadTask.getFile().length() > 0) {
 			String mEtag = "";
 			if (!TextUtils.isEmpty((mEtag = getEtag()))) {
+				LogUtils.i(TAG, "Etag:" + mEtag);
 				mHttpURLConnection.addRequestProperty("If-Match", getEtag());
 			}
 			mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mLastLoaded = mDownloadTask.getFile().length()) + "-");
@@ -422,7 +428,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 
 	private int transferData(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
-
+		// 40960 这么写性能更优 ， 4 * 1024 * 10 这么写语义更清晰我也很纠结呀！
 		byte[] buffer = new byte[4 * 1024 * 10];
 		try (BufferedInputStream bis = new BufferedInputStream(inputStream, 4 * 1024 * 10);
 		     RandomAccessFile out = randomAccessFile) {
@@ -438,7 +444,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			int bytes = 0;
 
 			while (!mIsCanceled.get() && !mIsShutdown.get()) {
-				int n = bis.read(buffer, 0, 1024 * 10);
+				int n = bis.read(buffer, 0, 40960);
 				if (n == -1) {
 					break;
 				}

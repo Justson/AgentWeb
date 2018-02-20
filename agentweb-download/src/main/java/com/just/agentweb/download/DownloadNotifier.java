@@ -182,7 +182,8 @@ public class DownloadNotifier {
 
 		try {
 			/**
-			 * 用反射获取 mActions 该Field
+			 * 用反射获取 mActions 该 Field , mBuilder.mActions 防止迭代该Field域访问不到，或者该Field
+			 * 改名导致程序崩溃。
 			 */
 			Class<? extends NotificationCompat.Builder> clazz = mBuilder.getClass();
 			Field mField = clazz.getDeclaredField("mActions");
