@@ -193,8 +193,6 @@ public class WebChromeClientDelegate extends WebChromeClient {
                                         WebStorage.QuotaUpdater quotaUpdater) {
         // This default implementation passes the current quota back to WebCore.
         // WebCore will interpret this that new quota was declined.
-        //注掉
-//        quotaUpdater.updateQuota(quota);
         if (this.mDelegate != null) {
             this.mDelegate.onExceededDatabaseQuota(url, databaseIdentifier, quota, estimatedDatabaseSize, totalQuota, quotaUpdater);
             return;

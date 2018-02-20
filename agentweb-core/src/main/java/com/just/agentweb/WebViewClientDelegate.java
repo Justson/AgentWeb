@@ -67,7 +67,6 @@ public class WebViewClientDelegate extends WebViewClient {
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
 
-//        LogUtils.i(TAG,"this:"+this+"   wrapper:"+this.mDelegate);
         if (mDelegate != null) {
             return mDelegate.shouldOverrideUrlLoading(view, request);
         }

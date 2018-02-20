@@ -52,6 +52,7 @@ public class DownloadNotifier {
 	private NotificationCompat.Builder mBuilder;
 	private Context mContext;
 	private String mChannelId = "";
+	private volatile boolean mAddedCancelAction = false;
 
 	private static final String TAG = DownloadNotifier.class.getSimpleName();
 	private NotificationCompat.Action mAction;
@@ -146,7 +147,6 @@ public class DownloadNotifier {
 
 
 		mNotification = mBuilder.build();
-		//LogUtils.i("Info","send:"+mNotificationId+"  nocation:"+mNotification+"  ");
 		// 发送该通知
 		mNotificationManager.notify(mNotificationId, mNotification);
 	}
@@ -156,7 +156,7 @@ public class DownloadNotifier {
 		sent();
 	}
 
-	private volatile boolean mAddedCancelAction = false;
+
 
 	void onDownloading(int progress) {
 

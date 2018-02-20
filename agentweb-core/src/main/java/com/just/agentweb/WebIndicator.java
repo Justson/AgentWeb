@@ -83,7 +83,9 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     public static final int STARTED = 1;
     public static final int FINISH = 2;
 
-    private float target = 0f;
+    private float mTarget = 0f;
+
+    private float mCurrentProgress = 0F;
 
     /**
      * 默认的高度
@@ -148,7 +150,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
 
     }
 
-    private float currentProgress = 0f;
+
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -157,14 +159,14 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        canvas.drawRect(0, 0, currentProgress / 100 * Float.valueOf(this.getWidth()), this.getHeight(), mPaint);
+        canvas.drawRect(0, 0, mCurrentProgress / 100 * Float.valueOf(this.getWidth()), this.getHeight(), mPaint);
     }
     @Override
     public void show() {
 
         if (getVisibility() == View.GONE) {
             this.setVisibility(View.VISIBLE);
-            currentProgress = 0f;
+            mCurrentProgress = 0f;
             startAnim(false);
         }
 
@@ -218,12 +220,12 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         if (mAnimator != null && mAnimator.isStarted()) {
             mAnimator.cancel();
         }
-        currentProgress = currentProgress == 0f ? 0.00000001f : currentProgress;
+        mCurrentProgress = mCurrentProgress == 0f ? 0.00000001f : mCurrentProgress;
 
-        LogUtils.i("WebIndicator", "currentProgress:" + currentProgress + " v:" + v + "  :" + (1f - currentProgress));
+        LogUtils.i("WebIndicator", "mCurrentProgress:" + mCurrentProgress + " v:" + v + "  :" + (1f - mCurrentProgress));
         if (!isFinished) {
-            ValueAnimator mAnimator = ValueAnimator.ofFloat(currentProgress, v);
-            float residue = 1f - currentProgress / 100 - 0.05f;
+            ValueAnimator mAnimator = ValueAnimator.ofFloat(mCurrentProgress, v);
+            float residue = 1f - mCurrentProgress / 100 - 0.05f;
             mAnimator.setInterpolator(new LinearInterpolator());
             mAnimator.setDuration((long) (residue * CURRENT_MAX_UNIFORM_SPEED_DURATION));
             mAnimator.addUpdateListener(mAnimatorUpdateListener);
@@ -232,9 +234,9 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         } else {
 
             ValueAnimator segment95Animator = null;
-            if (currentProgress < 95f) {
-                segment95Animator = ValueAnimator.ofFloat(currentProgress, 95);
-                float residue = 1f - currentProgress / 100f - 0.05f;
+            if (mCurrentProgress < 95f) {
+                segment95Animator = ValueAnimator.ofFloat(mCurrentProgress, 95);
+                float residue = 1f - mCurrentProgress / 100f - 0.05f;
                 segment95Animator.setInterpolator(new LinearInterpolator());
                 segment95Animator.setDuration((long) (residue * CURRENT_MAX_DECELERATE_SPEED_DURATION));
                 segment95Animator.setInterpolator(new DecelerateInterpolator());
@@ -262,7 +264,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         }
 
         TAG = STARTED;
-        target = v;
+        mTarget = v;
 
     }
 
@@ -270,7 +272,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         @Override
         public void onAnimationUpdate(ValueAnimator animation) {
             float t = (float) animation.getAnimatedValue();
-            WebIndicator.this.currentProgress = t;
+            WebIndicator.this.mCurrentProgress = t;
             WebIndicator.this.invalidate();
 
         }
@@ -297,9 +299,9 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     }
 
     private void doEnd() {
-        if (TAG == FINISH && currentProgress == 100f) {
+        if (TAG == FINISH && mCurrentProgress == 100f) {
             setVisibility(GONE);
-            currentProgress = 0f;
+            mCurrentProgress = 0f;
             this.setAlpha(1f);
         }
         TAG = UN_START;
@@ -307,7 +309,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
 
     @Override
     public void reset() {
-        currentProgress = 0;
+        mCurrentProgress = 0;
         if (mAnimator != null && mAnimator.isStarted()){
             mAnimator.cancel();
         }

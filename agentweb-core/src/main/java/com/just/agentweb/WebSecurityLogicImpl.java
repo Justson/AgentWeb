@@ -50,7 +50,7 @@ public class WebSecurityLogicImpl implements WebSecurityCheckLogic {
         if (securityType== AgentWeb.SecurityType.STRICT_CHECK
                 &&AgentWebConfig.WEBVIEW_TYPE!=AgentWebConfig.WEBVIEW_AGENTWEB_SAFE_TYPE
                 &&Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            LogUtils.i(TAG,"give up all inject objects");
+            LogUtils.e(TAG,"Give up all inject objects");
             objects.clear();
             objects = null;
             System.gc();

@@ -345,25 +345,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				return;
 			}
 			if (mDownloadTask.isEnableIndicator()) {
-//				if (null != mDownloadNotifier) {
-//
-//				}
 				if (isCancelDispose) {
 					mDownloadNotifier.cancel();
 					return;
 				}
-//				Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
-//				if (mIntent != null) {
-//					if (!(mDownloadTask.getContext() instanceof Activity)) {
-//						mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//					}
-//					PendingIntent rightPendIntent = PendingIntent
-//							.getActivity(mDownloadTask.getContext(),
-//									mDownloadTask.getId() << 4, mIntent,
-//									PendingIntent.FLAG_UPDATE_CURRENT);
-//					mDownloadNotifier.setProgressFinish(mDownloadTask.getContext().getString(R.string.agentweb_click_open), rightPendIntent);
-//				}
-//				return;
 
 				if (null != mDownloadNotifier) {
 					mDownloadNotifier.onDownloadFinished();
@@ -488,7 +473,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		mDownloadTimeOut = mDownloadTask.getDownloadTimeOut();
 		mConnectTimeOut = mDownloadTask.getConnectTimeOut();
 
-		LogUtils.i(TAG, "mConnectTimeOut:" + mConnectTimeOut + " mDownloadTimeOut:" + mDownloadTimeOut);
 		if (downloadTask.isParallelDownload()) {
 			this.executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
 		} else {
