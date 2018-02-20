@@ -124,7 +124,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
         mAgentWebUiController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
-        LogUtils.i(TAG, "controller:" + mAgentWebUiController.get());
     }
 
 
@@ -171,14 +170,12 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     @Override
     public void onGeolocationPermissionsHidePrompt() {
         super.onGeolocationPermissionsHidePrompt();
-        LogUtils.i(TAG, "onGeolocationPermissionsHidePrompt");
     }
 
     //location
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
 
-        LogUtils.i(TAG, "onGeolocationPermissionsShowPrompt:" + origin + "   callback:" + callback);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onGeolocationPermissionsShowPrompt", "public void " + ANDROID_WEBCHROMECLIENT_PATH + ".onGeolocationPermissionsShowPrompt", String.class, GeolocationPermissions.Callback.class)) {
             super.onGeolocationPermissionsShowPrompt(origin, callback);
             return;
@@ -266,12 +263,10 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     @Override
     public boolean onJsConfirm(WebView view, String url, String message, JsResult result) {
 
-        LogUtils.i(TAG, "onJsConfirm:" + message);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onJsConfirm", "public boolean " + ANDROID_WEBCHROMECLIENT_PATH + ".onJsConfirm", WebView.class, String.class, String.class, JsResult.class)) {
             return super.onJsConfirm(view, url, message, result);
         }
 
-        LogUtils.i(TAG, "mAgentWebUiController:" + mAgentWebUiController.get());
         if (mAgentWebUiController.get() != null) {
             mAgentWebUiController.get().onJsConfirm(view, url, message, result);
         }
@@ -418,14 +413,12 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     @Override
     public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
         super.onConsoleMessage(consoleMessage);
-        LogUtils.i(TAG, "consoleMessage:" + consoleMessage.message() + "  lineNumber:" + consoleMessage.lineNumber());
         return true;
     }
 
 
     @Override
     public void onShowCustomView(View view, CustomViewCallback callback) {
-        LogUtils.i(TAG, "view:" + view + "   callback:" + callback);
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onShowCustomView", ANDROID_WEBCHROMECLIENT_PATH + ".onShowCustomView", View.class, CustomViewCallback.class)) {
             super.onShowCustomView(view, callback);
             return;
@@ -440,7 +433,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     @Override
     public void onHideCustomView() {
         if (AgentWebUtils.isOverriedMethod(mWebChromeClient, "onHideCustomView", ANDROID_WEBCHROMECLIENT_PATH + ".onHideCustomView")) {
-            LogUtils.i(TAG, "onHideCustomView:" + true);
             super.onHideCustomView();
             return;
         }
@@ -448,8 +440,5 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         if (mIVideo != null){
             mIVideo.onHideCustomView();
         }
-
     }
-
-
 }

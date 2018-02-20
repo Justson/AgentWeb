@@ -43,7 +43,6 @@ public abstract class BaseJsAccessEntrace implements JsAccessEntrace {
             this.loadJs(js);
         }
 
-
     }
     @Override
     public void callJs(String js) {

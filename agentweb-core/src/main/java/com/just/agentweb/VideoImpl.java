@@ -42,6 +42,9 @@ public class VideoImpl implements IVideo, EventInterceptor {
     private WebView mWebView;
     private static final String TAG = VideoImpl.class.getSimpleName();
     private Set<Pair<Integer, Integer>> mFlags = null;
+    private View mMoiveView = null;
+    private ViewGroup mMoiveParentView = null;
+    private WebChromeClient.CustomViewCallback mCallback;
 
     public VideoImpl(Activity mActivity, WebView webView) {
         this.mActivity = mActivity;
@@ -50,14 +53,11 @@ public class VideoImpl implements IVideo, EventInterceptor {
 
     }
 
-    private View moiveView = null;
-    private ViewGroup moiveParentView = null;
-    private WebChromeClient.CustomViewCallback mCallback;
+
 
     @Override
     public void onShowCustomView(View view, WebChromeClient.CustomViewCallback callback) {
 
-        LogUtils.i(TAG, "onShowCustomView:" + view);
 
         Activity mActivity;
         if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
@@ -82,7 +82,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
         }
 
 
-        if (moiveView != null) {
+        if (mMoiveView != null) {
             callback.onCustomViewHidden();
             return;
         }
@@ -91,23 +91,22 @@ public class VideoImpl implements IVideo, EventInterceptor {
             mWebView.setVisibility(View.GONE);
         }
 
-        if (moiveParentView == null) {
+        if (mMoiveParentView == null) {
             FrameLayout mDecorView = (FrameLayout) mActivity.getWindow().getDecorView();
-            moiveParentView = new FrameLayout(mActivity);
-            moiveParentView.setBackgroundColor(Color.BLACK);
-            mDecorView.addView(moiveParentView);
+            mMoiveParentView = new FrameLayout(mActivity);
+            mMoiveParentView.setBackgroundColor(Color.BLACK);
+            mDecorView.addView(mMoiveParentView);
         }
         this.mCallback = callback;
-        moiveParentView.addView(this.moiveView = view);
-        moiveParentView.setVisibility(View.VISIBLE);
+        mMoiveParentView.addView(this.mMoiveView = view);
+        mMoiveParentView.setVisibility(View.VISIBLE);
 
     }
 
     @Override
     public void onHideCustomView() {
 
-        LogUtils.i(TAG, "onHideCustomView:" + moiveView);
-        if (moiveView == null) {
+        if (mMoiveView == null) {
             return;
         }
         if (mActivity != null && mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
@@ -117,24 +116,23 @@ public class VideoImpl implements IVideo, EventInterceptor {
         if (!mFlags.isEmpty()) {
             for (Pair<Integer, Integer> mPair : mFlags) {
                 mActivity.getWindow().setFlags(mPair.second, mPair.first);
-                LogUtils.i(TAG, "f:" + mPair.first + "  s:" + mPair.second);
             }
             mFlags.clear();
         }
 
-        moiveView.setVisibility(View.GONE);
-        if (moiveParentView != null && moiveView != null) {
-            moiveParentView.removeView(moiveView);
+        mMoiveView.setVisibility(View.GONE);
+        if (mMoiveParentView != null && mMoiveView != null) {
+            mMoiveParentView.removeView(mMoiveView);
 
         }
-        if (moiveParentView != null) {
-            moiveParentView.setVisibility(View.GONE);
+        if (mMoiveParentView != null) {
+            mMoiveParentView.setVisibility(View.GONE);
         }
 
         if (this.mCallback != null) {
             mCallback.onCustomViewHidden();
         }
-        this.moiveView = null;
+        this.mMoiveView = null;
         if (mWebView != null) {
             mWebView.setVisibility(View.VISIBLE);
         }
@@ -143,13 +141,12 @@ public class VideoImpl implements IVideo, EventInterceptor {
 
     @Override
     public boolean isVideoState() {
-        return moiveView != null;
+        return mMoiveView != null;
     }
 
     @Override
     public boolean event() {
 
-        LogUtils.i(TAG, "isVideoState:" + isVideoState());
         if (isVideoState()) {
             onHideCustomView();
             return true;

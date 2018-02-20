@@ -66,7 +66,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	private WebViewClient mWebViewClient;
 	/**
-	 * webClientHelper
+	 * mWebClientHelper
 	 */
 	private boolean webClientHelper = true;
 	/**
@@ -168,25 +168,23 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 
 	DefaultWebClient(Builder builder) {
-		super(builder.client);
-		this.mWebView = builder.webView;
-		this.mWebViewClient = builder.client;
-		mWeakReference = new WeakReference<Activity>(builder.activity);
-		this.webClientHelper = builder.webClientHelper;
-		mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.webView));
-		isInterceptUnkownScheme = builder.isInterceptUnkownScheme;
+		super(builder.mClient);
+		this.mWebView = builder.mWebView;
+		this.mWebViewClient = builder.mClient;
+		mWeakReference = new WeakReference<Activity>(builder.mActivity);
+		this.webClientHelper = builder.mWebClientHelper;
+		mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
+		isInterceptUnkownScheme = builder.mIsInterceptUnkownScheme;
 
-		LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType);
-		if (builder.schemeHandleType <= 0) {
+		if (builder.mSchemeHandleType <= 0) {
 			schemeHandleType = ASK_USER_OPEN_OTHER_PAGE;
 		} else {
-			schemeHandleType = builder.schemeHandleType;
+			schemeHandleType = builder.mSchemeHandleType;
 		}
 	}
 
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-		LogUtils.i(TAG, " DefaultWebClient shouldOverrideUrlLoading:" + request.getUrl());
 		int tag = -1;
 
 		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", ANDROID_WEBVIEWCLIENT_PATH + ".shouldOverrideUrlLoading", WebView.class, WebResourceRequest.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, request))) {
@@ -206,15 +204,15 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return true;
 		}
 
-		LogUtils.i(TAG, "helper:" + webClientHelper + "  isInterceptUnkownScheme:" + isInterceptUnkownScheme);
 		// intent
 		if (url.startsWith(INTENT_SCHEME)) {
-			LogUtils.i(TAG, "" + INTENT_SCHEME + "   intercept:" + true);
 			handleIntentUrl(url);
+			LogUtils.i(TAG, "intent scheme ");
 			return true;
 		}
 		// 微信支付
 		if (url.startsWith(WEBCHAT_PAY_SCHEME)) {
+			LogUtils.i(TAG, "open wechat to pay ~~");
 			startActivity(url);
 			return true;
 		}
@@ -251,7 +249,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	private boolean handleOtherScheme(String url) {
 
-		LogUtils.i(TAG, "schemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
+		LogUtils.i(TAG, "mSchemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
 		switch (schemeHandleType) {
 			//直接打开其他App
 			case DERECT_OPEN_OTHER_PAGE:
@@ -274,13 +272,11 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-		LogUtils.i(TAG, "shouldInterceptRequest:" + request.getUrl().toString());
 		return super.shouldInterceptRequest(view, request);
 	}
 
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		LogUtils.i(TAG, "shouldOverrideUrlLoading --->  url:" + url);
 
 
 		int tag = -1;
@@ -382,8 +378,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			PackageManager packageManager = mActivity.getPackageManager();
 			intent = Intent.parseUri(intentUrl, Intent.URI_INTENT_SCHEME);
 			ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-			LogUtils.i(TAG, "resolveInfo:" + info + "   package:" + intent.getPackage());
-			if (info != null) {  //跳到该应用
+			// 跳到该应用
+			if (info != null) {
 				mActivity.startActivity(intent);
 				return true;
 			}
@@ -427,7 +423,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 					}
 				}
 			});
-			LogUtils.i(TAG, "alipay-isIntercepted:" + isIntercepted + "  url:" + url);
+			if (isIntercepted) {
+				LogUtils.i(TAG, "alipay-isIntercepted:" + isIntercepted + "  url:" + url);
+			}
 			return isIntercepted;
 		} catch (Throwable ignore) {
 			if (AgentWebConfig.DEBUG) {
@@ -463,7 +461,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) {
-		LogUtils.i(TAG, "onPageStarted");
 
 		if (!mWaittingFinishSet.contains(url)) {
 			mWaittingFinishSet.add(url);
@@ -475,6 +472,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	/**
 	 * MainFrame Error
+	 *
 	 * @param view
 	 * @param errorCode
 	 * @param description
@@ -508,7 +506,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	}
 
 	private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
-		LogUtils.i(TAG, "onMainFrameError:" + failingUrl + "  mWebViewClient:" + mWebViewClient);
 		mErrorUrlsSet.add(failingUrl);
 		// 下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
 		if (this.mWebViewClient != null && webClientHelper) {
@@ -534,10 +531,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	@Override
 	public void onPageFinished(WebView view, String url) {
 
-		LogUtils.i(TAG, "onPageFinished:" + mErrorUrlsSet + "  contains:" + mErrorUrlsSet.contains(url));
 		if (!mErrorUrlsSet.contains(url) && mWaittingFinishSet.contains(url)) {
 			if (mAgentWebUIController.get() != null) {
-				LogUtils.i(TAG, "onPageFinished onShowMainFrame");
 				mAgentWebUIController.get().onShowMainFrame();
 			}
 		} else {
@@ -556,7 +551,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-		LogUtils.i(TAG, "shouldOverrideKeyEvent");
 		return super.shouldOverrideKeyEvent(view, event);
 	}
 
@@ -569,7 +563,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			if (mWeakReference.get() == null) {
 				return;
 			}
-			LogUtils.i(TAG, "start wechat pay Activity");
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_VIEW);
 			intent.setData(Uri.parse(url));
@@ -577,7 +570,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 		} catch (Exception e) {
 			if (LogUtils.isDebug()) {
-				LogUtils.i(TAG, "支付异常");
 				e.printStackTrace();
 			}
 		}
@@ -634,46 +626,46 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	public static class Builder {
 
-		private Activity activity;
-		private WebViewClient client;
-		private boolean webClientHelper;
-		private PermissionInterceptor permissionInterceptor;
-		private WebView webView;
-		private boolean isInterceptUnkownScheme;
-		private int schemeHandleType;
+		private Activity mActivity;
+		private WebViewClient mClient;
+		private boolean mWebClientHelper;
+		private PermissionInterceptor mPermissionInterceptor;
+		private WebView mWebView;
+		private boolean mIsInterceptUnkownScheme;
+		private int mSchemeHandleType;
 
 		public Builder setActivity(Activity activity) {
-			this.activity = activity;
+			this.mActivity = activity;
 			return this;
 		}
 
 		public Builder setClient(WebViewClient client) {
-			this.client = client;
+			this.mClient = client;
 			return this;
 		}
 
 		public Builder setWebClientHelper(boolean webClientHelper) {
-			this.webClientHelper = webClientHelper;
+			this.mWebClientHelper = webClientHelper;
 			return this;
 		}
 
 		public Builder setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
-			this.permissionInterceptor = permissionInterceptor;
+			this.mPermissionInterceptor = permissionInterceptor;
 			return this;
 		}
 
 		public Builder setWebView(WebView webView) {
-			this.webView = webView;
+			this.mWebView = webView;
 			return this;
 		}
 
 		public Builder setInterceptUnkownScheme(boolean interceptUnkownScheme) {
-			this.isInterceptUnkownScheme = interceptUnkownScheme;
+			this.mIsInterceptUnkownScheme = interceptUnkownScheme;
 			return this;
 		}
 
 		public Builder setSchemeHandleType(int schemeHandleType) {
-			this.schemeHandleType = schemeHandleType;
+			this.mSchemeHandleType = schemeHandleType;
 			return this;
 		}
 
