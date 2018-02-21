@@ -34,9 +34,9 @@ public class IndicatorHandler implements IndicatorController {
         } else if (newProgress > 0 && newProgress <= 10) {
             showProgressBar();
         } else if (newProgress > 10 && newProgress < 95) {
-            setProgressBar(newProgress);
+            setProgress(newProgress);
         } else {
-            setProgressBar(newProgress);
+            setProgress(newProgress);
             finish();
         }
 
@@ -61,7 +61,7 @@ public class IndicatorHandler implements IndicatorController {
         }
     }
     @Override
-    public void setProgressBar(int n) {
+    public void setProgress(int n) {
         if (mBaseIndicatorSpec != null) {
             mBaseIndicatorSpec.setProgress(n);
         }
