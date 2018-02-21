@@ -19,7 +19,7 @@ package com.just.agentweb;
 import android.webkit.WebView;
 /**
  * @author cenxiaozhong
- * @update 3.0.0
+ * @update 4.0.0
  * @since 1.0.0
  */
 
@@ -29,9 +29,9 @@ public interface IndicatorController {
 
     BaseIndicatorSpec offerIndicator();
 
-    void showProgressBar();
+    void showIndicator();
 
-    void setProgressBar(int newProgress);
+    void setProgress(int newProgress);
 
     void finish();
 }
