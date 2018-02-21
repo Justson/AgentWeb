@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/progress">
+        <scale
+            android:scaleGravity="fill_vertical|start"
+            android:scaleHeight="100%"
+            android:scaleWidth="100%">
+            <shape>
+                <gradient
+                    android:centerColor="@color/colorProgressGradientEnd"
+                    android:endColor="@color/colorProgressGradientStart"
+                    android:startColor="@color/colorProgressGradientStart" />
+            </shape>
+        </scale>
+    </item>
+</layer-list>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<resources>
+   <declare-styleable name="ResizableKeyboardViewDelegate">
+       <attr name="viewToHideWhenActivated" format="reference" />
+       <attr name="animate" format="boolean" />
+   </declare-styleable>
+
+    <declare-styleable name="AnimatedProgressBar">
+        <attr name="wrapShiftDrawable" format="boolean" />
+        <attr name="shiftDuration" format="reference" />
+        <attr name="shiftInterpolator" format="reference" />
+    </declare-styleable>
+
+</resources>
