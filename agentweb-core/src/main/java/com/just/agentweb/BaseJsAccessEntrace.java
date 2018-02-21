@@ -36,7 +36,6 @@ public abstract class BaseJsAccessEntrace implements JsAccessEntrace {
     @Override
     public void callJs(String js, final ValueCallback<String> callback) {
 
-        LogUtils.i(TAG,"method callJs:"+js);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             this.evaluateJs(js, callback);
         } else {

@@ -16,7 +16,7 @@
 
 package com.just.agentweb;
 
-import android.support.v4.util.ArrayMap;
+import java.util.Map;
 
 /**
  * @author cenxiaozhong
@@ -25,7 +25,7 @@ import android.support.v4.util.ArrayMap;
  */
 public interface JsInterfaceHolder {
 
-    JsInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps);
+    JsInterfaceHolder addJavaObjects(Map<String, Object> maps);
 
     JsInterfaceHolder addJavaObject(String k, Object v);
 

@@ -16,7 +16,6 @@
 
 package com.just.agentweb;
 
-import android.support.v4.util.ArrayMap;
 import android.webkit.WebView;
 
 import java.util.Map;
@@ -29,68 +28,66 @@ import java.util.Set;
  */
 public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
-    private static final String TAG = JsInterfaceHolderImpl.class.getSimpleName();
-    private WebView mWebView;
-    private AgentWeb.SecurityType mSecurityType;
+	private static final String TAG = JsInterfaceHolderImpl.class.getSimpleName();
+	private WebView mWebView;
+	private AgentWeb.SecurityType mSecurityType;
 
-    static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
+	static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
 
-        return new JsInterfaceHolderImpl(webView, securityType);
-    }
-
-
-
-    JsInterfaceHolderImpl(WebView webView, AgentWeb.SecurityType securityType) {
-        super(securityType);
-        this.mWebView = webView;
-        this.mSecurityType = securityType;
-    }
-
-    @Override
-    public JsInterfaceHolder addJavaObjects(ArrayMap<String, Object> maps) {
+		return new JsInterfaceHolderImpl(webView, securityType);
+	}
 
 
-        if (!checkSecurity()) {
-            LogUtils.i(TAG, "The injected object is not safe, give up injection");
-            return this;
-        }
-        LogUtils.i(TAG, "inject set:" + maps.size());
+	JsInterfaceHolderImpl(WebView webView, AgentWeb.SecurityType securityType) {
+		super(securityType);
+		this.mWebView = webView;
+		this.mSecurityType = securityType;
+	}
 
-        Set<Map.Entry<String, Object>> sets = maps.entrySet();
-        for (Map.Entry<String, Object> mEntry : sets) {
+	@Override
+	public JsInterfaceHolder addJavaObjects(Map<String, Object> maps) {
 
-            Object v = mEntry.getValue();
-            boolean t = checkObject(v);
-            if (!t) {
-                throw new JsInterfaceObjectException("This object has not offer method javascript to call ,please check addJavascriptInterface annotation was be added");
-            } else {
-                addJavaObjectDirect(mEntry.getKey(), v);
-            }
-        }
 
-        return this;
-    }
+		if (!checkSecurity()) {
+			LogUtils.e(TAG, "The injected object is not safe, give up injection");
+			return this;
+		}
 
-    @Override
-    public JsInterfaceHolder addJavaObject(String k, Object v) {
+		Set<Map.Entry<String, Object>> sets = maps.entrySet();
+		for (Map.Entry<String, Object> mEntry : sets) {
 
-        if (!checkSecurity()) {
-            return this;
-        }
-        boolean t = checkObject(v);
-        if (!t) {
-            throw new JsInterfaceObjectException("this object has not offer method javascript to call , please check addJavascriptInterface annotation was be added");
-        } else {
-            addJavaObjectDirect(k, v);
-        }
-        return this;
-    }
+			Object v = mEntry.getValue();
+			boolean t = checkObject(v);
+			if (!t) {
+				throw new JsInterfaceObjectException("This object has not offer method javascript to call ,please check addJavascriptInterface annotation was be added");
+			} else {
+				addJavaObjectDirect(mEntry.getKey(), v);
+			}
+		}
 
-    private JsInterfaceHolder addJavaObjectDirect(String k, Object v) {
-        LogUtils.i(TAG, "k:" + k + "  v:" + v);
-        this.mWebView.addJavascriptInterface(v, k);
-        return this;
-    }
+		return this;
+	}
+
+	@Override
+	public JsInterfaceHolder addJavaObject(String k, Object v) {
+
+		if (!checkSecurity()) {
+			return this;
+		}
+		boolean t = checkObject(v);
+		if (!t) {
+			throw new JsInterfaceObjectException("this object has not offer method javascript to call , please check addJavascriptInterface annotation was be added");
+		} else {
+			addJavaObjectDirect(k, v);
+		}
+		return this;
+	}
+
+	private JsInterfaceHolder addJavaObjectDirect(String k, Object v) {
+		LogUtils.i(TAG, "k:" + k + "  v:" + v);
+		this.mWebView.addJavascriptInterface(v, k);
+		return this;
+	}
 
 
 }
