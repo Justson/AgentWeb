@@ -30,13 +30,13 @@ import android.webkit.WebView;
  * @since 3.0.0
  * @author cenxiaozhong
  */
-public abstract class AgentWebUIController {
+public abstract class AbsAgentWebUIController {
 
     public static boolean HAS_DESIGN_LIB = false;
     private Activity mActivity;
     private WebParentLayout mWebParentLayout;
     private volatile boolean mIsBindWebParent = false;
-    protected AgentWebUIController mAgentWebUIControllerDelegate;
+    protected AbsAgentWebUIController mAgentWebUIControllerDelegate;
     protected String TAG = this.getClass().getSimpleName();
 
     static {
@@ -50,12 +50,12 @@ public abstract class AgentWebUIController {
     }
 
 
-    protected AgentWebUIController create() {
+    protected AbsAgentWebUIController create() {
         return HAS_DESIGN_LIB ? new DefaultDesignUIController() : new DefaultUIController();
     }
 
-    protected AgentWebUIController getDelegate() {
-        AgentWebUIController mAgentWebUIController = this.mAgentWebUIControllerDelegate;
+    protected AbsAgentWebUIController getDelegate() {
+        AbsAgentWebUIController mAgentWebUIController = this.mAgentWebUIControllerDelegate;
         if (mAgentWebUIController == null) {
             this.mAgentWebUIControllerDelegate = mAgentWebUIController = create();
         }
