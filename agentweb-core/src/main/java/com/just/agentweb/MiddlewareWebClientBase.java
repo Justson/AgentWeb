@@ -21,7 +21,7 @@ import android.webkit.WebViewClient;
 /**
  * @author cenxiaozhong
  * @date 2017/12/15
- * @since 1.0.0
+ * @since 3.0.0
  */
 public class MiddlewareWebClientBase extends WebViewClientDelegate {
     private MiddlewareWebClientBase mMiddleWrareWebClientBase;

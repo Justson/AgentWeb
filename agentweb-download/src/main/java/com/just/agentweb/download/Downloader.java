@@ -116,9 +116,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	private static final int MAX_REDIRECTS = 6;
 	private static final int HTTP_TEMP_REDIRECT = 307;
-
 	public static final int ERROR_NETWORK_CONNECTION = 0x400;
-	public static final int ERROR_CONNECTION_STATUS = 0x401;
+	public static final int ERROR_RESPONSE_STATUS = 0x401;
 	public static final int ERROR_STORAGE = 0x402;
 	public static final int ERROR_TIME_OUT = 0x403;
 	public static final int ERROR_USER_CANCEL = 0x404;
@@ -132,14 +131,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	static {
 
 		DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
-		DOWNLOAD_MESSAGE.append(ERROR_CONNECTION_STATUS, "Response code non-200 and non-206 .");
+		DOWNLOAD_MESSAGE.append(ERROR_RESPONSE_STATUS, "Response code non-200 and non-206 . ");
 		DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
 		DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
 		DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");
-		DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download .");
+		DOWNLOAD_MESSAGE.append(ERROR_USER_CANCEL, "The user canceled the download . ");
 		DOWNLOAD_MESSAGE.append(ERROR_LOAD, "IO Error . ");
-		DOWNLOAD_MESSAGE.append(ERROR_SERVICE, "Service Unavailable .");
-		DOWNLOAD_MESSAGE.append(ERROR_TOO_MANY_REDIRECTS, "Too many redirects .");
+		DOWNLOAD_MESSAGE.append(ERROR_SERVICE, "Service Unavailable . ");
+		DOWNLOAD_MESSAGE.append(ERROR_TOO_MANY_REDIRECTS, "Too many redirects . ");
 		DOWNLOAD_MESSAGE.append(SUCCESSFUL, "Download successful . ");
 	}
 
@@ -160,7 +159,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		}
 
 		CancelDownloadInformer.getInformer().addRecipient(mDownloadTask.getUrl(), this);
-		buildNotifier();
+		createNotifier();
+		if (null != this.mDownloadNotifier) {
+			mDownloadNotifier.onPreDownload();
+		}
 	}
 
 	private boolean checkSpace() {
@@ -215,7 +217,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				if (null != mHttpURLConnection) {
 					mHttpURLConnection.disconnect();
 				}
-				mHttpURLConnection = createUrlConnectionAndAddHeaders(url);
+				mHttpURLConnection = createUrlConnectionAndSettingHeaders(url);
 
 				mHttpURLConnection.connect();
 				final boolean isConnectionClose = "close".equalsIgnoreCase(
@@ -243,7 +245,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 								new LoadingRandomAccessFile(mDownloadTask.getFile()),
 								false);
 					case HTTP_PARTIAL:
-
 						return transferData(mHttpURLConnection.getInputStream(),
 								new LoadingRandomAccessFile(mDownloadTask.getFile()),
 								true);
@@ -258,7 +259,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 					case HTTP_INTERNAL_ERROR:
 						return ERROR_SERVICE;
 					default:
-						return ERROR_CONNECTION_STATUS;
+						return ERROR_RESPONSE_STATUS;
 				}
 			}
 			return ERROR_TOO_MANY_REDIRECTS;
@@ -271,11 +272,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	private void saveEtag(HttpURLConnection httpURLConnection) {
 		String etag = httpURLConnection.getHeaderField("ETag");
-		LogUtils.i(TAG, "save etag:" + etag);
-
 		if (TextUtils.isEmpty(etag)) {
 			return;
 		}
+		LogUtils.i(TAG, "save etag:" + etag);
 		SharedPreferences mSharedPreferences = mDownloadTask.getContext().getSharedPreferences(AgentWebConfig.AGENTWEB_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putString(mDownloadTask.getFile().getName(), etag);
@@ -292,16 +292,15 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		}
 	}
 
-	private HttpURLConnection createUrlConnectionAndAddHeaders(URL url) throws IOException {
+	private HttpURLConnection createUrlConnectionAndSettingHeaders(URL url) throws IOException {
 
 		HttpURLConnection mHttpURLConnection = (HttpURLConnection) url.openConnection();
-		mHttpURLConnection.setRequestProperty("Accept", "application/*");
 		mHttpURLConnection.setConnectTimeout(mConnectTimeOut);
 		mHttpURLConnection.setInstanceFollowRedirects(false);
 		mHttpURLConnection.setReadTimeout(mDownloadTask.getBlockMaxTime());
+		mHttpURLConnection.setRequestProperty("Accept", "application/*");
 		mHttpURLConnection.setRequestProperty("Accept-Encoding", "identity");
 		mHttpURLConnection.setRequestProperty("Connection", "close");
-
 		mHttpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
 		Map<String, String> mHeaders = null;
 		if (null != (mHeaders = mDownloadTask.getExtraServiceImpl().getHeaders()) &&
@@ -318,9 +317,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			String mEtag = "";
 			if (!TextUtils.isEmpty((mEtag = getEtag()))) {
 				LogUtils.i(TAG, "Etag:" + mEtag);
-				mHttpURLConnection.addRequestProperty("If-Match", getEtag());
+				mHttpURLConnection.setRequestProperty("If-Match", getEtag());
 			}
-			mHttpURLConnection.addRequestProperty("Range", "bytes=" + (mLastLoaded = mDownloadTask.getFile().length()) + "-");
+			mHttpURLConnection.setRequestProperty("Range", "bytes=" + (mLastLoaded = mDownloadTask.getFile().length()) + "-");
 		}
 
 		return mHttpURLConnection;
@@ -342,7 +341,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (currentTime - this.mLastTime < 800) {
 				return;
 			}
-			LogUtils.i(TAG, " UsedTime:" + mUsedTime / 1000 + "");
 			this.mLastTime = currentTime;
 			if (null != mDownloadNotifier) {
 				int mProgress = (int) ((mLastLoaded + mLoaded) / Float.valueOf(mTotals) * 100);
@@ -408,7 +406,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	private boolean doCallback(Integer code) {
 		DownloadListener mDownloadListener = null;
-		if ((mDownloadListener = mDownloadTask.getDownloadListener()) == null) {
+		if (null == (mDownloadListener = mDownloadTask.getDownloadListener())) {
 			LogUtils.e(TAG, "DownloadListener has been death");
 			DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownloadTask.getFile().getPath());
 			return false;
@@ -421,13 +419,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 
-	private void buildNotifier() {
+	private void createNotifier() {
 
 		Context mContext = mDownloadTask.getContext().getApplicationContext();
-		if (mContext != null && mDownloadTask.isEnableIndicator()) {
+		if (null != mContext && mDownloadTask.isEnableIndicator()) {
 			mDownloadNotifier = new DownloadNotifier(mContext, mDownloadTask.getId());
 			mDownloadNotifier.initBuilder(mDownloadTask);
-			mDownloadNotifier.onPreDownload();
 		}
 	}
 
@@ -439,10 +436,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		     RandomAccessFile out = randomAccessFile) {
 
 			if (isSeek) {
-				LogUtils.i(TAG, "seek -- >" + isSeek + "  length:" + out.length());
 				out.seek(out.length());
 			} else {
-				LogUtils.i(TAG, "seek -- >" + false + "  , length : 0");
 				out.seek(0);
 				mLastLoaded = 0L;
 			}

@@ -30,10 +30,10 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
+import com.just.agentweb.AbsAgentWebUIController;
 import com.just.agentweb.Action;
 import com.just.agentweb.ActionActivity;
 import com.just.agentweb.AgentWebPermissions;
-import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
@@ -97,9 +97,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	 */
 	private String mMimetype;
 	/**
-	 * AgentWebUIController
+	 * AbsAgentWebUIController
 	 */
-	private WeakReference<AgentWebUIController> mAgentWebUIController;
+	private WeakReference<AbsAgentWebUIController> mAgentWebUIController;
 	/**
 	 * ExtraServiceImpl
 	 */
@@ -136,7 +136,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		this.mDownloadListener = extraServiceImpl.mDownloadListener;
 		this.mDownloadingListener = extraServiceImpl.downloadingListener;
 		this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
-		this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
+		this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
 	}
 
 
@@ -157,12 +157,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			}
 		}
 
-		LogUtils.i(TAG, "mMimetype:" + mimetype);
-		this.mUrl = url;
-		this.mContentDisposition = contentDisposition;
-		this.mContentLength = contentLength;
-		this.mMimetype = mimetype;
-		this.mUserAgent = userAgent;
 		ExtraServiceImpl mCloneExtraServiceImpl = null;
 		if (null == extraServiceImpl) {
 			try {
@@ -178,11 +172,11 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			mCloneExtraServiceImpl = extraServiceImpl;
 		}
 		mCloneExtraServiceImpl
-				.setUrl(this.mUrl)
-				.setMimetype(this.mMimetype)
-				.setContentDisposition(this.mContentDisposition)
-				.setContentLength(this.mContentLength)
-				.setUserAgent(this.mUserAgent);
+				.setUrl(this.mUrl = url)
+				.setMimetype(this.mMimetype = mimetype)
+				.setContentDisposition(this.mContentDisposition = contentDisposition)
+				.setContentLength(this.mContentLength = contentLength)
+				.setUserAgent(this.mUserAgent = userAgent);
 		this.mCloneExtraServiceImpl = mCloneExtraServiceImpl;
 
 		LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  :" + this.mCloneExtraServiceImpl.getMimetype());
@@ -239,7 +233,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		File mFile = getFile(mContentDisposition, mUrl);
 		// File 创建文件失败
 		if (null == mFile) {
-			LogUtils.i(TAG, "新建文件失败");
+			LogUtils.e(TAG, "新建文件失败");
 			return;
 		}
 		if (mFile.exists() && mFile.length() >= mContentLength) {
@@ -305,7 +299,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		if (null == (mActivity = mActivityWeakReference.get()) || mActivity.isFinishing()) {
 			return;
 		}
-		AgentWebUIController mAgentWebUIController;
+		AbsAgentWebUIController mAgentWebUIController;
 		if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
 			mAgentWebUIController.onForceDownloadAlert(mUrl, createCallback(file));
 		}
@@ -445,7 +439,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			mTasks = new LinkedList();
 		}
 
-		private static ExecuteTasksMap sInstance = null;
+		private static volatile ExecuteTasksMap sInstance = null;
 
 
 		static ExecuteTasksMap getInstance() {
@@ -514,7 +508,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		return new ExtraServiceImpl()
 				.setActivity(activity)
 				.setWebView(webView)
-				.setDownloadListener(downloadListener)//
+				.setDownloadListener(downloadListener)
 				.setPermissionInterceptor(permissionInterceptor)
 				.setDownloadingListener(downloadingListener)
 				.create();
@@ -548,7 +542,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return isForceDownload;
 		}
 
-		//        public static final int PENDDING = 1001;
+//        public static final int PENDDING = 1001;
 //        public static final int DOWNLOADING = 1002;
 //        public static final int FINISH = 1003;
 //        public static final int ERROR = 1004;

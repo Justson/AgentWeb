@@ -8,7 +8,7 @@ import com.just.agentweb.MiddlewareWebChromeBase;
 
 /**
  * Created by cenxiaozhong on 2017/12/16.
- * After agentweb 3.0.0  ， allow  dev to custom self WebChromeClient's MiddleWare  .
+ * After agentweb 3.0.0  ， allow dev to custom self WebChromeClient's MiddleWare  .
  */
 public class MiddlewareChromeClient extends MiddlewareWebChromeBase {
     public MiddlewareChromeClient() {
