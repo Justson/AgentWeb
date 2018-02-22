@@ -28,10 +28,10 @@ import android.webkit.WebView;
  * @date 2017/12/6
  * @since 3.0.0
  */
-public class AgentWebUIControllerImplBase extends AgentWebUIController {
+public class AgentWebUIControllerImplBase extends AbsAgentWebUIController {
 
 
-	public static AgentWebUIController build() {
+	public static AbsAgentWebUIController build() {
 		return new AgentWebUIControllerImplBase();
 	}
 

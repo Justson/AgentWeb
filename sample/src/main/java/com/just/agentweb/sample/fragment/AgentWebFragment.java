@@ -68,10 +68,15 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	public static final String URL_KEY = "url_key";
 	private ImageView mMoreImageView;
 	private PopupMenu mPopupMenu;
-	private Gson mGson = new Gson(); //用于方便打印测试
+	/**
+	 *  用于方便打印测试
+	 */
+	private Gson mGson = new Gson();
 	public static final String TAG = AgentWebFragment.class.getSimpleName();
 	private MiddlewareWebClientBase mMiddleWareWebClient;
 	private MiddlewareWebChromeBase mMiddleWareWebChrome;
+	private DownloadingService mDownloadingService;
+	private AgentWebDownloader.ExtraService mExtraService;
 
 	public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -146,8 +151,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		}
 	};
 
-	private DownloadingService mDownloadingService;
-	AgentWebDownloader.ExtraService mExtraService;
+
 	/**
 	 * 更新于 AgentWeb  4.0.0
 	 */
@@ -292,9 +296,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		@Override
 		public void onReceivedTitle(WebView view, String title) {
 			super.onReceivedTitle(view, title);
-			if (mTitleTextView != null && !TextUtils.isEmpty(title))
-				if (title.length() > 10)
+			if (mTitleTextView != null && !TextUtils.isEmpty(title)) {
+				if (title.length() > 10) {
 					title = title.substring(0, 10).concat("...");
+				}
+			}
 			mTitleTextView.setText(title);
 		}
 	};
@@ -323,10 +329,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			//intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会打开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
 			//例如优酷视频播放 ，intent://play?...package=com.youku.phone;end;
 			//优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
-			if (url.startsWith("intent://") && url.contains("com.youku.phone"))
+			if (url.startsWith("intent://") && url.contains("com.youku.phone")) {
 				return true;
+			}
 			/*else if (isAlipay(view, mUrl))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
-	            return true;*/
+			    return true;*/
 
 
 			return false;
@@ -345,10 +352,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 		}
 
-		//2972 1483|3005 1536|2868 1785| 2889 1523| 2912 1537|2941 1628|2925 1561|2864 1669|2953 1508|2932 1693|
-		//2926.1 1592.3
-
-		//2731 1749|1234 1808|2203 1230|1648 1752|
 		@Override
 		public void onPageFinished(WebView view, String url) {
 			super.onPageFinished(view, url);
@@ -360,8 +363,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			}
 
 		}
-        /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
-       /* public void onMainFrameError(AgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
+	    /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
+       /* public void onMainFrameError(AbsAgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
 
             Log.i(TAG, "AgentWebFragment onMainFrameError");
             agentWebUIController.onMainFrameError(view,errorCode,description,failingUrl);
@@ -419,18 +422,19 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
 			switch (v.getId()) {
-
 				case R.id.iv_back:
-
-					if (!mAgentWeb.back())// true表示AgentWeb处理了该事件
+					// true表示AgentWeb处理了该事件
+					if (!mAgentWeb.back()) {
 						AgentWebFragment.this.getActivity().finish();
-
+					}
 					break;
 				case R.id.iv_finish:
 					AgentWebFragment.this.getActivity().finish();
 					break;
 				case R.id.iv_more:
 					showPoPup(v);
+					break;
+				default:
 					break;
 
 			}
@@ -440,7 +444,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 	/**
 	 * 打开浏览器
-	 *
 	 * @param targetUrl 外部浏览器打开的地址
 	 */
 	private void openBrowser(String targetUrl) {
@@ -460,7 +463,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 	/**
 	 * 显示更多菜单
-	 *
 	 * @param view 菜单依附在该View下面
 	 */
 	private void showPoPup(View view) {
@@ -472,7 +474,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		mPopupMenu.show();
 	}
 
-	// 菜单事件
+	/**
+	 * 菜单事件
+	 */
 	private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
 		@Override
 		public boolean onMenuItemClick(MenuItem item) {
@@ -519,14 +523,18 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		}
 	};
 
-	//这里用于测试错误页的显示
+	/**
+	 * 测试错误页的显示
+	 */
 	private void loadErrorWebSite() {
 		if (mAgentWeb != null) {
 			mAgentWeb.getUrlLoader().loadUrl("http://www.unkownwebsiteblog.me");
 		}
 	}
 
-	//清除 WebView 缓存
+	/**
+	 *  清除 WebView 缓存
+	 */
 	private void toCleanWebCache() {
 
 		if (this.mAgentWeb != null) {
@@ -541,7 +549,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	}
 
 
-	//复制字符串
+	/**
+	 *  复制字符串
+	 * @param context
+	 * @param text
+	 */
 	private void toCopy(Context context, String text) {
 
 		ClipboardManager mClipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -558,7 +570,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 	@Override
 	public void onPause() {
-		mAgentWeb.getWebLifeCycle().onPause(); //暂停应用内所有WebView ， 调用mWebView.resumeTimers(); 恢复。
+
+		mAgentWeb.getWebLifeCycle().onPause(); //暂停应用内所有WebView ， 调用mWebView.resumeTimers();/mAgentWeb.getWebLifeCycle().onResume(); 恢复。
 		super.onPause();
 	}
 

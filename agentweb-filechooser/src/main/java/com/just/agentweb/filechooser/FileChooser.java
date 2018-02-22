@@ -33,11 +33,11 @@ import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
+import com.just.agentweb.AbsAgentWebUIController;
 import com.just.agentweb.Action;
 import com.just.agentweb.ActionActivity;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.AgentWebPermissions;
-import com.just.agentweb.AgentWebUIController;
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
@@ -127,9 +127,9 @@ public class FileChooser {
 	 */
 	private int FROM_INTENTION_CODE = 21;
 	/**
-	 * 当前 AgentWebUIController
+	 * 当前 AbsAgentWebUIController
 	 */
-	private WeakReference<AgentWebUIController> mAgentWebUIController = null;
+	private WeakReference<AbsAgentWebUIController> mAgentWebUIController = null;
 	/**
 	 * 选择文件类型
 	 */
@@ -155,7 +155,7 @@ public class FileChooser {
 		this.mWebView = builder.mWebView;
 		this.mPermissionInterceptor = builder.mPermissionInterceptor;
 		this.mAcceptType = builder.mAcceptType;
-		this.mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
+		this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
 		this.mJsChannelHandler$Callback = builder.mJsChannelCallback;
 
 	}
@@ -557,9 +557,9 @@ public class FileChooser {
 	private static final class AboveLCallback implements Handler.Callback {
 		private ValueCallback<Uri[]> mValueCallback;
 		private Uri[] mUris;
-		private WeakReference<AgentWebUIController> controller;
+		private WeakReference<AbsAgentWebUIController> controller;
 
-		private AboveLCallback(ValueCallback<Uri[]> valueCallbacks, Uri[] uris, WeakReference<AgentWebUIController> controller) {
+		private AboveLCallback(ValueCallback<Uri[]> valueCallbacks, Uri[] uris, WeakReference<AbsAgentWebUIController> controller) {
 			this.mValueCallback = valueCallbacks;
 			this.mUris = uris;
 			this.controller = controller;

@@ -98,9 +98,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
      */
     public static final int FROM_CODE_INTENTION_LOCATION = FROM_CODE_INTENTION << 2;
     /**
-     * AgentWebUIController
+     * AbsAgentWebUIController
      */
-    private WeakReference<AgentWebUIController> mAgentWebUiController = null;
+    private WeakReference<AbsAgentWebUIController> mAgentWebUiController = null;
     /**
      * IndicatorController 进度条控制器
      */
@@ -123,7 +123,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         this.mIVideo = iVideo;
         this.mPermissionInterceptor = permissionInterceptor;
         this.mWebView = webView;
-        mAgentWebUiController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
+        mAgentWebUiController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
     }
 
 

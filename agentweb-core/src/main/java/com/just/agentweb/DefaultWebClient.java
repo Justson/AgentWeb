@@ -122,9 +122,9 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	private boolean isInterceptUnkownScheme = true;
 	/**
-	 * AgentWebUIController
+	 * AbsAgentWebUIController
 	 */
-	private WeakReference<AgentWebUIController> mAgentWebUIController = null;
+	private WeakReference<AbsAgentWebUIController> mAgentWebUIController = null;
 	/**
 	 * WebView
 	 */
@@ -173,7 +173,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		this.mWebViewClient = builder.mClient;
 		mWeakReference = new WeakReference<Activity>(builder.mActivity);
 		this.webClientHelper = builder.mWebClientHelper;
-		mAgentWebUIController = new WeakReference<AgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
+		mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
 		isInterceptUnkownScheme = builder.mIsInterceptUnkownScheme;
 
 		if (builder.mSchemeHandleType <= 0) {
@@ -510,7 +510,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		// 下面逻辑判断开发者是否重写了 onMainFrameError 方法 ， 优先交给开发者处理
 		if (this.mWebViewClient != null && webClientHelper) {
 			Method mMethod = this.onMainFrameErrorMethod;
-			if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AgentWebUIController.class, WebView.class, int.class, String.class, String.class)) != null) {
+			if (mMethod != null || (this.onMainFrameErrorMethod = mMethod = AgentWebUtils.isExistMethod(mWebViewClient, "onMainFrameError", AbsAgentWebUIController.class, WebView.class, int.class, String.class, String.class)) != null) {
 				try {
 					mMethod.invoke(this.mWebViewClient, mAgentWebUIController.get(), view, errorCode, description, failingUrl);
 				} catch (Throwable ignore) {

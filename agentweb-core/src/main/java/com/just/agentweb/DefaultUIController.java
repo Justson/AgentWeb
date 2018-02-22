@@ -35,7 +35,7 @@ import android.widget.EditText;
  * @date 2017/12/8
  * @since 3.0.0
  */
-public class DefaultUIController extends AgentWebUIController {
+public class DefaultUIController extends AbsAgentWebUIController {
 
     private AlertDialog mAlertDialog;
     protected AlertDialog mConfirmDialog;

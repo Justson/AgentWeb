@@ -762,7 +762,7 @@ public class AgentWebUtils {
             return;
         }
         WebParentLayout mWebParentLayout = (WebParentLayout) activity.findViewById(R.id.web_parent_layout_id);
-        AgentWebUIController mAgentWebUIController = mWebParentLayout.provide();
+        AbsAgentWebUIController mAgentWebUIController = mWebParentLayout.provide();
         if (mAgentWebUIController != null) {
             mAgentWebUIController.showMessage(message, from);
         }
@@ -812,7 +812,7 @@ public class AgentWebUtils {
     }
 
 
-    public static AgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
+    public static AbsAgentWebUIController getAgentWebUIControllerByWebView(WebView webView) {
         WebParentLayout mWebParentLayout = getWebParentLayoutByWebView(webView);
         return mWebParentLayout.provide();
     }
@@ -838,7 +838,7 @@ public class AgentWebUtils {
             throw new IllegalStateException("please check webcreator's create method was be called ?");
         }
         mViewGroup = (ViewGroup) webView.getParent();
-        AgentWebUIController mAgentWebUIController;
+        AbsAgentWebUIController mAgentWebUIController;
         while (mViewGroup != null) {
 
             LogUtils.i(TAG, "ViewGroup:" + mViewGroup);

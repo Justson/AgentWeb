@@ -36,8 +36,8 @@ import android.widget.FrameLayout;
  * @date 2017/12/8
  * @since 3.0.0
  */
-public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIController> {
-	private AgentWebUIController mAgentWebUIController = null;
+public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWebUIController> {
+	private AbsAgentWebUIController mAgentWebUIController = null;
 	private static final String TAG = WebParentLayout.class.getSimpleName();
 	@LayoutRes
 	private int mErrorLayoutRes;
@@ -65,7 +65,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 		LogUtils.i(TAG, "mErrorLayoutRes:" + mErrorLayoutRes);
 	}
 
-	void bindController(AgentWebUIController agentWebUIController) {
+	void bindController(AbsAgentWebUIController agentWebUIController) {
 		LogUtils.i(TAG, "bindController:" + agentWebUIController);
 		this.mAgentWebUIController = agentWebUIController;
 		this.mAgentWebUIController.bindWebParent(this, (Activity) getContext());
@@ -169,7 +169,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AgentWebUIC
 	}
 
 	@Override
-	public AgentWebUIController provide() {
+	public AbsAgentWebUIController provide() {
 		return this.mAgentWebUIController;
 	}
 
