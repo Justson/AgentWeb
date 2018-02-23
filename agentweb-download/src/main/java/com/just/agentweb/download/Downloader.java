@@ -16,7 +16,9 @@
 
 package com.just.agentweb.download;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.SystemClock;
@@ -393,6 +395,19 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 					mDownloadNotifier.onDownloadFinished();
 				}
 			}
+
+			// auto open file
+			if (!mDownloadTask.isAutoOpen()) {
+				return;
+			}
+			Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
+			if (null == mIntent) {
+				return;
+			}
+			if (!(mDownloadTask.getContext() instanceof Activity)) {
+				mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			}
+			mDownloadTask.getContext().startActivity(mIntent);
 		} catch (Throwable throwable) {
 			if (LogUtils.isDebug()) {
 				throwable.printStackTrace();
