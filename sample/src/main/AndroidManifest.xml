@@ -51,7 +51,7 @@
             android:name="com.just.agentweb.sample.activity.ContainerActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"></activity>
-
+        <activity android:name=".activity.AutoHidenToolbarActivity" />
     </application>
 
 </manifest>

@@ -553,6 +553,11 @@ public final class AgentWeb {
 			return new IndicatorBuilder(this);
 		}
 
+		public AgentBuilder setWebView(WebView webView) {
+			this.mWebView = webView;
+			return this;
+		}
+
 		private PreAgentWeb buildAgentWeb() {
 			if (mTag == AgentWeb.FRAGMENT_TAG && this.mViewGroup == null) {
 				throw new NullPointerException("ViewGroup is null,please check you params");
