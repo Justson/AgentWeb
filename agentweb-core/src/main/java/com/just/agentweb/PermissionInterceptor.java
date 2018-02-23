@@ -18,8 +18,7 @@ package com.just.agentweb;
 
 /**
  * @author cenxiaozhong
- * @date 2017/8/17
- * @since 1.0.0
+ * @since 3.0.0
  */
 public interface PermissionInterceptor {
 

@@ -115,7 +115,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	/**
 	 * 进度回调
 	 */
-	private DownloadingListener mDownloadingListener;
+	private volatile DownloadingListener mDownloadingListener;
 	/**
 	 * 根据p3c，预编译正则，提升性能。
 	 */
