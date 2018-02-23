@@ -48,7 +48,8 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 		protected String mContentDisposition;
 		protected String mMimetype;
 		protected long mContentLength;
-		private Map<String, String> mHeaders;
+		protected Map<String, String> mHeaders;
+		protected boolean mAutoOpen = false;
 
 		public Map<String, String> getHeaders() {
 			return mHeaders;
@@ -203,7 +204,9 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 			return this;
 		}
 
-
+		public void setAutoOpen(boolean autoOpen) {
+			mAutoOpen = autoOpen;
+		}
 	}
 
 	abstract class ExtraService extends Extra {

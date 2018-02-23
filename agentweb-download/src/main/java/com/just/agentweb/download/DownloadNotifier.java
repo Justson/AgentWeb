@@ -53,7 +53,8 @@ public class DownloadNotifier {
 	private Context mContext;
 	private String mChannelId = "";
 	private volatile boolean mAddedCancelAction = false;
-
+	private String mUrl;
+	private File mFile;
 	private static final String TAG = DownloadNotifier.class.getSimpleName();
 	private NotificationCompat.Action mAction;
 
@@ -66,9 +67,13 @@ public class DownloadNotifier {
 
 		try {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				mBuilder = new NotificationCompat.Builder(mContext, mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
-				NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId, AgentWebUtils.getApplicationName(context), NotificationManager.IMPORTANCE_DEFAULT);
-				NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(NOTIFICATION_SERVICE);
+				mBuilder = new NotificationCompat.Builder(mContext,
+						mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
+				NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId,
+						AgentWebUtils.getApplicationName(context),
+						NotificationManager.IMPORTANCE_DEFAULT);
+				NotificationManager mNotificationManager = (NotificationManager) mContext
+						.getSystemService(NOTIFICATION_SERVICE);
 				mNotificationManager.createNotificationChannel(mNotificationChannel);
 			} else {
 				mBuilder = new NotificationCompat.Builder(mContext);
@@ -82,8 +87,6 @@ public class DownloadNotifier {
 		}
 	}
 
-	private String url;
-	private File mFile;
 
 	void initBuilder(DownloadTask downloadTask) {
 		String title = TextUtils.isEmpty(downloadTask.getFile().getName()) ?
@@ -106,7 +109,7 @@ public class DownloadNotifier {
 		mBuilder.setAutoCancel(true);
 		mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
 		int defaults = 0;
-		this.url = downloadTask.getUrl();
+		this.mUrl = downloadTask.getUrl();
 		this.mFile = downloadTask.getFile();
 		mBuilder.setDeleteIntent(buildCancelContent(mContext, downloadTask.getId(), downloadTask.getUrl()));
 		mBuilder.setDefaults(defaults);
@@ -157,17 +160,16 @@ public class DownloadNotifier {
 	}
 
 
-
 	void onDownloading(int progress) {
 
 		if (!this.hasDeleteContent()) {
-			this.setDelecte(buildCancelContent(mContext, mNotificationId, url));
+			this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
 		}
 		if (!mAddedCancelAction) {
 			mAddedCancelAction = true;
 			mAction = new NotificationCompat.Action(-1,
 					mContext.getString(android.R.string.cancel),
-					buildCancelContent(mContext, mNotificationId, url));
+					buildCancelContent(mContext, mNotificationId, mUrl));
 			mBuilder.addAction(mAction);
 		}
 		mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
@@ -176,8 +178,6 @@ public class DownloadNotifier {
 	}
 
 	void onDownloadFinished() {
-
-
 
 
 		try {
@@ -223,7 +223,7 @@ public class DownloadNotifier {
 	/**
 	 * 根据id清除通知
 	 */
-	public void cancel() {
+	void cancel() {
 		mNotificationManager.cancel(mNotificationId);
 	}
 }

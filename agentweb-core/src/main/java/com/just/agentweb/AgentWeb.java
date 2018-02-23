@@ -46,7 +46,7 @@ public final class AgentWeb {
 	 */
 	private static final String TAG = AgentWeb.class.getSimpleName();
 	/**
-	 * 使用 AgentWeb 的 Activity
+	 * Activity
 	 */
 	private Activity mActivity;
 	/**
@@ -684,9 +684,9 @@ public final class AgentWeb {
 			return this;
 		}
 
-		public CommonBuilder setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int reloadId) {
+		public CommonBuilder setMainFrameErrorView(@LayoutRes int errorLayout, @IdRes int clickViewId) {
 			this.mAgentBuilder.mErrorLayout = errorLayout;
-			this.mAgentBuilder.mReloadId = reloadId;
+			this.mAgentBuilder.mReloadId = clickViewId;
 			return this;
 		}
 

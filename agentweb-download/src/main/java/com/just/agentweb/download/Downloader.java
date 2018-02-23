@@ -146,8 +146,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	}
 
-	private void checkNullTask(DownloadTask downloadTask) {
-
+	private void checkIsNullTask(DownloadTask downloadTask) {
+		//todo
 	}
 
 	@Override
@@ -408,7 +408,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		DownloadListener mDownloadListener = null;
 		if (null == (mDownloadListener = mDownloadTask.getDownloadListener())) {
 			LogUtils.e(TAG, "DownloadListener has been death");
-			DefaultDownloadImpl.ExecuteTasksMap.getInstance().removeTask(mDownloadTask.getFile().getPath());
+			DefaultDownloadImpl
+					.ExecuteTasksMap.getInstance()
+					.removeTask(mDownloadTask.getFile().getPath());
 			return false;
 		}
 		return mDownloadListener.result(mDownloadTask.getFile().getAbsolutePath(),
@@ -430,8 +432,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 
 	private int transferData(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
-		// 40960 这么写性能更优 ， 4 * 1024 * 10 这么写语义更清晰 ，我也很纠结呀！
 		byte[] buffer = new byte[4 * 1024 * 10];
+		// try-with-resources
 		try (BufferedInputStream bis = new BufferedInputStream(inputStream, 4 * 1024 * 10);
 		     RandomAccessFile out = randomAccessFile) {
 
@@ -499,7 +501,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 	private final void downloadInternal(DownloadTask downloadTask) {
-		checkNullTask(downloadTask);
+		checkIsNullTask(downloadTask);
 		this.mDownloadTask = downloadTask;
 		this.mTotals = mDownloadTask.getLength();
 		mDownloadTimeOut = mDownloadTask.getDownloadTimeOut();

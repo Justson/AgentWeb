@@ -45,7 +45,6 @@ dependencies {
     provided "com.android.support:design:${SUPPORT_LIB_VERSION}"
     provided "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     provided fileTree(include: ['*.jar'], dir: 'providedLibs')
-//    compile project(':agentweb-download')
 }
 publish {
     userOrg = 'just'
