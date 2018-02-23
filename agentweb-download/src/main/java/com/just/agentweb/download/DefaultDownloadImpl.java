@@ -202,6 +202,14 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				if (checkNeedPermission().isEmpty()) {
 					preDownload();
 				} else {
+					if (null != mAgentWebUIController.get()) {
+						mAgentWebUIController
+								.get()
+								.onPermissionsDeny(
+										checkNeedPermission().
+										toArray(new String[]{}),
+										AgentWebPermissions.ACTION_STORAGE);
+					}
 					LogUtils.e(TAG, "储存权限获取失败~");
 				}
 
