@@ -77,21 +77,21 @@ mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
 
 * #### 调用 Javascript 方法拼接太麻烦 ？ 请看 。
 ```
-//Javascript 方法
+// JS 端
 function callByAndroid(){
       console.log("callByAndroid")
   }
-//Android 端
+// Android 端
 mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
-//结果
+// 结果
 consoleMessage:callByAndroid  lineNumber:27
 ```
 
 * #### Javascript 调 Java ?
 ```
-//Android 端 ， AndroidInterface 是一个注入类 ，里面有一个无参数方法：callAndroid 
+// Android 端 ， AndroidInterface 是一个注入类 ，里面有一个无参数方法：callAndroid 
 mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this));
-//在 Js 里就能通过 
+// 在 Js 里就能通过 
 window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAndroid 方法
 ```
 
@@ -112,7 +112,8 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
 ```java
  @Override
     protected void onPause() {
-        mAgentWeb.getWebLifeCycle().onPause(); //暂停应用内所有 WebView ， 需谨慎。
+        // 暂停应用内所有 WebView ， 需谨慎。
+        mAgentWeb.getWebLifeCycle().onPause(); 
         super.onPause();
 
     }
@@ -157,14 +158,14 @@ mAgentWeb = AgentWeb.with(this)//
                 .createAgentWeb()//
                 .ready()
                 .go(getUrl());
-//WebViewClient
+// WebViewClient
 private WebViewClient mWebViewClient=new WebViewClient(){
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
            //do you  work
         }
     };
-//WebChromeClient
+// WebChromeClient
 private WebChromeClient mWebChromeClient=new WebChromeClient(){
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
@@ -181,46 +182,63 @@ if (!mAgentWeb.back()){// true表示AgentWeb处理了该事件
 
 * #### 获取 WebView
 ```java
- WebView mWebView=mAgentWeb.getWebCreator().get();
+	mAgentWeb.getWebCreator().getWebView();
 ```
 
 * ### 文件下载监听
 ```java
- protected DownloadListener mDownloadListener = new DownloadListener.DownloadListenerAdapter() {
+protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
 
-        /**
-         *
-         * @param url                下载链接
-         * @param userAgent          userAgent
-         * @param contentDisposition contentDisposition
-         * @param mimetype           资源的媒体类型
-         * @param contentLength      文件长度
-         * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 是否强制下载。
-         * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
-         */
-        @Override
-        public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
-//            extra.setIcon(R.mipmap.app_logo).build();
-            return false;
-        }
 
-        /**
-         *
-         * @param path 文件的绝对路径
-         * @param url  下载地址
-         * @param throwable    如果异常，返回给用户异常
-         * @return true 表示用户处理了下载完成后续的事件 ，false 默认交给AgentWeb 处理
-         */
-        @Override
-        public boolean result(String path, String url, Throwable throwable) {
-            if (throwable == null) { //下载成功
-                //do you work
-            } else {//下载失败
+		@Override
+		public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
+			extra.setOpenBreakPointDownload(true)
+					.setIcon(R.drawable.ic_file_download_black_24dp)
+					.setConnectTimeOut(6000)
+					.setBlockMaxTime(2000)
+					.setDownloadTimeOut(60L * 5L * 1000L)
+					.setAutoOpen(true)
+					.setForceDownload(false);
+			return false;
+		}
 
-            }
-            return false; // true  不会发出下载完成的通知
-        }
-    };
+
+		@Override
+		public void onBindService(String url, DownloadingService downloadingService) {
+			super.onBindService(url, downloadingService);
+			mDownloadingService = downloadingService;
+			LogUtils.i(TAG, "onBindService:" + url + "  DownloadingService:" + downloadingService);
+		}
+
+
+		@Override
+		public void onUnbindService(String url, DownloadingService downloadingService) {
+			super.onUnbindService(url, downloadingService);
+			mDownloadingService = null;
+			LogUtils.i(TAG, "onUnbindService:" + url);
+		}
+
+
+		@Override
+		public void progress(String url, long loaded, long length, long usedTime) {
+			int mProgress = (int) ((loaded) / Float.valueOf(length) * 100);
+			LogUtils.i(TAG, "progress:" + mProgress);
+			super.progress(url, loaded, length, usedTime);
+		}
+
+
+		@Override
+		public boolean result(String path, String url, Throwable throwable) {
+			// 下载成功
+			if (null == throwable) { 
+				//do you work
+				// 下载失败
+			} else {
+
+			}
+			return false; 
+		}
+	};
 ```
 
 
@@ -229,11 +247,11 @@ if (!mAgentWeb.back()){// true表示AgentWeb处理了该事件
 AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
 ```
 
-* #### MiddleWareWebChromeBase 支持多个 WebChromeClient
+* #### MiddlewareWebChromeBase 支持多个 WebChromeClient
 ```java
 //略，请查看 Sample
 ```
-* #### MiddleWareWebClientBase 支持多个 WebViewClient
+* #### MiddlewareWebClientBase 支持多个 WebViewClient
 ```java
 //略，请查看 Sample
 ```
@@ -246,8 +264,7 @@ String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 ```
 protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
 
-        //AgentWeb 在触发某些敏感的权限时候会回调该方法， 比如定位触发 。
-        //该方法是每次都会优先触发的 ， 开发者可以做一些敏感权限拦截 。
+        //权限过滤
         @Override
         public boolean intercept(String url, String[] permissions, String action) {
             Log.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
@@ -259,22 +276,21 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 * #### AgentWeb 完整用法
 ```java
         mAgentWeb = AgentWeb.with(this)//
-                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
-                .setIndicatorColorWithHeight(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
-                .setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
-                .setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
-                .setWebChromeClient(mWebChromeClient) //WebChromeClient
-                .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
-                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
-                .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
-                .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
-                .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
-                .interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
-                .createAgentWeb()//创建AgentWeb。
-                .ready()//设置 WebSettings。
-                .go(getUrl()); //WebView载入该url地址的页面并显示。
+                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
+                .setIndicatorColorWithHeight(-1, 3)
+                .setAgentWebWebSettings(getSettings())
+                .setWebViewClient(mWebViewClient)
+                .setWebChromeClient(mWebChromeClient)
+                .setPermissionInterceptor(mPermissionInterceptor) 
+                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) 
+                .setAgentWebUIController(new UIController(getActivity())) 
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1)             .useMiddlewareWebChrome(getMiddlewareWebChrome())
+                .useMiddlewareWebClient(getMiddlewareWebClient()) 
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)                
+                .interceptUnkownUrl() 
+                .createAgentWeb()。
+                .ready()
+                .go(getUrl()); 
 ```
 
 * #### AgentWeb 所需要的权限(在你工程中根据需求选择加入权限)
