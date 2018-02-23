@@ -77,22 +77,16 @@ mAgentWeb = AgentWeb.with(this)
 
 * #### 调用 Javascript 方法拼接太麻烦 ？ 请看 。
 ```
-// JS 端
 function callByAndroid(){
       console.log("callByAndroid")
   }
-// Android 端
 mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
-// 结果
-consoleMessage:callByAndroid  lineNumber:27
 ```
 
 * #### Javascript 调 Java ?
 ```
-// Android 端 ， AndroidInterface 是一个注入类 ，里面有一个无参数方法：callAndroid 
 mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this));
-// 在 Js 里就能通过 
-window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAndroid 方法
+window.android.callAndroid();
 ```
 
 
@@ -112,7 +106,6 @@ window.android.callAndroid() //调用 Java 层的 AndroidInterface 类里 callAn
 ```java
  @Override
     protected void onPause() {
-        // 暂停应用内所有 WebView ， 需谨慎。
         mAgentWeb.getWebLifeCycle().onPause(); 
         super.onPause();
 
@@ -175,7 +168,7 @@ private WebChromeClient mWebChromeClient=new WebChromeClient(){
 ```
 * #### 返回上一页
 ```java
-if (!mAgentWeb.back()){// true表示AgentWeb处理了该事件
+if (!mAgentWeb.back()){
        AgentWebFragment.this.getActivity().finish();
 }
 ```
@@ -229,10 +222,8 @@ protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListene
 
 		@Override
 		public boolean result(String path, String url, Throwable throwable) {
-			// 下载成功
 			if (null == throwable) { 
 				//do you work
-         // 下载失败
 			} else {
 
 			}
@@ -264,7 +255,6 @@ String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 ```
 protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
 
-        //权限过滤
         @Override
         public boolean intercept(String url, String[] permissions, String action) {
             Log.i(TAG, "url:" + url + "  permission:" + permissions + " action:" + action);
@@ -275,7 +265,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 
 * #### AgentWeb 完整用法
 ```java
-        mAgentWeb = AgentWeb.with(this)//
+        mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
                 .setIndicatorColorWithHeight(-1, 3)
                 .setAgentWebWebSettings(getSettings())
@@ -309,7 +299,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 
 * #### AgentWeb 所依赖的库
 ```
-    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"//(3.0.0开始该库可选)
+    compile "com.android.support:design:${SUPPORT_LIB_VERSION}" // (3.0.0开始该库可选)
     compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     SUPPORT_LIB_VERSION=27.0.2(该值会更新)
 ```
