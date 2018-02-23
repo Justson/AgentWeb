@@ -303,6 +303,11 @@ public class DefaultUIController extends AbsAgentWebUIController {
         AgentWebUtils.toastShowShort(mActivity.getApplicationContext(), message);
     }
 
+    @Override
+    public void onPermissionsDeny(String[] permissions, String action) {
+
+    }
+
     private void toCancelJsresult(JsResult result) {
         if (result != null){
             result.cancel();

@@ -92,6 +92,11 @@ public class AgentWebUIControllerImplBase extends AbsAgentWebUIController {
 	}
 
 	@Override
+	public void onPermissionsDeny(String[] permissions, String action) {
+		getDelegate().onPermissionsDeny(permissions, action);
+	}
+
+	@Override
 	protected void bindSupportWebParent(WebParentLayout webParentLayout, Activity activity) {
 		getDelegate().bindSupportWebParent(webParentLayout, activity);
 	}
