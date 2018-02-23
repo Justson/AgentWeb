@@ -42,8 +42,6 @@ public class CommonActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_common);
 
 		mFrameLayout = (FrameLayout) this.findViewById(R.id.container_framelayout);
-
-
 		int key = getIntent().getIntExtra(TYPE_KEY, -1);
 		mFragmentManager = this.getSupportFragmentManager();
 		openFragment(key);
@@ -61,7 +59,7 @@ public class CommonActivity extends AppCompatActivity {
 		switch (key) {
 
             /*Fragment 使用AgenWeb*/
-			case 0: //请使用常量代替0 ， 代码可读性更高
+			case 0: //项目中请使用常量代替0 ， 代码可读性更高
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "https://m.vip.com/?source=www&jump_https=1");
 				break;
@@ -153,7 +151,7 @@ public class CommonActivity extends AppCompatActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		//一定要保证 mAentWebFragemnt 回调
-		mAgentWebFragment.onActivityResult(requestCode, resultCode, data);
+//		mAgentWebFragment.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override

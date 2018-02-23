@@ -36,7 +36,7 @@ public class AutoHidenToolbarActivity extends AppCompatActivity {
                 .useDefaultIndicator()
                 .createAgentWeb()
                 .ready()
-                .go("http://www.jd.com");
+                .go("http://www.jd.com/");
 
     }
 
