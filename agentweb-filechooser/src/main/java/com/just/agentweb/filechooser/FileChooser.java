@@ -369,7 +369,8 @@ public class FileChooser {
 							.get()
 							.onPermissionsDeny(
 									AgentWebPermissions.STORAGE,
-									AgentWebPermissions.ACTION_STORAGE);
+									AgentWebPermissions.ACTION_STORAGE,
+									"Open file chooser");
 				}
 				LogUtils.i(TAG, "permission denied");
 			}
@@ -383,7 +384,8 @@ public class FileChooser {
 							.get()
 							.onPermissionsDeny(
 									AgentWebPermissions.CAMERA,
-									AgentWebPermissions.ACTION_CAMERA);
+									AgentWebPermissions.ACTION_CAMERA,
+									"Take photo");
 				}
 				LogUtils.i(TAG, "permission denied");
 			}
