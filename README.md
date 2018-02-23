@@ -53,7 +53,7 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 ## 使用
 #### 基础用法
 
-```
+```java
 mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(-1, -1))                
                 .useDefaultIndicator()
@@ -76,7 +76,7 @@ mAgentWeb = AgentWeb.with(this)
 
 
 * #### 调用 Javascript 方法拼接太麻烦 ？ 请看 。
-```
+```javascript
 function callByAndroid(){
       console.log("callByAndroid")
   }
@@ -84,16 +84,16 @@ mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
 ```
 
 * #### Javascript 调 Java ?
-```
+```java
 mAgentWeb.getJsInterfaceHolder().addJavaObject("android",new AndroidInterface(mAgentWeb,this));
 window.android.callAndroid();
 ```
 
 
 * #### 事件处理
-```
-@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+```java
+	@Override
+   public boolean onKeyDown(int keyCode, KeyEvent event) {
 
         if (mAgentWeb.handleKeyEvent(keyCode, event)) {
             return true;
@@ -104,8 +104,8 @@ window.android.callAndroid();
 
 * #### 跟随 Activity Or Fragment 生命周期 ， 释放 CPU 更省电 。
 ```java
- @Override
-    protected void onPause() {
+ 	@Override
+   protected void onPause() {
         mAgentWeb.getWebLifeCycle().onPause(); 
         super.onPause();
 
@@ -139,8 +139,7 @@ android:configChanges="orientation|screenSize"
 ```
 
 * #### WebChromeClient Or WebViewClient 处理业务逻辑
-```
-// AgentWeb 保持了 WebView 的使用 ， 
+```java
 mAgentWeb = AgentWeb.with(this)//
                 .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )//
                 .useDefaultIndicator()//
@@ -151,14 +150,12 @@ mAgentWeb = AgentWeb.with(this)//
                 .createAgentWeb()//
                 .ready()
                 .go(getUrl());
-// WebViewClient
 private WebViewClient mWebViewClient=new WebViewClient(){
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
            //do you  work
         }
     };
-// WebChromeClient
 private WebChromeClient mWebChromeClient=new WebChromeClient(){
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
@@ -248,11 +245,11 @@ AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
 ```
 
 * #### 查看 Cookies
-```
+```java
 String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
 ```
 * #### 权限拦截
-```
+```java
 protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
 
         @Override
