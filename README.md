@@ -54,10 +54,10 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 #### 基础用法
 
 ```
-mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
-                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(-1, -1))//传入AgentWeb 的父控件 ，如果父控件为 RelativeLayout ， 那么第二参数需要传入 RelativeLayout.LayoutParams ,第一个参数和第二个参数应该对应。
-                .useDefaultIndicator()// 使用默认进度条
-                .createAgentWeb()//
+mAgentWeb = AgentWeb.with(this)
+                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(-1, -1))                
+                .useDefaultIndicator()
+                .createAgentWeb()
                 .ready()
                 .go("http://www.jd.com");
 
@@ -232,7 +232,7 @@ protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListene
 			// 下载成功
 			if (null == throwable) { 
 				//do you work
-				// 下载失败
+         // 下载失败
 			} else {
 
 			}
