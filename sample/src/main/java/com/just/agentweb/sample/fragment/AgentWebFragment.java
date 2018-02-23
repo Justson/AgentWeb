@@ -180,6 +180,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 					.setConnectTimeOut(6000)
 					.setBlockMaxTime(2000)
 					.setDownloadTimeOut(60L * 5L * 1000L)
+					.setAutoOpen(true)
 					.setForceDownload(false);
 			return false;
 		}

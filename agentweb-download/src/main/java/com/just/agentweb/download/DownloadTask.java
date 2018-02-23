@@ -176,6 +176,10 @@ public class DownloadTask extends AgentWebDownloader.Extra implements Serializab
 		return null == this.mIsDestroyed || this.mIsDestroyed.get();
 	}
 
+	@Override
+	public boolean isAutoOpen() {
+		return this.mCloneExtraService.isAutoOpen();
+	}
 
 	public void destroy() {
 		this.mIsDestroyed.set(true);

@@ -49,6 +49,9 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 		protected String mMimetype;
 		protected long mContentLength;
 		protected Map<String, String> mHeaders;
+		/**
+		 * 下载文件完成，是否自动打开该文件
+		 */
 		protected boolean mAutoOpen = false;
 
 		public Map<String, String> getHeaders() {
@@ -204,8 +207,13 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 			return this;
 		}
 
-		public void setAutoOpen(boolean autoOpen) {
+		public Extra setAutoOpen(boolean autoOpen) {
 			mAutoOpen = autoOpen;
+			return this;
+		}
+
+		public boolean isAutoOpen() {
+			return mAutoOpen;
 		}
 	}
 
