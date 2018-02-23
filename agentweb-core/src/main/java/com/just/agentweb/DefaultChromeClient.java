@@ -240,7 +240,8 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 							.get()
 							.onPermissionsDeny(
 									AgentWebPermissions.LOCATION,
-									AgentWebPermissions.ACTION_STORAGE);
+									AgentWebPermissions.ACTION_STORAGE,
+									"Location");
 				}
 			}
 

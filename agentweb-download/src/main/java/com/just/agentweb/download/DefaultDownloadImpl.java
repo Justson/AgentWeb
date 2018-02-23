@@ -207,8 +207,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 								.get()
 								.onPermissionsDeny(
 										checkNeedPermission().
-										toArray(new String[]{}),
-										AgentWebPermissions.ACTION_STORAGE);
+												toArray(new String[]{}),
+										AgentWebPermissions.ACTION_STORAGE, "Download");
 					}
 					LogUtils.e(TAG, "储存权限获取失败~");
 				}
