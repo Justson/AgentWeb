@@ -202,8 +202,8 @@ public class FileChooser {
 		Intent mIntent = null;
 		if (mIsAboveLollipop && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
 			// 多选
-		    /*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
-                mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+			/*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
+	            mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }*/
 			return mIntent;
 		}
@@ -363,6 +363,14 @@ public class FileChooser {
 				touchOffFileChooserAction();
 			} else {
 				cancel();
+
+				if (null != mAgentWebUIController.get()) {
+					mAgentWebUIController
+							.get()
+							.onPermissionsDeny(
+									AgentWebPermissions.STORAGE,
+									AgentWebPermissions.ACTION_STORAGE);
+				}
 				LogUtils.i(TAG, "permission denied");
 			}
 		} else if (from_intention == FROM_INTENTION_CODE >> 3) {
@@ -370,6 +378,13 @@ public class FileChooser {
 				openCameraAction();
 			} else {
 				cancel();
+				if (null != mAgentWebUIController.get()) {
+					mAgentWebUIController
+							.get()
+							.onPermissionsDeny(
+									AgentWebPermissions.CAMERA,
+									AgentWebPermissions.ACTION_CAMERA);
+				}
 				LogUtils.i(TAG, "permission denied");
 			}
 		}
