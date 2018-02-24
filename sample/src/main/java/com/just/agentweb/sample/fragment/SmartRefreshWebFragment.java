@@ -44,7 +44,7 @@ public class SmartRefreshWebFragment extends BounceWebFragment {
 
         final SmartRefreshLayout mSmartRefreshLayout = (SmartRefreshLayout) this.mSmartRefreshWebLayout.getLayout();
 
-        final WebView mWebView = this.mSmartRefreshWebLayout.getWeb();
+        final WebView mWebView = this.mSmartRefreshWebLayout.getWebView();
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {

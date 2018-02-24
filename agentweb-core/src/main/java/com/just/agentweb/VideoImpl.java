@@ -68,7 +68,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
 
         Window mWindow = mActivity.getWindow();
         Pair<Integer, Integer> mPair = null;
-        //保存当前屏幕的状态
+        // 保存当前屏幕的状态
         if ((mWindow.getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) == 0) {
             mPair = new Pair<>(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 0);
             mWindow.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

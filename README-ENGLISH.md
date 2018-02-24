@@ -49,8 +49,8 @@ AgentWeb Sample shows AgentWeb library powerful features, detailed link, please 
 ```
 mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
                 .setAgentWebParent(mLinearLayout, new LinearLayout.LayoutParams(-1, -1))//Incoming AgentWeb parent control, if the parent control is RelativeLayout, then the second parameter needs to be passed RelativeLayout.LayoutParams, the first parameter and the second parameter should correspond.
-                .useDefaultIndicator()// use the default progress bar
-                .defaultProgressBarColor() // Use default progress bar color
+                .useDefaultIndicator()// use the default onProgress bar
+                .defaultProgressBarColor() // Use default onProgress bar color
                 .setReceivedTitleCallback(mCallback) //Set the Web page title callback
                 .createAgentWeb()//
                 .ready()
@@ -80,7 +80,7 @@ Function callByAndroid () {
   }
 // Android end
 MAgentWeb.getJsEntraceAccess (). QuickCallJs ("callByAndroid");
-//result
+//onResult
 ConsoleMessage: callByAndroid lineNumber: 27
 ```
 
@@ -203,7 +203,7 @@ String cookies = AgentWebConfig.getCookiesByUrl (targetUrl);
 ```java
 mAgentWeb = AgentWeb.with (this) //
                 .setAgentWebParent ((LinearLayout) view, new LinearLayout.LayoutParams (-1, -1)) // The AgentWeb parent passed in.
-                .setIndicatorColorWithHeight (-1, 2) / / Set the color and height of the progress bar, -1 is the default value, the height is 2, the unit is dp.
+                .setIndicatorColorWithHeight (-1, 2) / / Set the color and height of the onProgress bar, -1 is the default value, the height is 2, the unit is dp.
                 .setAgentWebWebSettings (getSettings ()) // Set AgentWebSettings.
                 .setWebViewClient (mWebViewClient) // WebViewClient, same as WebView, but do not get WebView calling setWebViewClient (xx) method, which will override AgentWeb DefaultWebClient and the corresponding middleware will also fail.
                 .setWebChromeClient (mWebChromeClient) // WebChromeClient
@@ -212,7 +212,7 @@ mAgentWeb = AgentWeb.with (this) //
                 . SetSecurityType (AgentWeb.SecurityType.strict) / / strict mode Android 4.2.2 The following will give up the injection of the object, use AgentWebView did not affect.
                 .addDownLoadResultListener (mDownloadListener) // Download callback
                 .setAgentWebUIController (new UIController (getActivity ())) // Custom UI AgentWeb3.0.0 join.
-                .setMainFrameErrorView (R.layout.agentweb_error_page, -1) / / Parameter 1 is the layout of the result display, parameter 2 Click refresh control ID -1 Click to refresh the entire layout Click AgentWeb 3.0.0 to join.
+                .setMainFrameErrorView (R.layout.agentweb_error_page, -1) / / Parameter 1 is the layout of the onResult display, parameter 2 Click refresh control ID -1 Click to refresh the entire layout Click AgentWeb 3.0.0 to join.
                 .useMiddleWareWebChrome (getMiddleWareWebChrome ()) // Set up WebChromeClient middleware, support multiple WebChromeClient, AgentWeb 3.0.0 join.
                 .useMiddleWareWebClient (getMiddleWareWebClient ()) / / Set WebViewClient middleware, support multiple WebViewClient, AgentWeb 3.0.0 join.
                 . OpenParallelDownload () / / open parallel download, the default serial download.
@@ -251,7 +251,7 @@ Java injection class do not proguard, such as sample inside the AndroidInterface
 * v_3.0.0 update
 	* Add MiddlewareWebChromeBase middleware, support multiple WebChromeClient.
 	* Add `MiddleWareWebClientBase` middleware, support multiple` WebViewClient`.
-	* Added the default result page, and supports custom result page.
+	* Added the default onResult page, and supports custom onResult page.
 	* Join `AgentWebUIController`, unified control UI.
 	* Support for blocking unknown pages.
 	* Support to tune other applications.
@@ -267,7 +267,7 @@ Java injection class do not proguard, such as sample inside the AndroidInterface
 * v_1.2.4 update
 	* Support incoming IWebLayout, support pull-down rebound, pull-down refresh effect.
 * v_1.2.3 update
-	* Added download result callback.
+	* Added download onResult callback.
 * v_1.2.2 update
 	* Fixed known bug.
 * v_1.2.1 update

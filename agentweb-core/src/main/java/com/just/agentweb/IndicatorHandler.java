@@ -81,7 +81,7 @@ public class IndicatorHandler implements IndicatorController {
 	}
 
 
-	IndicatorHandler inJectProgressView(BaseIndicatorSpec baseIndicatorSpec) {
+	IndicatorHandler inJectIndicator(BaseIndicatorSpec baseIndicatorSpec) {
 		this.mBaseIndicatorSpec = baseIndicatorSpec;
 		return this;
 	}

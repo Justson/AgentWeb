@@ -351,7 +351,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (mDownloadTask.getDownloadListener() != null) {
 				mDownloadTask
 						.getDownloadListener()
-						.progress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
+						.onProgress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 			}
 		} catch (UnknownFormatConversionException e) {
 			e.printStackTrace();
@@ -369,7 +369,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (mDownloadTask.getDownloadListener() != null) {
 				mDownloadTask
 						.getDownloadListener()
-						.progress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
+						.onProgress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 
 			}
 
@@ -428,7 +428,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 					.removeTask(mDownloadTask.getFile().getPath());
 			return false;
 		}
-		return mDownloadListener.result(mDownloadTask.getFile().getAbsolutePath(),
+		return mDownloadListener.onResult(mDownloadTask.getFile().getAbsolutePath(),
 				mDownloadTask.getUrl(), code <= 200 ? null
 						: this.mThrowable == null
 						? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable);

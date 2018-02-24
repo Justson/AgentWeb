@@ -64,7 +64,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	 */
 	private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
 	/**
-	 * 下载监听，DownloadListener#start 下载的时候触发，DownloadListener#result下载结束的时候触发
+	 * 下载监听，DownloadListener#onStart 下载的时候触发，DownloadListener#result下载结束的时候触发
 	 * 4.0.0 每一次下载都会触发这两个方法，4.0.0以下只有触发下载才会回调这两个方法。
 	 */
 	private DownloadListener mDownloadListener;
@@ -230,7 +230,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		// true 表示用户取消了该下载事件。
 		if (null != this.mDownloadListener
 				&& this.mDownloadListener
-				.start(this.mUrl,
+				.onStart(this.mUrl,
 						this.mUserAgent,
 						this.mContentDisposition,
 						this.mMimetype,
@@ -247,7 +247,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		if (mFile.exists() && mFile.length() >= mContentLength) {
 
 			// true 表示用户处理了下载完成后续的通知用户事件
-			if (null != this.mDownloadListener && this.mDownloadListener.result(mFile.getAbsolutePath(), mUrl, null)) {
+			if (null != this.mDownloadListener && this.mDownloadListener.onResult(mFile.getAbsolutePath(), mUrl, null)) {
 				return;
 			}
 
@@ -396,11 +396,11 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 	private DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
 		@Override
-		public void progress(String url, long downloaded, long length, long useTime) {
+		public void onProgress(String url, long downloaded, long length, long useTime) {
 			if (null != mDownloadingListener) {
 				synchronized (mDownloadingListener) {
 					if (null != mDownloadingListener) {
-						mDownloadingListener.progress(url, downloaded, length, useTime);
+						mDownloadingListener.onProgress(url, downloaded, length, useTime);
 					}
 				}
 			}
@@ -426,9 +426,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		}
 
 		@Override
-		public boolean result(String path, String url, Throwable e) {
+		public boolean onResult(String path, String url, Throwable e) {
 			ExecuteTasksMap.getInstance().removeTask(path);
-			return null != mDownloadListener && mDownloadListener.result(path, url, e);
+			return null != mDownloadListener && mDownloadListener.onResult(path, url, e);
 		}
 	};
 
