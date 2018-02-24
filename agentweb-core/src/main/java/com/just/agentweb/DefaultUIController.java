@@ -306,7 +306,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 	@Override
 	public void onPermissionsDeny(String[] permissions, String permissionType, String action) {
-		AgentWebUtils.toastShowShort(mActivity.getApplicationContext(), "权限被冻结");
+//		AgentWebUtils.toastShowShort(mActivity.getApplicationContext(), "权限被冻结");
 	}
 
 	private void toCancelJsresult(JsResult result) {

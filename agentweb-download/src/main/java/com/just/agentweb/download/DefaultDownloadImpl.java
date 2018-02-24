@@ -46,7 +46,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,7 +122,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	private Pattern mPattern = Pattern.compile(".*filename=(.*)");
 
 	DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
-		if (!extraServiceImpl.isCloneObject) {
+		if (!extraServiceImpl.mIsCloneObject) {
 			this.bind(extraServiceImpl);
 			this.mExtraServiceImpl = extraServiceImpl;
 		} else {
@@ -134,7 +134,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		this.mActivityWeakReference = new WeakReference<Activity>(extraServiceImpl.mActivity);
 		this.mContext = extraServiceImpl.mActivity.getApplicationContext();
 		this.mDownloadListener = extraServiceImpl.mDownloadListener;
-		this.mDownloadingListener = extraServiceImpl.downloadingListener;
+		this.mDownloadingListener = extraServiceImpl.mDownloadingListener;
 		this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
 		this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
 	}
@@ -438,20 +438,18 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	 * i -> mUrl
 	 * i+1 -> path
 	 */
-	public static class ExecuteTasksMap extends ReentrantLock {
+	static class ExecuteTasksMap extends ReentrantReadWriteLock {
 
 		private LinkedList<String> mTasks = null;
+		private static volatile ExecuteTasksMap sInstance = null;
 
 		private ExecuteTasksMap() {
 			super(false);
 			mTasks = new LinkedList();
 		}
 
-		private static volatile ExecuteTasksMap sInstance = null;
-
 
 		static ExecuteTasksMap getInstance() {
-
 
 			if (null == sInstance) {
 				synchronized (ExecuteTasksMap.class) {
@@ -465,12 +463,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		void removeTask(String path) {
 
-			int index = mTasks.indexOf(path);
-			if (index == -1) {
-				return;
-			}
 			try {
-				lock();
+				writeLock().lock();
 				int position = -1;
 				if ((position = mTasks.indexOf(path)) == -1) {
 					return;
@@ -478,30 +472,30 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				mTasks.remove(position);
 				mTasks.remove(position - 1);
 			} finally {
-				unlock();
+				writeLock().unlock();
 			}
 
 		}
 
 		void addTask(String url, String path) {
+
 			try {
-				lock();
+				writeLock().lock();
 				mTasks.add(url);
 				mTasks.add(path);
 			} finally {
-				unlock();
+				writeLock().unlock();
 			}
-
 		}
 
-		//加锁读
+		// 加锁读
 		boolean contains(String url) {
 
 			try {
-				lock();
+				readLock().lock();
 				return mTasks.contains(url);
 			} finally {
-				unlock();
+				readLock().unlock();
 			}
 
 		}
@@ -524,30 +518,30 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 	public static class ExtraServiceImpl extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
 		private transient Activity mActivity;
-		private boolean isForceDownload = false;
-		private boolean enableIndicator = true;
+		private boolean mIsForceDownload = false;
+		private boolean mEnableIndicator = true;
 		private transient DownloadListener mDownloadListener;
 		private transient PermissionInterceptor mPermissionInterceptor;
-		private boolean isParallelDownload = true;
+		private boolean mIsParallelDownload = true;
 		private transient WebView mWebView;
-		protected int icon = R.drawable.ic_file_download_black_24dp;
+		protected int mIcon = R.drawable.ic_file_download_black_24dp;
 		private DefaultDownloadImpl mDefaultDownload;
-		protected String url;
-		protected String userAgent;
-		protected String contentDisposition;
-		protected String mimetype;
-		protected long contentLength;
-		private boolean isCloneObject = false;
-		private DownloadingListener downloadingListener;
+		protected String mUrl;
+		protected String mUserAgent;
+		protected String mContentDisposition;
+		protected String mMimetype;
+		protected long mContentLength;
+		private boolean mIsCloneObject = false;
+		private transient DownloadingListener mDownloadingListener;
 
 		public ExtraServiceImpl setDownloadingListener(DownloadingListener downloadingListener) {
-			this.downloadingListener = downloadingListener;
+			this.mDownloadingListener = downloadingListener;
 			return this;
 		}
 
 		@Override
 		public boolean isForceDownload() {
-			return isForceDownload;
+			return mIsForceDownload;
 		}
 
 //        public static final int PENDDING = 1001;
@@ -558,63 +552,63 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		@Override
 		public String getUrl() {
-			return url;
+			return mUrl;
 		}
 
 		@Override
 		protected ExtraServiceImpl setUrl(String url) {
-			this.url = url;
+			this.mUrl = url;
 			return this;
 		}
 
 		@Override
 		public String getUserAgent() {
-			return userAgent;
+			return mUserAgent;
 		}
 
 		@Override
 		protected ExtraServiceImpl setUserAgent(String userAgent) {
-			this.userAgent = userAgent;
+			this.mUserAgent = userAgent;
 			return this;
 		}
 
 
 		@Override
 		public String getContentDisposition() {
-			return contentDisposition;
+			return mContentDisposition;
 		}
 
 		@Override
 		protected ExtraServiceImpl setContentDisposition(String contentDisposition) {
-			this.contentDisposition = contentDisposition;
+			this.mContentDisposition = contentDisposition;
 			return this;
 		}
 
 		@Override
 		@DrawableRes
 		public int getIcon() {
-			return icon;
+			return mIcon;
 		}
 
 		@Override
 		public String getMimetype() {
-			return mimetype;
+			return mMimetype;
 		}
 
 		@Override
 		protected ExtraServiceImpl setMimetype(String mimetype) {
-			this.mimetype = mimetype;
+			this.mMimetype = mimetype;
 			return this;
 		}
 
 		@Override
 		public long getContentLength() {
-			return contentLength;
+			return mContentLength;
 		}
 
 		@Override
 		protected ExtraServiceImpl setContentLength(long contentLength) {
-			this.contentLength = contentLength;
+			this.mContentLength = contentLength;
 			return this;
 		}
 
@@ -627,13 +621,13 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		@Override
 		public ExtraServiceImpl setForceDownload(boolean force) {
-			isForceDownload = force;
+			mIsForceDownload = force;
 			return this;
 		}
 
 		@Override
 		public ExtraServiceImpl setEnableIndicator(boolean enableIndicator) {
-			this.enableIndicator = enableIndicator;
+			this.mEnableIndicator = enableIndicator;
 			return this;
 		}
 
@@ -649,13 +643,13 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		@Override
 		public ExtraServiceImpl setIcon(@DrawableRes int icon) {
-			this.icon = icon;
+			this.mIcon = icon;
 			return this;
 		}
 
 		@Override
 		public ExtraServiceImpl setParallelDownload(boolean parallelDownload) {
-			isParallelDownload = parallelDownload;
+			mIsParallelDownload = parallelDownload;
 			return this;
 		}
 
@@ -674,7 +668,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		@Override
 		protected ExtraServiceImpl clone() throws CloneNotSupportedException {
 			ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
-			mExtraServiceImpl.isCloneObject = true;
+			mExtraServiceImpl.mIsCloneObject = true;
 			mExtraServiceImpl.mActivity = null;
 			mExtraServiceImpl.mDownloadListener = null;
 			mExtraServiceImpl.mPermissionInterceptor = null;
