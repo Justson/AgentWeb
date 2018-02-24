@@ -115,6 +115,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	 * true  表示终止下载
 	 */
 	private AtomicBoolean mIsShutdown = new AtomicBoolean(false);
+	/**
+	 * Download read buffer size
+	 */
+	private static final int BUFFER_SIZE = 1024 * 8;
 
 	private static final int MAX_REDIRECTS = 6;
 	private static final int HTTP_TEMP_REDIRECT = 307;
@@ -446,10 +450,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 
+
 	private int transferData(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
-		byte[] buffer = new byte[4 * 1024 * 10];
+		byte[] buffer = new byte[BUFFER_SIZE];
 		// try-with-resources
-		try (BufferedInputStream bis = new BufferedInputStream(inputStream, 4 * 1024 * 10);
+		try (BufferedInputStream bis = new BufferedInputStream(inputStream, BUFFER_SIZE);
 		     RandomAccessFile out = randomAccessFile) {
 
 			if (isSeek) {
@@ -461,7 +466,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			int bytes = 0;
 
 			while (!mIsCanceled.get() && !mIsShutdown.get()) {
-				int n = bis.read(buffer, 0, 40960);
+				int n = bis.read(buffer, 0, BUFFER_SIZE);
 				if (n == -1) {
 					break;
 				}
