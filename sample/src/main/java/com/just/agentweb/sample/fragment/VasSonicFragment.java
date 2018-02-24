@@ -38,7 +38,7 @@ public class VasSonicFragment extends AgentWebFragment {
         // 2. 调用 onCreateSession
         mSonicImpl.onCreateSession();
         //3. 创建AgentWeb ，注意创建AgentWeb的时候应该使用加入SonicWebViewClient中间件
-        super.onViewCreated(view, savedInstanceState); // 创建 AgentWeb 注意的 go("") 传入的 url 应该null 或者""
+        super.onViewCreated(view, savedInstanceState); // 创建 AgentWeb 注意的 go("") 传入的 mUrl 应该null 或者""
         //4. 注入 JavaScriptInterface
         mAgentWeb.getJsInterfaceHolder().addJavaObject("sonic", new SonicJavaScriptInterface(mSonicImpl.getSonicSessionClient(), new Intent().putExtra(PARAM_CLICK_TIME,getArguments().getLong(PARAM_CLICK_TIME)).putExtra("loadUrlTime", System.currentTimeMillis())));
         //5. 最后绑定AgentWeb
