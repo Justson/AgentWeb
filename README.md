@@ -181,7 +181,7 @@ protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListene
 
 
 		@Override
-		public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
+		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
 			extra.setOpenBreakPointDownload(true)
 					.setIcon(R.drawable.ic_file_download_black_24dp)
 					.setConnectTimeOut(6000)
@@ -210,15 +210,15 @@ protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListene
 
 
 		@Override
-		public void progress(String url, long loaded, long length, long usedTime) {
+		public void onProgress(String url, long loaded, long length, long usedTime) {
 			int mProgress = (int) ((loaded) / Float.valueOf(length) * 100);
-			LogUtils.i(TAG, "progress:" + mProgress);
-			super.progress(url, loaded, length, usedTime);
+			LogUtils.i(TAG, "onProgress:" + mProgress);
+			super.onProgress(url, loaded, length, usedTime);
 		}
 
 
 		@Override
-		public boolean result(String path, String url, Throwable throwable) {
+		public boolean onResult(String path, String url, Throwable throwable) {
 			if (null == throwable) { 
 				//do you work
 			} else {

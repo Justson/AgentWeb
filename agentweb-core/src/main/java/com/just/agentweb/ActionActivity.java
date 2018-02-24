@@ -150,7 +150,6 @@ public final class ActionActivity extends Activity {
 
 
         List<String> permissions = action.getPermissions();
-        LogUtils.i(TAG, "permission:" + action.getPermissions());
         if (AgentWebUtils.isEmptyCollection(permissions)) {
             mPermissionListener = null;
             mRationaleListener = null;
@@ -197,7 +196,7 @@ public final class ActionActivity extends Activity {
             mUri = intent.getParcelableExtra(EXTRA_OUTPUT);
             this.startActivityForResult(intent, REQUEST_CODE);
         } catch (Throwable ignore) {
-            LogUtils.i(TAG, "找不到系统相机");
+            LogUtils.e(TAG, "找不到系统相机");
             if (mChooserListener != null) {
                 mChooserListener.onChoiceResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
             }
@@ -213,7 +212,6 @@ public final class ActionActivity extends Activity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        LogUtils.i(TAG, "onRequestPermissionsResult");
         if (mPermissionListener != null) {
             Bundle mBundle = new Bundle();
             mBundle.putInt(KEY_FROM_INTENTION, mAction.getFromIntention());

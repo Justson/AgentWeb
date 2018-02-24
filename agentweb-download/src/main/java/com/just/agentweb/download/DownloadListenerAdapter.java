@@ -24,7 +24,7 @@ public class DownloadListenerAdapter implements DownloadListener, DownloadingLis
 
 
     @Override
-    public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
+    public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
         return false;
     }
 
@@ -34,7 +34,7 @@ public class DownloadListenerAdapter implements DownloadListener, DownloadingLis
     }
 
     @Override
-    public void progress(String url, long downloaded, long length, long usedTime) {
+    public void onProgress(String url, long downloaded, long length, long usedTime) {
 
     }
 
@@ -44,7 +44,7 @@ public class DownloadListenerAdapter implements DownloadListener, DownloadingLis
     }
 
     @Override
-    public boolean result(String path, String url, Throwable e) {
+    public boolean onResult(String path, String url, Throwable e) {
         return false;
     }
 }

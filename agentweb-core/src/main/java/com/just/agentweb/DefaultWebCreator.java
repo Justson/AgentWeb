@@ -178,7 +178,7 @@ public class DefaultWebCreator implements WebCreator {
         WebParentLayout mFrameLayout = new WebParentLayout(mActivity);
         mFrameLayout.setId(R.id.web_parent_layout_id);
         mFrameLayout.setBackgroundColor(Color.WHITE);
-        View target = mIWebLayout == null ? (this.mWebView = (WebView) web()) : webLayout();
+        View target = mIWebLayout == null ? (this.mWebView = (WebView) createWebView()) : webLayout();
         FrameLayout.LayoutParams mLayoutParams = new FrameLayout.LayoutParams(-1, -1);
         mFrameLayout.addView(target, mLayoutParams);
         mFrameLayout.bindWebView(this.mWebView);
@@ -214,8 +214,8 @@ public class DefaultWebCreator implements WebCreator {
 
     private View webLayout() {
         WebView mWebView = null;
-        if ((mWebView = mIWebLayout.getWeb()) == null) {
-            mWebView = web();
+        if ((mWebView = mIWebLayout.getWebView()) == null) {
+            mWebView = createWebView();
             mIWebLayout.getLayout().addView(mWebView, -1, -1);
             LogUtils.i(TAG, "add webview");
 
@@ -227,7 +227,7 @@ public class DefaultWebCreator implements WebCreator {
 
     }
 
-    private WebView web() {
+    private WebView createWebView() {
 
         WebView mWebView = null;
         if (this.mWebView != null) {

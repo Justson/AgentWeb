@@ -62,11 +62,9 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 			throw new IllegalArgumentException("WebParentLayout context must be activity or activity sub class .");
 		}
 		this.mErrorLayoutRes = R.layout.agentweb_error_page;
-		LogUtils.i(TAG, "mErrorLayoutRes:" + mErrorLayoutRes);
 	}
 
 	void bindController(AbsAgentWebUIController agentWebUIController) {
-		LogUtils.i(TAG, "bindController:" + agentWebUIController);
 		this.mAgentWebUIController = agentWebUIController;
 		this.mAgentWebUIController.bindWebParent(this, (Activity) getContext());
 	}
@@ -128,7 +126,7 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 			} else {
 
 				if (LogUtils.isDebug()) {
-					LogUtils.i(TAG, "ClickView is null , cannot bind accurate view to refresh or reload .");
+					LogUtils.e(TAG, "ClickView is null , cannot bind accurate view to refresh or reload .");
 				}
 			}
 

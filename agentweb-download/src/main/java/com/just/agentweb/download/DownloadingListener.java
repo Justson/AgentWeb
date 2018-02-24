@@ -35,7 +35,7 @@ public interface DownloadingListener {
      *                   <p>
      *                   注意该方法回调在子线程 ，线程名 AsyncTask #XX or AgentWeb # XX
      */
-    void progress(String url, long downloaded, long length, long usedTime);
+    void onProgress(String url, long downloaded, long length, long usedTime);
 
 
     /**

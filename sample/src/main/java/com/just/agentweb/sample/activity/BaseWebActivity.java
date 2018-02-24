@@ -106,7 +106,7 @@ public class BaseWebActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //do you work
-//            Log.i("Info","progress:"+newProgress);
+//            Log.i("Info","onProgress:"+newProgress);
         }
 
         @Override
@@ -177,7 +177,7 @@ public class BaseWebActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.i("Info", "result:" + requestCode + " result:" + resultCode);
+        Log.i("Info", "onResult:" + requestCode + " onResult:" + resultCode);
         super.onActivityResult(requestCode, resultCode, data);
     }
 

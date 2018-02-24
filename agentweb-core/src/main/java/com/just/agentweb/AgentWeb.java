@@ -102,7 +102,7 @@ public final class AgentWeb {
 	 */
 	private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
 	/**
-	 * 检查
+	 * WebSecurityCheckLogic
 	 */
 	private WebSecurityCheckLogic mWebSecurityCheckLogic = null;
 	/**
@@ -464,7 +464,7 @@ public final class AgentWeb {
 	private WebChromeClient getChromeClient() {
 		IndicatorController mIndicatorController =
 				(this.mIndicatorController == null) ?
-						IndicatorHandler.getInstance().inJectProgressView(mWebCreator.offer())
+						IndicatorHandler.getInstance().inJectIndicator(mWebCreator.offer())
 						: this.mIndicatorController;
 
 		DefaultChromeClient mDefaultChromeClient =
@@ -560,7 +560,7 @@ public final class AgentWeb {
 
 		private PreAgentWeb buildAgentWeb() {
 			if (mTag == AgentWeb.FRAGMENT_TAG && this.mViewGroup == null) {
-				throw new NullPointerException("ViewGroup is null,please check you params");
+				throw new NullPointerException("ViewGroup is null,Please check your parameters .");
 			}
 			return new PreAgentWeb(HookManager.hookAgentWeb(new AgentWeb(this), this));
 		}

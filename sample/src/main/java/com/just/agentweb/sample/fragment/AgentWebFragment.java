@@ -165,16 +165,16 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		/**
 		 *
 		 * @param url                下载链接
-		 * @param userAgent          mUserAgent
-		 * @param contentDisposition mContentDisposition
+		 * @param userAgent          UserAgent
+		 * @param contentDisposition ContentDisposition
 		 * @param mimetype           资源的媒体类型
 		 * @param contentLength      文件长度
 		 * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 是否强制下载。
 		 * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
 		 */
 		@Override
-		public boolean start(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
-			LogUtils.i(TAG, "start:" + url);
+		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
+			LogUtils.i(TAG, "onStart:" + url);
 			extra.setOpenBreakPointDownload(true)
 					.setIcon(R.drawable.ic_file_download_black_24dp)
 					.setConnectTimeOut(6000)
@@ -216,14 +216,14 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		 * @param url  下载链接
 		 * @param loaded  已经下载的长度
 		 * @param length    文件的总大小
-		 * @param usedTime   耗时,单位ms
-		 * 注意该方法回调在子线程 ，线程名 AsyncTask #XX or AgentWeb # XX
+		 * @param usedTime   耗时 ，单位ms
+		 * 注意该方法回调在子线程 ，线程名 AsyncTask #XX 或者 AgentWeb # XX
 		 */
 		@Override
-		public void progress(String url, long loaded, long length, long usedTime) {
+		public void onProgress(String url, long loaded, long length, long usedTime) {
 			int mProgress = (int) ((loaded) / Float.valueOf(length) * 100);
-			LogUtils.i(TAG, "progress:" + mProgress);
-			super.progress(url, loaded, length, usedTime);
+			LogUtils.i(TAG, "onProgress:" + mProgress);
+			super.onProgress(url, loaded, length, usedTime);
 		}
 
 		/**
@@ -234,7 +234,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		 * @return true 表示用户处理了下载完成后续的事件 ，false 默认交给AgentWeb 处理
 		 */
 		@Override
-		public boolean result(String path, String url, Throwable throwable) {
+		public boolean onResult(String path, String url, Throwable throwable) {
 			if (null == throwable) { //下载成功
 				//do you work
 			} else {//下载失败

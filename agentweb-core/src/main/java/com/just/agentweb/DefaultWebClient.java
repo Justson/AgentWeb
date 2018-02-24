@@ -94,7 +94,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	public static final String HTTPS_SCHEME = "https://";
 	/**
-	 * true 表示当前应用内依赖了 alipay library false  反之
+	 * true 表示当前应用内依赖了 alipay library , false  反之
 	 */
 	private static final boolean HAS_ALIPAY_LIB;
 	/**

@@ -35,13 +35,15 @@ import com.just.agentweb.BaseIndicatorView;
  * @since 1.0.0
  */
 public class CoolIndicatorLayout extends BaseIndicatorView {
-	public CoolIndicatorLayout(Context context) {
-		this(context, null);
-	}
+
 
 	private static final String TAG = CoolIndicatorLayout.class.getSimpleName();
 	private CoolIndicator mCoolIndicator = null;
 
+
+	public CoolIndicatorLayout(Context context) {
+		this(context, null);
+	}
 
 	public CoolIndicatorLayout(Context context, @Nullable AttributeSet attrs) {
 		this(context, attrs, -1);

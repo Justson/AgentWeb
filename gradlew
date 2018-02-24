@@ -2,7 +2,7 @@
 
 ##############################################################################
 ##
-##  Gradle start up script for UN*X
+##  Gradle onStart up script for UN*X
 ##
 ##############################################################################
 
@@ -62,7 +62,7 @@ cd "$SAVED" >/dev/null
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
-# Determine the Java command to use to start the JVM.
+# Determine the Java command to use to onStart the JVM.
 if [ -n "$JAVA_HOME" ] ; then
     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
         # IBM's JDK on AIX uses strange locations for the executables
