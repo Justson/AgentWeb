@@ -330,7 +330,6 @@ public final class AgentWeb {
 
 		public AgentWeb go(@Nullable String url) {
 			if (!isReady) {
-//                throw new IllegalStateException(" please call ready before go to finish all webview settings");  //i want to do this , but i cannot;
 				ready();
 			}
 			return mAgentWeb.go(url);

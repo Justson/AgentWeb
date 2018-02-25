@@ -41,7 +41,6 @@ public class MiddlewareWebClientBase extends WebViewClientDelegate {
     }
 
     final MiddlewareWebClientBase next() {
-        LogUtils.i(TAG, "next");
         return this.mMiddleWrareWebClientBase;
     }
 
