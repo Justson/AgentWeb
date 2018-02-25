@@ -130,10 +130,6 @@ public class DownloadNotifier {
 		sent();
 	}
 
-	private void setContentText(String text) {
-
-
-	}
 
 	private boolean hasDeleteContent() {
 		return mBuilder.getNotification().deleteIntent != null;
