@@ -274,7 +274,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		if (ExecuteTasksMap.getInstance().contains(mUrl)
 				|| ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
 			if (mAgentWebUIController.get() != null) {
-				mAgentWebUIController.get().showMessage(
+				mAgentWebUIController.get().onShowMessage(
 						mActivityWeakReference.get()
 								.getString(R.string.agentweb_download_task_has_been_exist),
 						TAG.concat("|preDownload"));
@@ -331,7 +331,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			ExecuteTasksMap.getInstance().addTask(mUrl, file.getAbsolutePath());
 			if (null != mAgentWebUIController.get()) {
 				mAgentWebUIController.get()
-						.showMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
+						.onShowMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
 			}
 			DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
 					this.mDownloadListenerAdapter,

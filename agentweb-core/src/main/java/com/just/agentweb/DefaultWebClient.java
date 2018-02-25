@@ -259,7 +259,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			case ASK_USER_OPEN_OTHER_PAGE:
 				if (mAgentWebUIController.get() != null) {
 					mAgentWebUIController.get()
-							.onAskOpenPage(this.mWebView,
+							.onOpenPagePrompt(this.mWebView,
 									mWebView.getUrl(),
 									getCallback(url));
 				}

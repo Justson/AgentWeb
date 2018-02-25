@@ -764,7 +764,7 @@ public class AgentWebUtils {
         WebParentLayout mWebParentLayout = (WebParentLayout) activity.findViewById(R.id.web_parent_layout_id);
         AbsAgentWebUIController mAgentWebUIController = mWebParentLayout.provide();
         if (mAgentWebUIController != null) {
-            mAgentWebUIController.showMessage(message, from);
+            mAgentWebUIController.onShowMessage(message, from);
         }
     }
 

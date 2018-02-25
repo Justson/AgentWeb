@@ -55,10 +55,10 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 
 	@Override
-	public void onAskOpenPage(WebView view, String url, final Handler.Callback callback) {
+	public void onOpenPagePrompt(WebView view, String url, final Handler.Callback callback) {
 
 
-		LogUtils.i(TAG, "onAskOpenPage");
+		LogUtils.i(TAG, "onOpenPagePrompt");
 		if (mAskOpenOtherAppDialog == null) {
 			mAskOpenOtherAppDialog = new AlertDialog
 					.Builder(mActivity)//
@@ -92,7 +92,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	}
 
 	@Override
-	public void showChooser(WebView view, String url, final String[] ways, final Handler.Callback callback) {
+	public void onSelectItemsPrompt(WebView view, String url, final String[] ways, final Handler.Callback callback) {
 		showChooserInternal(ways, callback);
 	}
 
@@ -287,7 +287,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	}
 
 	@Override
-	public void cancelLoading() {
+	public void onCancelLoading() {
 
 		if (mProgressDialog != null && mProgressDialog.isShowing()) {
 			mProgressDialog.dismiss();
@@ -297,7 +297,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	}
 
 	@Override
-	public void showMessage(String message, String from) {
+	public void onShowMessage(String message, String from) {
 		if (!TextUtils.isEmpty(from) && from.contains("performDownload")) {
 			return;
 		}

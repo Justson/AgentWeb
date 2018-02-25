@@ -85,7 +85,7 @@ public class DefaultDesignUIController extends DefaultUIController {
 
 
     @Override
-    public void showChooser(WebView view, String url, String[] ways, Handler.Callback callback) {
+    public void onSelectItemsPrompt(WebView view, String url, String[] ways, Handler.Callback callback) {
         showChooserInternal(view, url, ways, callback);
     }
 
@@ -180,7 +180,7 @@ public class DefaultDesignUIController extends DefaultUIController {
     }
 
     @Override
-    public void showMessage(String message, String from) {
+    public void onShowMessage(String message, String from) {
         if (!TextUtils.isEmpty(from) && from.contains("performDownload")) {
             return;
         }
