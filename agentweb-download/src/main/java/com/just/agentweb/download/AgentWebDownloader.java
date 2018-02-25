@@ -30,7 +30,6 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 
 	void download(T t);
 
-
 	/**
 	 *
 	 */

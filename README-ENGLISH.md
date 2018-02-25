@@ -20,7 +20,9 @@ AgentWeb Sample shows AgentWeb library powerful features, detailed link, please 
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:3.1.0'
+    compile 'com.just.agentweb:agentweb:4.0.0' 
+    compile 'com.just.agentweb:download:4.0.0' 
+    compile 'com.just.agentweb:filechooser:4.0.0'
    ```
 * Maven
 	
@@ -28,7 +30,7 @@ AgentWeb Sample shows AgentWeb library powerful features, detailed link, please 
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>3.1.0</version>
+	  <version>4.0.0</version>
 	  <type>pom</type>
 	</dependency>
 	
