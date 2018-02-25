@@ -780,7 +780,6 @@ public class FileChooser {
 			try {
 				Queue<FileParcel> mQueue = convertFile(paths);
 				String result = convertFileParcelObjectsToJson(mQueue);
-//                LogUtils.i(TAG, "result:" + result);
 				if (mJsChannelCallback != null && mJsChannelCallback.get() != null) {
 					mJsChannelCallback.get().call(result);
 				}

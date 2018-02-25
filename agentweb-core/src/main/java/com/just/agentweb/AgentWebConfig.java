@@ -68,7 +68,7 @@ public class AgentWebConfig {
 	/**
 	 * AgentWeb 的版本
 	 */
-	public static final String AGENTWEB_VERSION = "agentweb/4.0.0";
+	public static final String AGENTWEB_VERSION = " agentweb/4.0.0 ";
 
 	public static final String AGENTWEB_NAME="AgentWeb";
 	/**

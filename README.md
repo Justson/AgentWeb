@@ -19,7 +19,9 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 * Gradle 
    
    ```
-   compile 'com.just.agentweb:agentweb:3.1.0'
+    compile 'com.just.agentweb:agentweb:4.0.0' // (必选)
+    compile 'com.just.agentweb:download:4.0.0' // (可选)
+    compile 'com.just.agentweb:filechooser:4.0.0'// (可选) 
    ```
    
 * Maven
@@ -28,19 +30,13 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>3.1.0</version>
+	  <version>4.0.0</version>
 	  <type>pom</type>
 	</dependency>
 	
 	```
 	
-* 4.0.0-beta
 
-	```
-    compile 'com.just.agentweb:agentweb:4.0.0-beta'(必选)
-    compile 'com.just.agentweb:download:4.0.0-beta'(可选)
-    compile 'com.just.agentweb:filechooser:4.0.0-beta'(可选) 
-	```	
 	
 
 ## README 版本
