@@ -68,7 +68,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	 */
 	private long mTotals = -1L;
 	/**
-	 *
+	 * 上一次下载，文件缓存长度
 	 */
 	private long mLastLoaded = 0L;
 	/**
@@ -119,8 +119,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	 * Download read buffer size
 	 */
 	private static final int BUFFER_SIZE = 1024 * 8;
-
-	private static final int MAX_REDIRECTS = 6;
+	/**
+	 * 最多允许7次重定向
+	 */
+	private static final int MAX_REDIRECTS = 7;
 	private static final int HTTP_TEMP_REDIRECT = 307;
 	public static final int ERROR_NETWORK_CONNECTION = 0x400;
 	public static final int ERROR_RESPONSE_STATUS = 0x401;
