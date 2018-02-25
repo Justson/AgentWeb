@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 			Log.i("Info", "release 模式");
 		}
 
+//		AgentWebConfig.debug();
 	}
 
 	private void doClick(int position) {

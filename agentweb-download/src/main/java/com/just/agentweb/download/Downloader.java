@@ -232,7 +232,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 						mHttpURLConnection.getHeaderField("Connection"));
 				final boolean isEncodingChunked = "chunked".equalsIgnoreCase(
 						mHttpURLConnection.getHeaderField("Transfer-Encoding"));
-				final boolean isZero = (mHttpURLConnection.getHeaderFieldLong("Content-Length", -1L) == -1);
+				final boolean isZero = (getHeaderFieldLong(mHttpURLConnection, "Content-Length") == -1);
 				// 获取不到文件长度
 				final boolean finishKnown = isConnectionClose || isEncodingChunked || isZero;
 				if (!finishKnown) {
@@ -276,6 +276,18 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				mHttpURLConnection.disconnect();
 			}
 		}
+	}
+
+	private long getHeaderFieldLong(HttpURLConnection httpURLConnection, String name) {
+		String field = httpURLConnection.getHeaderField(name);
+		try {
+			return field == null ? -1L : Long.parseLong(field);
+		} catch (NumberFormatException e) {
+			if (LogUtils.isDebug()) {
+				e.printStackTrace();
+			}
+		}
+		return -1;
 	}
 
 	private void saveEtag(HttpURLConnection httpURLConnection) {
@@ -452,12 +464,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 
-
 	private int transferData(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
 		byte[] buffer = new byte[BUFFER_SIZE];
 		// try-with-resources
-		try (BufferedInputStream bis = new BufferedInputStream(inputStream, BUFFER_SIZE);
-		     RandomAccessFile out = randomAccessFile) {
+		BufferedInputStream bis = new BufferedInputStream(inputStream, BUFFER_SIZE);
+		RandomAccessFile out = randomAccessFile;
+		try {
 
 			if (isSeek) {
 				out.seek(out.length());
@@ -487,9 +499,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				return ERROR_SHUTDOWN;
 			}
 			return SUCCESSFUL;
+		} finally {
+			AgentWebUtils.closeIO(out);
+			AgentWebUtils.closeIO(bis);
+			AgentWebUtils.closeIO(inputStream);
 		}
 
 	}
+
 
 	private final void cancel() {
 		mIsCanceled.set(true);
