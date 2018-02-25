@@ -53,3 +53,7 @@ app/keystore/
 #sample/keystore/
 library/src/main/res/mipmap-xxhdpi/
 sample/sampledata/
+node_modules
+package-lock.json
+package.json
+
