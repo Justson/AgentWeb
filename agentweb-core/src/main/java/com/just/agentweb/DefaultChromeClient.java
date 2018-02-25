@@ -17,7 +17,6 @@
 package com.just.agentweb;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -282,19 +281,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 	}
 
 
-	private void toDismissDialog(Dialog dialog) {
-		if (dialog != null) {
-			dialog.dismiss();
-		}
-
-	}
-
-
-	private void toCancelJsresult(JsResult result) {
-		if (result != null) {
-			result.cancel();
-		}
-	}
 
 
 	@Override
