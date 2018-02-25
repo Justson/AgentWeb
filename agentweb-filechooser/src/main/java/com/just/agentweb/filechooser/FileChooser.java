@@ -264,7 +264,7 @@ public class FileChooser {
 		if (this.mAgentWebUIController.get() != null) {
 			this.mAgentWebUIController
 					.get()
-					.showChooser(this.mWebView, mWebView.getUrl(),
+					.onSelectItemsPrompt(this.mWebView, mWebView.getUrl(),
 							new String[]{mActivity.getString(R.string.agentweb_camera),
 									mActivity.getString(R.string.agentweb_file_chooser)}, getCallBack());
 			LogUtils.i(TAG, "open");
@@ -530,7 +530,7 @@ public class FileChooser {
 
 		if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
 			if (mAgentWebUIController.get() != null) {
-				mAgentWebUIController.get().showMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
+				mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
 			}
 			mJsChannelCallback.call(null);
 			return;
@@ -599,7 +599,7 @@ public class FileChooser {
 				mValueCallback.onReceiveValue(mUris);
 			}
 			if (controller != null && controller.get() != null) {
-				controller.get().cancelLoading();
+				controller.get().onCancelLoading();
 			}
 		}
 	}

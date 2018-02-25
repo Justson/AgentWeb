@@ -179,6 +179,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 					.setIcon(R.drawable.ic_file_download_black_24dp)
 					.setConnectTimeOut(6000)
 					.setBlockMaxTime(2000)
+					.setDownloadTimeOut(Long.MAX_VALUE) //下载超时
+					.setParallelDownload(false)  // 串行下载更节省资源哦 。
+					.setEnableIndicator(true)  // false 关闭进度通知
 					.setDownloadTimeOut(60L * 5L * 1000L)
 					.addHeader("Cookie", "xx") // 自定义请求头
 					.setAutoOpen(true) // 下载完成自动打开

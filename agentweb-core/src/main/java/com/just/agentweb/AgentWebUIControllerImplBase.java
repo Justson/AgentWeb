@@ -41,8 +41,8 @@ public class AgentWebUIControllerImplBase extends AbsAgentWebUIController {
 	}
 
 	@Override
-	public void onAskOpenPage(WebView view, String url, Handler.Callback callback) {
-		getDelegate().onAskOpenPage(view, url, callback);
+	public void onOpenPagePrompt(WebView view, String url, Handler.Callback callback) {
+		getDelegate().onOpenPagePrompt(view, url, callback);
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class AgentWebUIControllerImplBase extends AbsAgentWebUIController {
 	}
 
 	@Override
-	public void showChooser(WebView view, String url, String[] ways, Handler.Callback callback) {
-		getDelegate().showChooser(view, url, ways, callback);
+	public void onSelectItemsPrompt(WebView view, String url, String[] ways, Handler.Callback callback) {
+		getDelegate().onSelectItemsPrompt(view, url, ways, callback);
 	}
 
 	@Override
@@ -81,14 +81,14 @@ public class AgentWebUIControllerImplBase extends AbsAgentWebUIController {
 	}
 
 	@Override
-	public void cancelLoading() {
-		getDelegate().cancelLoading();
+	public void onCancelLoading() {
+		getDelegate().onCancelLoading();
 	}
 
 
 	@Override
-	public void showMessage(String message, String from) {
-		getDelegate().showMessage(message, from);
+	public void onShowMessage(String message, String from) {
+		getDelegate().onShowMessage(message, from);
 	}
 
 	@Override

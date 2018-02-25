@@ -101,7 +101,7 @@ public abstract class AbsAgentWebUIController {
 	 * @param url
 	 * @param callback
 	 */
-	public abstract void onAskOpenPage(WebView view, String url, Handler.Callback callback);
+	public abstract void onOpenPagePrompt(WebView view, String url, Handler.Callback callback);
 
 	/**
 	 * WebChromeClient#onJsConfirm
@@ -113,7 +113,7 @@ public abstract class AbsAgentWebUIController {
 	 */
 	public abstract void onJsConfirm(WebView view, String url, String message, JsResult jsResult);
 
-	public abstract void showChooser(WebView view, String url, String[] ways, Handler.Callback callback);
+	public abstract void onSelectItemsPrompt(WebView view, String url, String[] ways, Handler.Callback callback);
 
 	/**
 	 * 强制下载弹窗
@@ -159,13 +159,13 @@ public abstract class AbsAgentWebUIController {
 	/**
 	 * 正在加载弹窗取消
 	 */
-	public abstract void cancelLoading();
+	public abstract void onCancelLoading();
 
 	/**
 	 * @param message 消息
 	 * @param intent  说明message的来源，意图
 	 */
-	public abstract void showMessage(String message, String intent);
+	public abstract void onShowMessage(String message, String intent);
 
 	/**
 	 * 当权限被拒回调该方法
