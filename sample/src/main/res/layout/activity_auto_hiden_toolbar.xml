@@ -15,7 +15,52 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            app:layout_scrollFlags="scroll|enterAlways" />
     </android.support.design.widget.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:weightSum="4"
+        app:layout_behavior="com.just.agentweb.sample.behavior.BottomNavigationViewBehavior">
+
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="后退"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/btn_forward"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="前进"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/btn_refresh"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="刷新"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/btn_menu"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="菜单"
+            android:textColor="#fff" />
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
