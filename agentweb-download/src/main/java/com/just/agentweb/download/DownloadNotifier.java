@@ -167,7 +167,7 @@ public class DownloadNotifier {
 		}
 		if (!mAddedCancelAction) {
 			mAddedCancelAction = true;
-			mAction = new NotificationCompat.Action(R.drawable.ic_cancel_black_24dp,
+			mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
 					mContext.getString(android.R.string.cancel),
 					buildCancelContent(mContext, mNotificationId, mUrl));
 			mBuilder.addAction(mAction);
