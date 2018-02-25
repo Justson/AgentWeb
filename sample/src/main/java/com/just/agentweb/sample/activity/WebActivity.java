@@ -6,7 +6,6 @@ package com.just.agentweb.sample.activity;
  *
  */
 
-
 public class WebActivity extends BaseWebActivity {
 
     @Override

@@ -167,10 +167,11 @@ public class DownloadNotifier {
 		}
 		if (!mAddedCancelAction) {
 			mAddedCancelAction = true;
-			mAction = new NotificationCompat.Action(-1,
+			mAction = new NotificationCompat.Action(R.drawable.ic_cancel_black_24dp,
 					mContext.getString(android.R.string.cancel),
 					buildCancelContent(mContext, mNotificationId, mUrl));
 			mBuilder.addAction(mAction);
+
 		}
 		mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
 		this.setProgress(100, progress, false);
