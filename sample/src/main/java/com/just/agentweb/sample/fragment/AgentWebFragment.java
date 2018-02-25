@@ -69,7 +69,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	private ImageView mMoreImageView;
 	private PopupMenu mPopupMenu;
 	/**
-	 *  用于方便打印测试
+	 * 用于方便打印测试
 	 */
 	private Gson mGson = new Gson();
 	public static final String TAG = AgentWebFragment.class.getSimpleName();
@@ -102,7 +102,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
 		mAgentWeb = AgentWeb.with(this)//
-				.setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
+				.setAgentWebParent((LinearLayout) view, -1, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))//传入AgentWeb的父控件。
 				.useDefaultIndicator(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
 				.setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
 				.setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
@@ -180,7 +180,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 					.setConnectTimeOut(6000)
 					.setBlockMaxTime(2000)
 					.setDownloadTimeOut(60L * 5L * 1000L)
-					.addHeader("Cookie","xx") // 自定义请求头
+					.addHeader("Cookie", "xx") // 自定义请求头
 					.setAutoOpen(true) // 下载完成自动打开
 					.setForceDownload(false); // 强制下载，不管网络网络类型
 			return false;
@@ -370,7 +370,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			}
 
 		}
-	    /*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
+		/*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
        /* public void onMainFrameError(AbsAgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
 
             Log.i(TAG, "AgentWebFragment onMainFrameError");
@@ -451,6 +451,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 	/**
 	 * 打开浏览器
+	 *
 	 * @param targetUrl 外部浏览器打开的地址
 	 */
 	private void openBrowser(String targetUrl) {
@@ -470,6 +471,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 	/**
 	 * 显示更多菜单
+	 *
 	 * @param view 菜单依附在该View下面
 	 */
 	private void showPoPup(View view) {
@@ -540,7 +542,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	}
 
 	/**
-	 *  清除 WebView 缓存
+	 * 清除 WebView 缓存
 	 */
 	private void toCleanWebCache() {
 
@@ -557,7 +559,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 
 	/**
-	 *  复制字符串
+	 * 复制字符串
+	 *
 	 * @param context
 	 * @param text
 	 */
