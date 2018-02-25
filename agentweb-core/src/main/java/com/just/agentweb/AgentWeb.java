@@ -552,9 +552,11 @@ public final class AgentWeb {
 			return new IndicatorBuilder(this);
 		}
 
-		public AgentBuilder setWebView(WebView webView) {
-			this.mWebView = webView;
-			return this;
+		public IndicatorBuilder setAgentWebParent(@NonNull ViewGroup v, int index, @NonNull ViewGroup.LayoutParams lp) {
+			this.mViewGroup = v;
+			this.mIndex = index;
+			this.mLayoutParams = lp;
+			return new IndicatorBuilder(this);
 		}
 
 		private PreAgentWeb buildAgentWeb() {
