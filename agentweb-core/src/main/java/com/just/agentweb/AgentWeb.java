@@ -559,10 +559,6 @@ public final class AgentWeb {
 			return new IndicatorBuilder(this);
 		}
 
-		public AgentBuilder setWebView(WebView webView) {
-			this.mWebView = webView;
-			return this;
-		}
 
 		private PreAgentWeb buildAgentWeb() {
 			if (mTag == AgentWeb.FRAGMENT_TAG && this.mViewGroup == null) {
