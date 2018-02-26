@@ -302,7 +302,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 ## 混淆
 如果你的项目需要加入混淆 ， 请加入如下配置
 
-```
+```java
 -keep class com.just.agentweb.** {
     *;
 }
@@ -311,7 +311,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 ```
 Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 需要 Keep 。
 
-```
+```java
 -keepclassmembers class com.just.library.agentweb.AndroidInterface{ *; }
 ```
 
