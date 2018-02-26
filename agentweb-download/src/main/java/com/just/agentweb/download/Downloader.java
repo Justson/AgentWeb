@@ -86,7 +86,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	/**
 	 * 当前下载平均速度
 	 */
-	private volatile long mAverageSpeed = 0;
+	private volatile long mAverageSpeed = 0L;
 	/**
 	 * 下载异常，回调给用户的异常
 	 */
