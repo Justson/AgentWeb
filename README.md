@@ -267,11 +267,12 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
                 .setPermissionInterceptor(mPermissionInterceptor) 
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) 
                 .setAgentWebUIController(new UIController(getActivity())) 
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1)             .useMiddlewareWebChrome(getMiddlewareWebChrome())
+                .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
+                .useMiddlewareWebChrome(getMiddlewareWebChrome())
                 .useMiddlewareWebClient(getMiddlewareWebClient()) 
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)                
+                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)
                 .interceptUnkownUrl() 
-                .createAgentWeb()。
+                .createAgentWeb()
                 .ready()
                 .go(getUrl()); 
 ```
