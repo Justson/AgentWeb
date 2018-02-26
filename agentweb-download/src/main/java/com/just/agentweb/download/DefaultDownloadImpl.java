@@ -179,7 +179,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				.setUserAgent(this.mUserAgent = userAgent);
 		this.mCloneExtraServiceImpl = mCloneExtraServiceImpl;
 
-		LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  :" + this.mCloneExtraServiceImpl.getMimetype());
+		LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  getMimetype:" + this.mCloneExtraServiceImpl.getMimetype());
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			List<String> mList = null;
