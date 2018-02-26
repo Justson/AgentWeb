@@ -328,6 +328,12 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * [Wiki](https://github.com/Justson/AgentWeb/wiki)(不全)
 * `Sample`(推荐，详细) 
 
+## 相关
+* [AgentWebX5](https://github.com/Justson/AgentWebX5)
+* [一个炫酷的 WebView Indicator](https://github.com/Justson/CoolIndicator)
+
+
+
 ## 更新日志
 * v_4.0.0 更新
 	* `AgentWeb` 拆分出 `AgentWeb-Download` 、 `AgentWeb-FileChooser` 、`AgentWeb-core` 三个库，用户可以按需选择。
