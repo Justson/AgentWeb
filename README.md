@@ -260,7 +260,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 ```java
         mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                .setIndicatorColorWithHeight(-1, 3)
+                .useDefaultIndicator(-1, 3)
                 .setAgentWebWebSettings(getSettings())
                 .setWebViewClient(mWebViewClient)
                 .setWebChromeClient(mWebChromeClient)
