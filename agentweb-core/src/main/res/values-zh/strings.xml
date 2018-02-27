@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">AgentWeb</string>
     <string name="agentweb_download_task_has_been_exist">该任务已经存在 ， 请勿重复点击下载!</string>
     <string name="agentweb_tips">提示</string>
     <string name="agentweb_honeycomblow">您正在使用手机流量 ， 继续下载该文件吗?</string>
