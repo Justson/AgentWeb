@@ -136,7 +136,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		//mAgentWeb.getWebCreator().getWebView()  获取WebView .
 
 
-
 	}
 
 
@@ -176,11 +175,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		@Override
 		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
 			LogUtils.i(TAG, "onStart:" + url);
-			extra.setOpenBreakPointDownload(true)
+			extra.setopenbreakpointdownload(false)
 					.setIcon(R.drawable.ic_file_download_black_24dp)
 					.setConnectTimeOut(6000)
 					.setBlockMaxTime(2000)
-					.setDownloadTimeOut(Long.MAX_VALUE) //下载超时
+					.setDownloadTimeOut(Long.MAX_VALUE) // 下载超时
 					.setParallelDownload(false)  // 串行下载更节省资源哦
 					.setEnableIndicator(true)  // false 关闭进度通知
 					.setDownloadTimeOut(60L * 5L * 1000L)
@@ -375,7 +374,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 		}
 		/*错误页回调该方法 ， 如果重写了该方法， 上面传入了布局将不会显示 ， 交由开发者实现，注意参数对齐。*/
-       /* public void onMainFrameError(AbsAgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
+	   /* public void onMainFrameError(AbsAgentWebUIController agentWebUIController, WebView view, int errorCode, String description, String failingUrl) {
 
             Log.i(TAG, "AgentWebFragment onMainFrameError");
             agentWebUIController.onMainFrameError(view,errorCode,description,failingUrl);

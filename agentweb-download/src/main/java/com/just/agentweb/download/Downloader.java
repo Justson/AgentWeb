@@ -66,7 +66,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	/**
 	 * 总大小
 	 */
-	private long mTotals = -1L;
+	private volatile long mTotals = -1L;
 	/**
 	 * 上一次下载，文件缓存长度
 	 */
@@ -104,7 +104,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	 */
 	private DownloadNotifier mDownloadNotifier;
 
-	private static final int ERROR_LOAD = 0x406;
 
 	private static final String TAG = Downloader.class.getSimpleName();
 	/**
@@ -131,6 +130,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	public static final int ERROR_USER_CANCEL = 0x404;
 	public static final int ERROR_SHUTDOWN = 0x405;
 	public static final int ERROR_TOO_MANY_REDIRECTS = 0x406;
+	public static final int ERROR_LOAD = 0x407;
 	public static final int ERROR_SERVICE = 0x503;
 	public static final int SUCCESSFUL = 0x200;
 
@@ -226,21 +226,18 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 					mHttpURLConnection.disconnect();
 				}
 				mHttpURLConnection = createUrlConnectionAndSettingHeaders(url);
-
 				mHttpURLConnection.connect();
-				final boolean isConnectionClose = "close".equalsIgnoreCase(
-						mHttpURLConnection.getHeaderField("Connection"));
+
 				final boolean isEncodingChunked = "chunked".equalsIgnoreCase(
 						mHttpURLConnection.getHeaderField("Transfer-Encoding"));
-				final boolean isZero = (getHeaderFieldLong(mHttpURLConnection, "Content-Length") == -1);
+				final boolean hasLength = ((this.mTotals = getHeaderFieldLong(mHttpURLConnection, "Content-Length")) == -1);
+				LogUtils.i(TAG, "content-length:" + this.mTotals);
 				// 获取不到文件长度
-				final boolean finishKnown = isConnectionClose || isEncodingChunked || isZero;
-				if (!finishKnown) {
+				final boolean finishKnown = isEncodingChunked || hasLength;
+				if (finishKnown) {
 					LogUtils.e(TAG, "can't know size of download, giving up ,"
-							+ " Connection close:"
-							+ isConnectionClose
-							+ "EncodingChunked:" + isEncodingChunked
-							+ " isZero:" + isZero);
+							+ "  EncodingChunked:" + isEncodingChunked
+							+ "  hasLength:" + hasLength);
 					return ERROR_LOAD;
 				}
 
@@ -287,7 +284,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				e.printStackTrace();
 			}
 		}
-		return -1;
+		return -1L;
 	}
 
 	private void saveEtag(HttpURLConnection httpURLConnection) {
@@ -394,6 +391,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (mDownloadTask.getDownloadListener() != null) {
 				mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
 			}
+			LogUtils.i(TAG, "msg:" + DOWNLOAD_MESSAGE.get(integer));
 			boolean isCancelDispose = doCallback(integer);
 			// Error
 			if (integer > 0x200) {
@@ -401,6 +399,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				if (null != mDownloadNotifier) {
 					mDownloadNotifier.cancel();
 				}
+
 				return;
 			}
 			if (mDownloadTask.isEnableIndicator()) {

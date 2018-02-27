@@ -179,8 +179,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				.setUserAgent(this.mUserAgent = userAgent);
 		this.mCloneExtraServiceImpl = mCloneExtraServiceImpl;
 
-		LogUtils.i(TAG, " clone a extraServiceImpl : " + this.mCloneExtraServiceImpl.mWebView + "  aty:" + this.mCloneExtraServiceImpl.mActivity + "  getMimetype:" + this.mCloneExtraServiceImpl.getMimetype());
-
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 			List<String> mList = null;
 			if ((mList = checkNeedPermission()).isEmpty()) {
@@ -244,7 +242,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			LogUtils.e(TAG, "新建文件失败");
 			return;
 		}
-		if (mFile.exists() && mFile.length() >= mContentLength) {
+		if (mFile.exists() && mFile.length() >= mContentLength && mContentLength > 0) {
 
 			// true 表示用户处理了下载完成后续的通知用户事件
 			if (null != this.mDownloadListener && this.mDownloadListener.onResult(mFile.getAbsolutePath(), mUrl, null)) {
@@ -654,7 +652,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		}
 
 		@Override
-		public ExtraServiceImpl setOpenBreakPointDownload(boolean openBreakPointDownload) {
+		public ExtraServiceImpl setopenbreakpointdownload(boolean openBreakPointDownload) {
 			mIsOpenBreakPointDownload = openBreakPointDownload;
 			return this;
 		}

@@ -172,7 +172,7 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 			return mIsOpenBreakPointDownload;
 		}
 
-		public Extra setOpenBreakPointDownload(boolean openBreakPointDownload) {
+		public Extra setopenbreakpointdownload(boolean openBreakPointDownload) {
 			mIsOpenBreakPointDownload = openBreakPointDownload;
 			return this;
 		}
