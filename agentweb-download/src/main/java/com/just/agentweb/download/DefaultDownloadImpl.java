@@ -271,7 +271,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		// 该链接是否正在下载
 		if (ExecuteTasksMap.getInstance().contains(mUrl)
 				|| ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
-			if (mAgentWebUIController.get() != null) {
+			if (null != mAgentWebUIController.get()) {
 				mAgentWebUIController.get().onShowMessage(
 						mActivityWeakReference.get()
 								.getString(R.string.agentweb_download_task_has_been_exist),
@@ -306,7 +306,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return;
 		}
 		AbsAgentWebUIController mAgentWebUIController;
-		if ((mAgentWebUIController = this.mAgentWebUIController.get()) != null) {
+		if (null != (mAgentWebUIController = this.mAgentWebUIController.get())) {
 			mAgentWebUIController.onForceDownloadAlert(mUrl, createCallback(file));
 		}
 
