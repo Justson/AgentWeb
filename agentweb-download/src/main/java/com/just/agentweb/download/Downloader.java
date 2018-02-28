@@ -278,7 +278,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	private long getHeaderFieldLong(HttpURLConnection httpURLConnection, String name) {
 		String field = httpURLConnection.getHeaderField(name);
 		try {
-			return field == null ? -1L : Long.parseLong(field);
+			return null == field ? -1L : Long.parseLong(field);
 		} catch (NumberFormatException e) {
 			if (LogUtils.isDebug()) {
 				e.printStackTrace();
@@ -363,7 +363,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				int mProgress = (int) ((mLastLoaded + mLoaded) / Float.valueOf(mTotals) * 100);
 				mDownloadNotifier.onDownloading(mProgress);
 			}
-			if (mDownloadTask.getDownloadListener() != null) {
+			if (null != mDownloadTask.getDownloadListener()) {
 				mDownloadTask
 						.getDownloadListener()
 						.onProgress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
@@ -381,14 +381,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		try {
 			CancelDownloadInformer.getInformer().removeRecipient(mDownloadTask.getUrl());
 
-			if (mDownloadTask.getDownloadListener() != null) {
+			if (null != mDownloadTask.getDownloadListener()) {
 				mDownloadTask
 						.getDownloadListener()
 						.onProgress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 
 			}
 
-			if (mDownloadTask.getDownloadListener() != null) {
+			if (null != mDownloadTask.getDownloadListener()) {
 				mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
 			}
 			LogUtils.i(TAG, "msg:" + DOWNLOAD_MESSAGE.get(integer));
@@ -430,7 +430,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				throwable.printStackTrace();
 			}
 		} finally {
-			if (mDownloadTask != null) {
+			if (null != mDownloadTask) {
 				mDownloadTask.destroy();
 			}
 		}
@@ -447,7 +447,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		}
 		return mDownloadListener.onResult(mDownloadTask.getFile().getAbsolutePath(),
 				mDownloadTask.getUrl(), code <= 200 ? null
-						: this.mThrowable == null
+						: null == this.mThrowable
 						? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable);
 
 	}
