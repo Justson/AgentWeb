@@ -139,7 +139,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	static {
 
 		DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
-		DOWNLOAD_MESSAGE.append(ERROR_RESPONSE_STATUS, "Response code non-200 and non-206 . ");
+		DOWNLOAD_MESSAGE.append(ERROR_RESPONSE_STATUS, "Response code non-200 or non-206 . ");
 		DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
 		DOWNLOAD_MESSAGE.append(ERROR_SHUTDOWN, "Shutdown . ");
 		DOWNLOAD_MESSAGE.append(ERROR_TIME_OUT, "Download time is overtime . ");

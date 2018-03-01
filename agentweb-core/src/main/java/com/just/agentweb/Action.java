@@ -33,9 +33,9 @@ public class Action implements Parcelable {
     public transient static final int ACTION_PERMISSION = 1;
     public transient static final int ACTION_FILE = 2;
     public transient static final int ACTION_CAMERA = 3;
-    private ArrayList<String> permissions = new ArrayList();
-    private int action;
-    private int fromIntention;
+    private ArrayList<String> mPermissions = new ArrayList();
+    private int mAction;
+    private int mFromIntention;
 
 
     public Action() {
@@ -43,36 +43,36 @@ public class Action implements Parcelable {
     }
 
     public ArrayList<String> getPermissions() {
-        return permissions;
+        return mPermissions;
     }
 
     public void setPermissions(ArrayList<String> permissions) {
-        this.permissions = permissions;
+        this.mPermissions = permissions;
     }
 
     public void setPermissions(String[] permissions) {
-        this.permissions = new ArrayList<>(Arrays.asList(permissions));
+        this.mPermissions = new ArrayList<>(Arrays.asList(permissions));
     }
 
     public int getAction() {
-        return action;
+        return mAction;
     }
 
     public void setAction(int action) {
-        this.action = action;
+        this.mAction = action;
     }
 
     protected Action(Parcel in) {
-        permissions = in.createStringArrayList();
-        action = in.readInt();
-        fromIntention = in.readInt();
+        mPermissions = in.createStringArrayList();
+        mAction = in.readInt();
+        mFromIntention = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringList(permissions);
-        dest.writeInt(action);
-        dest.writeInt(fromIntention);
+        dest.writeStringList(mPermissions);
+        dest.writeInt(mAction);
+        dest.writeInt(mFromIntention);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class Action implements Parcelable {
     };
 
     public int getFromIntention() {
-        return fromIntention;
+        return mFromIntention;
     }
 
     public static Action createPermissionsAction(String[] permissions) {
@@ -105,7 +105,7 @@ public class Action implements Parcelable {
     }
 
     public Action setFromIntention(int fromIntention) {
-        this.fromIntention = fromIntention;
+        this.mFromIntention = fromIntention;
         return this;
     }
 

@@ -207,7 +207,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		// intent
 		if (url.startsWith(INTENT_SCHEME)) {
 			handleIntentUrl(url);
-			LogUtils.i(TAG, "intent scheme ");
+			LogUtils.i(TAG, "intent url ");
 			return true;
 		}
 		// 微信支付
@@ -218,7 +218,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		}
 
 		if (url.startsWith(ALIPAYS_SCHEME) && lookup(url)) {
-			LogUtils.i(TAG, "alipays scheme lookup alipay ~~ ");
+			LogUtils.i(TAG, "alipays url lookup alipay ~~ ");
 			return true;
 		}
 
