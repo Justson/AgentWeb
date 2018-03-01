@@ -156,7 +156,7 @@ public final class AgentWeb {
 	/**
 	 * 该变量控制了是否咨询用户页面跳转，或者直接拦截
 	 */
-	private int mOpenOtherAppWays = -1;
+	private int mUrlHandleWays = -1;
 	/**
 	 * MiddlewareWebClientBase WebViewClient 中间件
 	 */
@@ -206,7 +206,7 @@ public final class AgentWeb {
 		this.mWebClientHelper = agentBuilder.mWebClientHelper;
 		this.mIsInterceptUnkownScheme = agentBuilder.mIsInterceptUnkownScheme;
 		if (agentBuilder.mOpenOtherPage != null) {
-			this.mOpenOtherAppWays = agentBuilder.mOpenOtherPage.code;
+			this.mUrlHandleWays = agentBuilder.mOpenOtherPage.code;
 		}
 		this.mMiddleWrareWebClientBaseHeader = agentBuilder.mMiddlewareWebClientBaseHeader;
 		this.mMiddlewareWebChromeBaseHeader = agentBuilder.mChromeMiddleWareHeader;
@@ -407,7 +407,7 @@ public final class AgentWeb {
 				.setPermissionInterceptor(this.mPermissionInterceptor)
 				.setWebView(this.mWebCreator.getWebView())
 				.setInterceptUnkownScheme(this.mIsInterceptUnkownScheme)
-				.setSchemeHandleType(this.mOpenOtherAppWays)
+				.setUrlHandleWays(this.mUrlHandleWays)
 				.build();
 		MiddlewareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
 		if (header != null) {

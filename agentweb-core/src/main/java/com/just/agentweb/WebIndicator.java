@@ -150,7 +150,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     }
 
 
-
     @Override
     protected void onDraw(Canvas canvas) {
 
@@ -205,10 +204,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     public void hide() {
         TAG = FINISH;
     }
-
-
-
-
 
     private void startAnim(boolean isFinished) {
 

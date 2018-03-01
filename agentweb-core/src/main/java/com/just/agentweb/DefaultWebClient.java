@@ -116,11 +116,11 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	/**
 	 * 默认为咨询用户
 	 */
-	private int schemeHandleType = ASK_USER_OPEN_OTHER_PAGE;
+	private int mUrlHandleWays = ASK_USER_OPEN_OTHER_PAGE;
 	/**
 	 * 是否拦截找不到相应页面的Url，默认拦截
 	 */
-	private boolean isInterceptUnkownScheme = true;
+	private boolean mIsInterceptUnkownUrl = true;
 	/**
 	 * AbsAgentWebUIController
 	 */
@@ -174,12 +174,12 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		mWeakReference = new WeakReference<Activity>(builder.mActivity);
 		this.webClientHelper = builder.mWebClientHelper;
 		mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
-		isInterceptUnkownScheme = builder.mIsInterceptUnkownScheme;
+		mIsInterceptUnkownUrl = builder.mIsInterceptUnkownScheme;
 
-		if (builder.mSchemeHandleType <= 0) {
-			schemeHandleType = ASK_USER_OPEN_OTHER_PAGE;
+		if (builder.mUrlHandleWays <= 0) {
+			mUrlHandleWays = ASK_USER_OPEN_OTHER_PAGE;
 		} else {
-			schemeHandleType = builder.mSchemeHandleType;
+			mUrlHandleWays = builder.mUrlHandleWays;
 		}
 	}
 
@@ -200,7 +200,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		if (!webClientHelper) {
 			return false;
 		}
-		if (handleLinked(url)) {
+		if (handleCommonLink(url)) {
 			return true;
 		}
 
@@ -212,22 +212,22 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		}
 		// 微信支付
 		if (url.startsWith(WEBCHAT_PAY_SCHEME)) {
-			LogUtils.i(TAG, "open wechat to pay ~~");
+			LogUtils.i(TAG, "lookup wechat to pay ~~");
 			startActivity(url);
 			return true;
 		}
 
-		if (url.startsWith(ALIPAYS_SCHEME) && openOtherPage(url)) {
-			LogUtils.i(TAG, "alipays scheme open alipay ~~ ");
+		if (url.startsWith(ALIPAYS_SCHEME) && lookup(url)) {
+			LogUtils.i(TAG, "alipays scheme lookup alipay ~~ ");
 			return true;
 		}
 
-		if (queryActivies(url) > 0 && handleOtherScheme(url)) {
-			LogUtils.i(TAG, "intercept OtherPageScheme");
+		if (queryActiviesNumber(url) > 0 && urlOpenWays(url)) {
+			LogUtils.i(TAG, "intercept url:" + url);
 			return true;
 		}
-		if (isInterceptUnkownScheme) {
-			LogUtils.i(TAG, "intercept InterceptUnkownScheme :" + request.getUrl());
+		if (mIsInterceptUnkownUrl) {
+			LogUtils.i(TAG, "intercept mIsInterceptUnkownUrl :" + request.getUrl());
 			return true;
 		}
 
@@ -247,15 +247,14 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		super.onReceivedHttpAuthRequest(view, handler, host, realm);
 	}
 
-	private boolean handleOtherScheme(String url) {
+	private boolean urlOpenWays(String url) {
 
-		LogUtils.i(TAG, "mSchemeHandleType:" + schemeHandleType + "   :" + mAgentWebUIController.get() + " url:" + url);
-		switch (schemeHandleType) {
-			//直接打开其他App
+		switch (mUrlHandleWays) {
+			// 直接打开其他App
 			case DERECT_OPEN_OTHER_PAGE:
-				openOtherPage(url);
+				lookup(url);
 				return true;
-			//咨询用户是否打开其他App
+			// 咨询用户是否打开其他App
 			case ASK_USER_OPEN_OTHER_PAGE:
 				if (mAgentWebUIController.get() != null) {
 					mAgentWebUIController.get()
@@ -264,7 +263,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 									getCallback(url));
 				}
 				return true;
-			//默认不打开
+			// 默认不打开
 			default:
 				return false;
 		}
@@ -293,7 +292,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return false;
 		}
 		//电话 ， 邮箱 ， 短信
-		if (handleLinked(url)) {
+		if (handleCommonLink(url)) {
 			return true;
 		}
 		//Intent scheme
@@ -307,16 +306,16 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return true;
 		}
 		//支付宝
-		if (url.startsWith(ALIPAYS_SCHEME) && openOtherPage(url)) {
+		if (url.startsWith(ALIPAYS_SCHEME) && lookup(url)) {
 			return true;
 		}
-		//打开Scheme 相对应的页面
-		if (queryActivies(url) > 0 && handleOtherScheme(url)) {
+		//打开url 相对应的页面
+		if (queryActiviesNumber(url) > 0 && urlOpenWays(url)) {
 			LogUtils.i(TAG, "intercept OtherAppScheme");
 			return true;
 		}
-		// 手机里面没有页面能匹配到该链接 ， 也就是无法处理的scheme返回True，拦截下来。
-		if (isInterceptUnkownScheme) {
+		// 手机里面没有页面能匹配到该链接 ，拦截下来。
+		if (mIsInterceptUnkownUrl) {
 			LogUtils.i(TAG, "intercept InterceptUnkownScheme : " + url);
 			return true;
 		}
@@ -325,12 +324,11 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return false;
 		}
 
-
 		return super.shouldOverrideUrlLoading(view, url);
 	}
 
 
-	private int queryActivies(String url) {
+	private int queryActiviesNumber(String url) {
 
 		try {
 			if (mWeakReference.get() == null) {
@@ -356,7 +354,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				return;
 			}
 
-			if (openOtherPage(intentUrl)) {
+			if (lookup(intentUrl)) {
 				return;
 			}
 		} catch (Throwable e) {
@@ -368,7 +366,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	}
 
-	private boolean openOtherPage(String intentUrl) {
+	private boolean lookup(String intentUrl) {
 		try {
 			Intent intent;
 			Activity mActivity = null;
@@ -436,7 +434,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	}
 
 
-	private boolean handleLinked(String url) {
+	private boolean handleCommonLink(String url) {
 		if (url.startsWith(WebView.SCHEME_TEL)
 				|| url.startsWith(SCHEME_SMS)
 				|| url.startsWith(WebView.SCHEME_MAILTO)
@@ -609,7 +607,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			public boolean handleMessage(Message msg) {
 				switch (msg.what) {
 					case 1:
-						openOtherPage(url);
+						lookup(url);
 						break;
 					default:
 						return true;
@@ -632,7 +630,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		private PermissionInterceptor mPermissionInterceptor;
 		private WebView mWebView;
 		private boolean mIsInterceptUnkownScheme;
-		private int mSchemeHandleType;
+		private int mUrlHandleWays;
 
 		public Builder setActivity(Activity activity) {
 			this.mActivity = activity;
@@ -664,8 +662,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return this;
 		}
 
-		public Builder setSchemeHandleType(int schemeHandleType) {
-			this.mSchemeHandleType = schemeHandleType;
+		public Builder setUrlHandleWays(int urlHandleWays) {
+			this.mUrlHandleWays = urlHandleWays;
 			return this;
 		}
 
