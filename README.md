@@ -2,15 +2,9 @@
 
 ## AgentWeb 介绍  [English](./README-ENGLISH.md)
 
-AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库 。详细使用请参照上面的 Sample 。
-
-
-## AgentWeb Sample 下载
-AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面链接下载体验。
-
-* [GitHub 仓库里APK文件](./agentweb.apk)
-* [Google Play](https://play.google.com/store/apps/details?id=com.just.agentweb.sample) 
-
+AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库 ，体验请下载的 [agentweb.apk](./agentweb.apk)，
+或者你也可以到 Google Play 里面下载 [AgentWeb](https://play.google.com/store/apps/details?id=com.just.agentweb.sample) ，
+详细使用是参照上面的 Sample 。
 	
 
 ## 引入
@@ -36,15 +30,6 @@ AgentWeb Sample 展示了 AgentWeb 库强大的功能 ， 详细请点击下面�
 	
 	```
 	
-
-	
-
-## README 版本
-如果你使用的是稳定版`agentweb:3.1.0`请点击下面相应的版本查看 README ，当前 README 只会显示最新的API文档和介绍（4.0.0-beta）。
-
-- [AgentWeb 3.1.0](https://github.com/Justson/AgentWeb/tree/3.1.0)
-- [AgentWeb 2.0.1](https://github.com/Justson/AgentWeb/tree/2.0.1)
-
 
 ## 使用
 #### 基础用法
