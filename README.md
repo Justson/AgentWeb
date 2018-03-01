@@ -136,14 +136,14 @@ android:configChanges="orientation|screenSize"
 
 * #### WebChromeClient 与 WebViewClient 
 ```java
-AgentWeb.with(this)//
-                .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )//
-                .useDefaultIndicator()//
+AgentWeb.with(this)
+                .setAgentWebParent(mLinearLayout,new LinearLayout.LayoutParams(-1,-1) )
+                .useDefaultIndicator()
                 .setReceivedTitleCallback(mCallback)
                 .setWebChromeClient(mWebChromeClient)
                 .setWebViewClient(mWebViewClient)
                 .setSecutityType(AgentWeb.SecurityType.strict)
-                .createAgentWeb()//
+                .createAgentWeb()
                 .ready()
                 .go(getUrl());
 private WebViewClient mWebViewClient=new WebViewClient(){
