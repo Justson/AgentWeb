@@ -221,10 +221,10 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
 
 			if (extras.getInt(KEY_FROM_INTENTION) == FROM_CODE_INTENTION_LOCATION) {
-				boolean t = AgentWebUtils.hasPermission(mActivityWeakReference.get(), permissions);
+				boolean hasPermission = AgentWebUtils.hasPermission(mActivityWeakReference.get(), permissions);
 
 				if (mCallback != null) {
-					if (t) {
+					if (hasPermission) {
 						mCallback.invoke(mOrigin, true, false);
 					} else {
 						mCallback.invoke(mOrigin, false, false);
@@ -234,12 +234,12 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 					mOrigin = null;
 				}
 
-				if (null != mAgentWebUIController.get()) {
+				if (!hasPermission && null != mAgentWebUIController.get()) {
 					mAgentWebUIController
 							.get()
 							.onPermissionsDeny(
 									AgentWebPermissions.LOCATION,
-									AgentWebPermissions.ACTION_STORAGE,
+									AgentWebPermissions.ACTION_LOCATION,
 									"Location");
 				}
 			}
@@ -279,8 +279,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 		}
 		return true;
 	}
-
-
 
 
 	@Override
