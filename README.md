@@ -1,4 +1,7 @@
-![](./img/logo.png)
+
+<div style="display: flex;flex-direction: row;justify-content: center">
+      <img src="./img/logo.png"></img>
+</div>
 
 ## AgentWeb 介绍  [English](./README-ENGLISH.md)
 
