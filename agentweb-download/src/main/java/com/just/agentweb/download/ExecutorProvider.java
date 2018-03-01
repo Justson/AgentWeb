@@ -1,6 +1,5 @@
 package com.just.agentweb.download;
 
-import com.just.agentweb.LogUtils;
 import com.just.agentweb.Provider;
 
 import java.util.concurrent.BlockingQueue;
@@ -39,8 +38,6 @@ public class ExecutorProvider implements Provider<Executor> {
                 mThread.setDaemon(false);
             }
             mThread.setPriority(Thread.MIN_PRIORITY);
-            LogUtils.i(TAG, "Thread Name:" + mThread.getName());
-            LogUtils.i(TAG, "live:" + mThreadPoolExecutor.getActiveCount() + "    getCorePoolSize:" + mThreadPoolExecutor.getCorePoolSize() + "  getPoolSize:" + mThreadPoolExecutor.getPoolSize());
             return mThread;
         }
     };
