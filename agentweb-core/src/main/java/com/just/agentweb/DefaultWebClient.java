@@ -366,7 +366,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	}
 
-	private boolean lookup(String intentUrl) {
+	private boolean lookup(String url) {
 		try {
 			Intent intent;
 			Activity mActivity = null;
@@ -374,7 +374,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				return true;
 			}
 			PackageManager packageManager = mActivity.getPackageManager();
-			intent = Intent.parseUri(intentUrl, Intent.URI_INTENT_SCHEME);
+			intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
 			ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
 			// 跳到该应用
 			if (info != null) {
