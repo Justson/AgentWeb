@@ -657,7 +657,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return this;
 		}
 
-		public Builder setInterceptUnkownScheme(boolean interceptUnkownScheme) {
+		public Builder setInterceptUnkownUrl(boolean interceptUnkownScheme) {
 			this.mIsInterceptUnkownScheme = interceptUnkownScheme;
 			return this;
 		}
