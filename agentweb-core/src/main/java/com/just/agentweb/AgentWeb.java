@@ -150,9 +150,9 @@ public final class AgentWeb {
 	 */
 	private PermissionInterceptor mPermissionInterceptor;
 	/**
-	 * 是否拦截未知的scheme， 用于 DefaultWebClient
+	 * 是否拦截未知的Url， 用于 DefaultWebClient
 	 */
-	private boolean mIsInterceptUnkownScheme = false;
+	private boolean mIsInterceptUnkownUrl = false;
 	/**
 	 * 该变量控制了是否咨询用户页面跳转，或者直接拦截
 	 */
@@ -204,7 +204,7 @@ public final class AgentWeb {
 		this.mWebLifeCycle = new DefaultWebLifeCycleImpl(mWebCreator.getWebView());
 		mWebSecurityController = new WebSecurityControllerImpl(mWebCreator.getWebView(), this.mAgentWeb.mJavaObjects, this.mSecurityType);
 		this.mWebClientHelper = agentBuilder.mWebClientHelper;
-		this.mIsInterceptUnkownScheme = agentBuilder.mIsInterceptUnkownScheme;
+		this.mIsInterceptUnkownUrl = agentBuilder.mIsInterceptUnkownUrl;
 		if (agentBuilder.mOpenOtherPage != null) {
 			this.mUrlHandleWays = agentBuilder.mOpenOtherPage.code;
 		}
@@ -406,7 +406,7 @@ public final class AgentWeb {
 				.setWebClientHelper(this.mWebClientHelper)
 				.setPermissionInterceptor(this.mPermissionInterceptor)
 				.setWebView(this.mWebCreator.getWebView())
-				.setInterceptUnkownScheme(this.mIsInterceptUnkownScheme)
+				.setInterceptUnkownUrl(this.mIsInterceptUnkownUrl)
 				.setUrlHandleWays(this.mUrlHandleWays)
 				.build();
 		MiddlewareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
@@ -523,7 +523,7 @@ public final class AgentWeb {
 		private PermissionInterceptor mPermissionInterceptor = null;
 		private AbsAgentWebUIController mAgentWebUIController;
 		private DefaultWebClient.OpenOtherPageWays mOpenOtherPage = null;
-		private boolean mIsInterceptUnkownScheme = false;
+		private boolean mIsInterceptUnkownUrl = false;
 		private MiddlewareWebClientBase mMiddlewareWebClientBaseHeader;
 		private MiddlewareWebClientBase mMiddlewareWebClientBaseTail;
 		private MiddlewareWebChromeBase mChromeMiddleWareHeader = null;
@@ -749,7 +749,7 @@ public final class AgentWeb {
 		}
 
 		public CommonBuilder interceptUnkownUrl() {
-			this.mAgentBuilder.mIsInterceptUnkownScheme = true;
+			this.mAgentBuilder.mIsInterceptUnkownUrl = true;
 			return this;
 		}
 
