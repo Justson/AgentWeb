@@ -20,9 +20,9 @@ AgentWeb Sample shows AgentWeb library powerful features, detailed link, please 
 * Gradle 
    
    ```
-    compile 'com.just.agentweb:agentweb:4.0.0' 
-    compile 'com.just.agentweb:download:4.0.0' 
-    compile 'com.just.agentweb:filechooser:4.0.0'
+    compile 'com.just.agentweb:agentweb:4.0.1' 
+    compile 'com.just.agentweb:download:4.0.1' 
+    compile 'com.just.agentweb:filechooser:4.0.1'
    ```
 * Maven
 	
