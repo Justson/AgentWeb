@@ -65,7 +65,7 @@ mAgentWeb = AgentWeb.with(this)
 function callByAndroid(){
       console.log("callByAndroid")
   }
-mAgentWeb.getJsEntraceAccess().quickCallJs("callByAndroid");
+mAgentWeb.getJsAccessEntrace().quickCallJs("callByAndroid");
 ```
 
 * #### Javascript 调 Java ?
@@ -337,8 +337,8 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 	* 修复部分机型拍照文件大小为0情况。
 	* 更新了`FileUpLoadChooserImpl`。
 * v_3.0.0 更新
-	* 加入 `MiddleWareWebChromeBase` 中间件 ，支持多个 `WebChromeClient`  。
-	* 加入 `MiddleWareWebClientBase`中间件 ， 支持多个 `WebViewClient`  。
+	* 加入 `MiddlewareWebChromeBase` 中间件 ，支持多个 `WebChromeClient`  。
+	* 加入 `MiddlewareWebClientBase`中间件 ， 支持多个 `WebViewClient`  。
 	* 加入了默认的错误页，并支持自定义错误页 。
 	* 加入 `AgentWebUIController` ，统一控制UI 。
 	* 支持拦截未知的页面 。
