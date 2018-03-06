@@ -185,7 +185,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 					.setEnableIndicator(true)  // false 关闭进度通知
 					.addHeader("Cookie", "xx") // 自定义请求头
 					.setAutoOpen(true) // 下载完成自动打开
-					.setForceDownload(false); // 强制下载，不管网络网络类型
+					.setForceDownload(true); // 强制下载，不管网络网络类型
 			return false;
 		}
 
@@ -517,7 +517,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				case R.id.error_website:
 					loadErrorWebSite();
 					// test DownloadingService
-	                /*LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
+		            /*LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
                     if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
                         mExtraService = mDownloadingService.shutdownNow();
                         LogUtils.i(TAG, "mExtraService::" + mExtraService);
