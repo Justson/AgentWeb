@@ -30,20 +30,13 @@ AgentWeb Sample shows AgentWeb library powerful features, detailed link, please 
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>4.0.0</version>
+	  <version>4.0.2</version>
 	  <type>pom</type>
 	</dependency>
 	
 	```
 	
-* 4.0.0-beta
-
-	```
-    compile 'com.just.agentweb:agentweb:4.0.0-beta'
-    compile 'com.just.agentweb:download:4.0.0-beta'
-    compile 'com.just.agentweb:filechooser:4.0.0-beta'
-	```	
-		
+	
 	
 ## use
 #### Common use

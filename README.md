@@ -28,11 +28,16 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
 	<dependency>
  	  <groupId>com.just.agentweb</groupId>
  	  <artifactId>agentweb</artifactId>
-	  <version>4.0.1</version>
+	  <version>4.0.2</version>
 	  <type>pom</type>
 	</dependency>
 	
 	```
+
+## 相关
+* [AgentWebX5](https://github.com/Justson/AgentWebX5)
+* [一个炫酷的 WebView 进度条](https://github.com/Justson/CoolIndicator)
+
 	
 
 ## 使用
@@ -316,12 +321,6 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 ## 文档帮助
 * [Wiki](https://github.com/Justson/AgentWeb/wiki)(不全)
 * `Sample`(推荐，详细) 
-
-## 相关
-* [AgentWebX5](https://github.com/Justson/AgentWebX5)
-* [一个炫酷的 WebView Indicator](https://github.com/Justson/CoolIndicator)
-
-
 
 ## 更新日志
 
