@@ -39,7 +39,7 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 		protected boolean mIsForceDownload = false;
 		protected boolean mEnableIndicator = true;
 		@DrawableRes
-		protected int mIcon = -1;
+		protected int mIcon = R.drawable.ic_file_download_black_24dp;
 		protected boolean mIsParallelDownload = true;
 		protected boolean mIsOpenBreakPointDownload = true;
 		protected String mUrl;
@@ -69,7 +69,7 @@ public interface AgentWebDownloader<T extends AgentWebDownloader.Extra> extends 
 		// 连接超时， 默认10s
 		protected int connectTimeOut = 10 * 1000;
 		/**
-		 * 以8KB位单位，默认60s ， 如果一秒钟无法从网络中读取数据满1KB，则抛出异常 。
+		 * 以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常 。
 		 */
 		protected int blockMaxTime = 10 * 60 * 1000;
 
