@@ -232,7 +232,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 						mHttpURLConnection.getHeaderField("Transfer-Encoding"));
 				long tmpLength = -1;
 				final boolean hasLength = ((tmpLength = getHeaderFieldLong(mHttpURLConnection, "Content-Length")) == -1);
-				LogUtils.i(TAG, "content-length:" + this.mTotals + "  code:" + mHttpURLConnection.getResponseCode() + " tmpLength:" + tmpLength);
 				// 获取不到文件长度
 				final boolean finishKnown = isEncodingChunked || hasLength;
 				if (finishKnown) {
@@ -251,6 +250,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 								new LoadingRandomAccessFile(mDownloadTask.getFile()),
 								false);
 					case HTTP_PARTIAL:
+						// 服务端响应文件长度不正确，或者本地文件长度被修改。
 						if (tmpLength + mDownloadTask.getFile().length() != this.mTotals) {
 							return ERROR_LOAD;
 						}
