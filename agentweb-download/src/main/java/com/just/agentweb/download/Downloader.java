@@ -221,7 +221,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		HttpURLConnection mHttpURLConnection = null;
 		try {
 
-			for (; redirectionCount++ < MAX_REDIRECTS; ) {
+			for (; redirectionCount++ <= MAX_REDIRECTS; ) {
 				if (null != mHttpURLConnection) {
 					mHttpURLConnection.disconnect();
 				}
