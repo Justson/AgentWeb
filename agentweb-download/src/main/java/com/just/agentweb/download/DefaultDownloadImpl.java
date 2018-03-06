@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -516,13 +515,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 	public static class ExtraServiceImpl extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
 		private transient Activity mActivity;
-		private boolean mIsForceDownload = false;
-		private boolean mEnableIndicator = true;
 		private transient DownloadListener mDownloadListener;
 		private transient PermissionInterceptor mPermissionInterceptor;
-		private boolean mIsParallelDownload = true;
 		private transient WebView mWebView;
-		protected int mIcon = R.drawable.ic_file_download_black_24dp;
 		private DefaultDownloadImpl mDefaultDownload;
 		protected String mUrl;
 		protected String mUserAgent;
@@ -537,10 +532,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return this;
 		}
 
-		@Override
-		public boolean isForceDownload() {
-			return mIsForceDownload;
-		}
 
 //        public static final int PENDDING = 1001;
 //        public static final int DOWNLOADING = 1002;
@@ -582,11 +573,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return this;
 		}
 
-		@Override
-		@DrawableRes
-		public int getIcon() {
-			return mIcon;
-		}
 
 		@Override
 		public String getMimetype() {
@@ -610,22 +596,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return this;
 		}
 
-
 		ExtraServiceImpl setActivity(Activity activity) {
 			mActivity = activity;
-			return this;
-		}
-
-
-		@Override
-		public ExtraServiceImpl setForceDownload(boolean force) {
-			mIsForceDownload = force;
-			return this;
-		}
-
-		@Override
-		public ExtraServiceImpl setEnableIndicator(boolean enableIndicator) {
-			this.mEnableIndicator = enableIndicator;
 			return this;
 		}
 
@@ -636,24 +608,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
 			mPermissionInterceptor = permissionInterceptor;
-			return this;
-		}
-
-		@Override
-		public ExtraServiceImpl setIcon(@DrawableRes int icon) {
-			this.mIcon = icon;
-			return this;
-		}
-
-		@Override
-		public ExtraServiceImpl setParallelDownload(boolean parallelDownload) {
-			mIsParallelDownload = parallelDownload;
-			return this;
-		}
-
-		@Override
-		public ExtraServiceImpl setOpenBreakPointDownload(boolean openBreakPointDownload) {
-			mIsOpenBreakPointDownload = openBreakPointDownload;
 			return this;
 		}
 

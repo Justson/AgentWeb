@@ -176,10 +176,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		@Override
 		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
 			LogUtils.i(TAG, "onStart:" + url);
-			extra.setOpenBreakPointDownload(false) // 是否开启断点续传
-					.setIcon(R.drawable.ic_file_download_black_24dp)
-					.setConnectTimeOut(6000)
-					.setBlockMaxTime(2000)
+			extra.setOpenBreakPointDownload(true) // 是否开启断点续传
+					.setIcon(R.drawable.ic_file_download_black_24dp) //下载通知的icon
+					.setConnectTimeOut(6000) // 连接最大时长
+					.setBlockMaxTime(10 * 60 * 1000)  // 以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常
 					.setDownloadTimeOut(Long.MAX_VALUE) // 下载最大时长
 					.setParallelDownload(false)  // 串行下载更节省资源哦
 					.setEnableIndicator(true)  // false 关闭进度通知
