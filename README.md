@@ -306,7 +306,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 需要 Keep 。
 
 ```java
-+-keepclassmembers class com.just.agentweb.sample.common.AndroidInterface{ *; }
+-keepclassmembers class com.just.agentweb.sample.common.AndroidInterface{ *; }
 ```
 
 ## 注意事项
