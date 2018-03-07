@@ -71,10 +71,13 @@ public class DownloadNotifier {
 						mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
 				NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId,
 						AgentWebUtils.getApplicationName(context),
-						NotificationManager.IMPORTANCE_DEFAULT);
+						NotificationManager.IMPORTANCE_LOW);
 				NotificationManager mNotificationManager = (NotificationManager) mContext
 						.getSystemService(NOTIFICATION_SERVICE);
 				mNotificationManager.createNotificationChannel(mNotificationChannel);
+				mNotificationChannel.enableLights(false);
+				mNotificationChannel.enableVibration(false);
+				mNotificationChannel.setSound(null,null);
 			} else {
 				mBuilder = new NotificationCompat.Builder(mContext);
 			}
@@ -82,8 +85,6 @@ public class DownloadNotifier {
 			if (LogUtils.isDebug()) {
 				ignore.printStackTrace();
 			}
-			throw ignore;
-
 		}
 	}
 
