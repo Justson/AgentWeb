@@ -9,10 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.widget.FrameLayout;
 
-import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.R;
+import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.fragment.AgentWebFragment;
-import com.just.agentweb.sample.fragment.VasSonicFragment;
 import com.just.agentweb.sample.fragment.BounceWebFragment;
 import com.just.agentweb.sample.fragment.CustomIndicatorFragment;
 import com.just.agentweb.sample.fragment.CustomSettingsFragment;
@@ -20,6 +19,7 @@ import com.just.agentweb.sample.fragment.CustomWebViewFragment;
 import com.just.agentweb.sample.fragment.JsAgentWebFragment;
 import com.just.agentweb.sample.fragment.JsbridgeWebFragment;
 import com.just.agentweb.sample.fragment.SmartRefreshWebFragment;
+import com.just.agentweb.sample.fragment.VasSonicFragment;
 
 import static com.just.agentweb.sample.sonic.SonicJavaScriptInterface.PARAM_CLICK_TIME;
 
@@ -63,7 +63,7 @@ public class CommonActivity extends AppCompatActivity {
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "https://m.vip.com/?source=www&jump_https=1");
 				break;
-		    /*下载文件*/
+			/*下载文件*/
 			case 1:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://android.myapp.com/");
@@ -169,6 +169,9 @@ public class CommonActivity extends AppCompatActivity {
 
 		return super.onKeyDown(keyCode, event);
 	}
+
+
+
 
 	@Override
 	protected void onDestroy() {
