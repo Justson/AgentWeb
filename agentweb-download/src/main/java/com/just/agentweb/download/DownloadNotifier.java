@@ -108,7 +108,7 @@ public class DownloadNotifier {
 		mBuilder.setContentText(mContext.getString(R.string.agentweb_coming_soon_download));
 		mBuilder.setWhen(System.currentTimeMillis());
 		mBuilder.setAutoCancel(true);
-		mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+		mBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
 		int defaults = 0;
 		this.mUrl = downloadTask.getUrl();
 		this.mFile = downloadTask.getFile();
