@@ -1,5 +1,8 @@
 ![](./img/logo.png)
 
+[![Backers on Open Collective](https://opencollective.com/AgentWeb/backers/badge.svg)](#backers)
+ [![Sponsors on Open Collective](https://opencollective.com/AgentWeb/sponsors/badge.svg)](#sponsors) 
+
 
 ## Introduction to AgentWeb
 
@@ -310,6 +313,34 @@ If you like the design of AgentWeb, you can invite the author to have a cup of c
 AgentWeb is a WebView completely out of the Act, from the Activity, Fragment xml layout, independent of the Android Web library.
 
 #### Finally, if the library is helpful to you, I may be grateful to the top right corner of my support, thanks! Of course, I prefer you to become a contributor to Fork PR.   [AgentWeb](https://github.com/Justson/AgentWeb)
+
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/AgentWeb/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/AgentWeb#backer)]
+
+<a href="https://opencollective.com/AgentWeb#backers" target="_blank"><img src="https://opencollective.com/AgentWeb/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/AgentWeb#sponsor)]
+
+<a href="https://opencollective.com/AgentWeb/sponsor/0/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/1/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/2/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/3/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/4/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/5/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/6/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/7/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/8/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/9/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/9/avatar.svg"></a>
 
 
 [![License][licensesvg]][license]
