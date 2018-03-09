@@ -4,6 +4,8 @@
 </div>
 
 ## AgentWeb 介绍  [English](./README-ENGLISH.md)
+[![Backers on Open Collective](https://opencollective.com/AgentWeb/backers/badge.svg)](#backers)
+ [![Sponsors on Open Collective](https://opencollective.com/AgentWeb/sponsors/badge.svg)](#sponsors) 
 
 AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库，提供了 Android WebView 一系列的问题解决方案 ，并且轻量和极度灵活，体验请下载的 
 [agentweb.apk](https://github.com/Justson/AgentWeb/raw/master/agentweb.apk)，
@@ -399,11 +401,38 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 [qq0groupsvg]: https://img.shields.io/badge/QQ群-599471474-fba7f9.svg
 [qq0group]: http://qm.qq.com/cgi-bin/qm/qr?k=KpyfInzI2nr-Lh4StG0oh68GpbcD0vMG
 
-
 ###  [AgentWeb](https://github.com/Justson/AgentWeb)  
 
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/AgentWeb/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/AgentWeb#backer)]
+
+<a href="https://opencollective.com/AgentWeb#backers" target="_blank"><img src="https://opencollective.com/AgentWeb/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/AgentWeb#sponsor)]
+
+<a href="https://opencollective.com/AgentWeb/sponsor/0/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/1/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/2/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/3/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/4/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/5/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/6/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/7/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/8/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/AgentWeb/sponsor/9/website" target="_blank"><img src="https://opencollective.com/AgentWeb/sponsor/9/avatar.svg"></a>
 
 [![License][licensesvg]][license]
+
 ## License 
 ```
 Copyright (C)  Justson(https://github.com/Justson/AgentWeb)
