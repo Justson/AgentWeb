@@ -469,7 +469,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	private int transferData(InputStream inputStream, RandomAccessFile randomAccessFile, boolean isSeek) throws IOException {
 		byte[] buffer = new byte[BUFFER_SIZE];
-		// try-with-resources
 		BufferedInputStream bis = new BufferedInputStream(inputStream, BUFFER_SIZE);
 		RandomAccessFile out = randomAccessFile;
 		try {

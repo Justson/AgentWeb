@@ -32,7 +32,7 @@ import static android.provider.MediaStore.EXTRA_OUTPUT;
 
 
 /**
- * @since 1.0.0
+ * @since 2.0.0
  * @author cenxiaozhong
  */
 public final class ActionActivity extends Activity {

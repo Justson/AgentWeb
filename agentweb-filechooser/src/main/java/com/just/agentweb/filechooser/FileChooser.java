@@ -195,16 +195,17 @@ public class FileChooser {
 		mAction.setAction(Action.ACTION_FILE);
 		ActionActivity.setChooserListener(getChooserListener());
 		mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction)
-				.putExtra(KEY_FILE_CHOOSER_INTENT, getFilechooserIntent()));
+				.putExtra(KEY_FILE_CHOOSER_INTENT, getFileChooserIntent()));
 	}
 
-	private Intent getFilechooserIntent() {
+	private Intent getFileChooserIntent() {
 		Intent mIntent = null;
 		if (mIsAboveLollipop && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
 			// 多选
 			/*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
-	            mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+			    mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }*/
+//			mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 			return mIntent;
 		}
 
@@ -414,13 +415,13 @@ public class FileChooser {
 
 		//通过Js获取文件
 		if (mJsChannel) {
-			convertFileAndCallBack(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
+			convertFileAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
 			return;
 		}
 
 		//5.0以上系统通过input标签获取文件
 		if (mIsAboveLollipop) {
-			handleAboveLollipop(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), mCameraState);
+			aboveLollipopCheckFilesAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), mCameraState);
 			return;
 		}
 
@@ -434,18 +435,18 @@ public class FileChooser {
 		if (mCameraState) {
 			mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
 		} else {
-			handleBelowLollipop(data);
+			belowLollipopUriCallback(data);
 		}
 
         /*if (mIsAboveLollipop)
-            handleAboveLollipop(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
+            aboveLollipopCheckFilesAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
         else if (mJsChannel)
-            convertFileAndCallBack(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
+            convertFileAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
         else {
             if (mCameraState && mUriValueCallback != null)
                 mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
             else
-                handleBelowLollipop(data);
+                belowLollipopUriCallback(data);
         }*/
 
 
@@ -466,7 +467,7 @@ public class FileChooser {
 	}
 
 
-	private void handleBelowLollipop(Intent data) {
+	private void belowLollipopUriCallback(Intent data) {
 
 
 		if (data == null) {
@@ -476,7 +477,7 @@ public class FileChooser {
 			return;
 		}
 		Uri mUri = data.getData();
-		LogUtils.i(TAG, "handleBelowLollipop  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
+		LogUtils.i(TAG, "belowLollipopUriCallback  -- >uri:" + mUri + "  mUriValueCallback:" + mUriValueCallback);
 		if (mUriValueCallback != null) {
 			mUriValueCallback.onReceiveValue(mUri);
 		}
@@ -508,7 +509,7 @@ public class FileChooser {
 
 	}
 
-	private void convertFileAndCallBack(final Uri[] uris) {
+	private void convertFileAndCallback(final Uri[] uris) {
 
 		String[] paths = null;
 		if (uris == null || uris.length == 0 || (paths = AgentWebUtils.uriToPath(mActivity, uris)) == null || paths.length == 0) {
@@ -530,7 +531,7 @@ public class FileChooser {
 
 		if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
 			if (mAgentWebUIController.get() != null) {
-				mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallBack"));
+				mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallback"));
 			}
 			mJsChannelCallback.call(null);
 			return;
@@ -547,7 +548,7 @@ public class FileChooser {
 	 * @param datas
 	 * @param isCamera
 	 */
-	private void handleAboveLollipop(final Uri[] datas, boolean isCamera) {
+	private void aboveLollipopCheckFilesAndCallback(final Uri[] datas, boolean isCamera) {
 		if (mUriValueCallbacks == null) {
 			return;
 		}

@@ -614,6 +614,8 @@ public class AgentWebUtils {
 				String selection = MediaStore.Images.Media._ID + "=?";
 				String[] selectionArgs = new String[]{split[1]};
 				return getDataColumn(context, contentUri, selection, selectionArgs);
+			}else{
+
 			}
 		} // MediaStore (and general)
 		else if (fileUri.getAuthority().equalsIgnoreCase(context.getPackageName() + ".AgentWebFileProvider")) {
