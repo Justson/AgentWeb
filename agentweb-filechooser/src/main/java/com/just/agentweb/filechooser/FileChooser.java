@@ -770,6 +770,7 @@ public class FileChooser {
 		private String[] paths;
 
 		private CovertFileThread(JsChannelCallback JsChannelCallback, String[] paths) {
+			super("agentweb-thread");
 			this.mJsChannelCallback = new WeakReference<JsChannelCallback>(JsChannelCallback);
 			this.paths = paths;
 		}
