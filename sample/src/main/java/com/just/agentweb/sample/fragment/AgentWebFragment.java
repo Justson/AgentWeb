@@ -137,6 +137,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		//mAgentWeb.getWebCreator().getWebView()  获取WebView .
 
 
+
+
 //		mAgentWeb.getWebCreator().getWebView().setOnLongClickListener();
 
 	}
@@ -499,7 +501,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 				case R.id.refresh:
 					if (mAgentWeb != null) {
-						mAgentWeb.getUrlLoader().reload(); //刷新
+						mAgentWeb.getUrlLoader().reload(); // 刷新
 					}
 					return true;
 
