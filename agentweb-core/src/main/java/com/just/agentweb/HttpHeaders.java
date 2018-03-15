@@ -26,6 +26,7 @@ import java.util.Map;
  * @date 2017/7/5
  * @since 2.0.0
  */
+@Deprecated
 public class HttpHeaders {
 
 
