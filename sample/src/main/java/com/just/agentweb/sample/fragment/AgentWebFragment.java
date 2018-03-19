@@ -137,8 +137,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		//mAgentWeb.getWebCreator().getWebView()  获取WebView .
 
 
-
-
 //		mAgentWeb.getWebCreator().getWebView().setOnLongClickListener();
 
 	}
@@ -521,7 +519,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				case R.id.error_website:
 					loadErrorWebSite();
 					// test DownloadingService
-		            /*LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
+			        /*LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
                     if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
                         mExtraService = mDownloadingService.shutdownNow();
                         LogUtils.i(TAG, "mExtraService::" + mExtraService);
@@ -613,6 +611,31 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	 */
 	protected MiddlewareWebClientBase getMiddlewareWebClient() {
 		return this.mMiddleWareWebClient = new MiddlewareWebViewClient() {
+			/**
+			 *
+			 * @param view
+			 * @param url
+			 * @return
+			 */
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+
+				if (url.startsWith("agentweb")) { // 拦截 url，不执行 DefaultWebClient#shouldOverrideUrlLoading
+					Log.i(TAG, "agentweb scheme ~");
+					return true;
+				}
+
+				if (super.shouldOverrideUrlLoading(view, url)) { // 执行 DefaultWebClient#shouldOverrideUrlLoading
+					return true;
+				}
+				// do you work
+				return false;
+			}
+
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+				return super.shouldOverrideUrlLoading(view, request);
+			}
 		};
 	}
 
