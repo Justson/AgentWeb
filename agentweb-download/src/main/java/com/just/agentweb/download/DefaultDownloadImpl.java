@@ -460,8 +460,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		void removeTask(String path) {
 
+			writeLock().lock();
 			try {
-				writeLock().lock();
 				int position = -1;
 				if ((position = mTasks.indexOf(path)) == -1) {
 					return;
@@ -476,8 +476,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		void addTask(String url, String path) {
 
+			writeLock().lock();
 			try {
-				writeLock().lock();
 				mTasks.add(url);
 				mTasks.add(path);
 			} finally {
@@ -488,8 +488,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		// 加锁读
 		boolean contains(String url) {
 
+			readLock().lock();
 			try {
-				readLock().lock();
 				return mTasks.contains(url);
 			} finally {
 				readLock().unlock();
