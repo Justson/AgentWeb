@@ -31,6 +31,5 @@ public interface DownloadingService {
      * 终止当前下载的任务
      * @return ExtraService#performReDownload 重新提交下载任务
      */
-    AgentWebDownloader.ExtraService shutdownNow();
 
 }
