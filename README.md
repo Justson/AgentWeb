@@ -385,7 +385,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 
 
 ## 关于我
-一个位于深圳的 Android 开发者 ， 如果你有问题 ， 请联系 Email : xiaozhongcen@gmail.com
+一个位于深圳的 Android 开发者 ， 如果你有问题 ，或者工作机会， 请联系 Email : xiaozhongcen@gmail.com
 
 ## 赞赏
 如果你喜欢了 `AgentWeb` 的设计 ， 你也可以请作者喝一杯咖啡。
