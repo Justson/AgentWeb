@@ -60,8 +60,4 @@ public abstract class BaseIndicatorView extends FrameLayout implements BaseIndic
 
     }
 
-    @Override
-    public FrameLayout.LayoutParams offerLayoutParams() {
-        return null;
-    }
 }
