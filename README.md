@@ -220,9 +220,14 @@ protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListene
 ```
 
 
+* #### 查看 Cookies
+```java
+String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
+```
+
 * #### 同步 Cookie
 ```java
-AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
+AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX");
 ```
 
 * #### MiddlewareWebChromeBase 支持多个 WebChromeClient
@@ -234,10 +239,6 @@ AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX")
 //略，请查看 Sample
 ```
 
-* #### 查看 Cookies
-```java
-String cookies=AgentWebConfig.getCookiesByUrl(targetUrl);
-```
 * #### 权限拦截
 ```java
 protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
