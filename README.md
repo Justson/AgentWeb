@@ -317,6 +317,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * `mAgentWeb.getWebLifeCycle().onPause();`会暂停应用内所有`WebView` 。
 * `minSdkVersion` 低于等于16以下自定义`WebView`请注意与 `JS` 之间通信安全。
 * AgentWeb v3.0.0以上版本更新了包名，混淆的朋友们，请更新你的混淆配置。
+* 多进程无法取消下载，[解决方案](https://github.com/Justson/AgentWeb/issues/294)。
 
 
 ## 文档帮助

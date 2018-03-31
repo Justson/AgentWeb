@@ -137,6 +137,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		//mAgentWeb.getWebCreator().getWebView()  获取WebView .
 
 
+
 //		mAgentWeb.getWebCreator().getWebView().setOnLongClickListener();
 
 	}
