@@ -332,6 +332,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			return shouldOverrideUrlLoading(view, request.getUrl() + "");
 		}
 
+		@Nullable
+		@Override
+		public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+			return super.shouldInterceptRequest(view, request);
+		}
 
 		//
 		@Override
@@ -520,7 +525,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				case R.id.error_website:
 					loadErrorWebSite();
 					// test DownloadingService
-			        /*LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
+			        LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
                     if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
                         mExtraService = mDownloadingService.shutdownNow();
                         LogUtils.i(TAG, "mExtraService::" + mExtraService);
@@ -528,7 +533,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                     }
                     if (mExtraService != null) {
                         mExtraService.performReDownload();
-                    }*/
+                    }
 
 					return true;
 				default:
