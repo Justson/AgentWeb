@@ -520,6 +520,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		return mIsShutdown.get() || mIsCanceled.get() || (getStatus() == Status.FINISHED);
 	}
 
+	@Override
 	public synchronized AgentWebDownloader.ExtraService shutdownNow() {
 
 		if (getStatus() == Status.FINISHED) {
