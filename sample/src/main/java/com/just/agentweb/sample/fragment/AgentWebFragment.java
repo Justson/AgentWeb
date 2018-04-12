@@ -114,7 +114,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				.useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
 				.useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
 //                .setDownloadListener(mDownloadListener) 4.0.0 删除该API//下载回调
-//                .openParallelDownload()// 4.0.0删除该api 打开并行下载 , 默认串行下载。 请通过AgentWebDownloader#Extra实现并行下载
+//                .openParallelDownload()// 4.0.0删除该API 打开并行下载 , 默认串行下载。 请通过AgentWebDownloader#Extra实现并行下载
 //                .setNotifyIcon(R.drawable.ic_file_download_black_24dp) 4.0.0删除该api //下载通知图标。4.0.0后的版本请通过AgentWebDownloader#Extra修改icon
 				.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
 				.interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
@@ -525,15 +525,15 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				case R.id.error_website:
 					loadErrorWebSite();
 					// test DownloadingService
-			        LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
-                    if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
-                        mExtraService = mDownloadingService.shutdownNow();
-                        LogUtils.i(TAG, "mExtraService::" + mExtraService);
-                        return true;
-                    }
-                    if (mExtraService != null) {
-                        mExtraService.performReDownload();
-                    }
+//			        LogUtils.i(TAG, " :" + mDownloadingService + "  " + (mDownloadingService == null ? "" : mDownloadingService.isShutdown()) + "  :" + mExtraService);
+//                    if (mDownloadingService != null && !mDownloadingService.isShutdown()) {
+//                        mExtraService = mDownloadingService.shutdownNow();
+//                        LogUtils.i(TAG, "mExtraService::" + mExtraService);
+//                        return true;
+//                    }
+//                    if (mExtraService != null) {
+//                        mExtraService.performReDownload();
+//                    }
 
 					return true;
 				default:
