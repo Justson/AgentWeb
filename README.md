@@ -8,7 +8,7 @@
 AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库，提供了 Android WebView 一系列的问题解决方案 ，并且轻量和极度灵活，体验请下载的 
 [agentweb.apk](https://github.com/Justson/AgentWeb/raw/master/agentweb.apk)，
 或者你也可以到 Google Play 里面下载 [AgentWeb](https://play.google.com/store/apps/details?id=com.just.agentweb.sample) ，
-详细使用是参照上面的 Sample 。
+详细使用请参照上面的 Sample 。
 	
 
 ## 引入
