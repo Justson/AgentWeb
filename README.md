@@ -319,6 +319,14 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * AgentWeb v3.0.0以上版本更新了包名，混淆的朋友们，请更新你的混淆配置。
 * 多进程无法取消下载，[解决方案](https://github.com/Justson/AgentWeb/issues/294)。
 
+## 常见问题
+
+#### 修改 AgentWeb 默认的背景色 
+```java
+		FrameLayout frameLayout = mAgentWeb.getWebCreator().getWebParentLayout();
+		frameLayout.setBackgroundColor(Color.BLACK);
+```
+
 
 ## 文档帮助
 * [Wiki](https://github.com/Justson/AgentWeb/wiki)(不全)
