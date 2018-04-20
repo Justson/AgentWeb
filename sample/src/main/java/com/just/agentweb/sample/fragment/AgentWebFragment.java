@@ -147,11 +147,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 		/**
 		 * PermissionInterceptor 能达到 url1 允许授权， url2 拒绝授权的效果。
-		 * AgentWeb 是用自己的权限机制的 ，true 该Url对应页面请求定位权限拦截 ，false 默认允许。
 		 * @param url
 		 * @param permissions
 		 * @param action
-		 * @return
+		 * @return true 该Url对应页面请求权限进行拦截 ，false 表示允许。
 		 */
 		@Override
 		public boolean intercept(String url, String[] permissions, String action) {
