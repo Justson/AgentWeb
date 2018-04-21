@@ -150,7 +150,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		 * @param url
 		 * @param permissions
 		 * @param action
-		 * @return true 该Url对应页面请求权限进行拦截 ，false 表示允许。
+		 * @return true 该Url对应页面请求权限进行拦截 ，false 表示不拦截。
 		 */
 		@Override
 		public boolean intercept(String url, String[] permissions, String action) {
