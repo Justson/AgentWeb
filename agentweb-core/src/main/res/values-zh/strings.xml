@@ -16,4 +16,5 @@
     <string name="agentweb_leave_app_and_go_other_page">您需要离开%s前往其他应用吗？</string>
     <string name="agentweb_leave">离开</string>
     <string name="agentweb_max_file_length_limit">选择的文件不能大于%sMB</string>
+    <string name="agentweb_default_page_error">出错啦! 点击空白处刷新 ~</string>
 </resources>
