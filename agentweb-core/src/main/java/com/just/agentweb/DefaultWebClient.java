@@ -222,7 +222,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return true;
 		}
 
-		if (queryActiviesNumber(url) > 0 && urlOpenWays(url)) {
+		if (queryActiviesNumber(url) > 0 && deepLink(url)) {
 			LogUtils.i(TAG, "intercept url:" + url);
 			return true;
 		}
@@ -247,7 +247,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		super.onReceivedHttpAuthRequest(view, handler, host, realm);
 	}
 
-	private boolean urlOpenWays(String url) {
+	private boolean deepLink(String url) {
 
 		switch (mUrlHandleWays) {
 			// 直接打开其他App
@@ -310,7 +310,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return true;
 		}
 		//打开url 相对应的页面
-		if (queryActiviesNumber(url) > 0 && urlOpenWays(url)) {
+		if (queryActiviesNumber(url) > 0 && deepLink(url)) {
 			LogUtils.i(TAG, "intercept OtherAppScheme");
 			return true;
 		}
