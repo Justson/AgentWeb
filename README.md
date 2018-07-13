@@ -239,6 +239,11 @@ AgentWebConfig.syncCookie("http://www.jd.com","ID=XXXX");
 //略，请查看 Sample
 ```
 
+* ####  清空缓存 
+```java
+AgentWebConfig.clearDiskCache(this.getContext());
+```
+
 * #### 权限拦截
 ```java
 protected PermissionInterceptor mPermissionInterceptor = new PermissionInterceptor() {
