@@ -128,6 +128,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		initView(view);
 
 
+
+
+
 		// AgentWeb 4.0 开始，删除该类以及删除相关的API
 //        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
 		//  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
