@@ -125,11 +125,11 @@ public class MainActivity extends AppCompatActivity {
 
 	private void doClick(int position) {
 
-
-		switch (position) {
+		int index=datas[position].getGuideDictionary();
+		switch (index) {
 
 			/* Activity agentWeb */
-			case FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY:// 项目中请使用常量替代
+			case FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY:
 
 				startActivity(new Intent(this, WebActivity.class));
 				break;
