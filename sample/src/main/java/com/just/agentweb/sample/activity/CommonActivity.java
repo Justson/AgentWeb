@@ -21,6 +21,21 @@ import com.just.agentweb.sample.fragment.JsbridgeWebFragment;
 import com.just.agentweb.sample.fragment.SmartRefreshWebFragment;
 import com.just.agentweb.sample.fragment.VasSonicFragment;
 
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_BOUNCE_EFFACT;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_CUSTOM_PROGRESSBAR;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_CUSTOM_WEBVIEW_SETTINGS;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_JSBRIDGE_SAMPLE;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_JS_JAVA_COMMUNICATION;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_LINKS;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_MAP;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_PULL_DOWN_REFRESH;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN;
 import static com.just.agentweb.sample.sonic.SonicJavaScriptInterface.PARAM_CLICK_TIME;
 
 /**
@@ -59,82 +74,82 @@ public class CommonActivity extends AppCompatActivity {
 		switch (key) {
 
             /*Fragment 使用AgenWeb*/
-			case 0: //项目中请使用常量代替0 ， 代码可读性更高
+			case FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT: //项目中请使用常量代替0 ， 代码可读性更高
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "https://m.vip.com/?source=www&jump_https=1");
 				break;
 			/*下载文件*/
-			case 1:
+			case FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://android.myapp.com/");
 				break;
             /*input标签上传文件*/
-			case 2:
+			case FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/upload_file/uploadfile.html");
 				break;
             /*Js上传文件*/
-			case 3:
+			case FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/upload_file/jsuploadfile.html");
 				break;
             /*Js*/
-			case 4:
+			case FLAG_GUIDE_DICTIONARY_JS_JAVA_COMMUNICATION:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = JsAgentWebFragment.getInstance(mBundle = new Bundle()), JsAgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/js_interaction/hello.html");
 				break;
 
-            /*优酷*/
-			case 5:
+            /*优酷全屏播放视屏*/
+			case FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://m.youku.com/video/id_XODEzMjU1MTI4.html");
 //                mBundle.putString(AgentWebFragment.URL_KEY, "https://v.qq.com/x/page/i0530nu6z1a.html");
 				break;
-            /*淘宝*/
-			case 6:
+            /*淘宝自定义进度条*/
+			case FLAG_GUIDE_DICTIONARY_CUSTOM_PROGRESSBAR:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = CustomIndicatorFragment.getInstance(mBundle = new Bundle()), CustomIndicatorFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "https://m.taobao.com/?sprefer=sypc00");
 				break;
             /*豌豆荚*/
-			case 7:
+			case FLAG_GUIDE_DICTIONARY_CUSTOM_WEBVIEW_SETTINGS:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), CustomSettingsFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://www.wandoujia.com/apps");
 				break;
 
             /*短信*/
-			case 8:
+			case FLAG_GUIDE_DICTIONARY_LINKS:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/sms/sms.html");
 				break;
             /* 自定义 WebView */
-			case 9:
+			case FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = CustomWebViewFragment.getInstance(mBundle = new Bundle()), CustomWebViewFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "");
 				break;
             /*回弹效果*/
-			case 10:
+			case FLAG_GUIDE_DICTIONARY_BOUNCE_EFFACT:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = BounceWebFragment.getInstance(mBundle = new Bundle()), BounceWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://m.mogujie.com/?f=mgjlm&ptp=_qd._cps______3069826.152.1.0");
 				break;
 
             /*JsBridge 演示*/
-			case 11:
+			case FLAG_GUIDE_DICTIONARY_JSBRIDGE_SAMPLE:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = JsbridgeWebFragment.getInstance(mBundle = new Bundle()), JsbridgeWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/jsbridge/demo.html");
 				break;
 
             /*SmartRefresh 下拉刷新*/
-			case 12:
+			case FLAG_GUIDE_DICTIONARY_PULL_DOWN_REFRESH:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = SmartRefreshWebFragment.getInstance(mBundle = new Bundle()), SmartRefreshWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://www.163.com/");
 				break;
                 /*地图*/
-			case 13:
+			case FLAG_GUIDE_DICTIONARY_MAP:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "https://map.baidu.com/mobile/webapp/index/index/#index/index/foo=bar/vt=map");
 				break;
                 /*首屏秒开*/
-			case 14:
+			case FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = VasSonicFragment.create(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putLong(PARAM_CLICK_TIME, getIntent().getLongExtra(PARAM_CLICK_TIME, -1L));
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://mc.vip.qq.com/demo/indexv3");
