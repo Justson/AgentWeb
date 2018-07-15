@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.sample.R;
+import com.just.agentweb.sample.common.GuideItemEntity;
 
 import static com.just.agentweb.sample.sonic.SonicJavaScriptInterface.PARAM_CLICK_TIME;
 
@@ -32,23 +33,47 @@ public class MainActivity extends AppCompatActivity {
 	private TextView mTitleTextView;
 
 
+	public static final int FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY = 0x01;
+	public static final int FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT = FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY << 1;
+	public static final int FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD = FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT << 1;
+	public static final int FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM = FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD << 1;
+	public static final int FLAG_GUIDE_DICTIONARY_JS_JAVA_COMMUNICATION=FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN=FLAG_GUIDE_DICTIONARY_JS_JAVA_COMMUNICATION<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_CUSTOM_PROGRESSBAR=FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_CUSTOM_WEBVIEW_SETTINGS=FLAG_GUIDE_DICTIONARY_CUSTOM_PROGRESSBAR<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_LINKS=FLAG_GUIDE_DICTIONARY_CUSTOM_WEBVIEW_SETTINGS<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_BOUNCE_EFFACT =FLAG_GUIDE_DICTIONARY_LINKS<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_JSBRIDGE_SAMPLE= FLAG_GUIDE_DICTIONARY_BOUNCE_EFFACT <<1;
+	public static final int FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_ACT=FLAG_GUIDE_DICTIONARY_JSBRIDGE_SAMPLE<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_FRAG=FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_ACT<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_PULL_DOWN_REFRESH=FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_FRAG<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_MAP=FLAG_GUIDE_DICTIONARY_PULL_DOWN_REFRESH<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE=FLAG_GUIDE_DICTIONARY_MAP<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR =FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE<<1;
+	public static final int FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW= FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR <<1;
+	public static final int FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE=FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW<<1;
+	public static final GuideItemEntity[] datas = new GuideItemEntity[]{
+			new GuideItemEntity("Activity 使用 AgentWeb", FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY),
+			new GuideItemEntity("Fragment 使用 AgentWeb ", FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT),
+			new GuideItemEntity("文件下载", FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD),
+			new GuideItemEntity("input标签文件上传",FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM),
+			new GuideItemEntity("Js 通信文件上传,兼用Android 4.4Kitkat",FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE),
+			new GuideItemEntity("Js 通信",FLAG_GUIDE_DICTIONARY_JS_JAVA_COMMUNICATION),
+			new GuideItemEntity("Video 视频全屏播放",FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN),
+			new GuideItemEntity("自定义进度条",FLAG_GUIDE_DICTIONARY_CUSTOM_PROGRESSBAR),
+			new GuideItemEntity("自定义设置",FLAG_GUIDE_DICTIONARY_CUSTOM_WEBVIEW_SETTINGS),
+			new GuideItemEntity("电话 ， 信息 ， 邮件",FLAG_GUIDE_DICTIONARY_LINKS),
+			new GuideItemEntity("自定义 WebView",FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW),
+			new GuideItemEntity("下拉回弹效果",FLAG_GUIDE_DICTIONARY_BOUNCE_EFFACT),
+			new GuideItemEntity("Jsbridge 例子",FLAG_GUIDE_DICTIONARY_JSBRIDGE_SAMPLE),
+			new GuideItemEntity("继承 BaseAgentWebActivity",FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_ACT),
+			new GuideItemEntity("继承 BaseAgentWebFragment",FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_FRAG),
+			new GuideItemEntity("SmartRefresh 下拉刷新",FLAG_GUIDE_DICTIONARY_PULL_DOWN_REFRESH),
+			new GuideItemEntity("地图",FLAG_GUIDE_DICTIONARY_MAP),
+			new GuideItemEntity("VasSonic 首屏秒开",FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE),
+			new GuideItemEntity("与ToolBar联动", FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR),
+			};
 
-	public static final String[] datas = new String[]{
-			"Activity 使用 AgentWeb",
-			"Fragment 使用 AgentWeb ",
-			"文件下载",
-			"input标签文件上传",
-			"Js 通信文件上传,兼用Android 4.4Kitkat",
-			"Js 通信", "Video 视频全屏播放",
-			"自定义进度条",
-			"自定义设置",
-			"电话 ， 信息 ， 邮件", "自定义 WebView", "下拉回弹效果",
-			"Jsbridge 例子", "继承 BaseAgentWebActivity",
-			"继承 BaseAgentWebFragment",
-			"SmartRefresh 下拉刷新",
-			"地图",
-			"VasSonic 首屏秒开",
-			"与ToolBar联动"};
 
 	@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 	@Override
@@ -97,74 +122,74 @@ public class MainActivity extends AppCompatActivity {
 		AgentWebConfig.debug();
 	}
 
+
+
 	private void doClick(int position) {
 
 
 		switch (position) {
 
-            /* Activity agentWeb */
-			case 0:// 项目中请使用常量替代
+			/* Activity agentWeb */
+			case FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY:// 项目中请使用常量替代
 
 				startActivity(new Intent(this, WebActivity.class));
 				break;
-			case 1:
+			case FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 0));
 				break;
-			case 2:
+			case FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 1));
 				break;
-			case 3:
+			case FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 2));
 				break;
-			case 4:
+			case FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 3));
 				break;
-			case 5:
+			case FLAG_GUIDE_DICTIONARY_JS_JAVA_COMMUNICATION:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 4));
 				break;
-			case 6:
+			case FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 5));
 				break;
 
-			case 7:
+			case FLAG_GUIDE_DICTIONARY_CUSTOM_PROGRESSBAR:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 6));
 				break;
-
-			case 8:
+			case FLAG_GUIDE_DICTIONARY_CUSTOM_WEBVIEW_SETTINGS:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 7));
 				break;
-
-			case 9:
+			case FLAG_GUIDE_DICTIONARY_LINKS:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 8));
 				break;
-			case 10:
+			case FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 9));
 				break;
-			case 11:
+			case FLAG_GUIDE_DICTIONARY_BOUNCE_EFFACT:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 10));
 				break;
-			case 12:
+			case FLAG_GUIDE_DICTIONARY_JSBRIDGE_SAMPLE:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 11));
 				break;
-			case 13:
+			case FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_ACT:
 				startActivity(new Intent(this, EasyWebActivity.class));
 				break;
 
-			case 14:
+			case FLAG_GUIDE_DICTIONARY_EXTENDS_BASE_FRAG:
 				startActivity(new Intent(this, ContainerActivity.class));
 				break;
 
-			case 15:
+			case FLAG_GUIDE_DICTIONARY_PULL_DOWN_REFRESH:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 12));
 				break;
-			case 16:
+			case FLAG_GUIDE_DICTIONARY_MAP:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 13));
 				break;
-			case 17:
+			case FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE:
 				startActivity(new Intent(this, CommonActivity.class).putExtra(CommonActivity.TYPE_KEY, 14).putExtra(PARAM_CLICK_TIME, System.currentTimeMillis()));
 				break;
-			case 18:
-				startActivity(new Intent(this,AutoHidenToolbarActivity.class));
+			case FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR:
+				startActivity(new Intent(this, AutoHidenToolbarActivity.class));
 			default:
 				break;
 
@@ -204,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 				mViewHolder = (ViewHolder) convertView.getTag();
 			}
 
-			mViewHolder.mTextView.setText(datas[position]);
+			mViewHolder.mTextView.setText(datas[position].getGuideTitle());
 			return convertView;
 		}
 
