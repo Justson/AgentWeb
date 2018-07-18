@@ -936,6 +936,9 @@ public class AgentWebUtils {
 			if (LogUtils.isDebug()) {
 				throwable.printStackTrace();
 			}
+			if(throwable instanceof NoSuchMethodException){
+				LogUtils.e(TAG,"Please check whether compile'com.just.agentweb:filechooser:x.x.x' dependency is added.");
+			}
 			if (valueCallbacks != null) {
 				LogUtils.i(TAG, "onReceiveValue empty");
 				return false;
