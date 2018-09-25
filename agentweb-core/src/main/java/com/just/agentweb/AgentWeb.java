@@ -78,7 +78,7 @@ public final class AgentWeb {
 	 */
 	private WebViewClient mWebViewClient;
 	/**
-	 * 是否启动进度条
+	 * is show indicator
 	 */
 	private boolean mEnableIndicator;
 	/**
@@ -90,7 +90,7 @@ public final class AgentWeb {
 	 */
 	private ArrayMap<String, Object> mJavaObjects = new ArrayMap<>();
 	/**
-	 * 用于表示当前在 Fragment 使用还是 Activity 上使用
+	 * flag
 	 */
 	private int TAG_TARGET = 0;
 	/**
@@ -98,7 +98,7 @@ public final class AgentWeb {
 	 */
 	private WebListenerManager mWebListenerManager;
 	/**
-	 * 安全把控
+	 * 安全 Controller
 	 */
 	private WebSecurityController<WebSecurityCheckLogic> mWebSecurityController = null;
 	/**
@@ -110,35 +110,35 @@ public final class AgentWeb {
 	 */
 	private WebChromeClient mTargetChromeClient;
 	/**
-	 * 安全类型
+	 * flag security 's mode
 	 */
 	private SecurityType mSecurityType = SecurityType.DEFAULT_CHECK;
 	/**
-	 * Activity 标识
+	 * Activity
 	 */
 	private static final int ACTIVITY_TAG = 0;
 	/**
-	 * Fragment 标识
+	 * Fragment
 	 */
 	private static final int FRAGMENT_TAG = 1;
 	/**
-	 * AgentWeb 注入对象
+	 * AgentWeb 默认注入对像
 	 */
 	private AgentWebJsInterfaceCompat mAgentWebJsInterfaceCompat = null;
 	/**
-	 * JsAccessEntrace 提供快速的JS调用
+	 * JsAccessEntrace 提供快速JS方法调用
 	 */
 	private JsAccessEntrace mJsAccessEntrace = null;
 	/**
-	 * URL Loader ， 封装了 mWebView.loadUrl(url) reload() stopLoading（） postUrl()等方法
+	 * URL Loader ， 提供了 WebView#loadUrl(url) reload() stopLoading（） postUrl()等方法
 	 */
 	private IUrlLoader mIUrlLoader = null;
 	/**
-	 * WebView 生命周期 ， 适当的释放CPU
+	 * WebView 生命周期 ， 跟随生命周期释放CPU
 	 */
 	private WebLifeCycle mWebLifeCycle;
 	/**
-	 * Video 视屏播放类
+	 * Video 视屏播放管理类
 	 */
 	private IVideo mIVideo = null;
 	/**
@@ -150,11 +150,11 @@ public final class AgentWeb {
 	 */
 	private PermissionInterceptor mPermissionInterceptor;
 	/**
-	 * 是否拦截未知的Url， 用于 DefaultWebClient
+	 * 是否拦截未知的Url， @link{DefaultWebClient}
 	 */
 	private boolean mIsInterceptUnkownUrl = false;
 	/**
-	 * 该变量控制了是否咨询用户页面跳转，或者直接拦截
+	 *
 	 */
 	private int mUrlHandleWays = -1;
 	/**
@@ -170,7 +170,9 @@ public final class AgentWeb {
 	 */
 	private EventInterceptor mEventInterceptor;
 
-
+	/**
+	 * 注入对象管理类
+	 */
 	private JsInterfaceHolder mJsInterfaceHolder = null;
 
 

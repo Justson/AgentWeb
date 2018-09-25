@@ -150,14 +150,14 @@ public abstract class AbsAgentWebUIController {
 	public abstract void onShowMainFrame();
 
 	/**
-	 * 弹窗正在加载...
+	 * 正在加载...
 	 *
 	 * @param msg
 	 */
 	public abstract void onLoading(String msg);
 
 	/**
-	 * 正在加载弹窗取消
+	 * 取消正在加载...
 	 */
 	public abstract void onCancelLoading();
 

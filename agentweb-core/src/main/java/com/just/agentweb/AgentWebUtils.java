@@ -228,7 +228,6 @@ public class AgentWebUtils {
 	}
 
 
-
 	static Uri getUriFromFile(Context context, File file) {
 		Uri uri = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -305,10 +304,10 @@ public class AgentWebUtils {
 	private static String getMIMEType(File f) {
 		String type = "";
 		String fName = f.getName();
-	  /* 取得扩展名 */
+		/* 取得扩展名 */
 		String end = fName.substring(fName.lastIndexOf(".") + 1, fName.length()).toLowerCase();
 
-      /* 依扩展名的类型决定MimeType */
+		/* 依扩展名的类型决定MimeType */
 		if (end.equals("pdf")) {
 			type = "application/pdf";//
 		} else if (end.equals("m4a") || end.equals("mp3") || end.equals("mid") ||
@@ -614,7 +613,7 @@ public class AgentWebUtils {
 				String selection = MediaStore.Images.Media._ID + "=?";
 				String[] selectionArgs = new String[]{split[1]};
 				return getDataColumn(context, contentUri, selection, selectionArgs);
-			}else{
+			} else {
 
 			}
 		} // MediaStore (and general)
@@ -936,8 +935,8 @@ public class AgentWebUtils {
 			if (LogUtils.isDebug()) {
 				throwable.printStackTrace();
 			}
-			if(throwable instanceof NoSuchMethodException){
-				LogUtils.e(TAG,"Please check whether compile'com.just.agentweb:filechooser:x.x.x' dependency is added.");
+			if (throwable instanceof ClassNotFoundException) {
+				LogUtils.e(TAG, "Please check whether compile'com.just.agentweb:filechooser:x.x.x' dependency was added.");
 			}
 			if (valueCallbacks != null) {
 				LogUtils.i(TAG, "onReceiveValue empty");
