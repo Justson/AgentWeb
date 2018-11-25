@@ -324,7 +324,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		mHttpURLConnection.setRequestProperty("Connection", "close");
 		mHttpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
 		Map<String, String> mHeaders = null;
-		if (null != (mHeaders = mDownloadTask.getExtraServiceImpl().getHeaders()) &&
+		if ((null != mDownloadTask.getExtraServiceImpl()) && null != (mHeaders = mDownloadTask.getExtraServiceImpl().getHeaders()) &&
 				!mHeaders.isEmpty()) {
 			for (Map.Entry<String, String> entry : mHeaders.entrySet()) {
 				if (TextUtils.isEmpty(entry.getKey()) || TextUtils.isEmpty(entry.getValue())) {
