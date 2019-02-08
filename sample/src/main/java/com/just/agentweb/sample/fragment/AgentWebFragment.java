@@ -41,10 +41,11 @@ import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebListenerManager;
-import com.just.agentweb.download.IAgentWebDownloader;
 import com.just.agentweb.download.DefaultDownloadImpl;
-import com.just.agentweb.download.DownloadListenerAdapter;
 import com.just.agentweb.download.DownloadingService;
+import com.just.agentweb.download.Extra;
+import com.just.agentweb.download.IAgentWebDownloader;
+import com.just.agentweb.download.SimpleDownloadListener;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
@@ -166,7 +167,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	/**
 	 * 更新于 AgentWeb  4.0.0
 	 */
-	protected DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
+	protected SimpleDownloadListener mSimpleDownloadListener = new SimpleDownloadListener() {
 
 		/**
 		 *
@@ -179,7 +180,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		 * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
 		 */
 		@Override
-		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, IAgentWebDownloader.Extra extra) {
+		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
 			LogUtils.i(TAG, "onStart:" + url);
 			extra.setOpenBreakPointDownload(true) // 是否开启断点续传
 					.setIcon(R.drawable.ic_file_download_black_24dp) //下载通知的icon
@@ -194,30 +195,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			return false;
 		}
 
-		/**
-		 *
-		 * 不需要暂停或者停止下载该方法可以不必实现
-		 * @param url
-		 * @param downloadingService  用户可以通过 DownloadingService#shutdownNow 终止下载
-		 */
-		@Override
-		public void onBindService(String url, DownloadingService downloadingService) {
-			super.onBindService(url, downloadingService);
-			mDownloadingService = downloadingService;
-			LogUtils.i(TAG, "onBindService:" + url + "  DownloadingService:" + downloadingService);
-		}
 
-		/**
-		 * 回调onUnbindService方法，让用户释放掉 DownloadingService。
-		 * @param url
-		 * @param downloadingService
-		 */
-		@Override
-		public void onUnbindService(String url, DownloadingService downloadingService) {
-			super.onUnbindService(url, downloadingService);
-			mDownloadingService = null;
-			LogUtils.i(TAG, "onUnbindService:" + url);
-		}
 
 		/**
 		 *
@@ -279,8 +257,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 						DefaultDownloadImpl
 								.create((Activity) webView.getContext(),
 										webView,
-										mDownloadListenerAdapter,
-										mDownloadListenerAdapter,
+										mSimpleDownloadListener,
 										this.mAgentWeb.getPermissionInterceptor()));
 			}
 		};

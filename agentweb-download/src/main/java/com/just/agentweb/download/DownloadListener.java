@@ -36,6 +36,16 @@ public interface DownloadListener {
 	 */
 	boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra);
 
+	/**
+	 * @param url        下载链接
+	 * @param downloaded 已经下载的长度
+	 * @param length     文件的总大小
+	 * @param usedTime   耗时,单位ms
+	 *                   <p>
+	 *                   注意该方法回调在子线程 ，线程名 AsyncTask #XX or AgentWeb # XX
+	 */
+	void onProgress(String url, long downloaded, long length, long usedTime);
+
 
 	/**
 	 * @param path      文件的绝对路径

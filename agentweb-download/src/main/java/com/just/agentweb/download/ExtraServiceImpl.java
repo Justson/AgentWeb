@@ -43,12 +43,7 @@ public class ExtraServiceImpl extends IAgentWebDownloader.ExtraService implement
 	String mMimetype;
 	long mContentLength;
 	boolean mIsCloneObject = false;
-	transient DownloadingListener mDownloadingListener;
 
-	public ExtraServiceImpl setDownloadingListener(DownloadingListener downloadingListener) {
-		this.mDownloadingListener = downloadingListener;
-		return this;
-	}
 
 	@Override
 	public String getUrl() {
