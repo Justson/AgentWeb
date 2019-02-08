@@ -447,10 +447,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 					.removeTask(downloadTask.getFile().getPath());
 			return false;
 		}
-		return mDownloadListener.onResult(downloadTask.getFile().getAbsolutePath(),
-				downloadTask.getUrl(), code <= 200 ? null
+		return mDownloadListener.onResult(code <= 200 ? null
 						: null == this.mThrowable
-						? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable);
+						? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable, downloadTask.getFileUri(),
+				downloadTask.getUrl(), mDownloadTask);
 	}
 
 
@@ -502,8 +502,17 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	}
 
 
-	private final void cancel() {
-		mIsCanceled.set(true);
+	public final DownloadTask cancel() {
+		try {
+			return mDownloadTask;
+		} finally {
+			mIsCanceled.set(true);
+		}
+	}
+
+	@Override
+	public int status() {
+		return 0;
 	}
 
 

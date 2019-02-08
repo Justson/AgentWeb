@@ -16,6 +16,8 @@
 
 package com.just.agentweb.download;
 
+import android.net.Uri;
+
 /**
  * @author cenxiaozhong
  * @date 2018/2/11
@@ -35,7 +37,7 @@ public class SimpleDownloadListener implements DownloadListener {
 	}
 
 	@Override
-	public boolean onResult(String path, String url, Throwable e) {
+	public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
 		return false;
 	}
 }

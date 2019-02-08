@@ -20,6 +20,7 @@ package com.just.agentweb.download;
  * @author cenxiaozhong
  * @date 2018/2/4
  */
+@Deprecated
 public interface DownloadingService {
     /**
      * 当前任务是否已经终止

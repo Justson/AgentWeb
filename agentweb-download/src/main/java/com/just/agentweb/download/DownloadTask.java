@@ -17,6 +17,7 @@
 package com.just.agentweb.download;
 
 import android.content.Context;
+import android.net.Uri;
 
 import java.io.File;
 import java.io.Serializable;
@@ -74,6 +75,10 @@ public class DownloadTask extends Extra implements Serializable {
 		return mFile;
 	}
 
+	public Uri getFileUri() {
+		return Uri.fromFile(this.mFile);
+	}
+
 	public void setFile(File file) {
 		mFile = file;
 	}
@@ -91,6 +96,19 @@ public class DownloadTask extends Extra implements Serializable {
 		this.mContext = null;
 		this.mFile = null;
 		this.mIsParallelDownload = false;
+		mIsForceDownload = false;
+		mEnableIndicator = true;
+		mIcon = R.drawable.ic_file_download_black_24dp;
+		mIsParallelDownload = true;
+		mIsOpenBreakPointDownload = true;
+		mUserAgent = "";
+		mContentDisposition = "";
+		mMimetype = "";
+		mContentLength = -1L;
+		if (mHeaders != null) {
+			mHeaders.clear();
+			mHeaders = null;
+		}
 	}
 
 	public SimpleDownloadListener getSimpleDownloadListener() {
