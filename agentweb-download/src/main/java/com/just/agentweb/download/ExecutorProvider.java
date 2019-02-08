@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by cenxiaozhong on 2018/2/12.
  */
-
+@Deprecated
 public class ExecutorProvider implements Provider<Executor> {
 
 

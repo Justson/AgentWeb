@@ -41,9 +41,11 @@ import java.util.Map;
 import java.util.UnknownFormatConversionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_MOVED_PERM;
 import static java.net.HttpURLConnection.HTTP_MOVED_TEMP;
+import static java.net.HttpURLConnection.HTTP_NOT_IMPLEMENTED;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.HttpURLConnection.HTTP_PARTIAL;
 import static java.net.HttpURLConnection.HTTP_SEE_OTHER;
@@ -266,6 +268,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 						continue;
 					case HTTP_UNAVAILABLE:
 					case HTTP_INTERNAL_ERROR:
+					case HTTP_NOT_IMPLEMENTED:
+					case HTTP_BAD_GATEWAY:
 						return ERROR_SERVICE;
 					default:
 						return ERROR_RESPONSE_STATUS;
