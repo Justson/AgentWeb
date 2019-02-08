@@ -190,7 +190,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	protected Integer doInBackground(Void... params) {
 		int result = ERROR_LOAD;
 		String name = Thread.currentThread().getName();
-		Thread.currentThread().setName("pool-agentweb-thread-" + ThreadConfig.THREAD_GLOBAL_COUNTER.getAndIncrement());
+		Thread.currentThread().setName("pool-agentweb-thread-" + Config.THREAD_GLOBAL_COUNTER.getAndIncrement());
 		try {
 			this.mBeginTime = SystemClock.elapsedRealtime();
 			if (!checkSpace()) {

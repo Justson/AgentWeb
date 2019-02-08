@@ -129,9 +129,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		initView(view);
 
 
-
-
-
 		// AgentWeb 4.0 开始，删除该类以及删除相关的API
 //        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
 		//  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换
@@ -139,7 +136,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		// AgentWeb 没有把WebView的功能全面覆盖 ，所以某些设置 AgentWeb 没有提供 ， 请从WebView方面入手设置。
 		mAgentWeb.getWebCreator().getWebView().setOverScrollMode(WebView.OVER_SCROLL_NEVER);
 		//mAgentWeb.getWebCreator().getWebView()  获取WebView .
-
 
 
 //		mAgentWeb.getWebCreator().getWebView().setOnLongClickListener();
@@ -194,7 +190,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 					.setForceDownload(true); // 强制下载，不管网络网络类型
 			return false;
 		}
-
 
 
 		/**
@@ -275,7 +270,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			target = "http://www.jd.com/";
 		}
 
-		return "http://ggzy.sqzwfw.gov.cn/WebBuilderDS/WebbuilderMIS/attach/downloadZtbAttach.jspx?attachGuid=af982055-3d76-4b00-b5ab-36dee1f90b11&appUrlFlag=sqztb&siteGuid=7eb5f7f1-9041-43ad-8e13-8fcb82ea831a";
+//		return "http://ggzy.sqzwfw.gov.cn/WebBuilderDS/WebbuilderMIS/attach/downloadZtbAttach.jspx?attachGuid=af982055-3d76-4b00-b5ab-36dee1f90b11&appUrlFlag=sqztb&siteGuid=7eb5f7f1-9041-43ad-8e13-8fcb82ea831a";
+		return target;
 	}
 
 	protected WebChromeClient mWebChromeClient = new WebChromeClient() {

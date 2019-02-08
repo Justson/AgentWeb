@@ -102,6 +102,7 @@ public class ExtraServiceImpl extends IAgentWebDownloader.ExtraService implement
 
 	ExtraServiceImpl setActivity(Activity activity) {
 		mActivity = activity;
+		this.setContext(mActivity);
 		return this;
 	}
 
