@@ -39,6 +39,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
 import java.util.UnknownFormatConversionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
@@ -196,6 +197,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	@Override
 	protected Integer doInBackground(Void... params) {
 		int result = ERROR_LOAD;
+		String name = Thread.currentThread().getName();
+		Thread.currentThread().setName("pool-agentweb-thread-" + ThreadConfig.THREAD_GLOBAL_COUNTER.getAndIncrement());
 		try {
 			this.mBeginTime = SystemClock.elapsedRealtime();
 			if (!checkSpace()) {
@@ -210,6 +213,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (LogUtils.isDebug()) {
 				e.printStackTrace();
 			}
+		} finally {
+			Thread.currentThread().setName(name);
 		}
 
 		return result;
@@ -545,6 +550,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		downloadInternal(downloadTask);
 	}
 
+	public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
+
 	private final void downloadInternal(DownloadTask downloadTask) {
 		checkIsNullTask(downloadTask);
 		this.mDownloadTask = downloadTask;
@@ -553,9 +560,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		mConnectTimeOut = mDownloadTask.getConnectTimeOut();
 
 		if (downloadTask.isParallelDownload()) {
-			this.executeOnExecutor(ExecutorProvider.getInstance().provide(), (Void[]) null);
+			this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
 		} else {
-			this.execute();
+			this.executeOnExecutor(SERIAL_EXECUTOR);
 		}
 	}
 
