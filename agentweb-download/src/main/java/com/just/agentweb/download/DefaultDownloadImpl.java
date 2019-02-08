@@ -38,14 +38,11 @@ import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
 
 import java.io.File;
-import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -145,7 +142,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	}
 
 
-	private synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
+	synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
 
 		if (null == mActivityWeakReference.get() || mActivityWeakReference.get().isFinishing()) {
 			return;
@@ -315,11 +312,11 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				mAgentWebUIController.get()
 						.onShowMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + file.getName(), TAG.concat("|performDownload"));
 			}
-			DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
+			/*DownloadTask mDownloadTask = new DownloadTask(NOTICATION_ID.incrementAndGet(),
 					this.mDownloadListenerAdapter,
 					mContext, file,
-					this.mCloneExtraServiceImpl);
-			new Downloader().download(mDownloadTask);
+					this.mCloneExtraServiceImpl);*/
+			new Downloader().download(this.mCloneExtraServiceImpl);
 			this.mUrl = null;
 			this.mContentDisposition = null;
 			this.mContentLength = -1;
@@ -405,66 +402,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	};
 
 
-	/**
-	 * 静态缓存当前正在下载的任务 mUrl
-	 * i -> mUrl
-	 * i+1 -> path
-	 */
-	static class ExecuteTasksMap extends ReentrantReadWriteLock {
-		private LinkedList<String> mTasks = null;
-		private static volatile ExecuteTasksMap sInstance = null;
-
-		private ExecuteTasksMap() {
-			super(false);
-			mTasks = new LinkedList();
-		}
-
-		static ExecuteTasksMap getInstance() {
-			if (null == sInstance) {
-				synchronized (ExecuteTasksMap.class) {
-					if (null == sInstance) {
-						sInstance = new ExecuteTasksMap();
-					}
-				}
-			}
-			return sInstance;
-		}
-
-		void removeTask(String path) {
-			writeLock().lock();
-			try {
-				int position = -1;
-				if ((position = mTasks.indexOf(path)) == -1) {
-					return;
-				}
-				mTasks.remove(position);
-				mTasks.remove(position - 1);
-			} finally {
-				writeLock().unlock();
-			}
-		}
-
-		void addTask(String url, String path) {
-			writeLock().lock();
-			try {
-				mTasks.add(url);
-				mTasks.add(path);
-			} finally {
-				writeLock().unlock();
-			}
-		}
-
-		// 加锁读
-		boolean contains(String url) {
-			readLock().lock();
-			try {
-				return mTasks.contains(url);
-			} finally {
-				readLock().unlock();
-			}
-		}
-	}
-
 	public static DefaultDownloadImpl create(@NonNull Activity activity,
 	                                         @NonNull WebView webView,
 	                                         @Nullable DownloadListener downloadListener,
@@ -479,134 +416,4 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				.create();
 	}
 
-	public static class ExtraServiceImpl extends AgentWebDownloader.ExtraService implements Cloneable, Serializable {
-		private transient Activity mActivity;
-		private transient DownloadListener mDownloadListener;
-		private transient PermissionInterceptor mPermissionInterceptor;
-		private transient WebView mWebView;
-		private DefaultDownloadImpl mDefaultDownload;
-		protected String mUrl;
-		protected String mUserAgent;
-		protected String mContentDisposition;
-		protected String mMimetype;
-		protected long mContentLength;
-		private boolean mIsCloneObject = false;
-		private transient DownloadingListener mDownloadingListener;
-
-		public ExtraServiceImpl setDownloadingListener(DownloadingListener downloadingListener) {
-			this.mDownloadingListener = downloadingListener;
-			return this;
-		}
-
-
-//        public static final int PENDDING = 1001;
-//        public static final int DOWNLOADING = 1002;
-//        public static final int FINISH = 1003;
-//        public static final int ERROR = 1004;
-//        private AtomicInteger state = new AtomicInteger(PENDDING);
-
-		@Override
-		public String getUrl() {
-			return mUrl;
-		}
-
-		@Override
-		protected ExtraServiceImpl setUrl(String url) {
-			this.mUrl = url;
-			return this;
-		}
-
-		@Override
-		public String getUserAgent() {
-			return mUserAgent;
-		}
-
-		@Override
-		protected ExtraServiceImpl setUserAgent(String userAgent) {
-			this.mUserAgent = userAgent;
-			return this;
-		}
-
-		@Override
-		public String getContentDisposition() {
-			return mContentDisposition;
-		}
-
-		@Override
-		protected ExtraServiceImpl setContentDisposition(String contentDisposition) {
-			this.mContentDisposition = contentDisposition;
-			return this;
-		}
-
-		@Override
-		public String getMimetype() {
-			return mMimetype;
-		}
-
-		@Override
-		protected ExtraServiceImpl setMimetype(String mimetype) {
-			this.mMimetype = mimetype;
-			return this;
-		}
-
-		@Override
-		public long getContentLength() {
-			return mContentLength;
-		}
-
-		@Override
-		protected ExtraServiceImpl setContentLength(long contentLength) {
-			this.mContentLength = contentLength;
-			return this;
-		}
-
-		ExtraServiceImpl setActivity(Activity activity) {
-			mActivity = activity;
-			return this;
-		}
-
-		ExtraServiceImpl setDownloadListener(DownloadListener downloadListeners) {
-			this.mDownloadListener = downloadListeners;
-			return this;
-		}
-
-		ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
-			mPermissionInterceptor = permissionInterceptor;
-			return this;
-		}
-
-		ExtraServiceImpl setWebView(WebView webView) {
-			this.mWebView = webView;
-			return this;
-		}
-
-		@Override
-		protected ExtraServiceImpl clone() throws CloneNotSupportedException {
-			ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
-			mExtraServiceImpl.mIsCloneObject = true;
-			mExtraServiceImpl.mActivity = null;
-			mExtraServiceImpl.mDownloadListener = null;
-			mExtraServiceImpl.mPermissionInterceptor = null;
-			mExtraServiceImpl.mWebView = null;
-			return mExtraServiceImpl;
-		}
-
-		DefaultDownloadImpl create() {
-			return this.mDefaultDownload = new DefaultDownloadImpl(this);
-		}
-
-		@Override
-		public synchronized void performReDownload() {
-			LogUtils.i(TAG, "performReDownload:" + mDefaultDownload);
-			if (null != this.mDefaultDownload) {
-				this.mDefaultDownload
-						.onDownloadStartInternal(
-								getUrl(),
-								getUserAgent(),
-								getContentDisposition(),
-								getMimetype(),
-								getContentLength(), this);
-			}
-		}
-	}
 }

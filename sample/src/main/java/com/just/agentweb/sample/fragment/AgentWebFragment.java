@@ -41,7 +41,7 @@ import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebListenerManager;
-import com.just.agentweb.download.AgentWebDownloader;
+import com.just.agentweb.download.IAgentWebDownloader;
 import com.just.agentweb.download.DefaultDownloadImpl;
 import com.just.agentweb.download.DownloadListenerAdapter;
 import com.just.agentweb.download.DownloadingService;
@@ -76,7 +76,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	private MiddlewareWebClientBase mMiddleWareWebClient;
 	private MiddlewareWebChromeBase mMiddleWareWebChrome;
 	private DownloadingService mDownloadingService;
-	private AgentWebDownloader.ExtraService mExtraService;
+	private IAgentWebDownloader.ExtraService mExtraService;
 
 	public static AgentWebFragment getInstance(Bundle bundle) {
 
@@ -179,7 +179,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		 * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
 		 */
 		@Override
-		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, AgentWebDownloader.Extra extra) {
+		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, IAgentWebDownloader.Extra extra) {
 			LogUtils.i(TAG, "onStart:" + url);
 			extra.setOpenBreakPointDownload(true) // 是否开启断点续传
 					.setIcon(R.drawable.ic_file_download_black_24dp) //下载通知的icon
@@ -298,7 +298,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			target = "http://www.jd.com/";
 		}
 
-		return target;
+		return "http://ggzy.sqzwfw.gov.cn/WebBuilderDS/WebbuilderMIS/attach/downloadZtbAttach.jspx?attachGuid=af982055-3d76-4b00-b5ab-36dee1f90b11&appUrlFlag=sqztb&siteGuid=7eb5f7f1-9041-43ad-8e13-8fcb82ea831a";
 	}
 
 	protected WebChromeClient mWebChromeClient = new WebChromeClient() {

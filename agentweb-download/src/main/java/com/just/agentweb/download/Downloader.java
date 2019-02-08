@@ -56,12 +56,12 @@ import static java.net.HttpURLConnection.HTTP_UNAVAILABLE;
  * @author cenxiaozhong
  * @date 2017/5/13
  */
-public class Downloader extends AsyncTask<Void, Integer, Integer> implements AgentWebDownloader<DownloadTask>, CancelDownloadRecipient {
+public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDownloader<DownloadTask>, CancelDownloadRecipient {
 
 	/**
 	 * 下载参数
 	 */
-	private volatile DownloadTask mDownloadTask;
+	protected volatile DownloadTask mDownloadTask;
 	/**
 	 * 已经下载的大小
 	 */
@@ -108,13 +108,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	private DownloadNotifier mDownloadNotifier;
 	private static final String TAG = Downloader.class.getSimpleName();
 	/**
-	 * true 表示用户已经取消下载
+	 * true 用户已经取消下载
 	 */
-	private AtomicBoolean mIsCanceled = new AtomicBoolean(false);
+	protected AtomicBoolean mIsCanceled = new AtomicBoolean(false);
 	/**
-	 * true  表示终止下载
+	 * true 终止下载
 	 */
-	private AtomicBoolean mIsShutdown = new AtomicBoolean(false);
+	protected AtomicBoolean mIsShutdown = new AtomicBoolean(false);
 	/**
 	 * Download read buffer size
 	 */
@@ -150,7 +150,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		DOWNLOAD_MESSAGE.append(SUCCESSFUL, "Download successful . ");
 	}
 
-	Downloader() {
+	protected Downloader() {
 	}
 
 	private void checkIsNullTask(DownloadTask downloadTask) {
@@ -161,9 +161,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	protected void onPreExecute() {
 		super.onPreExecute();
 		DownloadTask downloadTask = this.mDownloadTask;
-		if (null != downloadTask.getDownloadListener()) {
-			downloadTask.getDownloadListener().onBindService(downloadTask.getUrl(), this);
-		}
 		CancelDownloadInformer.getInformer().addRecipient(downloadTask.getUrl(), this);
 		createNotifier();
 		if (null != this.mDownloadNotifier) {
@@ -182,7 +179,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	private boolean checkNet() {
 		DownloadTask downloadTask = this.mDownloadTask;
-		if (!downloadTask.isForce()) {
+		if (!downloadTask.isForceDownload()) {
 			return AgentWebUtils.checkWifi(downloadTask.getContext());
 		} else {
 			return AgentWebUtils.checkNetwork(downloadTask.getContext());
@@ -229,13 +226,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				final boolean isEncodingChunked = "chunked".equalsIgnoreCase(
 						mHttpURLConnection.getHeaderField("Transfer-Encoding"));
 				long tmpLength = -1;
-				final boolean hasLength = ((tmpLength = getHeaderFieldLong(mHttpURLConnection, "Content-Length")) == -1);
+				final boolean hasLength = ((tmpLength = getHeaderFieldLong(mHttpURLConnection, "Content-Length")) > 0);
 				// 获取不到文件长度
 				final boolean finishKnown = isEncodingChunked && hasLength;
 				if (finishKnown) {
 					LogUtils.e(TAG, "can't know size of download, giving up ,"
 							+ "  EncodingChunked:" + isEncodingChunked
-							+ "  hasLength:" + hasLength);
+							+ "  hasLength:" + hasLength + " response length:" + tmpLength);
 					return ERROR_LOAD;
 				}
 				int responseCode = mHttpURLConnection.getResponseCode();
@@ -334,7 +331,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		mHttpURLConnection.setRequestProperty("Connection", "close");
 		mHttpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
 		Map<String, String> mHeaders = null;
-		if ((null != downloadTask.getExtraServiceImpl()) && null != (mHeaders = downloadTask.getExtraServiceImpl().getHeaders()) &&
+		if (null != (mHeaders = downloadTask.getHeaders()) &&
 				!mHeaders.isEmpty()) {
 			for (Map.Entry<String, String> entry : mHeaders.entrySet()) {
 				if (TextUtils.isEmpty(entry.getKey()) || TextUtils.isEmpty(entry.getValue())) {
@@ -399,9 +396,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 						.onProgress(downloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 
 			}
-			if (null != downloadTask.getDownloadListener()) {
-				downloadTask.getDownloadListener().onUnbindService(downloadTask.getUrl(), this);
-			}
 			LogUtils.i(TAG, "msg:" + DOWNLOAD_MESSAGE.get(integer));
 			boolean isCancelDispose = doCallback(integer);
 			// Error
@@ -450,8 +444,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		DownloadTask downloadTask = this.mDownloadTask;
 		if (null == (mDownloadListener = downloadTask.getDownloadListener())) {
 			LogUtils.e(TAG, "DownloadListener has been death");
-			DefaultDownloadImpl
-					.ExecuteTasksMap.getInstance()
+			ExecuteTasksMap.getInstance()
 					.removeTask(downloadTask.getFile().getPath());
 			return false;
 		}
@@ -514,25 +507,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		mIsCanceled.set(true);
 	}
 
-	@Override
-	public synchronized boolean isShutdown() {
-		LogUtils.i(TAG, "" + mIsShutdown.get() + "  " + mIsCanceled.get() + "  :" + (getStatus() == Status.FINISHED));
-		return mIsShutdown.get() || mIsCanceled.get() || (getStatus() == Status.FINISHED);
-	}
 
-	@Override
-	public synchronized AgentWebDownloader.ExtraService shutdownNow() {
-		if (getStatus() == Status.FINISHED) {
-			LogUtils.e(TAG, "  Termination failed , becauce the downloader already dead !!! ");
-			return null;
-		}
-		try {
-			ExtraService mExtraService = mDownloadTask.getExtraServiceImpl();
-			return mExtraService;
-		} finally {
-			mIsShutdown.set(true);
-		}
-	}
 
 	@Override
 	public void download(DownloadTask downloadTask) {
