@@ -6,6 +6,7 @@
     <string name="agentweb_cancel">取消</string>
     <string name="agentweb_download_fail">下载失败!</string>
     <string name="agentweb_current_downloading_progress">当前进度:%s</string>
+    <string name="agentweb_current_downloaded_length">已下载:%s</string>
     <string name="agentweb_trickter">您有一条新通知</string>
     <string name="agentweb_file_download">文件下载</string>
     <string name="agentweb_click_open">点击打开</string>

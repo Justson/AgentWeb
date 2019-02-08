@@ -6,6 +6,7 @@
     <string name="agentweb_cancel">Cancel</string>
     <string name="agentweb_download_fail">Download failed!</string>
     <string name="agentweb_current_downloading_progress">Downloading:%s</string>
+    <string name="agentweb_current_downloaded_length">downloaded:%s</string>
     <string name="agentweb_trickter">You have a new notice</string>
     <string name="agentweb_file_download">Download</string>
     <string name="agentweb_click_open">Tap to continue</string>

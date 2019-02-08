@@ -375,30 +375,25 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	private DownloadListenerAdapter mDownloadListenerAdapter = new DownloadListenerAdapter() {
 		@Override
 		public void onProgress(String url, long downloaded, long length, long useTime) {
-			if (null != mDownloadingListener) {
-				synchronized (mDownloadingListener) {
-					if (null != mDownloadingListener) {
-						mDownloadingListener.onProgress(url, downloaded, length, useTime);
-					}
-				}
+			DownloadingListener downloadingListener = DefaultDownloadImpl.this.mDownloadingListener;
+			if (null != downloadingListener) {
+				downloadingListener.onProgress(url, downloaded, length, useTime);
 			}
 		}
 
 		@Override
 		public void onBindService(String url, DownloadingService downloadingService) {
-			if (null != mDownloadingListener) {
-				synchronized (mDownloadingListener) {
-					mDownloadingListener.onBindService(url, downloadingService);
-				}
+			DownloadingListener downloadingListener = DefaultDownloadImpl.this.mDownloadingListener;
+			if (null != downloadingListener) {
+				downloadingListener.onBindService(url, downloadingService);
 			}
 		}
 
 		@Override
 		public void onUnbindService(String url, DownloadingService downloadingService) {
-			if (null != mDownloadingListener) {
-				synchronized (mDownloadingListener) {
-					mDownloadingListener.onUnbindService(url, downloadingService);
-				}
+			DownloadingListener downloadingListener = DefaultDownloadImpl.this.mDownloadingListener;
+			if (null != downloadingListener) {
+				downloadingListener.onUnbindService(url, downloadingService);
 			}
 		}
 
@@ -469,7 +464,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			}
 		}
 	}
-
 
 	public static DefaultDownloadImpl create(@NonNull Activity activity,
 	                                         @NonNull WebView webView,
@@ -603,7 +597,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		@Override
 		public synchronized void performReDownload() {
-
 			LogUtils.i(TAG, "performReDownload:" + mDefaultDownload);
 			if (null != this.mDefaultDownload) {
 				this.mDefaultDownload
