@@ -29,28 +29,24 @@ import static com.just.agentweb.download.Config.NOTICATION_ID;
  * @author cenxiaozhong
  * @date 2017/5/13
  */
-public class DownloadTask extends Extra implements Serializable {
+public class DownloadTask extends Extra implements Serializable, Cloneable {
 
-	private int mId = NOTICATION_ID.getAndIncrement();
-	private static final String TAG = DownloadTask.class.getSimpleName();
-	private long mTotalsLength;
+	int mId = NOTICATION_ID.getAndIncrement();
+	static final String TAG = DownloadTask.class.getSimpleName();
+	long mTotalsLength;
 	/**
 	 * Context
 	 */
-	private Context mContext;
+	Context mContext;
 	/**
 	 * 下载的文件
 	 */
-	private File mFile;
+	File mFile;
 	/**
 	 * 表示当前任务是否被销毁了。
 	 */
-	private AtomicBoolean mIsDestroyed = new AtomicBoolean(false);
-	private SimpleDownloadListener mSimpleDownloadListener;
-
-	public void setSimpleDownloadListener(SimpleDownloadListener simpleDownloadListener) {
-		mSimpleDownloadListener = simpleDownloadListener;
-	}
+	AtomicBoolean mIsDestroyed = new AtomicBoolean(false);
+	DownloadListener mDownloadListener;
 
 	public DownloadTask() {
 		super();
@@ -110,16 +106,21 @@ public class DownloadTask extends Extra implements Serializable {
 		}
 	}
 
-	public SimpleDownloadListener getSimpleDownloadListener() {
-		return null;
+	public DownloadListener getDownloadListener() {
+		return mDownloadListener;
 	}
 
-	public SimpleDownloadListener getDownloadListener() {
-		return null;
+	public void setDownloadListener(DownloadListener downloadListener) {
+		mDownloadListener = downloadListener;
 	}
 
 	public long getLength() {
 		return mTotalsLength;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 	public void setLength(long length) {

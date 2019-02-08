@@ -33,14 +33,9 @@ import java.io.Serializable;
 public class ExtraServiceImpl extends IAgentWebDownloader.ExtraService implements Cloneable, Serializable {
 	private static final String TAG = "ExtraServiceImpl";
 	transient Activity mActivity;
-	transient DownloadListener mDownloadListener;
 	transient PermissionInterceptor mPermissionInterceptor;
 	transient WebView mWebView;
 	DefaultDownloadImpl mDefaultDownload;
-	String mUrl;
-	String mUserAgent;
-	String mContentDisposition;
-	String mMimetype;
 	long mContentLength;
 	boolean mIsCloneObject = false;
 
@@ -106,10 +101,6 @@ public class ExtraServiceImpl extends IAgentWebDownloader.ExtraService implement
 		return this;
 	}
 
-	ExtraServiceImpl setDownloadListener(DownloadListener downloadListeners) {
-		this.mDownloadListener = downloadListeners;
-		return this;
-	}
 
 	ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
 		mPermissionInterceptor = permissionInterceptor;
@@ -123,30 +114,54 @@ public class ExtraServiceImpl extends IAgentWebDownloader.ExtraService implement
 
 	@Override
 	protected ExtraServiceImpl clone() throws CloneNotSupportedException {
+
 		ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
 		mExtraServiceImpl.mIsCloneObject = true;
 		mExtraServiceImpl.mActivity = null;
-		mExtraServiceImpl.mDownloadListener = null;
+//		setDownloadListener(null);
 		mExtraServiceImpl.mPermissionInterceptor = null;
 		mExtraServiceImpl.mWebView = null;
+//		mExtraServiceImpl.setDownloadListener(this.getDownloadListener());
+
+		LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
 		return mExtraServiceImpl;
 	}
+
 
 	DefaultDownloadImpl create() {
 		return this.mDefaultDownload = new DefaultDownloadImpl(this);
 	}
 
 	@Override
-	public synchronized void performReDownload() {
-		LogUtils.i(TAG, "performReDownload:" + mDefaultDownload);
-		if (null != this.mDefaultDownload) {
-			this.mDefaultDownload
-					.onDownloadStartInternal(
-							getUrl(),
-							getUserAgent(),
-							getContentDisposition(),
-							getMimetype(),
-							getContentLength(), this);
-		}
+	public String toString() {
+		return "ExtraServiceImpl{" +
+				"mActivity=" + mActivity +
+				", mPermissionInterceptor=" + mPermissionInterceptor +
+				", mWebView=" + mWebView +
+				", mDefaultDownload=" + mDefaultDownload +
+				", mContentLength=" + mContentLength +
+				", mIsCloneObject=" + mIsCloneObject +
+				", mId=" + mId +
+				", mTotalsLength=" + mTotalsLength +
+				", mContext=" + mContext +
+				", mFile=" + mFile +
+				", mIsDestroyed=" + mIsDestroyed +
+				", mDownloadListener=" + mDownloadListener +
+				", mIsForceDownload=" + mIsForceDownload +
+				", mEnableIndicator=" + mEnableIndicator +
+				", mIcon=" + mIcon +
+				", mIsParallelDownload=" + mIsParallelDownload +
+				", mIsOpenBreakPointDownload=" + mIsOpenBreakPointDownload +
+				", mUrl='" + mUrl + '\'' +
+				", mContentDisposition='" + mContentDisposition + '\'' +
+				", mContentLength=" + mContentLength +
+				", mMimetype='" + mMimetype + '\'' +
+				", mUserAgent='" + mUserAgent + '\'' +
+				", mHeaders=" + mHeaders +
+				", mAutoOpen=" + mAutoOpen +
+				", downloadTimeOut=" + downloadTimeOut +
+				", connectTimeOut=" + connectTimeOut +
+				", blockMaxTime=" + blockMaxTime +
+				'}';
 	}
 }

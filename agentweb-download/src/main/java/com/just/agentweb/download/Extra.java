@@ -27,8 +27,7 @@ import java.util.Map;
  * @date 2019/2/8
  * @since 1.0.0
  */
-public class Extra implements Serializable {
-
+public class Extra implements Serializable, Cloneable {
 
 	protected boolean mIsForceDownload = false;
 	protected boolean mEnableIndicator = true;
@@ -36,11 +35,26 @@ public class Extra implements Serializable {
 	protected int mIcon = R.drawable.ic_file_download_black_24dp;
 	protected boolean mIsParallelDownload = true;
 	protected boolean mIsOpenBreakPointDownload = true;
+	/**
+	 * 当前下载链接
+	 */
 	protected String mUrl;
-	protected String mUserAgent;
+	/**
+	 * mContentDisposition ，提取文件名 ，如果ContentDisposition不指定文件名，则从url中提取文件名
+	 */
 	protected String mContentDisposition;
-	protected String mMimetype;
+	/**
+	 * 文件大小
+	 */
 	protected long mContentLength;
+	/**
+	 * 文件类型
+	 */
+	protected String mMimetype;
+	/**
+	 * UA
+	 */
+	protected String mUserAgent;
 	protected Map<String, String> mHeaders;
 	/**
 	 * 下载文件完成，是否自动打开该文件
@@ -207,5 +221,10 @@ public class Extra implements Serializable {
 
 	public boolean isAutoOpen() {
 		return mAutoOpen;
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }

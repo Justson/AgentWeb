@@ -22,8 +22,7 @@ package com.just.agentweb.download;
  */
 public interface IAgentWebDownloader extends DownloadingService, IDownloader<DownloadTask> {
 
-	abstract class ExtraService extends DownloadTask {
-		public abstract void performReDownload();
+	public class ExtraService extends DownloadTask {
 	}
 
 
