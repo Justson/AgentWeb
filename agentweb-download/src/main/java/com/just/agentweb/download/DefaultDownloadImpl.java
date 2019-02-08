@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,10 +55,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	 * Application Context
 	 */
 	private Context mContext;
-	/**
-	 * 通知ID，默认从1开始
-	 */
-	private volatile static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
 	/**
 	 * 下载监听，DownloadListener#onStart 下载的时候触发，DownloadListener#result下载结束的时候触发
 	 * 4.0.0 每一次下载都会触发这两个方法，4.0.0以下只有触发下载才会回调这两个方法。
@@ -126,7 +121,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	private void bind(ExtraServiceImpl extraServiceImpl) {
 		this.mActivityWeakReference = new WeakReference<Activity>(extraServiceImpl.mActivity);
 		this.mContext = extraServiceImpl.mActivity.getApplicationContext();
-		this.mDownloadListeners.put(extraServiceImpl.mUrl, extraServiceImpl.mDownloadListener);
+		if (extraServiceImpl.mDownloadListener != null && !TextUtils.isEmpty(extraServiceImpl.mUrl)) {
+			this.mDownloadListeners.put(extraServiceImpl.mUrl, extraServiceImpl.mDownloadListener);
+		}
 		this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
 		this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
 	}
@@ -236,7 +233,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		}
 		if (mFile.exists() && mFile.length() >= mContentLength && mContentLength > 0) {
 			// true 表示用户处理了下载完成后续的通知用户事件
-			if (null != downloadListener && downloadListener.onResult(null,Uri.fromFile(mFile), mUrl, mCloneExtraServiceImpl)) {
+			if (null != downloadListener && downloadListener.onResult(null, Uri.fromFile(mFile), mUrl, mCloneExtraServiceImpl)) {
 				return;
 			}
 			Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
@@ -313,6 +310,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 					this.mSimpleDownloadListener,
 					mContext, file,
 					this.mCloneExtraServiceImpl);*/
+			this.mCloneExtraServiceImpl.setFile(file);
 			this.mCloneExtraServiceImpl.setDownloadListener(mSimpleDownloadListener);
 			new Downloader().download(this.mCloneExtraServiceImpl);
 			this.mUrl = null;

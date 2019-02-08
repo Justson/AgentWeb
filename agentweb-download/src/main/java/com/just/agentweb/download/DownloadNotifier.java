@@ -98,7 +98,7 @@ public class DownloadNotifier {
 			title = "..." + title.substring(title.length() - 20, title.length());
 		}
 		mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 200, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT));
-		mBuilder.setSmallIcon(downloadTask.getDrawableRes());
+		mBuilder.setSmallIcon(downloadTask.getIcon());
 		mBuilder.setTicker(mContext.getString(R.string.agentweb_trickter));
 		mBuilder.setContentTitle(title);
 		mBuilder.setContentText(mContext.getString(R.string.agentweb_coming_soon_download));

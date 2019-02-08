@@ -23,14 +23,17 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.just.agentweb.download.Config.NOTICATION_ID;
+
 /**
  * @author cenxiaozhong
  * @date 2017/5/13
  */
 public class DownloadTask extends Extra implements Serializable {
 
-	private int mId;
-
+	private int mId = NOTICATION_ID.getAndIncrement();
+	private static final String TAG = DownloadTask.class.getSimpleName();
+	private long mTotalsLength;
 	/**
 	 * Context
 	 */
@@ -48,10 +51,6 @@ public class DownloadTask extends Extra implements Serializable {
 	public void setSimpleDownloadListener(SimpleDownloadListener simpleDownloadListener) {
 		mSimpleDownloadListener = simpleDownloadListener;
 	}
-
-	private String TAG = this.getClass().getSimpleName();
-	private long mTotalsLength;
-
 
 	public DownloadTask() {
 		super();

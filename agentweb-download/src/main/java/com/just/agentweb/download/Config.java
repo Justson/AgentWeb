@@ -23,6 +23,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2019/2/8
  * @since 1.0.0
  */
-public class ThreadConfig {
-	public static AtomicInteger THREAD_GLOBAL_COUNTER = new AtomicInteger(1);
+public class Config {
+	static AtomicInteger THREAD_GLOBAL_COUNTER = new AtomicInteger(1);
+	/**
+	 * 通知ID，默认从1开始
+	 */
+	static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
 }
