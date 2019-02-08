@@ -236,7 +236,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		}
 		if (mFile.exists() && mFile.length() >= mContentLength && mContentLength > 0) {
 			// true 表示用户处理了下载完成后续的通知用户事件
-			if (null != downloadListener && downloadListener.onResult(mFile.getAbsolutePath(), mUrl, null)) {
+			if (null != downloadListener && downloadListener.onResult(null,Uri.fromFile(mFile), mUrl, mCloneExtraServiceImpl)) {
 				return;
 			}
 			Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
@@ -314,7 +314,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 					mContext, file,
 					this.mCloneExtraServiceImpl);*/
 			this.mCloneExtraServiceImpl.setDownloadListener(mSimpleDownloadListener);
-			new AgentWebDownloader().download(this.mCloneExtraServiceImpl);
+			new Downloader().download(this.mCloneExtraServiceImpl);
 			this.mUrl = null;
 			this.mContentDisposition = null;
 			this.mContentLength = -1;
@@ -376,11 +376,10 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			}
 		}
 
-
 		@Override
-		public boolean onResult(String path, String url, Throwable e) {
+		public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
 			DownloadListener downloadListener = mDownloadListeners.remove(url);
-			return null != downloadListener && downloadListener.onResult(path, url, e);
+			return null != downloadListener && downloadListener.onResult(throwable, path, url, extra);
 		}
 	};
 

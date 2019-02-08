@@ -23,4 +23,8 @@ package com.just.agentweb.download;
  */
 public interface IDownloader<T extends DownloadTask> {
 	void download(T t);
+
+	T cancel();
+
+	int status();
 }

@@ -220,7 +220,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		 * @return true 表示用户处理了下载完成后续的事件 ，false 默认交给AgentWeb 处理
 		 */
 		@Override
-		public boolean onResult(String path, String url, Throwable throwable) {
+		public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
 			if (null == throwable) { //下载成功
 				//do you work
 			} else {//下载失败
