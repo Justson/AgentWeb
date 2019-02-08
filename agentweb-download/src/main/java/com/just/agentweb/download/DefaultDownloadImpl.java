@@ -223,7 +223,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	}
 
 	private void preDownload() {
-
 		// true 表示用户取消了该下载事件。
 		if (null != this.mDownloadListener
 				&& this.mDownloadListener
@@ -242,12 +241,10 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return;
 		}
 		if (mFile.exists() && mFile.length() >= mContentLength && mContentLength > 0) {
-
 			// true 表示用户处理了下载完成后续的通知用户事件
 			if (null != this.mDownloadListener && this.mDownloadListener.onResult(mFile.getAbsolutePath(), mUrl, null)) {
 				return;
 			}
-
 			Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
 			try {
 //                mContext.getPackageManager().resolveActivity(mIntent)
@@ -263,10 +260,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 					throwable.printStackTrace();
 				}
 			}
-
 		}
-
-
 		// 该链接是否正在下载
 		if (ExecuteTasksMap.getInstance().contains(mUrl)
 				|| ExecuteTasksMap.getInstance().contains(mFile.getAbsolutePath())) {
@@ -278,8 +272,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			}
 			return;
 		}
-
-
 		// 移动数据
 		if (!this.mCloneExtraServiceImpl.isForceDownload() &&
 				AgentWebUtils.checkNetworkType(mContext) > 1) {
@@ -291,15 +283,11 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	}
 
 	private void forceDownload(final File file) {
-
 		this.mCloneExtraServiceImpl.setForceDownload(true);
 		performDownload(file);
-
-
 	}
 
 	private void showDialog(final File file) {
-
 		Activity mActivity;
 		if (null == (mActivity = mActivityWeakReference.get()) || mActivity.isFinishing()) {
 			return;
@@ -308,7 +296,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		if (null != (mAgentWebUIController = this.mAgentWebUIController.get())) {
 			mAgentWebUIController.onForceDownloadAlert(mUrl, createCallback(file));
 		}
-
 	}
 
 	private Handler.Callback createCallback(final File file) {
@@ -322,9 +309,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	}
 
 	private void performDownload(File file) {
-
 		try {
-
 			ExecuteTasksMap.getInstance().addTask(mUrl, file.getAbsolutePath());
 			if (null != mAgentWebUIController.get()) {
 				mAgentWebUIController.get()
@@ -346,12 +331,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				ignore.printStackTrace();
 			}
 		}
-
 	}
 
-
 	private File getFile(String contentDisposition, String url) {
-
 		String fileName = "";
 		try {
 			fileName = getFileNameByContentDisposition(contentDisposition);
@@ -375,7 +357,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 				e.printStackTrace();
 			}
 		}
-
 		return null;
 	}
 
@@ -410,7 +391,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 					mDownloadingListener.onBindService(url, downloadingService);
 				}
 			}
-
 		}
 
 		@Override
@@ -436,7 +416,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	 * i+1 -> path
 	 */
 	static class ExecuteTasksMap extends ReentrantReadWriteLock {
-
 		private LinkedList<String> mTasks = null;
 		private static volatile ExecuteTasksMap sInstance = null;
 
@@ -445,9 +424,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			mTasks = new LinkedList();
 		}
 
-
 		static ExecuteTasksMap getInstance() {
-
 			if (null == sInstance) {
 				synchronized (ExecuteTasksMap.class) {
 					if (null == sInstance) {
@@ -459,7 +436,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		}
 
 		void removeTask(String path) {
-
 			writeLock().lock();
 			try {
 				int position = -1;
@@ -471,11 +447,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			} finally {
 				writeLock().unlock();
 			}
-
 		}
 
 		void addTask(String url, String path) {
-
 			writeLock().lock();
 			try {
 				mTasks.add(url);
@@ -487,14 +461,12 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 		// 加锁读
 		boolean contains(String url) {
-
 			readLock().lock();
 			try {
 				return mTasks.contains(url);
 			} finally {
 				readLock().unlock();
 			}
-
 		}
 	}
 
@@ -561,7 +533,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return this;
 		}
 
-
 		@Override
 		public String getContentDisposition() {
 			return mContentDisposition;
@@ -572,7 +543,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			this.mContentDisposition = contentDisposition;
 			return this;
 		}
-
 
 		@Override
 		public String getMimetype() {
@@ -616,7 +586,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return this;
 		}
 
-
 		@Override
 		protected ExtraServiceImpl clone() throws CloneNotSupportedException {
 			ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
@@ -646,8 +615,5 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 								getContentLength(), this);
 			}
 		}
-
 	}
-
-
 }
