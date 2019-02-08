@@ -40,6 +40,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.zip.GZIPInputStream;
 
 import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -134,7 +135,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	public static final int ERROR_SERVICE = 0x503;
 	public static final int SUCCESSFUL = 0x200;
 	private static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
-	public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
+	private static final Executor SERIAL_EXECUTOR = new SerialExecutor();
 
 	static {
 		DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
@@ -230,7 +231,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				long tmpLength = -1;
 				final boolean hasLength = ((tmpLength = getHeaderFieldLong(mHttpURLConnection, "Content-Length")) == -1);
 				// 获取不到文件长度
-				final boolean finishKnown = isEncodingChunked || hasLength;
+				final boolean finishKnown = isEncodingChunked && hasLength;
 				if (finishKnown) {
 					LogUtils.e(TAG, "can't know size of download, giving up ,"
 							+ "  EncodingChunked:" + isEncodingChunked
@@ -240,18 +241,22 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				int responseCode = mHttpURLConnection.getResponseCode();
 				switch (responseCode) {
 					case HTTP_OK:
+						this.mTotals = tmpLength;
 						saveEtag(mHttpURLConnection);
-						return transferData(mHttpURLConnection.getInputStream(),
+						return transferData(getInputStream(mHttpURLConnection),
 								new LoadingRandomAccessFile(downloadTask.getFile()),
 								false);
 					case HTTP_PARTIAL:
-						// 服务端响应文件长度不正确，或者本地文件长度被修改。
-						if (tmpLength + downloadTask.getFile().length() != this.mTotals) {
+						if (isEncodingChunked) {
+							this.mTotals = -1L;
+						} else if (this.mTotals > 0L && tmpLength + downloadTask.getFile().length() != this.mTotals) {                        // 服务端响应文件长度不正确，或者本地文件长度被修改。
 							return ERROR_LOAD;
+						} else if (this.mTotals <= 0L) {
+							this.mTotals = tmpLength + downloadTask.getFile().length();
 						}
-						return transferData(mHttpURLConnection.getInputStream(),
+						return transferData(getInputStream(mHttpURLConnection),
 								new LoadingRandomAccessFile(downloadTask.getFile()),
-								true);
+								!isEncodingChunked);
 					case HTTP_MOVED_PERM:
 					case HTTP_MOVED_TEMP:
 					case HTTP_SEE_OTHER:
@@ -273,6 +278,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			if (null != mHttpURLConnection) {
 				mHttpURLConnection.disconnect();
 			}
+		}
+	}
+
+	private InputStream getInputStream(HttpURLConnection httpURLConnection) throws IOException {
+		if ("gzip".equalsIgnoreCase(httpURLConnection.getContentEncoding())) {
+			return new GZIPInputStream(httpURLConnection.getInputStream());
+		} else {
+			return httpURLConnection.getInputStream();
 		}
 	}
 
@@ -317,7 +330,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		mHttpURLConnection.setInstanceFollowRedirects(false);
 		mHttpURLConnection.setReadTimeout(downloadTask.getBlockMaxTime());
 		mHttpURLConnection.setRequestProperty("Accept", "application/*");
-		mHttpURLConnection.setRequestProperty("Accept-Encoding", "identity");
+		mHttpURLConnection.setRequestProperty("Accept-Encoding", "identity,gzip");
 		mHttpURLConnection.setRequestProperty("Connection", "close");
 		mHttpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
 		Map<String, String> mHeaders = null;
@@ -358,8 +371,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			}
 			this.mLastTime = currentTime;
 			if (null != mDownloadNotifier) {
-				int mProgress = (int) ((mLastLoaded + mLoaded) / Float.valueOf(mTotals) * 100);
-				mDownloadNotifier.onDownloading(mProgress);
+				if (mTotals > 0) {
+					int mProgress = (int) ((mLastLoaded + mLoaded) / Float.valueOf(mTotals) * 100);
+					mDownloadNotifier.onDownloading(mProgress);
+				} else {
+					mDownloadNotifier.onDownloaded((mLastLoaded + mLoaded));
+				}
 			}
 			if (null != downloadTask.getDownloadListener()) {
 				downloadTask
@@ -442,7 +459,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				downloadTask.getUrl(), code <= 200 ? null
 						: null == this.mThrowable
 						? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable);
-
 	}
 
 
@@ -461,7 +477,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		BufferedInputStream bis = new BufferedInputStream(inputStream, BUFFER_SIZE);
 		RandomAccessFile out = randomAccessFile;
 		try {
-
 			if (isSeek) {
 				out.seek(out.length());
 			} else {
@@ -469,7 +484,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				mLastLoaded = 0L;
 			}
 			int bytes = 0;
-
 			while (!mIsCanceled.get() && !mIsShutdown.get()) {
 				int n = bis.read(buffer, 0, BUFFER_SIZE);
 				if (n == -1) {
@@ -477,11 +491,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				}
 				out.write(buffer, 0, n);
 				bytes += n;
-
 				if ((SystemClock.elapsedRealtime() - this.mBeginTime) > mDownloadTimeOut) {
 					return ERROR_TIME_OUT;
 				}
-
 			}
 			if (mIsCanceled.get()) {
 				return ERROR_USER_CANCEL;

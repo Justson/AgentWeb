@@ -34,6 +34,7 @@ import com.just.agentweb.LogUtils;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.just.agentweb.AgentWebConfig.AGENTWEB_VERSION;
@@ -76,7 +77,7 @@ public class DownloadNotifier {
 				mNotificationManager.createNotificationChannel(mNotificationChannel);
 				mNotificationChannel.enableLights(false);
 				mNotificationChannel.enableVibration(false);
-				mNotificationChannel.setSound(null,null);
+				mNotificationChannel.setSound(null, null);
 			} else {
 				mBuilder = new NotificationCompat.Builder(mContext);
 			}
@@ -168,6 +169,38 @@ public class DownloadNotifier {
 		mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
 		this.setProgress(100, progress, false);
 		sent();
+	}
+
+	void onDownloaded(long loaded) {
+
+		if (!this.hasDeleteContent()) {
+			this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
+		}
+		if (!mAddedCancelAction) {
+			mAddedCancelAction = true;
+			mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
+					mContext.getString(android.R.string.cancel),
+					buildCancelContent(mContext, mNotificationId, mUrl));
+			mBuilder.addAction(mAction);
+
+		}
+		mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloaded_length, byte2FitMemorySize(loaded)));
+		this.setProgress(100, 20, true);
+		sent();
+	}
+
+	private static String byte2FitMemorySize(final long byteNum) {
+		if (byteNum < 0) {
+			return "shouldn't be less than zero!";
+		} else if (byteNum < 1024) {
+			return String.format(Locale.getDefault(), "%.3fB", (double) byteNum);
+		} else if (byteNum < 1048576) {
+			return String.format(Locale.getDefault(), "%.3fKB", (double) byteNum / 1024);
+		} else if (byteNum < 1073741824) {
+			return String.format(Locale.getDefault(), "%.3fMB", (double) byteNum / 1048576);
+		} else {
+			return String.format(Locale.getDefault(), "%.3fGB", (double) byteNum / 1073741824);
+		}
 	}
 
 	void onDownloadFinished() {
