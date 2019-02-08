@@ -15,8 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Deprecated
 public class ExecutorProvider implements Provider<Executor> {
-
-
     private final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private final int CORE_POOL_SIZE = (int) (Math.max(2, Math.min(CPU_COUNT - 1, 4)) );
     private final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
