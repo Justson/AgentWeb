@@ -38,7 +38,6 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
-import java.util.UnknownFormatConversionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -106,8 +105,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	 * 通知
 	 */
 	private DownloadNotifier mDownloadNotifier;
-
-
 	private static final String TAG = Downloader.class.getSimpleName();
 	/**
 	 * true 表示用户已经取消下载
@@ -136,11 +133,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	public static final int ERROR_LOAD = 0x407;
 	public static final int ERROR_SERVICE = 0x503;
 	public static final int SUCCESSFUL = 0x200;
-
 	private static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
+	public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
 
 	static {
-
 		DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
 		DOWNLOAD_MESSAGE.append(ERROR_RESPONSE_STATUS, "Response code non-200 or non-206 . ");
 		DOWNLOAD_MESSAGE.append(ERROR_STORAGE, "Insufficient memory space . ");
@@ -154,7 +150,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 	Downloader() {
-
 	}
 
 	private void checkIsNullTask(DownloadTask downloadTask) {
@@ -164,12 +159,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	@Override
 	protected void onPreExecute() {
 		super.onPreExecute();
-
-		if (null != mDownloadTask.getDownloadListener()) {
-			mDownloadTask.getDownloadListener().onBindService(mDownloadTask.getUrl(), this);
+		DownloadTask downloadTask = this.mDownloadTask;
+		if (null != downloadTask.getDownloadListener()) {
+			downloadTask.getDownloadListener().onBindService(downloadTask.getUrl(), this);
 		}
-
-		CancelDownloadInformer.getInformer().addRecipient(mDownloadTask.getUrl(), this);
+		CancelDownloadInformer.getInformer().addRecipient(downloadTask.getUrl(), this);
 		createNotifier();
 		if (null != this.mDownloadNotifier) {
 			mDownloadNotifier.onPreDownload();
@@ -177,8 +171,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 	private boolean checkSpace() {
-
-		if (mDownloadTask.getLength() - mDownloadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
+		DownloadTask downloadTask = this.mDownloadTask;
+		if (downloadTask.getLength() - downloadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
 			LogUtils.e(TAG, " 空间不足");
 			return false;
 		}
@@ -186,13 +180,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 	private boolean checkNet() {
-		if (!mDownloadTask.isForce()) {
-			return AgentWebUtils.checkWifi(mDownloadTask.getContext());
+		DownloadTask downloadTask = this.mDownloadTask;
+		if (!downloadTask.isForce()) {
+			return AgentWebUtils.checkWifi(downloadTask.getContext());
 		} else {
-			return AgentWebUtils.checkNetwork(mDownloadTask.getContext());
+			return AgentWebUtils.checkNetwork(downloadTask.getContext());
 		}
 	}
-
 
 	@Override
 	protected Integer doInBackground(Void... params) {
@@ -216,25 +210,21 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		} finally {
 			Thread.currentThread().setName(name);
 		}
-
 		return result;
 	}
 
-
 	private int doDownload() throws IOException {
-
+		DownloadTask downloadTask = this.mDownloadTask;
 		int redirectionCount = 1;
-		URL url = new URL(mDownloadTask.getUrl());
+		URL url = new URL(downloadTask.getUrl());
 		HttpURLConnection mHttpURLConnection = null;
 		try {
-
 			for (; redirectionCount++ <= MAX_REDIRECTS; ) {
 				if (null != mHttpURLConnection) {
 					mHttpURLConnection.disconnect();
 				}
 				mHttpURLConnection = createUrlConnectionAndSettingHeaders(url);
 				mHttpURLConnection.connect();
-
 				final boolean isEncodingChunked = "chunked".equalsIgnoreCase(
 						mHttpURLConnection.getHeaderField("Transfer-Encoding"));
 				long tmpLength = -1;
@@ -247,22 +237,20 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 							+ "  hasLength:" + hasLength);
 					return ERROR_LOAD;
 				}
-
 				int responseCode = mHttpURLConnection.getResponseCode();
 				switch (responseCode) {
-
 					case HTTP_OK:
 						saveEtag(mHttpURLConnection);
 						return transferData(mHttpURLConnection.getInputStream(),
-								new LoadingRandomAccessFile(mDownloadTask.getFile()),
+								new LoadingRandomAccessFile(downloadTask.getFile()),
 								false);
 					case HTTP_PARTIAL:
 						// 服务端响应文件长度不正确，或者本地文件长度被修改。
-						if (tmpLength + mDownloadTask.getFile().length() != this.mTotals) {
+						if (tmpLength + downloadTask.getFile().length() != this.mTotals) {
 							return ERROR_LOAD;
 						}
 						return transferData(mHttpURLConnection.getInputStream(),
-								new LoadingRandomAccessFile(mDownloadTask.getFile()),
+								new LoadingRandomAccessFile(downloadTask.getFile()),
 								true);
 					case HTTP_MOVED_PERM:
 					case HTTP_MOVED_TEMP:
@@ -323,17 +311,17 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 	private HttpURLConnection createUrlConnectionAndSettingHeaders(URL url) throws IOException {
-
+		DownloadTask downloadTask = this.mDownloadTask;
 		HttpURLConnection mHttpURLConnection = (HttpURLConnection) url.openConnection();
 		mHttpURLConnection.setConnectTimeout(mConnectTimeOut);
 		mHttpURLConnection.setInstanceFollowRedirects(false);
-		mHttpURLConnection.setReadTimeout(mDownloadTask.getBlockMaxTime());
+		mHttpURLConnection.setReadTimeout(downloadTask.getBlockMaxTime());
 		mHttpURLConnection.setRequestProperty("Accept", "application/*");
 		mHttpURLConnection.setRequestProperty("Accept-Encoding", "identity");
 		mHttpURLConnection.setRequestProperty("Connection", "close");
 		mHttpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
 		Map<String, String> mHeaders = null;
-		if ((null != mDownloadTask.getExtraServiceImpl()) && null != (mHeaders = mDownloadTask.getExtraServiceImpl().getHeaders()) &&
+		if ((null != downloadTask.getExtraServiceImpl()) && null != (mHeaders = downloadTask.getExtraServiceImpl().getHeaders()) &&
 				!mHeaders.isEmpty()) {
 			for (Map.Entry<String, String> entry : mHeaders.entrySet()) {
 				if (TextUtils.isEmpty(entry.getKey()) || TextUtils.isEmpty(entry.getValue())) {
@@ -342,23 +330,21 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				mHttpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
 			}
 		}
-
-		if (mDownloadTask.getFile().length() > 0) {
+		if (downloadTask.getFile().length() > 0) {
 			String mEtag = "";
 			if (!TextUtils.isEmpty((mEtag = getEtag()))) {
 				LogUtils.i(TAG, "Etag:" + mEtag);
 				mHttpURLConnection.setRequestProperty("If-Match", getEtag());
 			}
-			mHttpURLConnection.setRequestProperty("Range", "bytes=" + (mLastLoaded = mDownloadTask.getFile().length()) + "-");
+			mHttpURLConnection.setRequestProperty("Range", "bytes=" + (mLastLoaded = downloadTask.getFile().length()) + "-");
 		}
-
 		return mHttpURLConnection;
 	}
 
 
 	@Override
 	protected synchronized void onProgressUpdate(Integer... values) {
-
+		DownloadTask downloadTask = this.mDownloadTask;
 		try {
 			long currentTime = SystemClock.elapsedRealtime();
 			this.mUsedTime = currentTime - this.mBeginTime;
@@ -367,7 +353,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			} else {
 				this.mAverageSpeed = mLoaded * 1000 / this.mUsedTime;
 			}
-
 			if (currentTime - this.mLastTime < 800) {
 				return;
 			}
@@ -376,46 +361,40 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 				int mProgress = (int) ((mLastLoaded + mLoaded) / Float.valueOf(mTotals) * 100);
 				mDownloadNotifier.onDownloading(mProgress);
 			}
-			if (null != mDownloadTask.getDownloadListener()) {
-				mDownloadTask
+			if (null != downloadTask.getDownloadListener()) {
+				downloadTask
 						.getDownloadListener()
-						.onProgress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
+						.onProgress(downloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 			}
-		} catch (UnknownFormatConversionException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-
-
 	}
 
 	@Override
 	protected void onPostExecute(Integer integer) {
-
+		DownloadTask downloadTask = this.mDownloadTask;
 		try {
-			CancelDownloadInformer.getInformer().removeRecipient(mDownloadTask.getUrl());
-
-			if (null != mDownloadTask.getDownloadListener()) {
-				mDownloadTask
+			CancelDownloadInformer.getInformer().removeRecipient(downloadTask.getUrl());
+			if (null != downloadTask.getDownloadListener()) {
+				downloadTask
 						.getDownloadListener()
-						.onProgress(mDownloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
+						.onProgress(downloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 
 			}
-
-			if (null != mDownloadTask.getDownloadListener()) {
-				mDownloadTask.getDownloadListener().onUnbindService(mDownloadTask.getUrl(), this);
+			if (null != downloadTask.getDownloadListener()) {
+				downloadTask.getDownloadListener().onUnbindService(downloadTask.getUrl(), this);
 			}
 			LogUtils.i(TAG, "msg:" + DOWNLOAD_MESSAGE.get(integer));
 			boolean isCancelDispose = doCallback(integer);
 			// Error
 			if (integer > 0x200) {
-
 				if (null != mDownloadNotifier) {
 					mDownloadNotifier.cancel();
 				}
-
 				return;
 			}
-			if (mDownloadTask.isEnableIndicator()) {
+			if (downloadTask.isEnableIndicator()) {
 				if (isCancelDispose) {
 					mDownloadNotifier.cancel();
 					return;
@@ -427,39 +406,40 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			}
 
 			// auto open file
-			if (!mDownloadTask.isAutoOpen()) {
+			if (!downloadTask.isAutoOpen()) {
 				return;
 			}
-			Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mDownloadTask.getContext(), mDownloadTask.getFile());
+			Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(downloadTask.getContext(), downloadTask.getFile());
 			if (null == mIntent) {
 				return;
 			}
-			if (!(mDownloadTask.getContext() instanceof Activity)) {
+			if (!(downloadTask.getContext() instanceof Activity)) {
 				mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			}
-			mDownloadTask.getContext().startActivity(mIntent);
+			downloadTask.getContext().startActivity(mIntent);
 		} catch (Throwable throwable) {
 			if (LogUtils.isDebug()) {
 				throwable.printStackTrace();
 			}
 		} finally {
-			if (null != mDownloadTask) {
-				mDownloadTask.destroy();
+			if (null != downloadTask) {
+				downloadTask.destroy();
 			}
 		}
 	}
 
 	private boolean doCallback(Integer code) {
 		DownloadListener mDownloadListener = null;
-		if (null == (mDownloadListener = mDownloadTask.getDownloadListener())) {
+		DownloadTask downloadTask = this.mDownloadTask;
+		if (null == (mDownloadListener = downloadTask.getDownloadListener())) {
 			LogUtils.e(TAG, "DownloadListener has been death");
 			DefaultDownloadImpl
 					.ExecuteTasksMap.getInstance()
-					.removeTask(mDownloadTask.getFile().getPath());
+					.removeTask(downloadTask.getFile().getPath());
 			return false;
 		}
-		return mDownloadListener.onResult(mDownloadTask.getFile().getAbsolutePath(),
-				mDownloadTask.getUrl(), code <= 200 ? null
+		return mDownloadListener.onResult(downloadTask.getFile().getAbsolutePath(),
+				downloadTask.getUrl(), code <= 200 ? null
 						: null == this.mThrowable
 						? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable);
 
@@ -467,11 +447,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 
 	private void createNotifier() {
-
-		Context mContext = mDownloadTask.getContext().getApplicationContext();
-		if (null != mContext && mDownloadTask.isEnableIndicator()) {
-			mDownloadNotifier = new DownloadNotifier(mContext, mDownloadTask.getId());
-			mDownloadNotifier.initBuilder(mDownloadTask);
+		DownloadTask downloadTask = this.mDownloadTask;
+		Context mContext = downloadTask.getContext().getApplicationContext();
+		if (null != mContext && downloadTask.isEnableIndicator()) {
+			mDownloadNotifier = new DownloadNotifier(mContext, downloadTask.getId());
+			mDownloadNotifier.initBuilder(downloadTask);
 		}
 	}
 
@@ -515,7 +495,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 			AgentWebUtils.closeIO(bis);
 			AgentWebUtils.closeIO(inputStream);
 		}
-
 	}
 
 
@@ -531,7 +510,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 
 	@Override
 	public synchronized AgentWebDownloader.ExtraService shutdownNow() {
-
 		if (getStatus() == Status.FINISHED) {
 			LogUtils.e(TAG, "  Termination failed , becauce the downloader already dead !!! ");
 			return null;
@@ -542,7 +520,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		} finally {
 			mIsShutdown.set(true);
 		}
-
 	}
 
 	@Override
@@ -550,15 +527,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 		downloadInternal(downloadTask);
 	}
 
-	public static final Executor SERIAL_EXECUTOR = new SerialExecutor();
-
 	private final void downloadInternal(DownloadTask downloadTask) {
 		checkIsNullTask(downloadTask);
 		this.mDownloadTask = downloadTask;
 		this.mTotals = mDownloadTask.getLength();
 		mDownloadTimeOut = mDownloadTask.getDownloadTimeOut();
 		mConnectTimeOut = mDownloadTask.getConnectTimeOut();
-
 		if (downloadTask.isParallelDownload()) {
 			this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
 		} else {
@@ -572,14 +546,12 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements Age
 	}
 
 	private final class LoadingRandomAccessFile extends RandomAccessFile {
-
 		public LoadingRandomAccessFile(File file) throws FileNotFoundException {
 			super(file, "rw");
 		}
 
 		@Override
 		public void write(byte[] buffer, int offset, int count) throws IOException {
-
 			super.write(buffer, offset, count);
 			mLoaded += count;
 			publishProgress(0);
