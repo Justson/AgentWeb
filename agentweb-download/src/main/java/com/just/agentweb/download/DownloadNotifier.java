@@ -61,7 +61,6 @@ public class DownloadNotifier {
 	DownloadNotifier(Context context, int id) {
 		this.mNotificationId = id;
 		mContext = context;
-		// 获取系统服务来初始化对象
 		mNotificationManager = (NotificationManager) mContext
 				.getSystemService(NOTIFICATION_SERVICE);
 
@@ -98,13 +97,9 @@ public class DownloadNotifier {
 			title = "..." + title.substring(title.length() - 20, title.length());
 		}
 		mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 200, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT));
-		// 设置顶部状态栏的小图标
 		mBuilder.setSmallIcon(downloadTask.getDrawableRes());
-		// 在顶部状态栏中的提示信息
 		mBuilder.setTicker(mContext.getString(R.string.agentweb_trickter));
-		// 设置通知中心的标题
 		mBuilder.setContentTitle(title);
-		// 设置通知中心中的内容
 		mBuilder.setContentText(mContext.getString(R.string.agentweb_coming_soon_download));
 		mBuilder.setWhen(System.currentTimeMillis());
 		mBuilder.setAutoCancel(true);
