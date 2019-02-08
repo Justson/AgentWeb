@@ -20,6 +20,7 @@ package com.just.agentweb.download;
  * @author cenxiaozhong
  * @date 2018/2/11
  */
+@Deprecated
 public interface DownloadingListener {
 
     /**

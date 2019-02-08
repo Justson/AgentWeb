@@ -20,31 +20,22 @@ package com.just.agentweb.download;
  * @author cenxiaozhong
  * @date 2018/2/11
  */
-public class DownloadListenerAdapter implements DownloadListener, DownloadingListener {
+public class SimpleDownloadListener implements DownloadListener {
 
 
-    @Override
-    public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
-        return false;
-    }
+	@Override
+	public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+		return false;
+	}
 
-    @Override
-    public void onBindService(String url, DownloadingService downloadingService) {
 
-    }
+	@Override
+	public void onProgress(String url, long downloaded, long length, long usedTime) {
 
-    @Override
-    public void onProgress(String url, long downloaded, long length, long usedTime) {
+	}
 
-    }
-
-    @Override
-    public void onUnbindService(String url, DownloadingService downloadingService) {
-
-    }
-
-    @Override
-    public boolean onResult(String path, String url, Throwable e) {
-        return false;
-    }
+	@Override
+	public boolean onResult(String path, String url, Throwable e) {
+		return false;
+	}
 }

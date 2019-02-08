@@ -410,12 +410,10 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 					mDownloadNotifier.cancel();
 					return;
 				}
-
 				if (null != mDownloadNotifier) {
 					mDownloadNotifier.onDownloadFinished();
 				}
 			}
-
 			// auto open file
 			if (!downloadTask.isAutoOpen()) {
 				return;
@@ -433,6 +431,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 				throwable.printStackTrace();
 			}
 		} finally {
+			ExecuteTasksMap.getInstance().removeTask(downloadTask.getFile().getAbsolutePath());
 			if (null != downloadTask) {
 				downloadTask.destroy();
 			}
@@ -508,7 +507,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	}
 
 
-
 	@Override
 	public void download(DownloadTask downloadTask) {
 		downloadInternal(downloadTask);
@@ -516,6 +514,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 
 	private final void downloadInternal(DownloadTask downloadTask) {
 		checkIsNullTask(downloadTask);
+		ExecuteTasksMap.getInstance().addTask(downloadTask.mUrl, downloadTask.getFile().getAbsolutePath());
 		this.mDownloadTask = downloadTask;
 		this.mTotals = mDownloadTask.getLength();
 		mDownloadTimeOut = mDownloadTask.getDownloadTimeOut();

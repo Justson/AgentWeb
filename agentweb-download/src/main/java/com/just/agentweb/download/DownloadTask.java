@@ -42,7 +42,11 @@ public class DownloadTask extends Extra implements Serializable {
 	 * 表示当前任务是否被销毁了。
 	 */
 	private AtomicBoolean mIsDestroyed = new AtomicBoolean(false);
+	private SimpleDownloadListener mSimpleDownloadListener;
 
+	public void setSimpleDownloadListener(SimpleDownloadListener simpleDownloadListener) {
+		mSimpleDownloadListener = simpleDownloadListener;
+	}
 
 	private String TAG = this.getClass().getSimpleName();
 	private long mTotalsLength;
@@ -89,11 +93,11 @@ public class DownloadTask extends Extra implements Serializable {
 		this.mIsParallelDownload = false;
 	}
 
-	public DownloadListenerAdapter getDownloadListenerAdapter() {
+	public SimpleDownloadListener getSimpleDownloadListener() {
 		return null;
 	}
 
-	public DownloadListenerAdapter getDownloadListener() {
+	public SimpleDownloadListener getDownloadListener() {
 		return null;
 	}
 
