@@ -18,19 +18,9 @@ package com.just.agentweb.download;
 
 /**
  * @author cenxiaozhong
- * @date 2018/2/4
+ * @date 2019/2/8
+ * @since 1.0.0
  */
-public interface DownloadingService {
-    /**
-     * 当前任务是否已经终止
-     * @return
-     */
-    boolean isShutdown();
-
-    /**
-     * 终止当前下载的任务
-     * @return ExtraService#performReDownload 重新提交下载任务
-     */
-    IAgentWebDownloader.ExtraService shutdownNow();
-
+public interface IDownloader<T extends DownloadTask> {
+	void download(T t);
 }
