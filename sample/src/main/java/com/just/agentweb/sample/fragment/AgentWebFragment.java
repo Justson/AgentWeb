@@ -42,9 +42,7 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.download.DefaultDownloadImpl;
-import com.just.agentweb.download.DownloadingService;
 import com.just.agentweb.download.Extra;
-import com.just.agentweb.download.IAgentWebDownloader;
 import com.just.agentweb.download.SimpleDownloadListener;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
@@ -77,7 +75,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	private MiddlewareWebClientBase mMiddleWareWebClient;
 	private MiddlewareWebChromeBase mMiddleWareWebChrome;
 	private DownloadingService mDownloadingService;
-	private IAgentWebDownloader.ExtraService mExtraService;
 
 	public static AgentWebFragment getInstance(Bundle bundle) {
 

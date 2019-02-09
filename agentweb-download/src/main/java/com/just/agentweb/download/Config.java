@@ -16,6 +16,9 @@
 
 package com.just.agentweb.download;
 
+import android.content.Context;
+
+import java.io.File;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -29,4 +32,13 @@ public class Config {
 	 * 通知ID，默认从1开始
 	 */
 	static AtomicInteger NOTICATION_ID = new AtomicInteger(1);
+
+	public File getDir(Context context) {
+		File file = context.getCacheDir();
+		file = new File(file.getAbsolutePath(), "download");
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		return file;
+	}
 }

@@ -113,7 +113,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 
 	synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
-
 		if (null == mActivityWeakReference.get() || mActivityWeakReference.get().isFinishing()) {
 			return;
 		}

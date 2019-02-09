@@ -64,7 +64,6 @@ public class DownloadNotifier {
 		mContext = context;
 		mNotificationManager = (NotificationManager) mContext
 				.getSystemService(NOTIFICATION_SERVICE);
-
 		try {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 				mBuilder = new NotificationCompat.Builder(mContext,
@@ -87,7 +86,6 @@ public class DownloadNotifier {
 			}
 		}
 	}
-
 
 	void initBuilder(DownloadTask downloadTask) {
 		String title = TextUtils.isEmpty(downloadTask.getFile().getName()) ?

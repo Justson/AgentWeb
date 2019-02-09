@@ -52,11 +52,9 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
 		super();
 	}
 
-
 	public int getId() {
 		return this.mId;
 	}
-
 
 	public Context getContext() {
 		return mContext;
