@@ -16,6 +16,10 @@
 
 package com.just.agentweb.download;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -37,11 +41,27 @@ public final class CancelDownloadInformer {
 		return InformerHolder.INSTANCE;
 	}
 
-	void cancelAction(String url) {
+	DownloadTask cancelAction(String url) {
 		CancelDownloadRecipient mCancelDownloadRecipient = mRecipients.get(url);
 		if (null != mCancelDownloadRecipient) {
-			mCancelDownloadRecipient.cancelDownload();
+			return mCancelDownloadRecipient.cancelDownload();
 		}
+		return null;
+	}
+
+	List<DownloadTask> cancelActions() {
+		Set<Map.Entry<String, CancelDownloadRecipient>> sets = mRecipients.entrySet();
+		if (sets != null && sets.size() > 0) {
+			ArrayList<DownloadTask> downloadTasks = new ArrayList<>();
+			for (Map.Entry<String, CancelDownloadRecipient> entry : sets) {
+				DownloadTask downloadTask = entry.getValue().cancelDownload();
+				if (null != downloadTask) {
+					downloadTasks.add(downloadTask);
+				}
+			}
+			return downloadTasks;
+		}
+		return null;
 	}
 
 	void addRecipient(String url, CancelDownloadRecipient recipient) {

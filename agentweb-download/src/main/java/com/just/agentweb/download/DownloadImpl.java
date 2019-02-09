@@ -19,7 +19,9 @@ package com.just.agentweb.download;
 import android.content.Context;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author cenxiaozhong
@@ -29,12 +31,13 @@ import java.util.concurrent.Callable;
 public class DownloadImpl {
 
 	private static final DownloadImpl sInstance = new DownloadImpl();
+	private ConcurrentHashMap<String, DownloadTask> mTasks = new ConcurrentHashMap<>();
 
 	public static DownloadImpl getInstance() {
 		return sInstance;
 	}
 
-	public static ResourceRequest with(Context context) {
+	public ResourceRequest with(Context context) {
 		return ResourceRequest.with(context);
 	}
 
@@ -56,6 +59,35 @@ public class DownloadImpl {
 	public File callEx(DownloadTask downloadTask) throws Exception {
 		Callable<File> callable = new SyncDownloader(downloadTask);
 		return callable.call();
+	}
+
+	public DownloadTask cancel(String url) {
+		return CancelDownloadInformer.getInformer().cancelAction(url);
+	}
+
+	public List<DownloadTask> cancelAll() {
+		return CancelDownloadInformer.getInformer().cancelActions();
+	}
+
+	public DownloadTask pause(String url) {
+		DownloadTask downloadTask = cancel(url);
+		if (downloadTask != null) {
+			mTasks.put(downloadTask.getUrl(), downloadTask);
+		}
+		return downloadTask;
+	}
+
+	public boolean resume(String url) {
+		DownloadTask downloadTask = mTasks.get(url);
+		if (downloadTask != null) {
+			enqueue(downloadTask);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean exist(String url) {
+		return ExecuteTasksMap.getInstance().contains(url);
 	}
 
 }

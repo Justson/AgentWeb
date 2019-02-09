@@ -21,5 +21,5 @@ package com.just.agentweb.download;
  * @date 2018/2/12
  */
 public interface CancelDownloadRecipient {
-    void cancelDownload();
+    DownloadTask cancelDownload();
 }
