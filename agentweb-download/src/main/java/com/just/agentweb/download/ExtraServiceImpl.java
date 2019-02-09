@@ -30,7 +30,7 @@ import java.io.Serializable;
  * @since 1.0.0
  */
 
-public class ExtraServiceImpl extends IAgentWebDownloader.ExtraService implements Cloneable, Serializable {
+public class ExtraServiceImpl extends DownloadTask implements Cloneable, Serializable {
 	private static final String TAG = "ExtraServiceImpl";
 	transient Activity mActivity;
 	transient PermissionInterceptor mPermissionInterceptor;
@@ -114,15 +114,11 @@ public class ExtraServiceImpl extends IAgentWebDownloader.ExtraService implement
 
 	@Override
 	protected ExtraServiceImpl clone() throws CloneNotSupportedException {
-
 		ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
 		mExtraServiceImpl.mIsCloneObject = true;
 		mExtraServiceImpl.mActivity = null;
-//		setDownloadListener(null);
 		mExtraServiceImpl.mPermissionInterceptor = null;
 		mExtraServiceImpl.mWebView = null;
-//		mExtraServiceImpl.setDownloadListener(this.getDownloadListener());
-
 		LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
 		return mExtraServiceImpl;
 	}

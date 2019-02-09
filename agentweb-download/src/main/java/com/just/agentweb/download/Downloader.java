@@ -69,7 +69,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	/**
 	 * 总大小
 	 */
-	private volatile long mTotals = -1L;
+	protected volatile long mTotals = -1L;
 	/**
 	 * 上一次下载，文件缓存长度
 	 */
@@ -93,15 +93,15 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	/**
 	 * 下载异常，回调给用户的异常
 	 */
-	private volatile Throwable mThrowable;
+	protected volatile Throwable mThrowable;
 	/**
 	 * 下载最大时长
 	 */
-	private long mDownloadTimeOut = Long.MAX_VALUE;
+	protected long mDownloadTimeOut = Long.MAX_VALUE;
 	/**
 	 * 连接超时
 	 */
-	private int mConnectTimeOut = 10000;
+	protected int mConnectTimeOut = 10000;
 	/**
 	 * 通知
 	 */
@@ -153,7 +153,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	protected Downloader() {
 	}
 
-	private void checkIsNullTask(DownloadTask downloadTask) {
+	void checkIsNullTask(DownloadTask downloadTask) {
 		//todo
 	}
 
@@ -246,7 +246,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 					case HTTP_PARTIAL:
 						if (isEncodingChunked) {
 							this.mTotals = -1L;
-						} else if (this.mTotals > 0L && tmpLength + downloadTask.getFile().length() != this.mTotals) {                        // 服务端响应文件长度不正确，或者本地文件长度被修改。
+						} else if (this.mTotals > 0L && tmpLength + downloadTask.getFile().length() != this.mTotals) {  // 服务端响应文件长度不正确，或者本地文件长度被修改。
 							return ERROR_LOAD;
 						} else if (this.mTotals <= 0L) {
 							this.mTotals = tmpLength + downloadTask.getFile().length();
@@ -388,6 +388,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	@Override
 	protected void onPostExecute(Integer integer) {
 		DownloadTask downloadTask = this.mDownloadTask;
+		ExecuteTasksMap.getInstance().addTask(downloadTask.mUrl, downloadTask.getFile().getAbsolutePath());
 		try {
 			CancelDownloadInformer.getInformer().removeRecipient(downloadTask.getUrl());
 			if (null != downloadTask.getDownloadListener()) {
@@ -449,7 +450,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 		}
 		return mDownloadListener.onResult(code <= 200 ? null
 						: null == this.mThrowable
-						? new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable, downloadTask.getFileUri(),
+						? this.mThrowable = new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable, downloadTask.getFileUri(),
 				downloadTask.getUrl(), mDownloadTask);
 	}
 
@@ -523,7 +524,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 
 	private final void downloadInternal(DownloadTask downloadTask) {
 		checkIsNullTask(downloadTask);
-		ExecuteTasksMap.getInstance().addTask(downloadTask.mUrl, downloadTask.getFile().getAbsolutePath());
 		this.mDownloadTask = downloadTask;
 		this.mTotals = mDownloadTask.getLength();
 		mDownloadTimeOut = mDownloadTask.getDownloadTimeOut();
