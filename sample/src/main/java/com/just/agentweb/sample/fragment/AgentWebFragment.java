@@ -2,6 +2,7 @@ package com.just.agentweb.sample.fragment;
 
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -42,6 +43,7 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.download.DefaultDownloadImpl;
+import com.just.agentweb.download.DownloadImpl;
 import com.just.agentweb.download.Extra;
 import com.just.agentweb.download.SimpleDownloadListener;
 import com.just.agentweb.sample.R;
@@ -125,7 +127,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 		initView(view);
 
-
+		DownloadImpl.getInstance().resume()
 		// AgentWeb 4.0 开始，删除该类以及删除相关的API
 //        DefaultMsgConfig.DownloadMsgConfig mDownloadMsgConfig = mAgentWeb.getDefaultMsgConfig().getDownloadMsgConfig();
 		//  mDownloadMsgConfig.setCancel("放弃");  // 修改下载提示信息，这里可以语言切换

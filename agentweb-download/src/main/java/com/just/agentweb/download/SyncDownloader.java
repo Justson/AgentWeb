@@ -48,8 +48,17 @@ public class SyncDownloader extends Downloader implements Callable<File> {
 	}
 
 	@Override
+	protected void destroyTask() {
+	}
+
+	@Override
+	public DownloadTask cancelDownload() {
+		super.cancelDownload();
+		return null;
+	}
+
+	@Override
 	public File call() throws Exception {
-		File file = mDownloadTask.mFile;
 		synchronized (this) {
 			HANDLER.post(new Runnable() {
 				@Override
@@ -62,7 +71,7 @@ public class SyncDownloader extends Downloader implements Callable<File> {
 		if (null != mThrowable) {
 			throw (RuntimeException) mThrowable;
 		}
-		return file;
+		return mDownloadTask.mFile;
 	}
 
 

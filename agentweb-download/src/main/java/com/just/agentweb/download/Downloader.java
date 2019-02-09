@@ -433,9 +433,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 			}
 		} finally {
 			ExecuteTasksMap.getInstance().removeTask(downloadTask.getFile().getAbsolutePath());
-			if (null != downloadTask) {
-				downloadTask.destroy();
-			}
+			destroyTask();
+		}
+	}
+
+	protected void destroyTask() {
+		DownloadTask downloadTask = mDownloadTask;
+		if (null != downloadTask) {
+			downloadTask.destroy();
 		}
 	}
 
@@ -536,8 +541,8 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	}
 
 	@Override
-	public void cancelDownload() {
-		cancel();
+	public DownloadTask cancelDownload() {
+		return cancel();
 	}
 
 	private final class LoadingRandomAccessFile extends RandomAccessFile {

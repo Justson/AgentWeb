@@ -109,4 +109,10 @@ public class ResourceRequest<T extends DownloadTask> {
 		return DownloadImpl.getInstance().call(mDownloadTask);
 	}
 
+	public void enqueue() {
+		Objects.requireNonNull(mDownloadTask.getContext());
+		Objects.requireNonNull(mDownloadTask.getUrl());
+		DownloadImpl.getInstance().enqueue(mDownloadTask);
+	}
+
 }
