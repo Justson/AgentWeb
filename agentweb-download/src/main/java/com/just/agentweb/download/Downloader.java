@@ -91,7 +91,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	 */
 	private volatile long mAverageSpeed = 0L;
 	/**
-	 * 下载异常，回调给用户的异常
+	 * 下载异常
 	 */
 	protected volatile Throwable mThrowable;
 	/**
@@ -388,7 +388,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 	@Override
 	protected void onPostExecute(Integer integer) {
 		DownloadTask downloadTask = this.mDownloadTask;
-		ExecuteTasksMap.getInstance().addTask(downloadTask.mUrl, downloadTask.getFile().getAbsolutePath());
+		ExecuteTasksMap.getInstance().addTask(downloadTask.mUrl, downloadTask);
 		try {
 			CancelDownloadInformer.getInformer().removeRecipient(downloadTask.getUrl());
 			if (null != downloadTask.getDownloadListener()) {
@@ -432,7 +432,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 				throwable.printStackTrace();
 			}
 		} finally {
-			ExecuteTasksMap.getInstance().removeTask(downloadTask.getFile().getAbsolutePath());
+			ExecuteTasksMap.getInstance().removeTask(downloadTask.getUrl());
 			destroyTask();
 		}
 	}
@@ -450,7 +450,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 		if (null == (mDownloadListener = downloadTask.getDownloadListener())) {
 			LogUtils.e(TAG, "DownloadListener has been death");
 			ExecuteTasksMap.getInstance()
-					.removeTask(downloadTask.getFile().getPath());
+					.removeTask(downloadTask.getUrl());
 			return false;
 		}
 		return mDownloadListener.onResult(code <= 200 ? null

@@ -28,10 +28,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 /**
  * 静态缓存当前正在下载的任务 mUrl
  * i -> mUrl
- * i+1 -> path
+ * i+1 -> DownloadTask
  */
 public class ExecuteTasksMap extends ReentrantReadWriteLock {
-	private LinkedList<String> mTasks = null;
+	private LinkedList<Object> mTasks = null;
 	private static volatile ExecuteTasksMap sInstance = null;
 
 	private ExecuteTasksMap() {
@@ -50,11 +50,11 @@ public class ExecuteTasksMap extends ReentrantReadWriteLock {
 		return sInstance;
 	}
 
-	void removeTask(String path) {
+	void removeTask(String url) {
 		writeLock().lock();
 		try {
 			int position = -1;
-			if ((position = mTasks.indexOf(path)) == -1) {
+			if ((position = mTasks.indexOf(url)) == -1) {
 				return;
 			}
 			mTasks.remove(position);
@@ -64,11 +64,11 @@ public class ExecuteTasksMap extends ReentrantReadWriteLock {
 		}
 	}
 
-	void addTask(String url, String path) {
+	void addTask(String url, DownloadTask task) {
 		writeLock().lock();
 		try {
 			mTasks.add(url);
-			mTasks.add(path);
+			mTasks.add(task);
 		} finally {
 			writeLock().unlock();
 		}

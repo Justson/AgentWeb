@@ -241,8 +241,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 			return;
 		}
 		// 该链接是否正在下载
-		if (ExecuteTasksMap.getInstance().contains(extraService.mUrl)
-				|| ExecuteTasksMap.getInstance().contains(file.getAbsolutePath())) {
+		if (ExecuteTasksMap.getInstance().contains(extraService.mUrl)) {
 			if (null != mAgentWebUIController.get()) {
 				mAgentWebUIController.get().onShowMessage(
 						mActivityWeakReference.get()
