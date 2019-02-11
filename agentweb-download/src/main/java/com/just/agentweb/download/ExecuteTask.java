@@ -20,6 +20,8 @@ package com.just.agentweb.download;
  * @author cenxiaozhong
  * @date 2018/2/12
  */
-public interface CancelDownloadRecipient {
+public interface ExecuteTask {
     DownloadTask cancelDownload();
+
+    DownloadTask getDownloadTask();
 }

@@ -45,209 +45,203 @@ import static com.just.agentweb.AgentWebConfig.AGENTWEB_VERSION;
  */
 public class DownloadNotifier {
 
-	private static final int FLAG = Notification.FLAG_INSISTENT;
-	int requestCode = (int) SystemClock.uptimeMillis();
-	private int mNotificationId;
-	private NotificationManager mNotificationManager;
-	private Notification mNotification;
-	private NotificationCompat.Builder mBuilder;
-	private Context mContext;
-	private String mChannelId = "";
-	private volatile boolean mAddedCancelAction = false;
-	private String mUrl;
-	private File mFile;
-	private static final String TAG = DownloadNotifier.class.getSimpleName();
-	private NotificationCompat.Action mAction;
+    private static final int FLAG = Notification.FLAG_INSISTENT;
+    int requestCode = (int) SystemClock.uptimeMillis();
+    private int mNotificationId;
+    private NotificationManager mNotificationManager;
+    private Notification mNotification;
+    private NotificationCompat.Builder mBuilder;
+    private Context mContext;
+    private String mChannelId = "";
+    private volatile boolean mAddedCancelAction = false;
+    private String mUrl;
+    private File mFile;
+    private static final String TAG = DownloadNotifier.class.getSimpleName();
+    private NotificationCompat.Action mAction;
 
-	DownloadNotifier(Context context, int id) {
-		this.mNotificationId = id;
-		mContext = context;
-		mNotificationManager = (NotificationManager) mContext
-				.getSystemService(NOTIFICATION_SERVICE);
-		try {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-				mBuilder = new NotificationCompat.Builder(mContext,
-						mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
-				NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId,
-						AgentWebUtils.getApplicationName(context),
-						NotificationManager.IMPORTANCE_LOW);
-				NotificationManager mNotificationManager = (NotificationManager) mContext
-						.getSystemService(NOTIFICATION_SERVICE);
-				mNotificationManager.createNotificationChannel(mNotificationChannel);
-				mNotificationChannel.enableLights(false);
-				mNotificationChannel.enableVibration(false);
-				mNotificationChannel.setSound(null, null);
-			} else {
-				mBuilder = new NotificationCompat.Builder(mContext);
-			}
-		} catch (Throwable ignore) {
-			if (LogUtils.isDebug()) {
-				ignore.printStackTrace();
-			}
-		}
-	}
+    DownloadNotifier(Context context, int id) {
+        this.mNotificationId = id;
+        LogUtils.i(TAG, " DownloadNotifier:" + (mNotificationId));
+        mContext = context;
+        mNotificationManager = (NotificationManager) mContext
+                .getSystemService(NOTIFICATION_SERVICE);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mBuilder = new NotificationCompat.Builder(mContext,
+                        mChannelId = mContext.getPackageName().concat(AGENTWEB_VERSION));
+                NotificationChannel mNotificationChannel = new NotificationChannel(mChannelId,
+                        AgentWebUtils.getApplicationName(context),
+                        NotificationManager.IMPORTANCE_LOW);
+                NotificationManager mNotificationManager = (NotificationManager) mContext
+                        .getSystemService(NOTIFICATION_SERVICE);
+                mNotificationManager.createNotificationChannel(mNotificationChannel);
+                mNotificationChannel.enableLights(false);
+                mNotificationChannel.enableVibration(false);
+                mNotificationChannel.setSound(null, null);
+            } else {
+                mBuilder = new NotificationCompat.Builder(mContext);
+            }
+        } catch (Throwable ignore) {
+            if (LogUtils.isDebug()) {
+                ignore.printStackTrace();
+            }
+        }
+    }
 
-	void initBuilder(DownloadTask downloadTask) {
-		String title = TextUtils.isEmpty(downloadTask.getFile().getName()) ?
-				mContext.getString(R.string.agentweb_file_download) :
-				downloadTask.getFile().getName();
+    void initBuilder(DownloadTask downloadTask) {
+        String title = TextUtils.isEmpty(downloadTask.getFile().getName()) ?
+                mContext.getString(R.string.agentweb_file_download) :
+                downloadTask.getFile().getName();
 
-		if (title.length() > 20) {
-			title = "..." + title.substring(title.length() - 20, title.length());
-		}
-		mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 200, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT));
-		mBuilder.setSmallIcon(downloadTask.getIcon());
-		mBuilder.setTicker(mContext.getString(R.string.agentweb_trickter));
-		mBuilder.setContentTitle(title);
-		mBuilder.setContentText(mContext.getString(R.string.agentweb_coming_soon_download));
-		mBuilder.setWhen(System.currentTimeMillis());
-		mBuilder.setAutoCancel(true);
-		mBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
-		int defaults = 0;
-		this.mUrl = downloadTask.getUrl();
-		this.mFile = downloadTask.getFile();
-		mBuilder.setDeleteIntent(buildCancelContent(mContext, downloadTask.getId(), downloadTask.getUrl()));
-		mBuilder.setDefaults(defaults);
-	}
+        if (title.length() > 20) {
+            title = "..." + title.substring(title.length() - 20, title.length());
+        }
+        mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 200, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT));
+        mBuilder.setSmallIcon(downloadTask.getIcon());
+        mBuilder.setTicker(mContext.getString(R.string.agentweb_trickter));
+        mBuilder.setContentTitle(title);
+        mBuilder.setContentText(mContext.getString(R.string.agentweb_coming_soon_download));
+        mBuilder.setWhen(System.currentTimeMillis());
+        mBuilder.setAutoCancel(true);
+        mBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
+        int defaults = 0;
+        this.mUrl = downloadTask.getUrl();
+        this.mFile = downloadTask.getFile();
+        mBuilder.setDeleteIntent(buildCancelContent(mContext, downloadTask.getId(), downloadTask.getUrl()));
+        mBuilder.setDefaults(defaults);
+    }
 
-	private PendingIntent buildCancelContent(Context context, int id, String url) {
+    private PendingIntent buildCancelContent(Context context, int id, String url) {
+        Intent intentCancel = new Intent(context, NotificationCancelReceiver.class);
+        intentCancel.setAction(NotificationCancelReceiver.ACTION);
+        intentCancel.putExtra("TAG", url);
+        PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id * 1000, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
+        LogUtils.i(TAG, "buildCancelContent id:" + (id * 1000));
+        return pendingIntentCancel;
+    }
 
-		Intent intentCancel = new Intent(context, NotificationCancelReceiver.class);
-		intentCancel.setAction(NotificationCancelReceiver.ACTION);
-		intentCancel.putExtra("TAG", url);
-		PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id << 3, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
-		LogUtils.i(TAG, "id<<3:" + (id << 3));
-		return pendingIntentCancel;
-	}
-
-	private void setProgress(int maxprogress, int currentprogress, boolean exc) {
-		mBuilder.setProgress(maxprogress, currentprogress, exc);
-		sent();
-	}
-
-
-	private boolean hasDeleteContent() {
-		return mBuilder.getNotification().deleteIntent != null;
-	}
-
-	private void setDelecte(PendingIntent intent) {
-		mBuilder.getNotification().deleteIntent = intent;
-	}
-
-	/**
-	 * 发送通知
-	 */
-	private void sent() {
+    private void setProgress(int maxprogress, int currentprogress, boolean exc) {
+        mBuilder.setProgress(maxprogress, currentprogress, exc);
+        sent();
+    }
 
 
-		mNotification = mBuilder.build();
-		// 发送该通知
-		mNotificationManager.notify(mNotificationId, mNotification);
-	}
+    private boolean hasDeleteContent() {
+        return mBuilder.getNotification().deleteIntent != null;
+    }
 
+    private void setDelecte(PendingIntent intent) {
+        mBuilder.getNotification().deleteIntent = intent;
+    }
 
-	void onPreDownload() {
-		sent();
-	}
+    /**
+     * 发送通知
+     */
+    private void sent() {
 
+        mNotification = mBuilder.build();
+        // 发送该通知
+        mNotificationManager.notify(mNotificationId, mNotification);
+    }
 
-	void onDownloading(int progress) {
+    void onPreDownload() {
+        sent();
+    }
 
-		if (!this.hasDeleteContent()) {
-			this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
-		}
-		if (!mAddedCancelAction) {
-			mAddedCancelAction = true;
-			mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
-					mContext.getString(android.R.string.cancel),
-					buildCancelContent(mContext, mNotificationId, mUrl));
-			mBuilder.addAction(mAction);
+    void onDownloading(int progress) {
 
-		}
-		mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
-		this.setProgress(100, progress, false);
-		sent();
-	}
+        if (!this.hasDeleteContent()) {
+            this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
+        }
+        if (!mAddedCancelAction) {
+            mAddedCancelAction = true;
+            mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
+                    mContext.getString(android.R.string.cancel),
+                    buildCancelContent(mContext, mNotificationId, mUrl));
+            mBuilder.addAction(mAction);
 
-	void onDownloaded(long loaded) {
+        }
+        mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloading_progress, (progress + "%")));
+        this.setProgress(100, progress, false);
+        sent();
+    }
 
-		if (!this.hasDeleteContent()) {
-			this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
-		}
-		if (!mAddedCancelAction) {
-			mAddedCancelAction = true;
-			mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
-					mContext.getString(android.R.string.cancel),
-					buildCancelContent(mContext, mNotificationId, mUrl));
-			mBuilder.addAction(mAction);
+    void onDownloaded(long loaded) {
 
-		}
-		mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloaded_length, byte2FitMemorySize(loaded)));
-		this.setProgress(100, 20, true);
-		sent();
-	}
+        if (!this.hasDeleteContent()) {
+            this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
+        }
+        if (!mAddedCancelAction) {
+            mAddedCancelAction = true;
+            mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
+                    mContext.getString(android.R.string.cancel),
+                    buildCancelContent(mContext, mNotificationId, mUrl));
+            mBuilder.addAction(mAction);
 
-	private static String byte2FitMemorySize(final long byteNum) {
-		if (byteNum < 0) {
-			return "shouldn't be less than zero!";
-		} else if (byteNum < 1024) {
-			return String.format(Locale.getDefault(), "%.3fB", (double) byteNum);
-		} else if (byteNum < 1048576) {
-			return String.format(Locale.getDefault(), "%.3fKB", (double) byteNum / 1024);
-		} else if (byteNum < 1073741824) {
-			return String.format(Locale.getDefault(), "%.3fMB", (double) byteNum / 1048576);
-		} else {
-			return String.format(Locale.getDefault(), "%.3fGB", (double) byteNum / 1073741824);
-		}
-	}
+        }
+        mBuilder.setContentText(mContext.getString(R.string.agentweb_current_downloaded_length, byte2FitMemorySize(loaded)));
+        this.setProgress(100, 20, true);
+        sent();
+    }
 
-	void onDownloadFinished() {
+    private static String byte2FitMemorySize(final long byteNum) {
+        if (byteNum < 0) {
+            return "shouldn't be less than zero!";
+        } else if (byteNum < 1024) {
+            return String.format(Locale.getDefault(), "%.3fB", (double) byteNum);
+        } else if (byteNum < 1048576) {
+            return String.format(Locale.getDefault(), "%.3fKB", (double) byteNum / 1024);
+        } else if (byteNum < 1073741824) {
+            return String.format(Locale.getDefault(), "%.3fMB", (double) byteNum / 1048576);
+        } else {
+            return String.format(Locale.getDefault(), "%.3fGB", (double) byteNum / 1073741824);
+        }
+    }
 
+    void onDownloadFinished() {
+        try {
+            /**
+             * 用反射获取 mActions 该 Field , mBuilder.mActions 防止迭代该Field域访问不到，或者该Field
+             * 改名导致程序崩溃。
+             */
+            Class<? extends NotificationCompat.Builder> clazz = mBuilder.getClass();
+            Field mField = clazz.getDeclaredField("mActions");
+            ArrayList<NotificationCompat.Action> mActions = null;
+            if (null != mField) {
+                mActions = (ArrayList<NotificationCompat.Action>) mField.get(mBuilder);
+            }
+            int index = -1;
+            if (null != mActions && (index = mActions.indexOf(mAction)) != -1) {
+                mActions.remove(index);
+            }
 
-		try {
-			/**
-			 * 用反射获取 mActions 该 Field , mBuilder.mActions 防止迭代该Field域访问不到，或者该Field
-			 * 改名导致程序崩溃。
-			 */
-			Class<? extends NotificationCompat.Builder> clazz = mBuilder.getClass();
-			Field mField = clazz.getDeclaredField("mActions");
-			ArrayList<NotificationCompat.Action> mActions = null;
-			if (null != mField) {
-				mActions = (ArrayList<NotificationCompat.Action>) mField.get(mBuilder);
-			}
-			int index = -1;
-			if (null != mActions && (index = mActions.indexOf(mAction)) != -1) {
-				mActions.remove(index);
-			}
+        } catch (Throwable ignore) {
+            if (LogUtils.isDebug()) {
+                ignore.printStackTrace();
+            }
+        }
+        Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
+        setDelecte(null);
+        if (null != mIntent) {
+            if (!(mContext instanceof Activity)) {
+                mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
+            PendingIntent rightPendIntent = PendingIntent
+                    .getActivity(mContext,
+                            mNotificationId * 10000, mIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
 
-		} catch (Throwable ignore) {
-			if (LogUtils.isDebug()) {
-				ignore.printStackTrace();
-			}
-		}
-		Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
-		setDelecte(null);
-		if (null != mIntent) {
-			if (!(mContext instanceof Activity)) {
-				mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			}
-			PendingIntent rightPendIntent = PendingIntent
-					.getActivity(mContext,
-							mNotificationId << 4, mIntent,
-							PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentText(mContext.getString(R.string.agentweb_click_open));
+            mBuilder.setProgress(100, 100, false);
+            mBuilder.setContentIntent(rightPendIntent);
+            sent();
+        }
+    }
 
-			mBuilder.setContentText(mContext.getString(R.string.agentweb_click_open));
-			mBuilder.setProgress(100, 100, false);
-			mBuilder.setContentIntent(rightPendIntent);
-			sent();
-		}
-	}
-
-
-	/**
-	 * 根据id清除通知
-	 */
-	void cancel() {
-		mNotificationManager.cancel(mNotificationId);
-	}
+    /**
+     * 根据id清除通知
+     */
+    void cancel() {
+        mNotificationManager.cancel(mNotificationId);
+    }
 }

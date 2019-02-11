@@ -31,133 +31,98 @@ import java.io.Serializable;
  */
 
 public class ExtraServiceImpl extends DownloadTask implements Cloneable, Serializable {
-	private static final String TAG = "ExtraServiceImpl";
-	transient Activity mActivity;
-	transient PermissionInterceptor mPermissionInterceptor;
-	transient WebView mWebView;
-	DefaultDownloadImpl mDefaultDownload;
-	long mContentLength;
-	boolean mIsCloneObject = false;
+    private static final String TAG = "ExtraServiceImpl";
+    transient Activity mActivity;
+    transient PermissionInterceptor mPermissionInterceptor;
+    transient WebView mWebView;
+    DefaultDownloadImpl mDefaultDownload;
+    long mContentLength;
+    boolean mIsCloneObject = false;
 
 
-	@Override
-	public String getUrl() {
-		return mUrl;
-	}
+    @Override
+    public long getContentLength() {
+        return mContentLength;
+    }
 
-	@Override
-	protected ExtraServiceImpl setUrl(String url) {
-		this.mUrl = url;
-		return this;
-	}
+    @Override
+    protected ExtraServiceImpl setContentLength(long contentLength) {
+        this.mContentLength = contentLength;
+        return this;
+    }
 
-	@Override
-	public String getUserAgent() {
-		return mUserAgent;
-	}
-
-	@Override
-	protected ExtraServiceImpl setUserAgent(String userAgent) {
-		this.mUserAgent = userAgent;
-		return this;
-	}
-
-	@Override
-	public String getContentDisposition() {
-		return mContentDisposition;
-	}
-
-	@Override
-	protected ExtraServiceImpl setContentDisposition(String contentDisposition) {
-		this.mContentDisposition = contentDisposition;
-		return this;
-	}
-
-	@Override
-	public String getMimetype() {
-		return mMimetype;
-	}
-
-	@Override
-	protected ExtraServiceImpl setMimetype(String mimetype) {
-		this.mMimetype = mimetype;
-		return this;
-	}
-
-	@Override
-	public long getContentLength() {
-		return mContentLength;
-	}
-
-	@Override
-	protected ExtraServiceImpl setContentLength(long contentLength) {
-		this.mContentLength = contentLength;
-		return this;
-	}
-
-	ExtraServiceImpl setActivity(Activity activity) {
-		mActivity = activity;
-		this.setContext(mActivity);
-		return this;
-	}
+    ExtraServiceImpl setActivity(Activity activity) {
+        mActivity = activity;
+        this.setContext(mActivity);
+        return this;
+    }
 
 
-	ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
-		mPermissionInterceptor = permissionInterceptor;
-		return this;
-	}
+    ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+        mPermissionInterceptor = permissionInterceptor;
+        return this;
+    }
 
-	ExtraServiceImpl setWebView(WebView webView) {
-		this.mWebView = webView;
-		return this;
-	}
+    ExtraServiceImpl setWebView(WebView webView) {
+        this.mWebView = webView;
+        return this;
+    }
 
-	@Override
-	protected ExtraServiceImpl clone() throws CloneNotSupportedException {
-		ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
-		mExtraServiceImpl.mIsCloneObject = true;
-		mExtraServiceImpl.mActivity = null;
-		mExtraServiceImpl.mPermissionInterceptor = null;
-		mExtraServiceImpl.mWebView = null;
-		LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
-		return mExtraServiceImpl;
-	}
+    @Override
+    protected void destroy() {
+        super.destroy();
+        this.mIsCloneObject = true;
+        this.mActivity = null;
+        this.mPermissionInterceptor = null;
+        this.mWebView = null;
+    }
+
+    @Override
+    protected ExtraServiceImpl clone() throws CloneNotSupportedException {
+        ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
+        mExtraServiceImpl.mIsCloneObject = true;
+        mExtraServiceImpl.mActivity = null;
+        mExtraServiceImpl.mPermissionInterceptor = null;
+        mExtraServiceImpl.mWebView = null;
+        LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
+        mId = Config.NOTICATION_ID.incrementAndGet();
+        return mExtraServiceImpl;
+    }
 
 
-	DefaultDownloadImpl create() {
-		return this.mDefaultDownload = new DefaultDownloadImpl(this);
-	}
+    DefaultDownloadImpl create() {
+        return this.mDefaultDownload = new DefaultDownloadImpl(this);
+    }
 
-	@Override
-	public String toString() {
-		return "ExtraServiceImpl{" +
-				"mActivity=" + mActivity +
-				", mPermissionInterceptor=" + mPermissionInterceptor +
-				", mWebView=" + mWebView +
-				", mDefaultDownload=" + mDefaultDownload +
-				", mContentLength=" + mContentLength +
-				", mIsCloneObject=" + mIsCloneObject +
-				", mId=" + mId +
-				", mTotalsLength=" + mTotalsLength +
-				", mContext=" + mContext +
-				", mFile=" + mFile +
-				", mIsDestroyed=" + mIsDestroyed +
-				", mDownloadListener=" + mDownloadListener +
-				", mIsForceDownload=" + mIsForceDownload +
-				", mEnableIndicator=" + mEnableIndicator +
-				", mIcon=" + mIcon +
-				", mIsParallelDownload=" + mIsParallelDownload +
-				", mIsOpenBreakPointDownload=" + mIsOpenBreakPointDownload +
-				", mUrl='" + mUrl + '\'' +
-				", mContentDisposition='" + mContentDisposition + '\'' +
-				", mContentLength=" + mContentLength +
-				", mMimetype='" + mMimetype + '\'' +
-				", mUserAgent='" + mUserAgent + '\'' +
-				", mHeaders=" + mHeaders +
-				", mAutoOpen=" + mAutoOpen +
-				", downloadTimeOut=" + downloadTimeOut +
-				", connectTimeOut=" + connectTimeOut +
-				", blockMaxTime=" + blockMaxTime +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "ExtraServiceImpl{" +
+                "mActivity=" + mActivity +
+                ", mPermissionInterceptor=" + mPermissionInterceptor +
+                ", mWebView=" + mWebView +
+                ", mDefaultDownload=" + mDefaultDownload +
+                ", mContentLength=" + mContentLength +
+                ", mIsCloneObject=" + mIsCloneObject +
+                ", mId=" + mId +
+                ", mTotalsLength=" + mTotalsLength +
+                ", mContext=" + mContext +
+                ", mFile=" + mFile +
+                ", mDownloadListener=" + mDownloadListener +
+                ", mIsForceDownload=" + mIsForceDownload +
+                ", mEnableIndicator=" + mEnableIndicator +
+                ", mIcon=" + mIcon +
+                ", mIsParallelDownload=" + mIsParallelDownload +
+                ", mIsOpenBreakPointDownload=" + mIsOpenBreakPointDownload +
+                ", mUrl='" + mUrl + '\'' +
+                ", mContentDisposition='" + mContentDisposition + '\'' +
+                ", mContentLength=" + mContentLength +
+                ", mMimetype='" + mMimetype + '\'' +
+                ", mUserAgent='" + mUserAgent + '\'' +
+                ", mHeaders=" + mHeaders +
+                ", mAutoOpen=" + mAutoOpen +
+                ", downloadTimeOut=" + downloadTimeOut +
+                ", connectTimeOut=" + connectTimeOut +
+                ", blockMaxTime=" + blockMaxTime +
+                '}';
+    }
 }

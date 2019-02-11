@@ -16,70 +16,71 @@
 
 package com.just.agentweb.download;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+
 /**
+ * ExecuteTasksMap 缓存当前所有 Downloader，
+ * 如果用户滑动通知取消下载，通知相应 Downloader 取消下载。
+ *
  * @author cenxiaozhong
- * @date 2019/2/8
- * @since 1.0.0
+ * @date 2018/2/12
  */
-
-import java.util.LinkedList;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-/**
- * 静态缓存当前正在下载的任务 Url
- * i -> Url
- * i+1 -> DownloadTask
- */
-public class ExecuteTasksMap extends ReentrantReadWriteLock {
-    private LinkedList<Object> mTasks = null;
-    private static volatile ExecuteTasksMap sInstance = null;
+public final class ExecuteTasksMap {
+    private ConcurrentHashMap<String, ExecuteTask> mTasks = null;
 
     private ExecuteTasksMap() {
-        super(false);
-        mTasks = new LinkedList();
+        mTasks = new ConcurrentHashMap<>();
     }
 
     static ExecuteTasksMap getInstance() {
-        if (null == sInstance) {
-            synchronized (ExecuteTasksMap.class) {
-                if (null == sInstance) {
-                    sInstance = new ExecuteTasksMap();
+        return ExecuteTaskHolder.INSTANCE;
+    }
+
+    DownloadTask cancelTask(String url) {
+        ExecuteTask mExecuteTask = mTasks.get(url);
+        if (null != mExecuteTask) {
+            return mExecuteTask.cancelDownload();
+        }
+        return null;
+    }
+
+    List<DownloadTask> cancelTasks() {
+        Set<Map.Entry<String, ExecuteTask>> sets = mTasks.entrySet();
+        if (sets != null && sets.size() > 0) {
+            ArrayList<DownloadTask> downloadTasks = new ArrayList<>();
+            for (Map.Entry<String, ExecuteTask> entry : sets) {
+                DownloadTask downloadTask = entry.getValue().cancelDownload();
+                if (null != downloadTask) {
+                    downloadTasks.add(downloadTask);
                 }
             }
+            return downloadTasks;
         }
-        return sInstance;
+        return null;
+    }
+
+    void addTask(String url, ExecuteTask recipient) {
+        if (null != url && null != recipient) {
+            mTasks.put(url, recipient);
+        }
     }
 
     void removeTask(String url) {
-        writeLock().lock();
-        try {
-            int position = -1;
-            if ((position = mTasks.indexOf(url)) == -1) {
-                return;
-            }
-            mTasks.remove(position);
-            mTasks.remove(position + 1);
-        } finally {
-            writeLock().unlock();
-        }
-    }
-
-    void addTask(String url, DownloadTask task) {
-        writeLock().lock();
-        try {
-            mTasks.add(url);
-            mTasks.add(task);
-        } finally {
-            writeLock().unlock();
+        if (null != url) {
+            this.mTasks.remove(url);
         }
     }
 
     boolean contains(String url) {
-        readLock().lock();
-        try {
-            return mTasks.contains(url);
-        } finally {
-            readLock().unlock();
-        }
+        return mTasks.contains(url);
+    }
+
+    private static class ExecuteTaskHolder {
+        private static final ExecuteTasksMap INSTANCE = new ExecuteTasksMap();
     }
 }
