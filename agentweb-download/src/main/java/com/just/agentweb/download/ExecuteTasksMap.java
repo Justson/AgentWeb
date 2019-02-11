@@ -26,8 +26,8 @@ import java.util.LinkedList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * 静态缓存当前正在下载的任务 mUrl
- * i -> mUrl
+ * 静态缓存当前正在下载的任务 Url
+ * i -> Url
  * i+1 -> DownloadTask
  */
 public class ExecuteTasksMap extends ReentrantReadWriteLock {
