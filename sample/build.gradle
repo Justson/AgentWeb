@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    compileSdkVersion COMPILE_SDK_VERSION.toInteger()
+    buildToolsVersion BUILD_TOOL_VERSION
     defaultConfig {
         applicationId "com.just.agentweb.sample"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode 4
         versionName "4.0.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -37,14 +37,18 @@ android {
     }
 
     lintOptions {
-        abortOnError false;
+        abortOnError false
     }
 
-
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
-    //compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -55,15 +59,13 @@ dependencies {
     compile project(':agentweb-core')
     compile project(':agentweb-download')
     compile project(':agentweb-filechooser')
-
-//    compile 'com.just.agentweb:agentweb:4.0.2'
-//    compile 'com.just.agentweb:download:4.0.2'
-//    compile 'com.just.agentweb:filechooser:4.0.2'
-    
+    //    compile 'com.just.agentweb:agentweb:4.0.2'
+    //    compile 'com.just.agentweb:download:4.0.2'
+    //    compile 'com.just.agentweb:filechooser:4.0.2'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    compile files('libs/alipaysdk-20170922.jar')
+//    compile files('libs/alipaysdk-20170922.jar')
     compile 'us.feras.mdv:markdownview:1.1.0'
     compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
     compile 'com.github.lzyzsd:jsbridge:1.0.4'
@@ -72,5 +74,4 @@ dependencies {
     compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
     compile 'com.tencent.sonic:sdk:2.0.0'
     compile 'com.coolindicator.sdk:coolindicator:1.0.0-beta'
-
 }

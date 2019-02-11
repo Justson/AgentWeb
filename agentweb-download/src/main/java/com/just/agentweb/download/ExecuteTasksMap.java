@@ -31,56 +31,55 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * i+1 -> DownloadTask
  */
 public class ExecuteTasksMap extends ReentrantReadWriteLock {
-	private LinkedList<Object> mTasks = null;
-	private static volatile ExecuteTasksMap sInstance = null;
+    private LinkedList<Object> mTasks = null;
+    private static volatile ExecuteTasksMap sInstance = null;
 
-	private ExecuteTasksMap() {
-		super(false);
-		mTasks = new LinkedList();
-	}
+    private ExecuteTasksMap() {
+        super(false);
+        mTasks = new LinkedList();
+    }
 
-	static ExecuteTasksMap getInstance() {
-		if (null == sInstance) {
-			synchronized (ExecuteTasksMap.class) {
-				if (null == sInstance) {
-					sInstance = new ExecuteTasksMap();
-				}
-			}
-		}
-		return sInstance;
-	}
+    static ExecuteTasksMap getInstance() {
+        if (null == sInstance) {
+            synchronized (ExecuteTasksMap.class) {
+                if (null == sInstance) {
+                    sInstance = new ExecuteTasksMap();
+                }
+            }
+        }
+        return sInstance;
+    }
 
-	void removeTask(String url) {
-		writeLock().lock();
-		try {
-			int position = -1;
-			if ((position = mTasks.indexOf(url)) == -1) {
-				return;
-			}
-			mTasks.remove(position);
-			mTasks.remove(position - 1);
-		} finally {
-			writeLock().unlock();
-		}
-	}
+    void removeTask(String url) {
+        writeLock().lock();
+        try {
+            int position = -1;
+            if ((position = mTasks.indexOf(url)) == -1) {
+                return;
+            }
+            mTasks.remove(position);
+            mTasks.remove(position + 1);
+        } finally {
+            writeLock().unlock();
+        }
+    }
 
-	void addTask(String url, DownloadTask task) {
-		writeLock().lock();
-		try {
-			mTasks.add(url);
-			mTasks.add(task);
-		} finally {
-			writeLock().unlock();
-		}
-	}
+    void addTask(String url, DownloadTask task) {
+        writeLock().lock();
+        try {
+            mTasks.add(url);
+            mTasks.add(task);
+        } finally {
+            writeLock().unlock();
+        }
+    }
 
-	// 加锁读
-	boolean contains(String url) {
-		readLock().lock();
-		try {
-			return mTasks.contains(url);
-		} finally {
-			readLock().unlock();
-		}
-	}
+    boolean contains(String url) {
+        readLock().lock();
+        try {
+            return mTasks.contains(url);
+        } finally {
+            readLock().unlock();
+        }
+    }
 }
