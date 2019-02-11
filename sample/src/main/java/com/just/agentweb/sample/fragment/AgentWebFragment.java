@@ -180,7 +180,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 					.setConnectTimeOut(6000) // 连接最大时长
 					.setBlockMaxTime(10 * 60 * 1000)  // 以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常
 					.setDownloadTimeOut(Long.MAX_VALUE) // 下载最大时长
-					.setParallelDownload(false)  // 串行下载更节省资源哦
+					.setParallelDownload(true)  // 串行下载更节省资源哦
 					.setEnableIndicator(true)  // false 关闭进度通知
 					.addHeader("Cookie", "xx") // 自定义请求头
 					.setAutoOpen(true) // 下载完成自动打开
@@ -447,8 +447,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		Uri mUri = Uri.parse(targetUrl);
 		intent.setData(mUri);
 		startActivity(intent);
-
-
 	}
 
 

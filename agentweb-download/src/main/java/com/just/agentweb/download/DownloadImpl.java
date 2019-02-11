@@ -30,64 +30,64 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DownloadImpl {
 
-	private static final DownloadImpl sInstance = new DownloadImpl();
-	private ConcurrentHashMap<String, DownloadTask> mTasks = new ConcurrentHashMap<>();
+    private static final DownloadImpl sInstance = new DownloadImpl();
+    private ConcurrentHashMap<String, DownloadTask> mTasks = new ConcurrentHashMap<>();
 
-	public static DownloadImpl getInstance() {
-		return sInstance;
-	}
+    public static DownloadImpl getInstance() {
+        return sInstance;
+    }
 
-	public ResourceRequest with(Context context) {
-		return ResourceRequest.with(context);
-	}
+    public ResourceRequest with(Context context) {
+        return ResourceRequest.with(context);
+    }
 
 
-	public void enqueue(DownloadTask downloadTask) {
-		new Downloader().download(downloadTask);
-	}
+    public boolean enqueue(DownloadTask downloadTask) {
+        return new Downloader().download(downloadTask);
+    }
 
-	public File call(DownloadTask downloadTask) {
-		Callable<File> callable = new SyncDownloader(downloadTask);
-		try {
-			return callable.call();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+    public File call(DownloadTask downloadTask) {
+        Callable<File> callable = new SyncDownloader(downloadTask);
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-	public File callEx(DownloadTask downloadTask) throws Exception {
-		Callable<File> callable = new SyncDownloader(downloadTask);
-		return callable.call();
-	}
+    public File callEx(DownloadTask downloadTask) throws Exception {
+        Callable<File> callable = new SyncDownloader(downloadTask);
+        return callable.call();
+    }
 
-	public DownloadTask cancel(String url) {
-		return CancelDownloadInformer.getInformer().cancelAction(url);
-	}
+    public DownloadTask cancel(String url) {
+        return ExecuteTasksMap.getInstance().cancelTask(url);
+    }
 
-	public List<DownloadTask> cancelAll() {
-		return CancelDownloadInformer.getInformer().cancelActions();
-	}
+    public List<DownloadTask> cancelAll() {
+        return ExecuteTasksMap.getInstance().cancelTasks();
+    }
 
-	public DownloadTask pause(String url) {
-		DownloadTask downloadTask = cancel(url);
-		if (downloadTask != null) {
-			mTasks.put(downloadTask.getUrl(), downloadTask);
-		}
-		return downloadTask;
-	}
+    public DownloadTask pause(String url) {
+        DownloadTask downloadTask = cancel(url);
+        if (downloadTask != null) {
+            mTasks.put(downloadTask.getUrl(), downloadTask);
+        }
+        return downloadTask;
+    }
 
-	public boolean resume(String url) {
-		DownloadTask downloadTask = mTasks.get(url);
-		if (downloadTask != null) {
-			enqueue(downloadTask);
-			return true;
-		}
-		return false;
-	}
+    public boolean resume(String url) {
+        DownloadTask downloadTask = mTasks.get(url);
+        if (downloadTask != null) {
+            enqueue(downloadTask);
+            return true;
+        }
+        return false;
+    }
 
-	public boolean exist(String url) {
-		return ExecuteTasksMap.getInstance().contains(url);
-	}
+    public boolean exist(String url) {
+        return ExecuteTasksMap.getInstance().contains(url);
+    }
 
 }

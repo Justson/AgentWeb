@@ -22,9 +22,9 @@ package com.just.agentweb.download;
  * @since 1.0.0
  */
 public interface IDownloader<T extends DownloadTask> {
-	void download(T t);
+    boolean download(T t);
 
-	T cancel();
+    T cancel();
 
-	int status();
+    int status();
 }

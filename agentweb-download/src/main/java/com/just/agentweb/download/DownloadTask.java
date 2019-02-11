@@ -18,10 +18,11 @@ package com.just.agentweb.download;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.IntDef;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.just.agentweb.download.Config.NOTICATION_ID;
 
@@ -31,97 +32,99 @@ import static com.just.agentweb.download.Config.NOTICATION_ID;
  */
 public class DownloadTask extends Extra implements Serializable, Cloneable {
 
-	int mId = NOTICATION_ID.getAndIncrement();
-	static final String TAG = DownloadTask.class.getSimpleName();
-	long mTotalsLength;
-	/**
-	 * Context
-	 */
-	Context mContext;
-	/**
-	 * 下载的文件
-	 */
-	File mFile;
-	/**
-	 * 表示当前任务是否被销毁了。
-	 */
-	AtomicBoolean mIsDestroyed = new AtomicBoolean(false);
-	DownloadListener mDownloadListener;
+    static final String TAG = DownloadTask.class.getSimpleName();
+    int mId = NOTICATION_ID.incrementAndGet();
+    long mTotalsLength;
+    Context mContext;
+    File mFile;
+    DownloadListener mDownloadListener;
+    public static final int STATUS_NEW = 1000;
+    public static final int STATUS_PENDDING = 1001;
+    public static final int STATUS_DOWNLOADING = 1002;
+    public static final int STATUS_COMPLETED = 1003;
 
-	public DownloadTask() {
-		super();
-	}
+    @IntDef({STATUS_NEW, STATUS_PENDDING, STATUS_DOWNLOADING, STATUS_COMPLETED})
+    @interface DownloadTaskStatus {
+    }
 
-	public int getId() {
-		return this.mId;
-	}
+    private AtomicInteger status = new AtomicInteger(STATUS_NEW);
 
-	public Context getContext() {
-		return mContext;
-	}
+    public DownloadTask() {
+        super();
+    }
 
-	public void setContext(Context context) {
-		mContext = context.getApplicationContext();
-	}
+    public int getStatus() {
+        return status.get();
+    }
 
-	public File getFile() {
-		return mFile;
-	}
+    void setStatus(@DownloadTaskStatus int status) {
+        this.status.set(status);
+    }
 
-	public Uri getFileUri() {
-		return Uri.fromFile(this.mFile);
-	}
+    public int getId() {
+        return this.mId;
+    }
 
-	public void setFile(File file) {
-		mFile = file;
-	}
+    public Context getContext() {
+        return mContext;
+    }
 
+    public void setContext(Context context) {
+        mContext = context.getApplicationContext();
+    }
 
-	public boolean isDestroy() {
-		return null == this.mIsDestroyed || this.mIsDestroyed.get();
-	}
+    public File getFile() {
+        return mFile;
+    }
 
+    public Uri getFileUri() {
+        return Uri.fromFile(this.mFile);
+    }
 
-	public void destroy() {
-		this.mIsDestroyed.set(true);
-		this.mId = -1;
-		this.mUrl = null;
-		this.mContext = null;
-		this.mFile = null;
-		this.mIsParallelDownload = false;
-		mIsForceDownload = false;
-		mEnableIndicator = true;
-		mIcon = R.drawable.ic_file_download_black_24dp;
-		mIsParallelDownload = true;
-		mIsOpenBreakPointDownload = true;
-		mUserAgent = "";
-		mContentDisposition = "";
-		mMimetype = "";
-		mContentLength = -1L;
-		if (mHeaders != null) {
-			mHeaders.clear();
-			mHeaders = null;
-		}
-	}
+    public void setFile(File file) {
+        mFile = file;
+    }
 
-	public DownloadListener getDownloadListener() {
-		return mDownloadListener;
-	}
+    protected void destroy() {
+        this.mId = -1;
+        this.mUrl = null;
+        this.mContext = null;
+        this.mFile = null;
+        this.mIsParallelDownload = false;
+        mIsForceDownload = false;
+        mEnableIndicator = true;
+        mIcon = R.drawable.ic_file_download_black_24dp;
+        mIsParallelDownload = true;
+        mIsOpenBreakPointDownload = true;
+        mUserAgent = "";
+        mContentDisposition = "";
+        mMimetype = "";
+        mContentLength = -1L;
+        if (mHeaders != null) {
+            mHeaders.clear();
+            mHeaders = null;
+        }
+        status.set(STATUS_NEW);
+    }
 
-	public void setDownloadListener(DownloadListener downloadListener) {
-		mDownloadListener = downloadListener;
-	}
+    public DownloadListener getDownloadListener() {
+        return mDownloadListener;
+    }
 
-	public long getLength() {
-		return mTotalsLength;
-	}
+    public void setDownloadListener(DownloadListener downloadListener) {
+        mDownloadListener = downloadListener;
+    }
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+    public long getLength() {
+        return mTotalsLength;
+    }
 
-	public void setLength(long length) {
-		mTotalsLength = length;
-	}
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public void setLength(long length) {
+        mTotalsLength = length;
+    }
 }

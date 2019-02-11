@@ -17,7 +17,6 @@
 package com.just.agentweb.download;
 
 import android.support.annotation.DrawableRes;
-import android.util.ArrayMap;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -55,6 +54,9 @@ public class Extra implements Serializable, Cloneable {
 	 * UA
 	 */
 	protected String mUserAgent;
+	/**
+	 * Header
+	 */
 	protected Map<String, String> mHeaders;
 	/**
 	 * 下载文件完成，是否自动打开该文件
@@ -208,7 +210,7 @@ public class Extra implements Serializable, Cloneable {
 
 	public Extra addHeader(String key, String value) {
 		if (this.mHeaders == null) {
-			this.mHeaders = new ArrayMap<>();
+			this.mHeaders = new android.support.v4.util.ArrayMap<>();
 		}
 		this.mHeaders.put(key, value);
 		return this;
