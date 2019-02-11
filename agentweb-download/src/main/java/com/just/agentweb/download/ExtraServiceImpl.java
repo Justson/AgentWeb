@@ -78,7 +78,7 @@ public class ExtraServiceImpl extends DownloadTask implements Cloneable, Seriali
     }
 
     @Override
-    protected ExtraServiceImpl clone() throws CloneNotSupportedException {
+    protected ExtraServiceImpl clone() {
         ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
         mExtraServiceImpl.mIsCloneObject = true;
         mExtraServiceImpl.mActivity = null;
@@ -112,7 +112,7 @@ public class ExtraServiceImpl extends DownloadTask implements Cloneable, Seriali
                 ", mEnableIndicator=" + mEnableIndicator +
                 ", mIcon=" + mIcon +
                 ", mIsParallelDownload=" + mIsParallelDownload +
-                ", mIsOpenBreakPointDownload=" + mIsOpenBreakPointDownload +
+                ", mIsBreakPointDownload=" + mIsBreakPointDownload +
                 ", mUrl='" + mUrl + '\'' +
                 ", mContentDisposition='" + mContentDisposition + '\'' +
                 ", mContentLength=" + mContentLength +

@@ -2,7 +2,6 @@ package com.just.agentweb.sample.fragment;
 
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -43,7 +42,6 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.download.DefaultDownloadImpl;
-import com.just.agentweb.download.DownloadImpl;
 import com.just.agentweb.download.Extra;
 import com.just.agentweb.download.SimpleDownloadListener;
 import com.just.agentweb.sample.R;
@@ -175,7 +173,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		@Override
 		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
 			LogUtils.i(TAG, "onStart:" + url);
-			extra.setOpenBreakPointDownload(true) // 是否开启断点续传
+			extra.setBreakPointDownload(true) // 是否开启断点续传
 					.setIcon(R.drawable.ic_file_download_black_24dp) //下载通知的icon
 					.setConnectTimeOut(6000) // 连接最大时长
 					.setBlockMaxTime(10 * 60 * 1000)  // 以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常

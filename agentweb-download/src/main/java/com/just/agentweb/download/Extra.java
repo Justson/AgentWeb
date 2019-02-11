@@ -28,205 +28,225 @@ import java.util.Map;
  */
 public class Extra implements Serializable, Cloneable {
 
-	protected boolean mIsForceDownload = false;
-	protected boolean mEnableIndicator = true;
-	@DrawableRes
-	protected int mIcon = R.drawable.ic_file_download_black_24dp;
-	protected boolean mIsParallelDownload = true;
-	protected boolean mIsOpenBreakPointDownload = true;
-	/**
-	 * 当前下载链接
-	 */
-	protected String mUrl;
-	/**
-	 * mContentDisposition ，提取文件名 ，如果ContentDisposition不指定文件名，则从url中提取文件名
-	 */
-	protected String mContentDisposition;
-	/**
-	 * 文件大小
-	 */
-	protected long mContentLength;
-	/**
-	 * 文件类型
-	 */
-	protected String mMimetype;
-	/**
-	 * UA
-	 */
-	protected String mUserAgent;
-	/**
-	 * Header
-	 */
-	protected Map<String, String> mHeaders;
-	/**
-	 * 下载文件完成，是否自动打开该文件
-	 */
-	protected boolean mAutoOpen = false;
+    /**
+     * 强制下肢
+     */
+    protected boolean mIsForceDownload = false;
+    /**
+     * 显示系统通知
+     */
+    protected boolean mEnableIndicator = true;
+    /**
+     * 通知icon
+     */
+    @DrawableRes
+    protected int mIcon = R.drawable.ic_file_download_black_24dp;
+    /**
+     * 并行下载
+     */
+    protected boolean mIsParallelDownload = true;
+    /**
+     * 断点续传，分块传输该字段无效
+     */
+    protected boolean mIsBreakPointDownload = true;
+    /**
+     * 当前下载链接
+     */
+    protected String mUrl;
+    /**
+     * mContentDisposition ，提取文件名 ，如果ContentDisposition不指定文件名，则从url中提取文件名
+     */
+    protected String mContentDisposition;
+    /**
+     * 文件大小
+     */
+    protected long mContentLength;
+    /**
+     * 文件类型
+     */
+    protected String mMimetype;
+    /**
+     * UA
+     */
+    protected String mUserAgent;
+    /**
+     * Header
+     */
+    protected Map<String, String> mHeaders;
+    /**
+     * 下载文件完成，是否自动打开该文件
+     */
+    protected boolean mAutoOpen = false;
+    /**
+     * 超时时长默认为两小时
+     */
+    protected long downloadTimeOut = Long.MAX_VALUE;
+    /**
+     * 连接超时， 默认10s
+     */
+    protected int connectTimeOut = 10 * 1000;
+    /**
+     * 以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常 。
+     */
+    protected int blockMaxTime = 10 * 60 * 1000;
 
-	public Map<String, String> getHeaders() {
-		return mHeaders;
-	}
+    public Map<String, String> getHeaders() {
+        return mHeaders;
+    }
 
-	public Extra setHeaders(Map<String, String> headers) {
-		mHeaders = headers;
-		return this;
-	}
+    public Extra setHeaders(Map<String, String> headers) {
+        mHeaders = headers;
+        return this;
+    }
 
-	/**
-	 * 超时时长默认为两小时
-	 */
-	protected long downloadTimeOut = Long.MAX_VALUE;
-	// 连接超时， 默认10s
-	protected int connectTimeOut = 10 * 1000;
-	/**
-	 * 以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常 。
-	 */
-	protected int blockMaxTime = 10 * 60 * 1000;
+    protected Extra() {
 
-
-	protected Extra() {
-
-	}
-
-
-	public int getBlockMaxTime() {
-		return blockMaxTime;
-	}
-
-	public Extra setBlockMaxTime(int blockMaxTime) {
-		this.blockMaxTime = blockMaxTime;
-		return this;
-	}
-
-	public String getUrl() {
-		return mUrl;
-	}
-
-	protected Extra setUrl(String url) {
-		this.mUrl = url;
-		return this;
-	}
-
-	public String getUserAgent() {
-		return mUserAgent;
-	}
-
-	protected Extra setUserAgent(String userAgent) {
-		this.mUserAgent = userAgent;
-		return this;
-	}
-
-	public String getContentDisposition() {
-		return mContentDisposition;
-	}
-
-	protected Extra setContentDisposition(String contentDisposition) {
-		this.mContentDisposition = contentDisposition;
-		return this;
-	}
-
-	public String getMimetype() {
-		return mMimetype;
-	}
-
-	protected Extra setMimetype(String mimetype) {
-		this.mMimetype = mimetype;
-		return this;
-	}
-
-	public long getContentLength() {
-		return mContentLength;
-	}
-
-	protected Extra setContentLength(long contentLength) {
-		this.mContentLength = contentLength;
-		return this;
-	}
-
-	public boolean isForceDownload() {
-		return mIsForceDownload;
-	}
-
-	public boolean isEnableIndicator() {
-		return mEnableIndicator;
-	}
+    }
 
 
-	public long getDownloadTimeOut() {
-		return downloadTimeOut;
-	}
+    public int getBlockMaxTime() {
+        return blockMaxTime;
+    }
 
-	public Extra setDownloadTimeOut(long downloadTimeOut) {
-		this.downloadTimeOut = downloadTimeOut;
-		return this;
-	}
+    public Extra setBlockMaxTime(int blockMaxTime) {
+        this.blockMaxTime = blockMaxTime;
+        return this;
+    }
 
-	public int getConnectTimeOut() {
-		return connectTimeOut;
-	}
+    public String getUrl() {
+        return mUrl;
+    }
 
-	public Extra setConnectTimeOut(int connectTimeOut) {
-		this.connectTimeOut = connectTimeOut;
-		return this;
-	}
+    protected Extra setUrl(String url) {
+        this.mUrl = url;
+        return this;
+    }
 
-	public int getIcon() {
-		return mIcon;
-	}
+    public String getUserAgent() {
+        return mUserAgent;
+    }
 
-	public boolean isParallelDownload() {
-		return mIsParallelDownload;
-	}
+    protected Extra setUserAgent(String userAgent) {
+        this.mUserAgent = userAgent;
+        return this;
+    }
 
-	public boolean isOpenBreakPointDownload() {
-		return mIsOpenBreakPointDownload;
-	}
+    public String getContentDisposition() {
+        return mContentDisposition;
+    }
 
-	public Extra setOpenBreakPointDownload(boolean openBreakPointDownload) {
-		mIsOpenBreakPointDownload = openBreakPointDownload;
-		return this;
-	}
+    protected Extra setContentDisposition(String contentDisposition) {
+        this.mContentDisposition = contentDisposition;
+        return this;
+    }
 
-	public Extra setForceDownload(boolean force) {
-		mIsForceDownload = force;
-		return this;
-	}
+    public String getMimetype() {
+        return mMimetype;
+    }
 
-	public Extra setEnableIndicator(boolean enableIndicator) {
-		this.mEnableIndicator = enableIndicator;
-		return this;
-	}
+    protected Extra setMimetype(String mimetype) {
+        this.mMimetype = mimetype;
+        return this;
+    }
+
+    public long getContentLength() {
+        return mContentLength;
+    }
+
+    protected Extra setContentLength(long contentLength) {
+        this.mContentLength = contentLength;
+        return this;
+    }
+
+    public boolean isForceDownload() {
+        return mIsForceDownload;
+    }
+
+    public boolean isEnableIndicator() {
+        return mEnableIndicator;
+    }
 
 
-	public Extra setIcon(@DrawableRes int icon) {
-		this.mIcon = icon;
-		return this;
-	}
+    public long getDownloadTimeOut() {
+        return downloadTimeOut;
+    }
 
-	public Extra setParallelDownload(boolean parallelDownload) {
-		mIsParallelDownload = parallelDownload;
-		return this;
-	}
+    public Extra setDownloadTimeOut(long downloadTimeOut) {
+        this.downloadTimeOut = downloadTimeOut;
+        return this;
+    }
 
-	public Extra addHeader(String key, String value) {
-		if (this.mHeaders == null) {
-			this.mHeaders = new android.support.v4.util.ArrayMap<>();
-		}
-		this.mHeaders.put(key, value);
-		return this;
-	}
+    public int getConnectTimeOut() {
+        return connectTimeOut;
+    }
 
-	public Extra setAutoOpen(boolean autoOpen) {
-		mAutoOpen = autoOpen;
-		return this;
-	}
+    public Extra setConnectTimeOut(int connectTimeOut) {
+        this.connectTimeOut = connectTimeOut;
+        return this;
+    }
 
-	public boolean isAutoOpen() {
-		return mAutoOpen;
-	}
+    public int getIcon() {
+        return mIcon;
+    }
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+    public boolean isParallelDownload() {
+        return mIsParallelDownload;
+    }
+
+    public boolean isBreakPointDownload() {
+        return mIsBreakPointDownload;
+    }
+
+    public Extra setBreakPointDownload(boolean breakPointDownload) {
+        mIsBreakPointDownload = breakPointDownload;
+        return this;
+    }
+
+    public Extra setForceDownload(boolean force) {
+        mIsForceDownload = force;
+        return this;
+    }
+
+    public Extra setEnableIndicator(boolean enableIndicator) {
+        this.mEnableIndicator = enableIndicator;
+        return this;
+    }
+
+
+    public Extra setIcon(@DrawableRes int icon) {
+        this.mIcon = icon;
+        return this;
+    }
+
+    public Extra setParallelDownload(boolean parallelDownload) {
+        mIsParallelDownload = parallelDownload;
+        return this;
+    }
+
+    public Extra addHeader(String key, String value) {
+        if (this.mHeaders == null) {
+            this.mHeaders = new android.support.v4.util.ArrayMap<>();
+        }
+        this.mHeaders.put(key, value);
+        return this;
+    }
+
+    public Extra setAutoOpen(boolean autoOpen) {
+        mAutoOpen = autoOpen;
+        return this;
+    }
+
+    public boolean isAutoOpen() {
+        return mAutoOpen;
+    }
+
+    @Override
+    protected Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return new Extra();
+    }
 }

@@ -18,10 +18,11 @@ package com.just.agentweb.download;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
-import android.util.ArrayMap;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.io.File;
-import java.util.Objects;
 
 /**
  * @author cenxiaozhong
@@ -29,97 +30,103 @@ import java.util.Objects;
  * @since 1.0.0
  */
 public class ResourceRequest<T extends DownloadTask> {
-	private DownloadTask mDownloadTask;
+    private DownloadTask mDownloadTask;
 
-	public static ResourceRequest with(Context context) {
-		ResourceRequest resourceRequest = new ResourceRequest();
-		resourceRequest.mDownloadTask = new DownloadTask();
-		resourceRequest.mDownloadTask.setContext(context);
-		return resourceRequest;
-	}
+    public static ResourceRequest with(Context context) {
+        ResourceRequest resourceRequest = new ResourceRequest();
+        resourceRequest.mDownloadTask = Config.getsDefaultDownloadTask();
+        resourceRequest.mDownloadTask.setContext(context);
+        return resourceRequest;
+    }
 
-	public ResourceRequest url(String url) {
-		mDownloadTask.setUrl(url);
-		return this;
-	}
+    public ResourceRequest url(@NonNull String url) {
+        mDownloadTask.setUrl(url);
+        return this;
+    }
 
-	public ResourceRequest target(File target) {
-		mDownloadTask.setFile(target);
-		return this;
-	}
+    public ResourceRequest target(@Nullable File target) {
+        mDownloadTask.setFile(target);
+        return this;
+    }
 
-	protected ResourceRequest setContentLength(long contentLength) {
-		mDownloadTask.mContentLength = contentLength;
-		return this;
-	}
-
-
-	public ResourceRequest setDownloadTimeOut(long downloadTimeOut) {
-		mDownloadTask.downloadTimeOut = downloadTimeOut;
-		return this;
-	}
-
-	public ResourceRequest setConnectTimeOut(int connectTimeOut) {
-		mDownloadTask.connectTimeOut = connectTimeOut;
-		return this;
-	}
-
-	public ResourceRequest setOpenBreakPointDownload(boolean openBreakPointDownload) {
-		mDownloadTask.mIsOpenBreakPointDownload = openBreakPointDownload;
-		return this;
-	}
-
-	public ResourceRequest setForceDownload(boolean force) {
-		mDownloadTask.mIsForceDownload = force;
-		return this;
-	}
-
-	public ResourceRequest setEnableIndicator(boolean enableIndicator) {
-		mDownloadTask.mEnableIndicator = enableIndicator;
-		return this;
-	}
+    protected ResourceRequest setContentLength(long contentLength) {
+        mDownloadTask.mContentLength = contentLength;
+        return this;
+    }
 
 
-	public ResourceRequest setIcon(@DrawableRes int icon) {
-		mDownloadTask.mIcon = icon;
-		return this;
-	}
+    public ResourceRequest setDownloadTimeOut(long downloadTimeOut) {
+        mDownloadTask.downloadTimeOut = downloadTimeOut;
+        return this;
+    }
 
-	public ResourceRequest setParallelDownload(boolean parallelDownload) {
-		mDownloadTask.mIsParallelDownload = parallelDownload;
-		return this;
-	}
+    public ResourceRequest setConnectTimeOut(int connectTimeOut) {
+        mDownloadTask.connectTimeOut = connectTimeOut;
+        return this;
+    }
 
-	public ResourceRequest addHeader(String key, String value) {
-		if (mDownloadTask.mHeaders == null) {
-			mDownloadTask.mHeaders = new ArrayMap<>();
-		}
-		mDownloadTask.mHeaders.put(key, value);
-		return this;
-	}
+    public ResourceRequest setOpenBreakPointDownload(boolean openBreakPointDownload) {
+        mDownloadTask.mIsBreakPointDownload = openBreakPointDownload;
+        return this;
+    }
 
-	public ResourceRequest setAutoOpen(boolean autoOpen) {
-		mDownloadTask.mAutoOpen = autoOpen;
-		return this;
-	}
+    public ResourceRequest setForceDownload(boolean force) {
+        mDownloadTask.mIsForceDownload = force;
+        return this;
+    }
 
-	public File get() {
-		Objects.requireNonNull(mDownloadTask.getContext());
-		Objects.requireNonNull(mDownloadTask.getUrl());
-		return DownloadImpl.getInstance().call(mDownloadTask);
-	}
+    public ResourceRequest setEnableIndicator(boolean enableIndicator) {
+        mDownloadTask.mEnableIndicator = enableIndicator;
+        return this;
+    }
 
-	public void enqueue() {
-		Objects.requireNonNull(mDownloadTask.getContext());
-		Objects.requireNonNull(mDownloadTask.getUrl());
-		DownloadImpl.getInstance().enqueue(mDownloadTask);
-	}
 
-	public void enqueue(DownloadListener downloadListener) {
-		Objects.requireNonNull(mDownloadTask.getContext());
-		Objects.requireNonNull(mDownloadTask.getUrl());
-		mDownloadTask.setDownloadListener(downloadListener);
-		DownloadImpl.getInstance().enqueue(mDownloadTask);
-	}
+    public ResourceRequest setIcon(@DrawableRes int icon) {
+        mDownloadTask.mIcon = icon;
+        return this;
+    }
+
+    public ResourceRequest setParallelDownload(boolean parallelDownload) {
+        mDownloadTask.mIsParallelDownload = parallelDownload;
+        return this;
+    }
+
+    public ResourceRequest addHeader(String key, String value) {
+        if (mDownloadTask.mHeaders == null) {
+            mDownloadTask.mHeaders = new android.support.v4.util.ArrayMap<>();
+        }
+        mDownloadTask.mHeaders.put(key, value);
+        return this;
+    }
+
+    public ResourceRequest setAutoOpen(boolean autoOpen) {
+        mDownloadTask.mAutoOpen = autoOpen;
+        return this;
+    }
+
+    public File get() {
+        safe();
+        return DownloadImpl.getInstance().call(mDownloadTask);
+    }
+
+    private void safe() {
+        if (null == mDownloadTask.getContext()) {
+            throw new NullPointerException("context can't be null .");
+        }
+        if (TextUtils.isEmpty(mDownloadTask.getUrl())) {
+            throw new NullPointerException("url can't be empty .");
+        }
+    }
+
+    public void enqueue() {
+        safe();
+        DownloadImpl.getInstance().enqueue(mDownloadTask);
+    }
+
+    public void enqueue(DownloadListener downloadListener) {
+        safe();
+        mDownloadTask.setDownloadListener(downloadListener);
+        DownloadImpl.getInstance().enqueue(mDownloadTask);
+    }
 
 }
