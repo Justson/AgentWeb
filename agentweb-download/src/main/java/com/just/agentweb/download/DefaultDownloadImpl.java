@@ -124,15 +124,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
         ExtraServiceImpl mCloneExtraServiceImpl = null;
         if (null == extraServiceImpl) {
-            try {
-                mCloneExtraServiceImpl = (ExtraServiceImpl) this.mExtraServiceImpl.clone();
-            } catch (CloneNotSupportedException ignore) {
-                if (LogUtils.isDebug()) {
-                    ignore.printStackTrace();
-                }
-                LogUtils.i(TAG, " clone object failure !!! ");
-                return;
-            }
+            mCloneExtraServiceImpl = (ExtraServiceImpl) this.mExtraServiceImpl.clone();
         } else {
             mCloneExtraServiceImpl = extraServiceImpl;
         }
@@ -315,7 +307,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                 fileName = fileName.replace("\"", "");
             }
             ExtraServiceImpl extraService = mExtraServiceImpls.get(url);
-            return AgentWebUtils.createFileByName(mContext, fileName, !extraService.isOpenBreakPointDownload());
+            return AgentWebUtils.createFileByName(mContext, fileName, !extraService.isBreakPointDownload());
         } catch (Throwable e) {
             if (LogUtils.isDebug()) {
                 LogUtils.i(TAG, "fileName:" + fileName);

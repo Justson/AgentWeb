@@ -95,7 +95,7 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
         mEnableIndicator = true;
         mIcon = R.drawable.ic_file_download_black_24dp;
         mIsParallelDownload = true;
-        mIsOpenBreakPointDownload = true;
+        mIsBreakPointDownload = true;
         mUserAgent = "";
         mContentDisposition = "";
         mMimetype = "";
@@ -120,8 +120,13 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
     }
 
     @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    protected DownloadTask clone()  {
+        try {
+            return (DownloadTask) super.clone();
+        }catch (Throwable throwable){
+            throwable.printStackTrace();
+            return new DownloadTask();
+        }
     }
 
     public void setLength(long length) {

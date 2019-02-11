@@ -328,14 +328,14 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 
     private HttpURLConnection createUrlConnectionAndSettingHeaders(URL url) throws IOException {
         DownloadTask downloadTask = this.mDownloadTask;
-        HttpURLConnection mHttpURLConnection = (HttpURLConnection) url.openConnection();
-        mHttpURLConnection.setConnectTimeout(mConnectTimeOut);
-        mHttpURLConnection.setInstanceFollowRedirects(false);
-        mHttpURLConnection.setReadTimeout(downloadTask.getBlockMaxTime());
-        mHttpURLConnection.setRequestProperty("Accept", "application/*");
-        mHttpURLConnection.setRequestProperty("Accept-Encoding", "identity,gzip");
-        mHttpURLConnection.setRequestProperty("Connection", "close");
-        mHttpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
+        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+        httpURLConnection.setConnectTimeout(mConnectTimeOut);
+        httpURLConnection.setInstanceFollowRedirects(false);
+        httpURLConnection.setReadTimeout(downloadTask.getBlockMaxTime());
+        httpURLConnection.setRequestProperty("Accept", "application/*");
+        httpURLConnection.setRequestProperty("Accept-Encoding", "identity,gzip");
+        httpURLConnection.setRequestProperty("Connection", "close");
+        httpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
         Map<String, String> mHeaders = null;
         if (null != (mHeaders = downloadTask.getHeaders()) &&
                 !mHeaders.isEmpty()) {
@@ -343,18 +343,18 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                 if (TextUtils.isEmpty(entry.getKey()) || TextUtils.isEmpty(entry.getValue())) {
                     continue;
                 }
-                mHttpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
+                httpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
             }
         }
         if (downloadTask.getFile().length() > 0) {
             String mEtag = "";
             if (!TextUtils.isEmpty((mEtag = getEtag()))) {
                 LogUtils.i(TAG, "Etag:" + mEtag);
-                mHttpURLConnection.setRequestProperty("If-Match", getEtag());
+                httpURLConnection.setRequestProperty("If-Match", getEtag());
             }
-            mHttpURLConnection.setRequestProperty("Range", "bytes=" + (mLastLoaded = downloadTask.getFile().length()) + "-");
+            httpURLConnection.setRequestProperty("Range", "bytes=" + (mLastLoaded = downloadTask.getFile().length()) + "-");
         }
-        return mHttpURLConnection;
+        return httpURLConnection;
     }
 
 
@@ -445,6 +445,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     }
 
     protected void destroyTask() {
+        if (mIsCanceled.get()) {
+            return;
+        }
         DownloadTask downloadTask = mDownloadTask;
         if (null != downloadTask) {
             downloadTask.destroy();
