@@ -34,7 +34,7 @@ public class ResourceRequest<T extends DownloadTask> {
 
     public static ResourceRequest with(Context context) {
         ResourceRequest resourceRequest = new ResourceRequest();
-        resourceRequest.mDownloadTask = Config.getsDefaultDownloadTask();
+        resourceRequest.mDownloadTask = Rumtime.getInstance().getDefaultDownloadTask();
         resourceRequest.mDownloadTask.setContext(context);
         return resourceRequest;
     }

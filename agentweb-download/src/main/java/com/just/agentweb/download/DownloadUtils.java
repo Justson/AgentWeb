@@ -9,6 +9,4 @@ public class DownloadUtils {
     private DownloadUtils(){
     }
 
-
-
 }

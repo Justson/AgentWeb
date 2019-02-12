@@ -85,7 +85,7 @@ public class ExtraServiceImpl extends DownloadTask implements Cloneable, Seriali
         mExtraServiceImpl.mPermissionInterceptor = null;
         mExtraServiceImpl.mWebView = null;
         LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
-        mId = Config.NOTICATION_ID.incrementAndGet();
+        mId = Rumtime.getInstance().generateGlobalId();
         return mExtraServiceImpl;
     }
 
