@@ -34,7 +34,7 @@ public interface DownloadListener {
 	 * @param mimetype           资源的媒体类型
 	 * @param contentLength      文件长度
 	 * @param extra              下载配置 ，可以通过 Extra 修改下载icon ， 关闭进度条 ， 或者是否强制下载。
-	 * @return true              处理了该下载事件 ， false 交给 AgentWeb 下载
+	 * @return true              处理了该下载事件 ， false 交给 Downloader 下载
 	 */
 	boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra);
 
@@ -43,8 +43,7 @@ public interface DownloadListener {
 	 * @param downloaded 已经下载的长度
 	 * @param length     文件的总大小
 	 * @param usedTime   耗时,单位ms
-	 *                   <p>
-	 *                   注意该方法回调在子线程 ，线程名 pool-agentweb-thread-xx
+	 *
 	 */
 	void onProgress(String url, long downloaded, long length, long usedTime);
 

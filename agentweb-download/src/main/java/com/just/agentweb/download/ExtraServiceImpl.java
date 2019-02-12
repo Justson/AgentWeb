@@ -94,35 +94,4 @@ public class ExtraServiceImpl extends DownloadTask implements Cloneable, Seriali
         return this.mDefaultDownload = new DefaultDownloadImpl(this);
     }
 
-    @Override
-    public String toString() {
-        return "ExtraServiceImpl{" +
-                "mActivity=" + mActivity +
-                ", mPermissionInterceptor=" + mPermissionInterceptor +
-                ", mWebView=" + mWebView +
-                ", mDefaultDownload=" + mDefaultDownload +
-                ", mContentLength=" + mContentLength +
-                ", mIsCloneObject=" + mIsCloneObject +
-                ", mId=" + mId +
-                ", mTotalsLength=" + mTotalsLength +
-                ", mContext=" + mContext +
-                ", mFile=" + mFile +
-                ", mDownloadListener=" + mDownloadListener +
-                ", mIsForceDownload=" + mIsForceDownload +
-                ", mEnableIndicator=" + mEnableIndicator +
-                ", mIcon=" + mIcon +
-                ", mIsParallelDownload=" + mIsParallelDownload +
-                ", mIsBreakPointDownload=" + mIsBreakPointDownload +
-                ", mUrl='" + mUrl + '\'' +
-                ", mContentDisposition='" + mContentDisposition + '\'' +
-                ", mContentLength=" + mContentLength +
-                ", mMimetype='" + mMimetype + '\'' +
-                ", mUserAgent='" + mUserAgent + '\'' +
-                ", mHeaders=" + mHeaders +
-                ", mAutoOpen=" + mAutoOpen +
-                ", downloadTimeOut=" + downloadTimeOut +
-                ", connectTimeOut=" + connectTimeOut +
-                ", blockMaxTime=" + blockMaxTime +
-                '}';
-    }
 }

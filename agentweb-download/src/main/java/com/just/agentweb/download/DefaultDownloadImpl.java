@@ -86,6 +86,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
+        DownloadImpl.getInstance().with(extraServiceImpl.mContext);
         if (!extraServiceImpl.mIsCloneObject) {
             this.bind(extraServiceImpl);
             this.mExtraServiceImpl = extraServiceImpl;
@@ -321,7 +322,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         extraService.mPermissionInterceptor = null;
         extraService.mWebView = null;
         extraService.mDefaultDownload = null;
-        extraService.setDownloadListener(mSimpleDownloadListener);
+        extraService.setDownloadListener(new WeakDownloadListener(mSimpleDownloadListener));
         return extraService;
     }
 
@@ -335,6 +336,31 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                 .setPermissionInterceptor(permissionInterceptor);
         extraService.setDownloadListener(downloadListener);
         return extraService.create();
+    }
+
+    private static class WeakDownloadListener extends SimpleDownloadListener {
+        private WeakReference<SimpleDownloadListener> mDownloadListenerWeakReference;
+
+        private WeakDownloadListener(SimpleDownloadListener delegate) {
+            mDownloadListenerWeakReference = new WeakReference<>(delegate);
+        }
+
+        @Override
+        public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+            return mDownloadListenerWeakReference.get() != null && mDownloadListenerWeakReference.get().onStart(url, userAgent, contentDisposition, mimetype, contentLength, extra);
+        }
+
+        @Override
+        public void onProgress(String url, long downloaded, long length, long usedTime) {
+            if (mDownloadListenerWeakReference.get() != null) {
+                mDownloadListenerWeakReference.get().onProgress(url, downloaded, length, usedTime);
+            }
+        }
+
+        @Override
+        public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
+            return mDownloadListenerWeakReference.get() != null && mDownloadListenerWeakReference.get().onResult(throwable, path, url, extra);
+        }
     }
 
 }

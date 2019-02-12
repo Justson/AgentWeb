@@ -17,6 +17,7 @@
 package com.just.agentweb.download;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +52,33 @@ public final class ExecuteTasksMap {
         return null;
     }
 
+    DownloadTask pauseTask(String url) {
+        ExecuteTask mExecuteTask = mTasks.get(url);
+        if (null != mExecuteTask) {
+            return mExecuteTask.pauseDownload();
+        }
+        return null;
+    }
     List<DownloadTask> cancelTasks() {
         Set<Map.Entry<String, ExecuteTask>> sets = mTasks.entrySet();
         if (sets != null && sets.size() > 0) {
             ArrayList<DownloadTask> downloadTasks = new ArrayList<>();
             for (Map.Entry<String, ExecuteTask> entry : sets) {
                 DownloadTask downloadTask = entry.getValue().cancelDownload();
+                if (null != downloadTask) {
+                    downloadTasks.add(downloadTask);
+                }
+            }
+            return downloadTasks;
+        }
+        return null;
+    }
+    List<DownloadTask> pauseTasks() {
+        Set<Map.Entry<String, ExecuteTask>> sets = mTasks.entrySet();
+        if (sets != null && sets.size() > 0) {
+            ArrayList<DownloadTask> downloadTasks = new ArrayList<>();
+            for (Map.Entry<String, ExecuteTask> entry : sets) {
+                DownloadTask downloadTask = entry.getValue().pauseDownload();
                 if (null != downloadTask) {
                     downloadTasks.add(downloadTask);
                 }
@@ -79,7 +101,7 @@ public final class ExecuteTasksMap {
     }
 
     boolean exist(@NonNull String url) {
-        return null != mTasks.get(url);
+        return !TextUtils.isEmpty(url) && null != mTasks.get(url);
     }
 
     private static class ExecuteTaskHolder {

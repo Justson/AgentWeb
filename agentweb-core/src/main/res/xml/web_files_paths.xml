@@ -5,5 +5,8 @@
         name="agenweb_files"
         path="agentweb-cache"/>
 
-
+    <cache-path
+        name="download"
+        path="download">
+    </cache-path>
 </paths>
