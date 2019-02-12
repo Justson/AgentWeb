@@ -39,10 +39,11 @@ public class DownloadImpl {
         return sInstance;
     }
 
-    public void with(Context context) {
+    public ResourceRequest with(Context context) {
         if (null != context) {
             mContext = context.getApplicationContext();
         }
+        return ResourceRequest.with(mContext);
     }
 
     public ResourceRequest with(String url) {
