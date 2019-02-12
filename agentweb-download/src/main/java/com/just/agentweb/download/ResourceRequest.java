@@ -32,7 +32,7 @@ import java.io.File;
 public class ResourceRequest<T extends DownloadTask> {
     private DownloadTask mDownloadTask;
 
-    public static ResourceRequest with(Context context) {
+    static ResourceRequest with(Context context) {
         ResourceRequest resourceRequest = new ResourceRequest();
         resourceRequest.mDownloadTask = Rumtime.getInstance().getDefaultDownloadTask();
         resourceRequest.mDownloadTask.setContext(context);

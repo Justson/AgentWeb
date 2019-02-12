@@ -87,7 +87,7 @@ public class DownloadImpl {
     }
 
     public boolean exist(String url) {
-        return ExecuteTasksMap.getInstance().contains(url);
+        return ExecuteTasksMap.getInstance().exist(url);
     }
 
 }

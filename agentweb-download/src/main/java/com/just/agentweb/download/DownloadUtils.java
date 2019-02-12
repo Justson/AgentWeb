@@ -8,5 +8,4 @@ package com.just.agentweb.download;
 public class DownloadUtils {
     private DownloadUtils(){
     }
-
 }

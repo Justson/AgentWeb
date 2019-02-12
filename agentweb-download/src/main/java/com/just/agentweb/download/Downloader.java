@@ -42,6 +42,8 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
@@ -245,6 +247,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                 switch (responseCode) {
                     case HTTP_OK:
                         this.mTotals = tmpLength;
+                        start(mHttpURLConnection);
                         saveEtag(mHttpURLConnection);
                         return transferData(getInputStream(mHttpURLConnection),
                                 new LoadingRandomAccessFile(downloadTask.getFile()),
@@ -257,6 +260,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                         } else if (this.mTotals <= 0L) {
                             this.mTotals = tmpLength + downloadTask.getFile().length();
                         }
+                        start(mHttpURLConnection);
                         return transferData(getInputStream(mHttpURLConnection),
                                 new LoadingRandomAccessFile(downloadTask.getFile()),
                                 !isEncodingChunked);
@@ -284,9 +288,42 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         }
     }
 
+    private final void start(HttpURLConnection httpURLConnection) throws IOException {
+        DownloadTask downloadTask = this.mDownloadTask;
+        if (TextUtils.isEmpty(downloadTask.getContentDisposition())) {
+            downloadTask.setContentDisposition(httpURLConnection.getHeaderField("Content-Disposition"));
+        }
+        if (TextUtils.isEmpty(downloadTask.getMimetype())) {
+            downloadTask.setMimetype(httpURLConnection.getHeaderField("Content-Type"));
+        }
+        downloadTask.mTotalsLength = this.mTotals;
+        if (null == downloadTask.getFile() || !downloadTask.getFile().exists()) {
+            File file = Rumtime.getInstance().createFile(downloadTask.mContext, downloadTask);
+            downloadTask.setFile(file);
+        }
+        onStart();
+    }
+
+    protected void onStart() throws IOException {
+        DownloadTask downloadTask = this.mDownloadTask;
+        if (null != downloadTask && null != downloadTask.getDownloadListener()) {
+            boolean cancel = downloadTask.getDownloadListener().onStart(downloadTask.mUrl
+                    , downloadTask.mUserAgent
+                    , downloadTask.mContentDisposition
+                    , downloadTask.mMimetype
+                    , downloadTask.mTotalsLength
+                    , downloadTask);
+            if (cancel) {
+                throw new IOException("The user canceled the download . ");
+            }
+        }
+    }
+
     private InputStream getInputStream(HttpURLConnection httpURLConnection) throws IOException {
         if ("gzip".equalsIgnoreCase(httpURLConnection.getContentEncoding())) {
             return new GZIPInputStream(httpURLConnection.getInputStream());
+        } else if ("deflate".equalsIgnoreCase(httpURLConnection.getContentEncoding())) {
+            return new InflaterInputStream(httpURLConnection.getInputStream(), new Inflater(true));
         } else {
             return httpURLConnection.getInputStream();
         }
@@ -332,10 +369,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         httpURLConnection.setConnectTimeout(mConnectTimeOut);
         httpURLConnection.setInstanceFollowRedirects(false);
         httpURLConnection.setReadTimeout(downloadTask.getBlockMaxTime());
-        httpURLConnection.setRequestProperty("Accept", "application/*");
-        httpURLConnection.setRequestProperty("Accept-Encoding", "identity,gzip");
+        httpURLConnection.setRequestProperty("Accept", "*/*");
+        httpURLConnection.setRequestProperty("Accept-Encoding", "deflate,gzip");
         httpURLConnection.setRequestProperty("Connection", "close");
-        httpURLConnection.setRequestProperty("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
         Map<String, String> mHeaders = null;
         if (null != (mHeaders = downloadTask.getHeaders()) &&
                 !mHeaders.isEmpty()) {
@@ -517,7 +553,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         }
     }
 
-
+    @Override
     public final DownloadTask cancel() {
         try {
             return mDownloadTask;
@@ -541,7 +577,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     @SuppressLint("NewApi")
     private final boolean downloadInternal(DownloadTask downloadTask) {
         synchronized (Downloader.class) {
-            if (ExecuteTasksMap.getInstance().contains(downloadTask.mUrl)) {
+            if (ExecuteTasksMap.getInstance().exist(downloadTask.mUrl)) {
                 return false;
             }
             ExecuteTasksMap.getInstance().addTask(downloadTask.getUrl(), this);

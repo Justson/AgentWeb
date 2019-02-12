@@ -166,7 +166,6 @@ public class AgentWebUtils {
 		} else {
 			mFile.createNewFile();
 		}
-
 		return mFile;
 	}
 
@@ -551,13 +550,12 @@ public class AgentWebUtils {
 	static File createImageFile(Context context) {
 		File mFile = null;
 		try {
-
 			String timeStamp =
 					new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
 			String imageName = String.format("aw_%s.jpg", timeStamp);
 			mFile = createFileByName(context, imageName, true);
 		} catch (Throwable e) {
-
+			e.printStackTrace();
 		}
 		return mFile;
 	}
