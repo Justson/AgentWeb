@@ -18,6 +18,7 @@ package com.just.agentweb.download;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.annotation.IntDef;
 
 import java.io.File;
@@ -39,9 +40,14 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
     public static final int STATUS_NEW = 1000;
     public static final int STATUS_PENDDING = 1001;
     public static final int STATUS_DOWNLOADING = 1002;
-    public static final int STATUS_COMPLETED = 1003;
+    public static final int STATUS_PAUSED = 1003;
+    public static final int STATUS_COMPLETED = 1004;
+    long beginTime = 0L;
+    long pauseTime = 0L;
+    long endTime = 0L;
+    long detalTime = 0L;
 
-    @IntDef({STATUS_NEW, STATUS_PENDDING, STATUS_DOWNLOADING, STATUS_COMPLETED})
+    @IntDef({STATUS_NEW, STATUS_PENDDING, STATUS_DOWNLOADING, STATUS_PAUSED, STATUS_COMPLETED})
     @interface DownloadTaskStatus {
     }
 
@@ -57,6 +63,13 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
 
     void setStatus(@DownloadTaskStatus int status) {
         this.status.set(status);
+    }
+
+    void resetTime() {
+        beginTime = 0L;
+        pauseTime = 0L;
+        endTime = 0L;
+        detalTime = 0L;
     }
 
     public int getId() {
@@ -85,6 +98,38 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
         return this;
     }
 
+    void updateTime(long beginTime) {
+        if (this.beginTime == 0L) {
+            this.beginTime = beginTime;
+            return;
+        }
+        if (this.beginTime != beginTime) {
+            detalTime += Math.abs(beginTime - this.pauseTime);
+        }
+    }
+
+    public long getUsedTime() {
+        if (status.get() == STATUS_DOWNLOADING) {
+            return SystemClock.elapsedRealtime() - beginTime - detalTime;
+        } else if (status.get() == STATUS_COMPLETED) {
+            return endTime - beginTime - detalTime;
+        } else {
+            return 0L;
+        }
+    }
+
+    public long getBeginTime() {
+        return beginTime;
+    }
+
+    protected void pause() {
+        pauseTime = SystemClock.elapsedRealtime();
+    }
+
+    protected void completed() {
+        endTime = SystemClock.elapsedRealtime();
+    }
+
     protected void destroy() {
         this.mId = -1;
         this.mUrl = null;
@@ -106,6 +151,7 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
         }
         status.set(STATUS_NEW);
     }
+
 
     public DownloadListener getDownloadListener() {
         return mDownloadListener;

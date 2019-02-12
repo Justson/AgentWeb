@@ -74,4 +74,5 @@ dependencies {
     compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
     compile 'com.tencent.sonic:sdk:2.0.0'
     compile 'com.coolindicator.sdk:coolindicator:1.0.0-beta'
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

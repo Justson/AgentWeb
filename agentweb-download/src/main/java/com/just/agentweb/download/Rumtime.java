@@ -27,7 +27,7 @@ public class Rumtime {
     private File mDownloadDir = null;
     private static Pattern DISPOSITION_PATTERN = Pattern.compile(".*filename=(.*)");
     static final String PREFIX = "Download-";
-    boolean DEBUG = false;
+    boolean DEBUG = true;
 
     public void setDebug(boolean debug) {
         this.DEBUG = debug;
@@ -54,13 +54,14 @@ public class Rumtime {
     }
 
     private void createDefaultDownloadTask() {
+        sDefaultDownloadTask = new DownloadTask();
         sDefaultDownloadTask.setBreakPointDownload(true)
                 .setIcon(R.drawable.ic_file_download_black_24dp)
                 .setConnectTimeOut(6000)
                 .setBlockMaxTime(10 * 60 * 1000)
                 .setDownloadTimeOut(Long.MAX_VALUE)
                 .setParallelDownload(true)
-                .setEnableIndicator(true)
+                .setEnableIndicator(false)
                 .setAutoOpen(false)
                 .setForceDownload(true);
     }

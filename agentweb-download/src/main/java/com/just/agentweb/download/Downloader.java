@@ -46,6 +46,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
+import static com.just.agentweb.download.DownloadTask.STATUS_PAUSED;
 import static java.net.HttpURLConnection.HTTP_BAD_GATEWAY;
 import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_MOVED_PERM;
@@ -115,9 +116,13 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
      */
     private static final String TAG = Rumtime.PREFIX + Downloader.class.getSimpleName();
     /**
-     * true 用户已经取消下载
+     * true 已经取消下载
      */
     protected AtomicBoolean mIsCanceled = new AtomicBoolean(false);
+    /**
+     * true 已经暂停下载
+     */
+    protected AtomicBoolean mIsPaused = new AtomicBoolean(false);
     /**
      * true 终止下载
      */
@@ -135,10 +140,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     public static final int ERROR_RESPONSE_STATUS = 0x401;
     public static final int ERROR_STORAGE = 0x402;
     public static final int ERROR_TIME_OUT = 0x403;
-    public static final int ERROR_USER_CANCEL = 0x404;
-    public static final int ERROR_SHUTDOWN = 0x405;
-    public static final int ERROR_TOO_MANY_REDIRECTS = 0x406;
-    public static final int ERROR_LOAD = 0x407;
+    public static final int ERROR_USER_PAUSE = 0x404;
+    public static final int ERROR_USER_CANCEL = 0x406;
+    public static final int ERROR_SHUTDOWN = 0x407;
+    public static final int ERROR_TOO_MANY_REDIRECTS = 0x408;
+    public static final int ERROR_LOAD = 0x409;
     public static final int ERROR_SERVICE = 0x503;
     public static final int SUCCESSFUL = 0x200;
     private static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
@@ -203,9 +209,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         Thread.currentThread().setName("pool-agentweb-thread-" + Rumtime.getInstance().generateGlobalThreadId());
         try {
             this.mBeginTime = SystemClock.elapsedRealtime();
-            if (!checkSpace()) {
-                return ERROR_STORAGE;
-            }
             if (!checkNet()) {
                 return ERROR_NETWORK_CONNECTION;
             }
@@ -223,6 +226,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 
     private int doDownload() throws IOException {
         DownloadTask downloadTask = this.mDownloadTask;
+        downloadTask.updateTime(this.mBeginTime);
         int redirectionCount = 1;
         URL url = new URL(downloadTask.getUrl());
         HttpURLConnection mHttpURLConnection = null;
@@ -250,6 +254,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                     case HTTP_OK:
                         this.mTotals = tmpLength;
                         start(mHttpURLConnection);
+                        if (!checkSpace()) {
+                            return ERROR_STORAGE;
+                        }
                         saveEtag(mHttpURLConnection);
                         return transferData(getInputStream(mHttpURLConnection),
                                 new LoadingRandomAccessFile(downloadTask.getFile()),
@@ -263,6 +270,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                             this.mTotals = tmpLength + downloadTask.getFile().length();
                         }
                         start(mHttpURLConnection);
+                        if (!checkSpace()) {
+                            return ERROR_STORAGE;
+                        }
                         return transferData(getInputStream(mHttpURLConnection),
                                 new LoadingRandomAccessFile(downloadTask.getFile()),
                                 !isEncodingChunked);
@@ -384,7 +394,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                 httpURLConnection.setRequestProperty(entry.getKey(), entry.getValue());
             }
         }
-        if (downloadTask.getFile().length() > 0) {
+        if (null != downloadTask.getFile() && downloadTask.getFile().length() > 0) {
             String mEtag = "";
             if (!TextUtils.isEmpty((mEtag = getEtag()))) {
                 Rumtime.getInstance().log(TAG, "Etag:" + mEtag);
@@ -397,7 +407,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
 
 
     @Override
-    protected synchronized void onProgressUpdate(Integer... values) {
+    protected void onProgressUpdate(Integer... values) {
         DownloadTask downloadTask = this.mDownloadTask;
         try {
             long currentTime = SystemClock.elapsedRealtime();
@@ -407,7 +417,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
             } else {
                 this.mAverageSpeed = mLoaded * 1000 / this.mUsedTime;
             }
-            if (currentTime - this.mLastTime < 800) {
+            if (currentTime - this.mLastTime < 450) {
                 return;
             }
             this.mLastTime = currentTime;
@@ -422,7 +432,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
             if (null != downloadTask.getDownloadListener()) {
                 downloadTask
                         .getDownloadListener()
-                        .onProgress(downloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
+                        .onProgress(downloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, downloadTask.getUsedTime());
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -432,7 +442,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     @Override
     protected void onPostExecute(Integer integer) {
         DownloadTask downloadTask = this.mDownloadTask;
-        downloadTask.setStatus(DownloadTask.STATUS_COMPLETED);
         try {
             if (null != downloadTask.getDownloadListener()) {
                 downloadTask
@@ -440,10 +449,18 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                         .onProgress(downloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 
             }
+            if (integer == ERROR_USER_PAUSE) {
+                downloadTask.setStatus(STATUS_PAUSED);
+                downloadTask.pause();
+                return;
+            } else {
+                downloadTask.completed();
+            }
             Rumtime.getInstance().log(TAG, "onPostExecute:" + DOWNLOAD_MESSAGE.get(integer));
+            downloadTask.setStatus(DownloadTask.STATUS_COMPLETED);
             boolean isCancelDispose = doCallback(integer);
             // Error
-            if (integer > 0x200) {
+            if (integer > SUCCESSFUL) {
                 if (null != mDownloadNotifier) {
                     mDownloadNotifier.cancel();
                 }
@@ -483,7 +500,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     }
 
     protected void destroyTask() {
-        if (mIsCanceled.get()) {
+        if (mIsCanceled.get() || mIsPaused.get()) {
             return;
         }
         DownloadTask downloadTask = mDownloadTask;
@@ -496,14 +513,11 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         DownloadListener mDownloadListener = null;
         DownloadTask downloadTask = this.mDownloadTask;
         if (null == (mDownloadListener = downloadTask.getDownloadListener())) {
-            Rumtime.getInstance().logError(TAG, "DownloadListener has been death");
-            ExecuteTasksMap.getInstance()
-                    .removeTask(downloadTask.getUrl());
             return false;
         }
-        return mDownloadListener.onResult(code <= 200 ? null
-                        : null == this.mThrowable
-                        ? this.mThrowable = new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code)) : this.mThrowable, downloadTask.getFileUri(),
+        return mDownloadListener.onResult(code <= SUCCESSFUL ? null
+                        : (null == this.mThrowable)
+                        ? (this.mThrowable = new RuntimeException("Download failed ， cause:" + DOWNLOAD_MESSAGE.get(code))) : this.mThrowable, downloadTask.getFileUri(),
                 downloadTask.getUrl(), mDownloadTask);
     }
 
@@ -530,7 +544,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                 mLastLoaded = 0L;
             }
             int bytes = 0;
-            while (!mIsCanceled.get() && !mIsShutdown.get()) {
+            while (!mIsCanceled.get() && !mIsShutdown.get() && !mIsPaused.get()) {
                 int n = bis.read(buffer, 0, BUFFER_SIZE);
                 if (n == -1) {
                     break;
@@ -540,6 +554,9 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                 if ((SystemClock.elapsedRealtime() - this.mBeginTime) > mDownloadTimeOut) {
                     return ERROR_TIME_OUT;
                 }
+            }
+            if (mIsPaused.get()) {
+                return ERROR_USER_PAUSE;
             }
             if (mIsCanceled.get()) {
                 return ERROR_USER_CANCEL;
@@ -596,12 +613,16 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         run(downloadTask);
         return true;
     }
+
     @SuppressLint("NewApi")
     private void run(DownloadTask downloadTask) {
         this.mDownloadTask = downloadTask;
         this.mTotals = mDownloadTask.getLength();
         mDownloadTimeOut = mDownloadTask.getDownloadTimeOut();
         mConnectTimeOut = mDownloadTask.getConnectTimeOut();
+        if (downloadTask.getStatus() != STATUS_PAUSED) {
+            downloadTask.resetTime();
+        }
         downloadTask.setStatus(DownloadTask.STATUS_PENDDING);
         if (downloadTask.isParallelDownload()) {
             this.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
@@ -611,9 +632,22 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     }
 
 
+    private final DownloadTask pause() {
+        try {
+            return mDownloadTask;
+        } finally {
+            mIsPaused.set(true);
+        }
+    }
+
     @Override
     public DownloadTask cancelDownload() {
         return cancel();
+    }
+
+    @Override
+    public DownloadTask pauseDownload() {
+        return pause();
     }
 
     @Override

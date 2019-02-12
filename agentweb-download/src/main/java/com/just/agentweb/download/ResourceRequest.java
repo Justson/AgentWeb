@@ -20,7 +20,6 @@ import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import java.io.File;
 
@@ -105,26 +104,19 @@ public class ResourceRequest<T extends DownloadTask> {
     }
 
     public File get() {
-        safe();
         return DownloadImpl.getInstance().call(mDownloadTask);
     }
 
-    private void safe() {
-        if (null == mDownloadTask.getContext()) {
-            throw new NullPointerException("context can't be null .");
-        }
-        if (TextUtils.isEmpty(mDownloadTask.getUrl())) {
-            throw new NullPointerException("url can't be empty .");
-        }
+    public ResourceRequest setDownloadListener(DownloadListener downloadListener) {
+        mDownloadTask.setDownloadListener(downloadListener);
+        return this;
     }
 
     public void enqueue() {
-        safe();
         DownloadImpl.getInstance().enqueue(mDownloadTask);
     }
 
     public void enqueue(DownloadListener downloadListener) {
-        safe();
         mDownloadTask.setDownloadListener(downloadListener);
         DownloadImpl.getInstance().enqueue(mDownloadTask);
     }

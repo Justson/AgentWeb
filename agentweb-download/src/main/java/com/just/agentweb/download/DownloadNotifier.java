@@ -30,7 +30,6 @@ import android.text.TextUtils;
 
 import com.just.agentweb.AgentWebUtils;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -53,10 +52,9 @@ public class DownloadNotifier {
     private Context mContext;
     private String mChannelId = "";
     private volatile boolean mAddedCancelAction = false;
-    private String mUrl;
-    private File mFile;
     private static final String TAG = Rumtime.PREFIX + DownloadNotifier.class.getSimpleName();
     private NotificationCompat.Action mAction;
+    private DownloadTask mDownloadTask;
 
     DownloadNotifier(Context context, int id) {
         this.mNotificationId = id;
@@ -88,13 +86,14 @@ public class DownloadNotifier {
     }
 
     void initBuilder(DownloadTask downloadTask) {
-        String title = TextUtils.isEmpty(downloadTask.getFile().getName()) ?
+        String title = (null == downloadTask.getFile() || TextUtils.isEmpty(downloadTask.getFile().getName())) ?
                 mContext.getString(R.string.agentweb_file_download) :
                 downloadTask.getFile().getName();
 
         if (title.length() > 20) {
             title = "..." + title.substring(title.length() - 20, title.length());
         }
+        this.mDownloadTask = downloadTask;
         mBuilder.setContentIntent(PendingIntent.getActivity(mContext, 200, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT));
         mBuilder.setSmallIcon(downloadTask.getIcon());
         mBuilder.setTicker(mContext.getString(R.string.agentweb_trickter));
@@ -104,8 +103,6 @@ public class DownloadNotifier {
         mBuilder.setAutoCancel(true);
         mBuilder.setPriority(NotificationCompat.PRIORITY_LOW);
         int defaults = 0;
-        this.mUrl = downloadTask.getUrl();
-        this.mFile = downloadTask.getFile();
         mBuilder.setDeleteIntent(buildCancelContent(mContext, downloadTask.getId(), downloadTask.getUrl()));
         mBuilder.setDefaults(defaults);
     }
@@ -137,9 +134,7 @@ public class DownloadNotifier {
      * 发送通知
      */
     private void sent() {
-
         mNotification = mBuilder.build();
-        // 发送该通知
         mNotificationManager.notify(mNotificationId, mNotification);
     }
 
@@ -148,15 +143,14 @@ public class DownloadNotifier {
     }
 
     void onDownloading(int progress) {
-
         if (!this.hasDeleteContent()) {
-            this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
+            this.setDelecte(buildCancelContent(mContext, mNotificationId, mDownloadTask.mUrl));
         }
         if (!mAddedCancelAction) {
             mAddedCancelAction = true;
             mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
                     mContext.getString(android.R.string.cancel),
-                    buildCancelContent(mContext, mNotificationId, mUrl));
+                    buildCancelContent(mContext, mNotificationId, mDownloadTask.mUrl));
             mBuilder.addAction(mAction);
 
         }
@@ -166,15 +160,14 @@ public class DownloadNotifier {
     }
 
     void onDownloaded(long loaded) {
-
         if (!this.hasDeleteContent()) {
-            this.setDelecte(buildCancelContent(mContext, mNotificationId, mUrl));
+            this.setDelecte(buildCancelContent(mContext, mNotificationId, mDownloadTask.mUrl));
         }
         if (!mAddedCancelAction) {
             mAddedCancelAction = true;
             mAction = new NotificationCompat.Action(R.drawable.ic_cancel_transparent_2dp,
                     mContext.getString(android.R.string.cancel),
-                    buildCancelContent(mContext, mNotificationId, mUrl));
+                    buildCancelContent(mContext, mNotificationId, mDownloadTask.mUrl));
             mBuilder.addAction(mAction);
 
         }
@@ -187,13 +180,13 @@ public class DownloadNotifier {
         if (byteNum < 0) {
             return "shouldn't be less than zero!";
         } else if (byteNum < 1024) {
-            return String.format(Locale.getDefault(), "%.3fB", (double) byteNum);
+            return String.format(Locale.getDefault(), "%.1fB", (double) byteNum);
         } else if (byteNum < 1048576) {
-            return String.format(Locale.getDefault(), "%.3fKB", (double) byteNum / 1024);
+            return String.format(Locale.getDefault(), "%.1fKB", (double) byteNum / 1024);
         } else if (byteNum < 1073741824) {
-            return String.format(Locale.getDefault(), "%.3fMB", (double) byteNum / 1048576);
+            return String.format(Locale.getDefault(), "%.1fMB", (double) byteNum / 1048576);
         } else {
-            return String.format(Locale.getDefault(), "%.3fGB", (double) byteNum / 1073741824);
+            return String.format(Locale.getDefault(), "%.1fGB", (double) byteNum / 1073741824);
         }
     }
 
@@ -219,7 +212,7 @@ public class DownloadNotifier {
                 ignore.printStackTrace();
             }
         }
-        Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mFile);
+        Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, mDownloadTask.getFile());
         setDelecte(null);
         if (null != mIntent) {
             if (!(mContext instanceof Activity)) {

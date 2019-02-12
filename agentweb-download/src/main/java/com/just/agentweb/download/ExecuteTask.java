@@ -23,5 +23,7 @@ package com.just.agentweb.download;
 public interface ExecuteTask {
     DownloadTask cancelDownload();
 
+    DownloadTask pauseDownload();
+
     DownloadTask getDownloadTask();
 }
