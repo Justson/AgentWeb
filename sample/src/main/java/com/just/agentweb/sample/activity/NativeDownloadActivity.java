@@ -80,6 +80,16 @@ public class NativeDownloadActivity extends AppCompatActivity {
                 Log.i(TAG, " download success:" + ((File) file).length());
             }
         }).start();
+        DownloadImpl.getInstance()
+                .with(getApplicationContext())
+                .url("http://shouji.360tpcdn.com/170918/f7aa8587561e4031553316ada312ab38/com.tencent.qqlive_13049.apk")
+                .enqueue(new SimpleDownloadListener() {
+                    @Override
+                    public void onProgress(String url, long downloaded, long length, long usedTime) {
+                        super.onProgress(url, downloaded, length, usedTime);
+                        Log.i(TAG, " progress:" + downloaded + " url:" + url);
+                    }
+                });
     }
 
     private class NativeDownloadAdapter extends RecyclerView.Adapter<NativeDownloadViewHolder> {
