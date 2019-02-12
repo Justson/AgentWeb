@@ -3,6 +3,7 @@ package com.just.agentweb.download;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.just.agentweb.AgentWebUtils;
 
@@ -20,22 +21,23 @@ import java.util.regex.Pattern;
 public class Rumtime {
 
     private static final Rumtime sInstance = new Rumtime();
-    private final DownloadTask sDefaultDownloadTask = new DownloadTask();
+    private DownloadTask sDefaultDownloadTask;
     private AtomicInteger mIDGenerator;
     private AtomicInteger mThreadGlobalCounter;
     private File mDownloadDir = null;
     private static Pattern DISPOSITION_PATTERN = Pattern.compile(".*filename=(.*)");
+    static final String PREFIX = "Download-";
+    boolean DEBUG = false;
+
+    public void setDebug(boolean debug) {
+        this.DEBUG = debug;
+    }
+
+    public boolean isDebug() {
+        return DEBUG;
+    }
 
     private Rumtime() {
-        sDefaultDownloadTask.setBreakPointDownload(true)
-                .setIcon(R.drawable.ic_file_download_black_24dp)
-                .setConnectTimeOut(6000)
-                .setBlockMaxTime(10 * 60 * 1000)
-                .setDownloadTimeOut(Long.MAX_VALUE)
-                .setParallelDownload(true)
-                .setEnableIndicator(true)
-                .setAutoOpen(false)
-                .setForceDownload(true);
         mIDGenerator = new AtomicInteger(1);
         mThreadGlobalCounter = new AtomicInteger(1);
     }
@@ -45,7 +47,22 @@ public class Rumtime {
     }
 
     public DownloadTask getDefaultDownloadTask() {
+        if (sDefaultDownloadTask == null) {
+            createDefaultDownloadTask();
+        }
         return sDefaultDownloadTask.clone();
+    }
+
+    private void createDefaultDownloadTask() {
+        sDefaultDownloadTask.setBreakPointDownload(true)
+                .setIcon(R.drawable.ic_file_download_black_24dp)
+                .setConnectTimeOut(6000)
+                .setBlockMaxTime(10 * 60 * 1000)
+                .setDownloadTimeOut(Long.MAX_VALUE)
+                .setParallelDownload(true)
+                .setEnableIndicator(true)
+                .setAutoOpen(false)
+                .setForceDownload(true);
     }
 
     public int generateGlobalId() {
@@ -57,6 +74,10 @@ public class Rumtime {
     }
 
     public File createFile(Context context, Extra extra) {
+        return createFile(context, extra, null);
+    }
+
+    public File createFile(Context context, Extra extra, File dir) {
         String fileName = "";
         try {
             fileName = getFileNameByContentDisposition(extra.getContentDisposition());
@@ -73,15 +94,15 @@ public class Rumtime {
             if (fileName.contains("\"")) {
                 fileName = fileName.replace("\"", "");
             }
-            return createFileByName(context, fileName, !extra.isBreakPointDownload());
+            return createFileByName(dir, context, fileName, !extra.isBreakPointDownload());
         } catch (Throwable e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public File createFileByName(Context context, String name, boolean cover) throws IOException {
-        String path = getDir(context).getPath();
+    public File createFileByName(File dir, Context context, String name, boolean cover) throws IOException {
+        String path = (dir == null || !dir.isDirectory()) ? getDir(context).getPath() : dir.getAbsolutePath();
         if (TextUtils.isEmpty(path)) {
             return null;
         }
@@ -94,7 +115,6 @@ public class Rumtime {
         } else {
             mFile.createNewFile();
         }
-
         return mFile;
     }
 
@@ -120,5 +140,21 @@ public class Rumtime {
             mDownloadDir = file;
         }
         return mDownloadDir;
+    }
+
+    public void log(String tag, String msg) {
+        if (DEBUG) {
+            Log.i(tag, msg);
+        }
+    }
+
+    public void setDownloadDir(File downloadDir) {
+        mDownloadDir = downloadDir;
+    }
+
+    public void logError(String tag, String msg) {
+        if (DEBUG) {
+            Log.i(tag, msg);
+        }
     }
 }

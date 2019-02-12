@@ -29,7 +29,6 @@ import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
 import com.just.agentweb.AgentWebUtils;
-import com.just.agentweb.LogUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -56,12 +55,12 @@ public class DownloadNotifier {
     private volatile boolean mAddedCancelAction = false;
     private String mUrl;
     private File mFile;
-    private static final String TAG = DownloadNotifier.class.getSimpleName();
+    private static final String TAG = Rumtime.PREFIX + DownloadNotifier.class.getSimpleName();
     private NotificationCompat.Action mAction;
 
     DownloadNotifier(Context context, int id) {
         this.mNotificationId = id;
-        LogUtils.i(TAG, " DownloadNotifier:" + (mNotificationId));
+        Rumtime.getInstance().log(TAG, " DownloadNotifier:" + (mNotificationId));
         mContext = context;
         mNotificationManager = (NotificationManager) mContext
                 .getSystemService(NOTIFICATION_SERVICE);
@@ -82,7 +81,7 @@ public class DownloadNotifier {
                 mBuilder = new NotificationCompat.Builder(mContext);
             }
         } catch (Throwable ignore) {
-            if (LogUtils.isDebug()) {
+            if (Rumtime.getInstance().isDebug()) {
                 ignore.printStackTrace();
             }
         }
@@ -116,7 +115,7 @@ public class DownloadNotifier {
         intentCancel.setAction(NotificationCancelReceiver.ACTION);
         intentCancel.putExtra("TAG", url);
         PendingIntent pendingIntentCancel = PendingIntent.getBroadcast(context, id * 1000, intentCancel, PendingIntent.FLAG_UPDATE_CURRENT);
-        LogUtils.i(TAG, "buildCancelContent id:" + (id * 1000));
+        Rumtime.getInstance().log(TAG, "buildCancelContent id:" + (id * 1000));
         return pendingIntentCancel;
     }
 
@@ -216,7 +215,7 @@ public class DownloadNotifier {
             }
 
         } catch (Throwable ignore) {
-            if (LogUtils.isDebug()) {
+            if (Rumtime.getInstance().isDebug()) {
                 ignore.printStackTrace();
             }
         }
