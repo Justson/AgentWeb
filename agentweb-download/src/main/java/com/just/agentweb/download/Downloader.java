@@ -22,13 +22,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.AgentWebUtils;
-import com.just.agentweb.LogUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -112,7 +113,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     /**
      * log filter
      */
-    private static final String TAG = Downloader.class.getSimpleName();
+    private static final String TAG = Rumtime.PREFIX + Downloader.class.getSimpleName();
     /**
      * true 用户已经取消下载
      */
@@ -142,6 +143,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     public static final int SUCCESSFUL = 0x200;
     private static final SparseArray<String> DOWNLOAD_MESSAGE = new SparseArray<>();
     private static final Executor SERIAL_EXECUTOR = new SerialExecutor();
+    private static final Handler HANDLER = new Handler(Looper.getMainLooper());
 
     static {
         DOWNLOAD_MESSAGE.append(ERROR_NETWORK_CONNECTION, "Network connection error . ");
@@ -179,7 +181,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
     private boolean checkSpace() {
         DownloadTask downloadTask = this.mDownloadTask;
         if (downloadTask.getLength() - downloadTask.getFile().length() > AgentWebUtils.getAvailableStorage()) {
-            LogUtils.e(TAG, " 空间不足");
+            Rumtime.getInstance().logError(TAG, " 空间不足");
             return false;
         }
         return true;
@@ -210,7 +212,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
             result = doDownload();
         } catch (IOException e) {
             this.mThrowable = e;
-            if (LogUtils.isDebug()) {
+            if (Rumtime.getInstance().isDebug()) {
                 e.printStackTrace();
             }
         } finally {
@@ -238,7 +240,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                 // 获取不到文件长度
                 final boolean finishKnown = isEncodingChunked && hasLength;
                 if (finishKnown) {
-                    LogUtils.e(TAG, "can't know size of download, giving up ,"
+                    Rumtime.getInstance().logError(TAG, "can't know size of download, giving up ,"
                             + "  EncodingChunked:" + isEncodingChunked
                             + "  hasLength:" + hasLength + " response length:" + tmpLength);
                     return ERROR_LOAD;
@@ -334,7 +336,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         try {
             return null == field ? -1L : Long.parseLong(field);
         } catch (NumberFormatException e) {
-            if (LogUtils.isDebug()) {
+            if (Rumtime.getInstance().isDebug()) {
                 e.printStackTrace();
             }
         }
@@ -346,7 +348,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         if (TextUtils.isEmpty(etag)) {
             return;
         }
-        LogUtils.i(TAG, "save etag:" + etag);
+        Rumtime.getInstance().log(TAG, "save etag:" + etag);
         SharedPreferences mSharedPreferences = mDownloadTask.getContext().getSharedPreferences(AgentWebConfig.AGENTWEB_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(mDownloadTask.getFile().getName(), etag);
@@ -385,7 +387,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         if (downloadTask.getFile().length() > 0) {
             String mEtag = "";
             if (!TextUtils.isEmpty((mEtag = getEtag()))) {
-                LogUtils.i(TAG, "Etag:" + mEtag);
+                Rumtime.getInstance().log(TAG, "Etag:" + mEtag);
                 httpURLConnection.setRequestProperty("If-Match", getEtag());
             }
             httpURLConnection.setRequestProperty("Range", "bytes=" + (mLastLoaded = downloadTask.getFile().length()) + "-");
@@ -438,7 +440,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
                         .onProgress(downloadTask.getUrl(), (mLastLoaded + mLoaded), mTotals, mUsedTime);
 
             }
-            LogUtils.i(TAG, "msg:" + DOWNLOAD_MESSAGE.get(integer));
+            Rumtime.getInstance().log(TAG, "onPostExecute:" + DOWNLOAD_MESSAGE.get(integer));
             boolean isCancelDispose = doCallback(integer);
             // Error
             if (integer > 0x200) {
@@ -469,7 +471,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
             }
             downloadTask.getContext().startActivity(mIntent);
         } catch (Throwable throwable) {
-            if (LogUtils.isDebug()) {
+            if (Rumtime.getInstance().isDebug()) {
                 throwable.printStackTrace();
             }
         } finally {
@@ -494,7 +496,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         DownloadListener mDownloadListener = null;
         DownloadTask downloadTask = this.mDownloadTask;
         if (null == (mDownloadListener = downloadTask.getDownloadListener())) {
-            LogUtils.e(TAG, "DownloadListener has been death");
+            Rumtime.getInstance().logError(TAG, "DownloadListener has been death");
             ExecuteTasksMap.getInstance()
                     .removeTask(downloadTask.getUrl());
             return false;
@@ -574,8 +576,7 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         return downloadInternal(downloadTask);
     }
 
-    @SuppressLint("NewApi")
-    private final boolean downloadInternal(DownloadTask downloadTask) {
+    private final boolean downloadInternal(final DownloadTask downloadTask) {
         synchronized (Downloader.class) {
             if (ExecuteTasksMap.getInstance().exist(downloadTask.mUrl)) {
                 return false;
@@ -583,6 +584,20 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
             ExecuteTasksMap.getInstance().addTask(downloadTask.getUrl(), this);
         }
         checkIsNullTask(downloadTask);
+        if (Looper.getMainLooper() != Looper.myLooper()) {
+            HANDLER.post(new Runnable() {
+                @Override
+                public void run() {
+                    Downloader.this.run(downloadTask);
+                }
+            });
+            return true;
+        }
+        run(downloadTask);
+        return true;
+    }
+    @SuppressLint("NewApi")
+    private void run(DownloadTask downloadTask) {
         this.mDownloadTask = downloadTask;
         this.mTotals = mDownloadTask.getLength();
         mDownloadTimeOut = mDownloadTask.getDownloadTimeOut();
@@ -593,7 +608,6 @@ public class Downloader extends AsyncTask<Void, Integer, Integer> implements IDo
         } else {
             this.executeOnExecutor(SERIAL_EXECUTOR);
         }
-        return true;
     }
 
 

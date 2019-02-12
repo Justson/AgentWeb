@@ -45,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 /**
  * @author cenxiaozhong
@@ -83,10 +82,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
      * ExtraServiceImpl
      */
     private ExtraServiceImpl mExtraServiceImpl;
-    /**
-     * 根据p3c，预编译正则，提升性能。
-     */
-    private static Pattern DISPOSITION_PATTERN = Pattern.compile(".*filename=(.*)");
 
     private static Handler mHandler = new Handler(Looper.getMainLooper());
 
@@ -201,7 +196,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                         extraService)) {
             return;
         }
-        File file = Rumtime.getInstance().createFile(extraService.mContext, extraService);
+        File file = Rumtime.getInstance().createFile(extraService.mContext, extraService, new File(AgentWebUtils.getAgentWebFilePath(mContext)));
         // File 创建文件失败
         if (null == file) {
             LogUtils.e(TAG, "新建文件失败");

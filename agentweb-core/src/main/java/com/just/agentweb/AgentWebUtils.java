@@ -132,7 +132,7 @@ public class AgentWebUtils {
 
 	}
 
-	static String getAgentWebFilePath(Context context) {
+	public static String getAgentWebFilePath(Context context) {
 		if (!TextUtils.isEmpty(AGENTWEB_FILE_PATH)) {
 			return AGENTWEB_FILE_PATH;
 		}
