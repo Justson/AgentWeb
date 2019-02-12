@@ -16,6 +16,8 @@
 
 package com.just.agentweb.download;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,14 +72,14 @@ public final class ExecuteTasksMap {
         }
     }
 
-    void removeTask(String url) {
+    void removeTask(@NonNull String url) {
         if (null != url) {
             this.mTasks.remove(url);
         }
     }
 
-    boolean contains(String url) {
-        return mTasks.contains(url);
+    boolean exist(@NonNull String url) {
+        return null != mTasks.get(url);
     }
 
     private static class ExecuteTaskHolder {

@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,6 +33,7 @@ import android.webkit.WebView;
 import com.just.agentweb.AbsAgentWebUIController;
 import com.just.agentweb.Action;
 import com.just.agentweb.ActionActivity;
+import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.AgentWebPermissions;
 import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.LogUtils;
@@ -43,7 +45,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -74,7 +75,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
      * 权限拦截
      */
     private PermissionInterceptor mPermissionListener = null;
-
     /**
      * AbsAgentWebUIController
      */
@@ -87,6 +87,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
      * 根据p3c，预编译正则，提升性能。
      */
     private static Pattern DISPOSITION_PATTERN = Pattern.compile(".*filename=(.*)");
+
+    private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
         if (!extraServiceImpl.mIsCloneObject) {
@@ -107,12 +109,16 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 
     @Override
-    public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
-        onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength, null);
+    public void onDownloadStart(final String url, final String userAgent, final String contentDisposition, final String mimetype, final long contentLength) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                onDownloadStartInternal(url, userAgent, contentDisposition, mimetype, contentLength, null);
+            }
+        });
     }
 
-
-    synchronized void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
+    private void onDownloadStartInternal(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, ExtraServiceImpl extraServiceImpl) {
         if (null == mActivityWeakReference.get() || mActivityWeakReference.get().isFinishing()) {
             return;
         }
@@ -121,7 +127,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                 return;
             }
         }
-
         ExtraServiceImpl mCloneExtraServiceImpl = null;
         if (null == extraServiceImpl) {
             mCloneExtraServiceImpl = (ExtraServiceImpl) this.mExtraServiceImpl.clone();
@@ -196,7 +201,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                         extraService)) {
             return;
         }
-        File file = getFile(extraService.mContentDisposition, extraService.mUrl);
+        File file = Rumtime.getInstance().createFile(extraService.mContext, extraService);
         // File 创建文件失败
         if (null == file) {
             LogUtils.e(TAG, "新建文件失败");
@@ -281,51 +286,12 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                         .onShowMessage(mActivityWeakReference.get().getString(R.string.agentweb_coming_soon_download) + ":" + extraService.getFile().getName(), TAG.concat("|performDownload"));
             }
             DownloadTask downloadTask = swrap(extraService);
+            downloadTask.addHeader("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
             DownloadImpl.getInstance().enqueue(downloadTask);
         } catch (Throwable ignore) {
             if (LogUtils.isDebug()) {
                 ignore.printStackTrace();
             }
-        }
-    }
-
-    private File getFile(String contentDisposition, String url) {
-        String fileName = "";
-        try {
-            fileName = getFileNameByContentDisposition(contentDisposition);
-            if (TextUtils.isEmpty(fileName) && !TextUtils.isEmpty(url)) {
-                Uri mUri = Uri.parse(url);
-                fileName = mUri.getPath().substring(mUri.getPath().lastIndexOf('/') + 1);
-            }
-            if (!TextUtils.isEmpty(fileName) && fileName.length() > 64) {
-                fileName = fileName.substring(fileName.length() - 64, fileName.length());
-            }
-            if (TextUtils.isEmpty(fileName)) {
-                fileName = AgentWebUtils.md5(url);
-            }
-            if (fileName.contains("\"")) {
-                fileName = fileName.replace("\"", "");
-            }
-            ExtraServiceImpl extraService = mExtraServiceImpls.get(url);
-            return AgentWebUtils.createFileByName(mContext, fileName, !extraService.isBreakPointDownload());
-        } catch (Throwable e) {
-            if (LogUtils.isDebug()) {
-                LogUtils.i(TAG, "fileName:" + fileName);
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    private String getFileNameByContentDisposition(String contentDisposition) {
-        if (TextUtils.isEmpty(contentDisposition)) {
-            return "";
-        }
-        Matcher m = DISPOSITION_PATTERN.matcher(contentDisposition.toLowerCase());
-        if (m.find()) {
-            return m.group(1);
-        } else {
-            return "";
         }
     }
 

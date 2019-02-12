@@ -67,8 +67,9 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
         return mContext;
     }
 
-    public void setContext(Context context) {
+    public DownloadTask setContext(Context context) {
         mContext = context.getApplicationContext();
+        return this;
     }
 
     public File getFile() {
@@ -79,8 +80,9 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
         return Uri.fromFile(this.mFile);
     }
 
-    public void setFile(File file) {
+    public DownloadTask setFile(File file) {
         mFile = file;
+        return this;
     }
 
     protected void destroy() {
@@ -109,8 +111,9 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
         return mDownloadListener;
     }
 
-    public void setDownloadListener(DownloadListener downloadListener) {
+    public DownloadTask setDownloadListener(DownloadListener downloadListener) {
         mDownloadListener = downloadListener;
+        return this;
     }
 
     public long getLength() {
