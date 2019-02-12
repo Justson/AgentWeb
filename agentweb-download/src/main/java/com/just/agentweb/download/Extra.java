@@ -29,7 +29,7 @@ import java.util.Map;
 public class Extra implements Serializable, Cloneable {
 
     /**
-     * 强制下肢
+     * 强制下载
      */
     protected boolean mIsForceDownload = false;
     /**
