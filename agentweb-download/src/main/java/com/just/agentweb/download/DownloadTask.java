@@ -24,8 +24,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.just.agentweb.download.Config.NOTICATION_ID;
-
 /**
  * @author cenxiaozhong
  * @date 2017/5/13
@@ -33,7 +31,7 @@ import static com.just.agentweb.download.Config.NOTICATION_ID;
 public class DownloadTask extends Extra implements Serializable, Cloneable {
 
     static final String TAG = DownloadTask.class.getSimpleName();
-    int mId = NOTICATION_ID.incrementAndGet();
+    int mId = Rumtime.getInstance().generateGlobalId();
     long mTotalsLength;
     Context mContext;
     File mFile;
@@ -120,10 +118,10 @@ public class DownloadTask extends Extra implements Serializable, Cloneable {
     }
 
     @Override
-    protected DownloadTask clone()  {
+    protected DownloadTask clone() {
         try {
             return (DownloadTask) super.clone();
-        }catch (Throwable throwable){
+        } catch (Throwable throwable) {
             throwable.printStackTrace();
             return new DownloadTask();
         }
