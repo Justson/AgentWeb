@@ -45,6 +45,11 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    repositories {
+        flatDir {
+            dirs '../agentweb-download/libs'; dirs 'libs'
+        }
+    }
 }
 
 dependencies {
@@ -52,6 +57,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    api(name: 'download-test', ext: 'aar')
     compile "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"

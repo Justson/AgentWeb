@@ -19,6 +19,7 @@ package com.just.agentweb.download;
 import android.app.Activity;
 import android.webkit.WebView;
 
+import com.downloader.library.DownloadTask;
 import com.just.agentweb.LogUtils;
 import com.just.agentweb.PermissionInterceptor;
 
@@ -31,67 +32,67 @@ import java.io.Serializable;
  */
 
 public class ExtraServiceImpl extends DownloadTask implements Cloneable, Serializable {
-    private static final String TAG = "ExtraServiceImpl";
-    transient Activity mActivity;
-    transient PermissionInterceptor mPermissionInterceptor;
-    transient WebView mWebView;
-    DefaultDownloadImpl mDefaultDownload;
-    long mContentLength;
-    boolean mIsCloneObject = false;
+	private static final String TAG = "ExtraServiceImpl";
+	transient Activity mActivity;
+	transient PermissionInterceptor mPermissionInterceptor;
+	transient WebView mWebView;
+	DefaultDownloadImpl mDefaultDownload;
+	long mContentLength;
+	boolean mIsCloneObject = false;
 
 
-    @Override
-    public long getContentLength() {
-        return mContentLength;
-    }
+	@Override
+	public long getContentLength() {
+		return mContentLength;
+	}
 
-    @Override
-    protected ExtraServiceImpl setContentLength(long contentLength) {
-        this.mContentLength = contentLength;
-        return this;
-    }
+	@Override
+	protected ExtraServiceImpl setContentLength(long contentLength) {
+		this.mContentLength = contentLength;
+		return this;
+	}
 
-    ExtraServiceImpl setActivity(Activity activity) {
-        mActivity = activity;
-        this.setContext(mActivity);
-        return this;
-    }
-
-
-    ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
-        mPermissionInterceptor = permissionInterceptor;
-        return this;
-    }
-
-    ExtraServiceImpl setWebView(WebView webView) {
-        this.mWebView = webView;
-        return this;
-    }
-
-    @Override
-    protected void destroy() {
-        super.destroy();
-        this.mIsCloneObject = true;
-        this.mActivity = null;
-        this.mPermissionInterceptor = null;
-        this.mWebView = null;
-    }
-
-    @Override
-    protected ExtraServiceImpl clone() {
-        ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
-        mExtraServiceImpl.mIsCloneObject = true;
-        mExtraServiceImpl.mActivity = null;
-        mExtraServiceImpl.mPermissionInterceptor = null;
-        mExtraServiceImpl.mWebView = null;
-        LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
-        mId = Rumtime.getInstance().generateGlobalId();
-        return mExtraServiceImpl;
-    }
+	ExtraServiceImpl setActivity(Activity activity) {
+		mActivity = activity;
+		this.setContext(mActivity);
+		return this;
+	}
 
 
-    DefaultDownloadImpl create() {
-        return this.mDefaultDownload = new DefaultDownloadImpl(this);
-    }
+	ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+		mPermissionInterceptor = permissionInterceptor;
+		return this;
+	}
+
+	ExtraServiceImpl setWebView(WebView webView) {
+		this.mWebView = webView;
+		return this;
+	}
+
+	@Override
+	protected void destroy() {
+		super.destroy();
+		this.mIsCloneObject = true;
+		this.mActivity = null;
+		this.mPermissionInterceptor = null;
+		this.mWebView = null;
+	}
+
+	@Override
+	protected ExtraServiceImpl clone() {
+		ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
+		mExtraServiceImpl.mIsCloneObject = true;
+		mExtraServiceImpl.mActivity = null;
+		mExtraServiceImpl.mPermissionInterceptor = null;
+		mExtraServiceImpl.mWebView = null;
+		LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
+//		mId = Rumtime.getInstance().generateGlobalId();
+		return mExtraServiceImpl;
+	}
+
+
+	DefaultDownloadImpl create() {
+		return this.mDefaultDownload = new DefaultDownloadImpl(this);
+	}
 
 }

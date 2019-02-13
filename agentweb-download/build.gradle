@@ -24,14 +24,26 @@ android {
         }
     }
 
-    lintOptions{
+    lintOptions {
         abortOnError false
+    }
+    sourceSets{
+        main{
+            jniLibs.srcDir(['libs'])
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+    api(name: 'download-test', ext: 'aar')
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })

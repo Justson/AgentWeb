@@ -30,6 +30,12 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.webkit.WebView;
 
+import com.downloader.library.DownloadImpl;
+import com.downloader.library.DownloadListener;
+import com.downloader.library.DownloadTask;
+import com.downloader.library.Extra;
+import com.downloader.library.Rumtime;
+import com.downloader.library.SimpleDownloadListener;
 import com.just.agentweb.AbsAgentWebUIController;
 import com.just.agentweb.Action;
 import com.just.agentweb.ActionActivity;
@@ -86,7 +92,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     DefaultDownloadImpl(ExtraServiceImpl extraServiceImpl) {
-        DownloadImpl.getInstance().with(extraServiceImpl.mContext);
+        DownloadImpl.getInstance().with(extraServiceImpl.mActivity);
         if (!extraServiceImpl.mIsCloneObject) {
             this.bind(extraServiceImpl);
             this.mExtraServiceImpl = extraServiceImpl;
@@ -96,8 +102,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     private void bind(ExtraServiceImpl extraServiceImpl) {
         this.mActivityWeakReference = new WeakReference<Activity>(extraServiceImpl.mActivity);
         this.mContext = extraServiceImpl.mActivity.getApplicationContext();
-        if (extraServiceImpl.mDownloadListener != null && !TextUtils.isEmpty(extraServiceImpl.mUrl)) {
-            this.mDownloadListeners.put(extraServiceImpl.mUrl, extraServiceImpl.mDownloadListener);
+        if (extraServiceImpl.getDownloadListener() != null && !TextUtils.isEmpty(extraServiceImpl.getUrl())) {
+            this.mDownloadListeners.put(extraServiceImpl.getUrl(), extraServiceImpl.getDownloadListener());
         }
         this.mPermissionListener = extraServiceImpl.mPermissionInterceptor;
         this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(extraServiceImpl.mWebView));
@@ -136,8 +142,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                 .setContentLength(contentLength)
                 .setUserAgent(userAgent);
         this.mExtraServiceImpls.put(url, mCloneExtraServiceImpl);
-        if (mCloneExtraServiceImpl.mDownloadListener != null && !TextUtils.isEmpty(mCloneExtraServiceImpl.mUrl)) {
-            this.mDownloadListeners.put(mCloneExtraServiceImpl.mUrl, mCloneExtraServiceImpl.mDownloadListener);
+        if (mCloneExtraServiceImpl.getDownloadListener() != null && !TextUtils.isEmpty(mCloneExtraServiceImpl.getUrl())) {
+            this.mDownloadListeners.put(mCloneExtraServiceImpl.getUrl(), mCloneExtraServiceImpl.getDownloadListener());
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             List<String> mList = null;
@@ -185,19 +191,19 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
     private void preDownload(String url) {
         ExtraServiceImpl extraService = mExtraServiceImpls.get(url);
-        DownloadListener downloadListener = mDownloadListeners.get(extraService.mUrl);
+        DownloadListener downloadListener = mDownloadListeners.get(extraService.getUrl());
         // true 表示用户取消了该下载事件。
         if (null != downloadListener
                 && downloadListener
-                .onStart(extraService.mUrl,
-                        extraService.mUserAgent,
-                        extraService.mContentDisposition,
-                        extraService.mMimetype,
+                .onStart(extraService.getUrl(),
+                        extraService.getUserAgent(),
+                        extraService.getContentDisposition(),
+                        extraService.getMimetype(),
                         extraService.mContentLength,
                         extraService)) {
             return;
         }
-        File file = Rumtime.getInstance().createFile(extraService.mContext, extraService, new File(AgentWebUtils.getAgentWebFilePath(mContext)));
+        File file = Rumtime.getInstance().createFile(extraService.getContext(), extraService, new File(AgentWebUtils.getAgentWebFilePath(mContext)));
         // File 创建文件失败
         if (null == file) {
             LogUtils.e(TAG, "新建文件失败");
@@ -205,7 +211,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         }
         if (file.exists() && file.length() >= extraService.mContentLength && extraService.mContentLength > 0) {
             // true 表示用户处理了下载完成后续的通知用户事件
-            if (null != downloadListener && downloadListener.onResult(null, Uri.fromFile(file), extraService.mUrl, extraService)) {
+            if (null != downloadListener && downloadListener.onResult(null, Uri.fromFile(file), extraService.getUrl(), extraService)) {
                 return;
             }
             Intent mIntent = AgentWebUtils.getCommonFileIntentCompat(mContext, file);
@@ -250,7 +256,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         ExtraServiceImpl extraService = mExtraServiceImpls.get(url);
         AbsAgentWebUIController mAgentWebUIController;
         if (null != (mAgentWebUIController = this.mAgentWebUIController.get())) {
-            mAgentWebUIController.onForceDownloadAlert(extraService.mUrl, createCallback(extraService.getUrl()));
+            mAgentWebUIController.onForceDownloadAlert(extraService.getUrl(), createCallback(extraService.getUrl()));
         }
     }
 

@@ -42,8 +42,6 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.download.DefaultDownloadImpl;
-import com.just.agentweb.download.Extra;
-import com.just.agentweb.download.SimpleDownloadListener;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
