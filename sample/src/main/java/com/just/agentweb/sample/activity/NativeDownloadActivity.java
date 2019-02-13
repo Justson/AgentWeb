@@ -27,10 +27,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.just.agentweb.download.DownloadImpl;
-import com.just.agentweb.download.DownloadTask;
-import com.just.agentweb.download.Extra;
-import com.just.agentweb.download.SimpleDownloadListener;
 import com.just.agentweb.sample.R;
 import com.lcodecore.tkrefreshlayout.utils.DensityUtil;
 import com.squareup.picasso.Picasso;

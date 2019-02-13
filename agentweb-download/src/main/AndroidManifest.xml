@@ -3,7 +3,6 @@
 
     <application
         >
-        <receiver android:name="com.just.agentweb.download.NotificationCancelReceiver"></receiver>
     </application>
 
 </manifest>
