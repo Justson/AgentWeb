@@ -276,7 +276,6 @@ public class AgentWebUtils {
 	}
 
 	static String getDiskExternalCacheDir(Context context) {
-
 		File mFile = context.getExternalCacheDir();
 		if (Environment.MEDIA_MOUNTED.equals(EnvironmentCompat.getStorageState(mFile))) {
 			return mFile.getAbsolutePath();

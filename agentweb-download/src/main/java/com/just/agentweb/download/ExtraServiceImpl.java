@@ -32,67 +32,90 @@ import java.io.Serializable;
  */
 
 public class ExtraServiceImpl extends DownloadTask implements Cloneable, Serializable {
-	private static final String TAG = "ExtraServiceImpl";
-	transient Activity mActivity;
-	transient PermissionInterceptor mPermissionInterceptor;
-	transient WebView mWebView;
-	DefaultDownloadImpl mDefaultDownload;
-	long mContentLength;
-	boolean mIsCloneObject = false;
+    private static final String TAG = "ExtraServiceImpl";
+    transient Activity mActivity;
+    transient PermissionInterceptor mPermissionInterceptor;
+    transient WebView mWebView;
+    DefaultDownloadImpl mDefaultDownload;
+    long mContentLength;
+    boolean mIsCloneObject = false;
 
 
-	@Override
-	public long getContentLength() {
-		return mContentLength;
-	}
+    @Override
+    public ExtraServiceImpl setUrl(String url) {
+        super.setUrl(url);
+        return this;
+    }
 
-	@Override
-	protected ExtraServiceImpl setContentLength(long contentLength) {
-		this.mContentLength = contentLength;
-		return this;
-	}
+    @Override
+    public ExtraServiceImpl setMimetype(String mimetype) {
+        super.setMimetype(mimetype);
+        return this;
+    }
 
-	ExtraServiceImpl setActivity(Activity activity) {
-		mActivity = activity;
-		this.setContext(mActivity);
-		return this;
-	}
+    @Override
+    public ExtraServiceImpl setContentDisposition(String contentDisposition) {
+        super.setContentDisposition(contentDisposition);
+        return this;
+    }
 
+    @Override
+    public ExtraServiceImpl setUserAgent(String userAgent) {
+        super.setUserAgent(userAgent);
+        return this;
+    }
 
-	ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
-		mPermissionInterceptor = permissionInterceptor;
-		return this;
-	}
+    @Override
+    public long getContentLength() {
+        return mContentLength;
+    }
 
-	ExtraServiceImpl setWebView(WebView webView) {
-		this.mWebView = webView;
-		return this;
-	}
+    @Override
+    protected ExtraServiceImpl setContentLength(long contentLength) {
+        this.mContentLength = contentLength;
+        return this;
+    }
 
-	@Override
-	protected void destroy() {
-		super.destroy();
-		this.mIsCloneObject = true;
-		this.mActivity = null;
-		this.mPermissionInterceptor = null;
-		this.mWebView = null;
-	}
+    ExtraServiceImpl setActivity(Activity activity) {
+        mActivity = activity;
+        this.setContext(mActivity);
+        return this;
+    }
 
-	@Override
-	protected ExtraServiceImpl clone() {
-		ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
-		mExtraServiceImpl.mIsCloneObject = true;
-		mExtraServiceImpl.mActivity = null;
-		mExtraServiceImpl.mPermissionInterceptor = null;
-		mExtraServiceImpl.mWebView = null;
-		LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
+    ExtraServiceImpl setPermissionInterceptor(PermissionInterceptor permissionInterceptor) {
+        mPermissionInterceptor = permissionInterceptor;
+        return this;
+    }
+
+    ExtraServiceImpl setWebView(WebView webView) {
+        this.mWebView = webView;
+        return this;
+    }
+
+    @Override
+    protected void destroy() {
+        super.destroy();
+        this.mIsCloneObject = true;
+        this.mActivity = null;
+        this.mPermissionInterceptor = null;
+        this.mWebView = null;
+    }
+
+    @Override
+    protected ExtraServiceImpl clone() {
+        ExtraServiceImpl mExtraServiceImpl = (ExtraServiceImpl) super.clone();
+        mExtraServiceImpl.mIsCloneObject = true;
+        mExtraServiceImpl.mActivity = null;
+        mExtraServiceImpl.mPermissionInterceptor = null;
+        mExtraServiceImpl.mWebView = null;
+        LogUtils.e(TAG, " this:" + this + "  clone:" + mExtraServiceImpl);
 //		mId = Rumtime.getInstance().generateGlobalId();
-		return mExtraServiceImpl;
-	}
+        return mExtraServiceImpl;
+    }
 
 
-	DefaultDownloadImpl create() {
-		return this.mDefaultDownload = new DefaultDownloadImpl(this);
-	}
+    DefaultDownloadImpl create() {
+        return this.mDefaultDownload = new DefaultDownloadImpl(this);
+    }
 
 }
