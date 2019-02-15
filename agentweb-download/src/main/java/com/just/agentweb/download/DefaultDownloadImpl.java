@@ -203,14 +203,14 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                         extraService)) {
             return;
         }
-        File file = Rumtime.getInstance().createFile(extraService.getContext(), extraService, new File(AgentWebUtils.getAgentWebFilePath(mContext)));
+        File file = Rumtime.getInstance().uniqueFile(extraService, new File(AgentWebUtils.getAgentWebFilePath(mContext)));
         // File 创建文件失败
         if (null == file) {
             LogUtils.e(TAG, "新建文件失败");
             return;
         }
         if (file.exists() && file.length() >= extraService.mContentLength && extraService.mContentLength > 0) {
-            // true 表示用户处理了下载完成后续的通知用户事件
+            // true 用户处理了下载完成后续的通知用户事件
             if (null != downloadListener && downloadListener.onResult(null, Uri.fromFile(file), extraService.getUrl(), extraService)) {
                 return;
             }
@@ -231,7 +231,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             }
             return;
         }
-        extraService.setFile(file);
+        extraService.setFile(file, extraService.getContext().getPackageName() + ".AgentWebFileProvider");
         // 移动数据
         if (!extraService.isForceDownload() &&
                 AgentWebUtils.checkNetworkType(mContext) > 1) {
@@ -305,6 +305,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
         @Override
         public void onProgress(String url, long downloaded, long length, long useTime) {
+            LogUtils.e(TAG, " downloaded:" + downloaded + " length:" + length + " url:" + url);
             DownloadListener downloadingListener = DefaultDownloadImpl.this.mDownloadListeners.get(url);
             if (null != downloadingListener) {
                 downloadingListener.onProgress(url, downloaded, length, useTime);
