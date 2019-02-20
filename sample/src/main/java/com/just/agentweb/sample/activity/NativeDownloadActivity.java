@@ -27,16 +27,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.downloader.library.DownloadImpl;
-import com.downloader.library.DownloadTask;
-import com.downloader.library.Extra;
-import com.downloader.library.SimpleDownloadListener;
+import com.download.library.DownloadImpl;
+import com.download.library.DownloadListenerAdapter;
+import com.download.library.DownloadTask;
+import com.download.library.DownloadingListener;
+import com.download.library.Extra;
 import com.just.agentweb.sample.R;
 import com.lcodecore.tkrefreshlayout.utils.DensityUtil;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -67,29 +67,68 @@ public class NativeDownloadActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(new NativeDownloadAdapter());
 
-        new Thread(new Runnable() {
+       /*new Thread(new Runnable() {
             @Override
             public void run() {
-                File file = DownloadImpl.getInstance().with(getApplicationContext()).url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk").setDownloadListener(new SimpleDownloadListener() {
+                File file = DownloadImpl.getInstance().with(getApplicationContext()).url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk").setDownloadingListener(new DownloadListenerAdapter() {
                     @Override
                     public void onProgress(String url, long downloaded, long length, long usedTime) {
                         super.onProgress(url, downloaded, length, usedTime);
                         Log.i(TAG, " downloaded:" + downloaded);
                     }
+
+                    @Override
+                    public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
+                        Log.i(TAG, "downloaded onResult isSuccess:" + (throwable == null) + " url:" + url + " Thread:" + Thread.currentThread().getName() + " uri:" + path.toString());
+
+                        return super.onResult(throwable, path, url, extra);
+                    }
                 }).get();
                 Log.i(TAG, " download success:" + ((File) file).length());
             }
-        }).start();
-        DownloadImpl.getInstance()
+        }).start();*/
+        /*DownloadImpl.getInstance()
                 .with(getApplicationContext())
+                .setEnableIndicator(true)
                 .url("http://shouji.360tpcdn.com/170918/f7aa8587561e4031553316ada312ab38/com.tencent.qqlive_13049.apk")
-                .enqueue(new SimpleDownloadListener() {
+                .enqueue(new DownloadListenerAdapter() {
                     @Override
                     public void onProgress(String url, long downloaded, long length, long usedTime) {
                         super.onProgress(url, downloaded, length, usedTime);
                         Log.i(TAG, " progress:" + downloaded + " url:" + url);
                     }
+
+                    @Override
+                    public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
+                        Log.i(TAG, " path:" + path + " url:" + url + " length:" + new File(path.getPath()).length());
+                        return super.onResult(throwable, path, url, extra);
+                    }
                 });
+
+        File file = new File(this.getCacheDir(), "测试.apk");
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        DownloadImpl.getInstance()
+                .with(getApplicationContext())
+                .target(file)
+                .url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk")
+                .enqueue(new DownloadListenerAdapter() {
+                    @Override
+                    public void onProgress(String url, long downloaded, long length, long usedTime) {
+                        super.onProgress(url, downloaded, length, usedTime);
+                        Log.i(TAG, " progress:" + downloaded + " url:" + url);
+                    }
+
+                    @Override
+                    public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
+                        Log.i(TAG, " path:" + path + " url:" + url + " length:" + new File(path.getPath()).length());
+                        return super.onResult(throwable, path, url, extra);
+                    }
+                });*/
+
     }
 
     private class NativeDownloadAdapter extends RecyclerView.Adapter<NativeDownloadViewHolder> {
@@ -134,27 +173,32 @@ public class NativeDownloadActivity extends AppCompatActivity {
                     }
                 }
             });
-            downloadBean.setDownloadListener(new SimpleDownloadListener() {
+            downloadBean.setDownloadListenerAdapter(new DownloadListenerAdapter() {
+                @Override
+                public void onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+                }
+
+                @DownloadingListener.MainThread //回调到主线程，添加该注释
                 @Override
                 public void onProgress(String url, long downloaded, long length, long usedTime) {
                     int mProgress = (int) ((downloaded) / Float.valueOf(length) * 100);
                     Log.i(TAG, "onProgress:" + mProgress + " url:" + url + " Thread:" + Thread.currentThread().getName());
                     nativeDownloadViewHolder.mProgressBar.setProgress(mProgress);
                     nativeDownloadViewHolder.mCurrentProgress.setText("当前进度" + byte2FitMemorySize(downloaded) + "/" + byte2FitMemorySize(length) + " 耗时:" + ((downloadBean.getUsedTime()) / 1000) + "s");
-                    downloadBean.usedTime = usedTime;
                 }
 
                 @Override
                 public boolean onResult(Throwable throwable, Uri uri, String url, Extra extra) {
-                    Log.i(TAG, "onResult isSuccess:" + (throwable == null) + " url:" + url + " Thread:" + Thread.currentThread().getName());
+                    Log.i(TAG, "onResult isSuccess:" + (throwable == null) + " url:" + url + " Thread:" + Thread.currentThread().getName() + " uri:" + uri.toString());
+                    nativeDownloadViewHolder.mStatusButton.setEnabled(false);
                     if (throwable == null) {
                         nativeDownloadViewHolder.mStatusButton.setText("已完成");
-                        nativeDownloadViewHolder.mStatusButton.setEnabled(false);
+                    } else {
+                        nativeDownloadViewHolder.mStatusButton.setText("出错");
                     }
                     return super.onResult(throwable, uri, url, extra);
                 }
             });
-
         }
 
         @Override
