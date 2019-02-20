@@ -36,7 +36,6 @@ import android.webkit.WebViewClient;
  */
 public class WebViewClientDelegate extends WebViewClient {
 
-
     private WebViewClient mDelegate;
     private static final String TAG = WebViewClientDelegate.class.getSimpleName();
 
@@ -55,18 +54,14 @@ public class WebViewClientDelegate extends WebViewClient {
     @Deprecated
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-
         if (mDelegate != null) {
             return mDelegate.shouldOverrideUrlLoading(view, url);
         }
-
         return super.shouldOverrideUrlLoading(view, url);
     }
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-
         if (mDelegate != null) {
             return mDelegate.shouldOverrideUrlLoading(view, request);
         }
@@ -75,7 +70,6 @@ public class WebViewClientDelegate extends WebViewClient {
 
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
         if (mDelegate != null) {
             mDelegate.onPageStarted(view, url, favicon);
             return;
@@ -123,7 +117,6 @@ public class WebViewClientDelegate extends WebViewClient {
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view,
                                                       WebResourceRequest request) {
-
         if (mDelegate != null) {
             return mDelegate.shouldInterceptRequest(view, request);
         }
@@ -145,7 +138,6 @@ public class WebViewClientDelegate extends WebViewClient {
     @Deprecated
     public void onReceivedError(WebView view, int errorCode,
                                 String description, String failingUrl) {
-
         if (mDelegate != null) {
             mDelegate.onReceivedError(view, errorCode, description, failingUrl);
             return;
@@ -155,31 +147,26 @@ public class WebViewClientDelegate extends WebViewClient {
 
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-
         if (mDelegate != null) {
             mDelegate.onReceivedError(view, request, error);
             return;
         }
-
         super.onReceivedError(view, request, error);
     }
 
     @Override
     public void onReceivedHttpError(
             WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
-
         if (mDelegate != null) {
             mDelegate.onReceivedHttpError(view, request, errorResponse);
             return;
         }
         super.onReceivedHttpError(view, request, errorResponse);
-
     }
 
     @Override
     public void onFormResubmission(WebView view, Message dontResend,
                                    Message resend) {
-
         if (mDelegate != null) {
             mDelegate.onFormResubmission(view, dontResend, resend);
             return;
@@ -191,7 +178,6 @@ public class WebViewClientDelegate extends WebViewClient {
     @Override
     public void doUpdateVisitedHistory(WebView view, String url,
                                        boolean isReload) {
-
         if (mDelegate != null) {
             mDelegate.doUpdateVisitedHistory(view, url, isReload);
             return;
@@ -232,15 +218,12 @@ public class WebViewClientDelegate extends WebViewClient {
     public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
         if (mDelegate != null) {
             return mDelegate.shouldOverrideKeyEvent(view, event);
-
         }
-
         return super.shouldOverrideKeyEvent(view, event);
     }
 
     @Override
     public void onUnhandledKeyEvent(WebView view, KeyEvent event) {
-
         if (mDelegate != null) {
             mDelegate.onUnhandledKeyEvent(view, event);
             return;
@@ -251,7 +234,6 @@ public class WebViewClientDelegate extends WebViewClient {
 
     @Override
     public void onScaleChanged(WebView view, float oldScale, float newScale) {
-
         if (mDelegate != null) {
             mDelegate.onScaleChanged(view, oldScale, newScale);
             return;
@@ -262,7 +244,6 @@ public class WebViewClientDelegate extends WebViewClient {
     @Override
     public void onReceivedLoginRequest(WebView view, String realm,
                                        String account, String args) {
-
         if (mDelegate != null) {
             mDelegate.onReceivedLoginRequest(view, realm, account, args);
             return;

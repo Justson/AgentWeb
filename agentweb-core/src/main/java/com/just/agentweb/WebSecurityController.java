@@ -20,7 +20,5 @@ package com.just.agentweb;
  * @author cenxiaozhong
  */
 public interface WebSecurityController<T> {
-
     void check(T t);
-
 }

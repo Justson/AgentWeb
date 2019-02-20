@@ -49,12 +49,10 @@ public class VideoImpl implements IVideo, EventInterceptor {
         this.mActivity = mActivity;
         this.mWebView = webView;
         mFlags = new HashSet<>();
-
     }
 
     @Override
     public void onShowCustomView(View view, WebChromeClient.CustomViewCallback callback) {
-
         Activity mActivity;
         if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
             return;

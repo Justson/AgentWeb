@@ -38,7 +38,6 @@ public class AgentWebJsInterfaceCompat {
 		mActivityWeakReference = new WeakReference<Activity>(activity);
 	}
 
-
 	@JavascriptInterface
 	public void uploadFile() {
 		uploadFile("*/*");
@@ -48,7 +47,6 @@ public class AgentWebJsInterfaceCompat {
 	public void uploadFile(String acceptType) {
 		LogUtils.i(TAG, acceptType + "  " + mActivityWeakReference.get() + "  " + mReference.get());
 		if (mActivityWeakReference.get() != null && mReference.get() != null) {
-
 			AgentWebUtils.showFileChooserCompat(mActivityWeakReference.get(),
 					mReference.get().getWebCreator().getWebView(),
 					null,
@@ -68,9 +66,6 @@ public class AgentWebJsInterfaceCompat {
 						}
 					}
 			);
-
-
 		}
 	}
-
 }

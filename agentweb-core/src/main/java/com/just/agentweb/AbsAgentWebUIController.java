@@ -49,7 +49,6 @@ public abstract class AbsAgentWebUIController {
 		}
 	}
 
-
 	protected AbsAgentWebUIController create() {
 		return HAS_DESIGN_LIB ? new DefaultDesignUIController() : new DefaultUIController();
 	}

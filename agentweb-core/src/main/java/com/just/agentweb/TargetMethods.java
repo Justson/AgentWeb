@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0.0
  */
 public class TargetMethods {
+
 	private ConcurrentHashMap<String, Method> mTargetMethos = new ConcurrentHashMap<>();
 
 	boolean exist(Object currentObject, String methodName, String method, Class... clazzs) {

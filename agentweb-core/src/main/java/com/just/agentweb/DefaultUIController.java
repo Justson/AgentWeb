@@ -53,11 +53,8 @@ public class DefaultUIController extends AbsAgentWebUIController {
 		AgentWebUtils.toastShowShort(view.getContext().getApplicationContext(), message);
 	}
 
-
 	@Override
 	public void onOpenPagePrompt(WebView view, String url, final Handler.Callback callback) {
-
-
 		LogUtils.i(TAG, "onOpenPagePrompt");
 		if (mAskOpenOtherAppDialog == null) {
 			mAskOpenOtherAppDialog = new AlertDialog
@@ -98,9 +95,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 	@Override
 	public void onForceDownloadAlert(String url, final Handler.Callback callback) {
-
 		onForceDownloadAlertInternal(callback);
-
 	}
 
 	private void onForceDownloadAlertInternal(final Handler.Callback callback) {
@@ -108,8 +103,6 @@ public class DefaultUIController extends AbsAgentWebUIController {
 		if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
 			return;
 		}
-
-
 		AlertDialog mAlertDialog = null;
 		mAlertDialog = new AlertDialog.Builder(mActivity)
 				.setTitle(mResources.getString(R.string.agentweb_tips))
@@ -134,7 +127,6 @@ public class DefaultUIController extends AbsAgentWebUIController {
 						}
 					}
 				}).create();
-
 		mAlertDialog.show();
 	}
 

@@ -32,12 +32,9 @@ import android.view.MotionEvent;
 public class NestedScrollAgentWebView extends AgentWebView implements NestedScrollingChild {
 
     private int mLastMotionY;
-
     private final int[] mScrollOffset = new int[2];
     private final int[] mScrollConsumed = new int[2];
-
     private int mNestedYOffset;
-
     private NestedScrollingChildHelper mChildHelper;
 
     public NestedScrollAgentWebView(Context context) {
@@ -58,19 +55,13 @@ public class NestedScrollAgentWebView extends AgentWebView implements NestedScro
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean result = false;
-
         MotionEvent trackedEvent = MotionEvent.obtain(event);
-
         final int action = MotionEventCompat.getActionMasked(event);
-
         if (action == MotionEvent.ACTION_DOWN) {
             mNestedYOffset = 0;
         }
-
         int y = (int) event.getY();
-
         event.offsetLocation(0, mNestedYOffset);
-
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mLastMotionY = y;
