@@ -98,14 +98,12 @@ public class AgentWebUtils {
 	}
 
 	public static int dp2px(Context context, float dipValue) {
-
 		final float scale = context.getResources().getDisplayMetrics().density;
 		return (int) (dipValue * scale + 0.5f);
 	}
 
 
 	static final void clearWebView(WebView m) {
-
 		if (m == null) {
 			return;
 		}
@@ -128,8 +126,6 @@ public class AgentWebUtils {
 		m.clearHistory();
 		m.destroy();
 		m = null;
-
-
 	}
 
 	public static String getAgentWebFilePath(Context context) {
@@ -147,12 +143,10 @@ public class AgentWebUtils {
 		}
 		LogUtils.i(TAG, "path:" + mFile.getAbsolutePath() + "  path:" + mFile.getPath());
 		return AGENTWEB_FILE_PATH = mFile.getAbsolutePath();
-
 	}
 
 
 	public static File createFileByName(Context context, String name, boolean cover) throws IOException {
-
 		String path = getAgentWebFilePath(context);
 		if (TextUtils.isEmpty(path)) {
 			return null;
@@ -170,7 +164,6 @@ public class AgentWebUtils {
 	}
 
 	public static int checkNetworkType(Context context) {
-
 		int netType = 0;
 		//连接管理对象
 		ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -184,7 +177,6 @@ public class AgentWebUtils {
 			case ConnectivityManager.TYPE_WIMAX:
 			case ConnectivityManager.TYPE_ETHERNET:
 				return 1;
-
 			case ConnectivityManager.TYPE_MOBILE:
 				switch (networkInfo.getSubtype()) {
 					case TelephonyManager.NETWORK_TYPE_LTE:  // 4G
@@ -197,20 +189,16 @@ public class AgentWebUtils {
 					case TelephonyManager.NETWORK_TYPE_EVDO_A:
 					case TelephonyManager.NETWORK_TYPE_EVDO_B:
 						return 3;
-
 					case TelephonyManager.NETWORK_TYPE_GPRS: // 2G
 					case TelephonyManager.NETWORK_TYPE_EDGE:
 						return 4;
-
 					default:
 						return netType;
 				}
 
 			default:
-
 				return netType;
 		}
-
 	}
 
 	public static long getAvailableStorage() {
@@ -284,7 +272,6 @@ public class AgentWebUtils {
 	}
 
 	static void grantPermissions(Context context, Intent intent, Uri uri, boolean writeAble) {
-
 		int flag = Intent.FLAG_GRANT_READ_URI_PERMISSION;
 		if (writeAble) {
 			flag |= Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
@@ -304,7 +291,6 @@ public class AgentWebUtils {
 		String fName = f.getName();
 		/* 取得扩展名 */
 		String end = fName.substring(fName.lastIndexOf(".") + 1, fName.length()).toLowerCase();
-
 		/* 依扩展名的类型决定MimeType */
 		if (end.equals("pdf")) {
 			type = "application/pdf";//
@@ -353,7 +339,6 @@ public class AgentWebUtils {
 			snackbar.setAction(actionText, listener);
 		}
 		snackbar.show();
-
 	}
 
 	static void dismiss() {
@@ -452,7 +437,6 @@ public class AgentWebUtils {
 		}
 	}
 
-
 	static void clearWebViewAllCache(Context context) {
 
 		try {
@@ -464,7 +448,6 @@ public class AgentWebUtils {
 	}
 
 	static int clearCacheFolder(final File dir, final int numDays) {
-
 		int deletedFiles = 0;
 		if (dir != null) {
 			Log.i("Info", "dir:" + dir.getAbsolutePath());
@@ -501,9 +484,7 @@ public class AgentWebUtils {
 		Log.i("Info", String.format("Cache pruning completed, %d files deleted", numDeletedFiles));
 	}
 
-
 	public static String[] uriToPath(Activity activity, Uri[] uris) {
-
 		if (activity == null || uris == null || uris.length == 0) {
 			return null;
 		}
@@ -528,11 +509,9 @@ public class AgentWebUtils {
 		String filePath = null;
 		LogUtils.i(TAG, "method -> getRealPathBelowVersion " + uri + "   path:" + uri.getPath() + "    getAuthority:" + uri.getAuthority());
 		String[] projection = {MediaStore.Images.Media.DATA};
-
 		CursorLoader loader = new CursorLoader(context, uri, projection, null,
 				null, null);
 		Cursor cursor = loader.loadInBackground();
-
 		if (cursor != null) {
 			cursor.moveToFirst();
 			filePath = cursor.getString(cursor.getColumnIndex(projection[0]));
@@ -540,11 +519,9 @@ public class AgentWebUtils {
 		}
 		if (filePath == null) {
 			filePath = uri.getPath();
-
 		}
 		return filePath;
 	}
-
 
 	static File createImageFile(Context context) {
 		File mFile = null;
@@ -562,25 +539,19 @@ public class AgentWebUtils {
 
 	public static void closeIO(Closeable closeable) {
 		try {
-
 			if (closeable != null) {
 				closeable.close();
 			}
 		} catch (Exception e) {
-
 			e.printStackTrace();
 		}
-
 	}
-
 
 	@TargetApi(19)
 	static String getFileAbsolutePath(Activity context, Uri fileUri) {
-
 		if (context == null || fileUri == null) {
 			return null;
 		}
-
 		LogUtils.i(TAG, "getAuthority:" + fileUri.getAuthority() + "  getHost:" + fileUri.getHost() + "   getPath:" + fileUri.getPath() + "  getScheme:" + fileUri.getScheme() + "  query:" + fileUri.getQuery());
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
 			if (isExternalStorageDocument(fileUri)) {
@@ -611,11 +582,9 @@ public class AgentWebUtils {
 				String[] selectionArgs = new String[]{split[1]};
 				return getDataColumn(context, contentUri, selection, selectionArgs);
 			} else {
-
 			}
 		} // MediaStore (and general)
 		else if (fileUri.getAuthority().equalsIgnoreCase(context.getPackageName() + ".AgentWebFileProvider")) {
-
 			String path = fileUri.getPath();
 			int index = path.lastIndexOf("/");
 			return getAgentWebFilePath(context) + File.separator + path.substring(index + 1, path.length());
@@ -683,7 +652,6 @@ public class AgentWebUtils {
 	}
 
 	static Intent getInstallApkIntentCompat(Context context, File file) {
-
 		Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
 		setIntentDataAndType(context, mIntent, "application/vnd.android.package-archive", file, false);
 		return mIntent;
@@ -708,7 +676,6 @@ public class AgentWebUtils {
 		if (TextUtils.isEmpty(target)) {
 			return false;
 		}
-
 		boolean tag = false;
 		try {
 			if (target.startsWith("[")) {
@@ -721,42 +688,33 @@ public class AgentWebUtils {
 //            ignore.printStackTrace();
 			tag = false;
 		}
-
 		return tag;
-
 	}
-
 
 	public static boolean isUIThread() {
 		return Looper.myLooper() == Looper.getMainLooper();
 	}
 
 	static boolean isEmptyCollection(Collection collection) {
-
 		return collection == null || collection.isEmpty();
 	}
 
 	static boolean isEmptyMap(Map map) {
-
 		return map == null || map.isEmpty();
 	}
 
 	private static Toast mToast = null;
-
 	static void toastShowShort(Context context, String msg) {
-
 		if (mToast == null) {
 			mToast = Toast.makeText(context.getApplicationContext(), msg, Toast.LENGTH_SHORT);
 		} else {
 			mToast.setText(msg);
 		}
 		mToast.show();
-
 	}
 
 	@Deprecated
 	static void getUIControllerAndShowMessage(Activity activity, String message, String from) {
-
 		if (activity == null || activity.isFinishing()) {
 			return;
 		}
@@ -780,7 +738,6 @@ public class AgentWebUtils {
 			if (result == PackageManager.PERMISSION_DENIED) {
 				return false;
 			}
-
 			String op = AppOpsManagerCompat.permissionToOp(permission);
 			if (TextUtils.isEmpty(op)) {
 				continue;
@@ -789,13 +746,11 @@ public class AgentWebUtils {
 			if (result != AppOpsManagerCompat.MODE_ALLOWED) {
 				return false;
 			}
-
 		}
 		return true;
 	}
 
 	public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
-
 		if (permissions == null || permissions.length == 0) {
 			return null;
 		}
@@ -807,7 +762,6 @@ public class AgentWebUtils {
 			}
 		}
 		return deniedPermissions;
-
 	}
 
 
@@ -873,10 +827,7 @@ public class AgentWebUtils {
 	                                     String mimeType,
 	                                     Handler.Callback jsChannelCallback
 	) {
-
-
 		try {
-
 			Class<?> clz = Class.forName("com.just.agentweb.filechooser.FileChooser");
 			Object mFileChooser$Builder = clz.getDeclaredMethod("newBuilder",
 					Activity.class, WebView.class)
@@ -888,46 +839,36 @@ public class AgentWebUtils {
 				mMethod.setAccessible(true);
 				mMethod.invoke(mFileChooser$Builder, valueCallbacks);
 			}
-
 			if (fileChooserParams != null) {
 				mMethod = clz.getDeclaredMethod("setFileChooserParams", WebChromeClient.FileChooserParams.class);
 				mMethod.setAccessible(true);
 				mMethod.invoke(mFileChooser$Builder, fileChooserParams);
 			}
-
 			if (valueCallback != null) {
 				mMethod = clz.getDeclaredMethod("setUriValueCallback", ValueCallback.class);
 				mMethod.setAccessible(true);
 				mMethod.invoke(mFileChooser$Builder, valueCallback);
 			}
-
-
 			if (!TextUtils.isEmpty(mimeType)) {
 //                LogUtils.i(TAG, Arrays.toString(clz.getDeclaredMethods()));
 				mMethod = clz.getDeclaredMethod("setAcceptType", String.class);
 				mMethod.setAccessible(true);
 				mMethod.invoke(mFileChooser$Builder, mimeType);
 			}
-
 			if (jsChannelCallback != null) {
 				mMethod = clz.getDeclaredMethod("setJsChannelCallback", Handler.Callback.class);
 				mMethod.setAccessible(true);
 				mMethod.invoke(mFileChooser$Builder, jsChannelCallback);
 			}
-
-
 			mMethod = clz.getDeclaredMethod("setPermissionInterceptor", PermissionInterceptor.class);
 			mMethod.setAccessible(true);
 			mMethod.invoke(mFileChooser$Builder, permissionInterceptor);
-
 			mMethod = clz.getDeclaredMethod("build");
 			mMethod.setAccessible(true);
 			Object mFileChooser = mMethod.invoke(mFileChooser$Builder);
-
 			mMethod = mFileChooser.getClass().getDeclaredMethod("openFileChooser");
 			mMethod.setAccessible(true);
 			mMethod.invoke(mFileChooser);
-
 		} catch (Throwable throwable) {
 			if (LogUtils.isDebug()) {
 				throwable.printStackTrace();

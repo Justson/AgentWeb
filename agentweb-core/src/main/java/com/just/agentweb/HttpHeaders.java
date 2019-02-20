@@ -28,18 +28,13 @@ import java.util.Map;
  */
 @Deprecated
 public class HttpHeaders {
-
-
     public static HttpHeaders create() {
         return new HttpHeaders();
     }
-
     private Map<String, String> mHeaders = null;
-
     HttpHeaders() {
         mHeaders = new ArrayMap<>();
     }
-
     public Map<String, String> getHeaders() {
         return mHeaders;
     }

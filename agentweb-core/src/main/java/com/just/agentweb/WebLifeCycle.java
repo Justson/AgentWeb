@@ -22,11 +22,7 @@ package com.just.agentweb;
  * @since 1.0.0
  */
 public interface WebLifeCycle {
-
-
     void onResume();
     void onPause();
     void onDestroy();
-
-
 }

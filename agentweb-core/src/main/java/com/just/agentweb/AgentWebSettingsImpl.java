@@ -33,7 +33,6 @@ public class AgentWebSettingsImpl extends AbsAgentWebSettings {
         this.mAgentWeb = agentWeb;
     }
 
-
     @Override
     public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
         Class<?> clazz = null;

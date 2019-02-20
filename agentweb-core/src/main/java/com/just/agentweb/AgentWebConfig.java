@@ -35,7 +35,6 @@ import static com.just.agentweb.AgentWebUtils.getAgentWebFilePath;
  */
 public class AgentWebConfig {
 
-
 	static final String FILE_CACHE_PATH = "agentweb-cache";
 	static final String AGENTWEB_CACHE_PATCH = File.separator + "agentweb-cache";
 	/**
@@ -69,14 +68,11 @@ public class AgentWebConfig {
 	 * AgentWeb 的版本
 	 */
 	public static final String AGENTWEB_VERSION = " agentweb/4.0.2 ";
-
 	public static final String AGENTWEB_NAME="AgentWeb";
 	/**
 	 * 通过JS获取的文件大小， 这里限制最大为5MB ，太大会抛出 OutOfMemoryError
 	 */
 	public static int MAX_FILE_LENGTH = 1024 * 1024 * 5;
-
-
 	//获取Cookie
 	public static String getCookiesByUrl(String url) {
 		return CookieManager.getInstance() == null ? null : CookieManager.getInstance().getCookie(url);
@@ -88,7 +84,6 @@ public class AgentWebConfig {
 			WebView.setWebContentsDebuggingEnabled(true);
 		}
 	}
-
 	/**
 	 * 删除所有已经过期的 Cookies
 	 */
@@ -99,7 +94,6 @@ public class AgentWebConfig {
 			toSyncCookies();
 		}
 	}
-
 	/**
 	 * 删除所有 Cookies
 	 */
@@ -111,7 +105,6 @@ public class AgentWebConfig {
 	public static void removeSessionCookies() {
 		removeSessionCookies(null);
 	}
-
 	/**
 	 * 同步cookie
 	 *
@@ -119,7 +112,6 @@ public class AgentWebConfig {
 	 * @param cookies
 	 */
 	public static void syncCookie(String url, String cookies) {
-
 		CookieManager mCookieManager = CookieManager.getInstance();
 		if (mCookieManager != null) {
 			mCookieManager.setCookie(url, cookies);
@@ -128,7 +120,6 @@ public class AgentWebConfig {
 	}
 
 	public static void removeSessionCookies(ValueCallback<Boolean> callback) {
-
 		if (callback == null) {
 			callback = getDefaultIgnoreCallback();
 		}
@@ -144,9 +135,7 @@ public class AgentWebConfig {
 		}
 		CookieManager.getInstance().removeSessionCookies(callback);
 		toSyncCookies();
-
 	}
-
 	/**
 	 * @param context
 	 * @return WebView 的缓存路径
@@ -154,7 +143,6 @@ public class AgentWebConfig {
 	public static String getCachePath(Context context) {
 		return context.getCacheDir().getAbsolutePath() + AGENTWEB_CACHE_PATCH;
 	}
-
 	/**
 	 * @param context
 	 * @return AgentWeb 缓存路径
@@ -166,7 +154,6 @@ public class AgentWebConfig {
 
 	//Android  4.4  NoSuchMethodError: android.webkit.CookieManager.removeAllCookies
 	public static void removeAllCookies(@Nullable ValueCallback<Boolean> callback) {
-
 		if (callback == null) {
 			callback = getDefaultIgnoreCallback();
 		}
@@ -186,9 +173,7 @@ public class AgentWebConfig {
 	 * @param context
 	 */
 	public static synchronized void clearDiskCache(Context context) {
-
 		try {
-
 			AgentWebUtils.clearCacheFolder(new File(getCachePath(context)), 0);
 			String path = getExternalCachePath(context);
 			if (!TextUtils.isEmpty(path)) {
@@ -200,7 +185,6 @@ public class AgentWebConfig {
 				throwable.printStackTrace();
 			}
 		}
-
 	}
 
 
@@ -212,15 +196,12 @@ public class AgentWebConfig {
 	}
 
 	private static void createCookiesSyncInstance(Context context) {
-
-
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 			CookieSyncManager.createInstance(context);
 		}
 	}
 
 	private static void toSyncCookies() {
-
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 			CookieSyncManager.getInstance().sync();
 			return;
@@ -228,13 +209,10 @@ public class AgentWebConfig {
 		AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
 			@Override
 			public void run() {
-
 				CookieManager.getInstance().flush();
-
 			}
 		});
 	}
-
 
 	static String getDatabasesCachePath(Context context) {
 		return context.getApplicationContext().getDir("database", Context.MODE_PRIVATE).getPath();

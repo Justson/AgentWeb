@@ -27,12 +27,7 @@ import android.webkit.WebViewClient;
  * @since 1.0.0
  */
 public interface WebListenerManager {
-
-
     WebListenerManager setWebChromeClient(WebView webview, WebChromeClient webChromeClient);
     WebListenerManager setWebViewClient(WebView webView, WebViewClient webViewClient);
     WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener);
-
-
-
 }
