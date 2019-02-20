@@ -30,8 +30,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.downloader.library.Extra;
-import com.downloader.library.SimpleDownloadListener;
 import com.google.gson.Gson;
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
@@ -44,9 +42,12 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.download.DefaultDownloadImpl;
+import com.just.agentweb.download.DownloadListener;
+import com.just.agentweb.download.Extra;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
+import com.just.agentweb.sample.common.CommonWebChromeClient;
 import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.common.UIController;
 
@@ -103,7 +104,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				.useDefaultIndicator(-1, 3)//设置进度条颜色与高度，-1为默认值，高度为2，单位为dp。
 				.setAgentWebWebSettings(getSettings())//设置 IAgentWebSettings。
 				.setWebViewClient(mWebViewClient)//WebViewClient ， 与 WebView 使用一致 ，但是请勿获取WebView调用setWebViewClient(xx)方法了,会覆盖AgentWeb DefaultWebClient,同时相应的中间件也会失效。
-				.setWebChromeClient(mWebChromeClient) //WebChromeClient
+				.setWebChromeClient(new CommonWebChromeClient()) //WebChromeClient
 				.setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
 				.setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
 				.setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
@@ -158,7 +159,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	/**
 	 * 更新于 AgentWeb  4.0.0
 	 */
-	protected SimpleDownloadListener mSimpleDownloadListener = new SimpleDownloadListener() {
+	protected DownloadListener mSimpleDownloadListener = new DownloadListener() {
 
 		/**
 		 *
@@ -174,7 +175,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
 			LogUtils.i(TAG, "onStart:" + url);
 			extra.setBreakPointDownload(true) // 是否开启断点续传
-					.setIcon(R.drawable.ic_file_download_black_24dp) //下载通知的icon
 					.setConnectTimeOut(6000) // 连接最大时长
 					.setBlockMaxTime(10 * 60 * 1000)  // 以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常
 					.setDownloadTimeOut(Long.MAX_VALUE) // 下载最大时长

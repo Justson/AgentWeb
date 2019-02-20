@@ -40,7 +40,7 @@ public class UIController extends AgentWebUIControllerImplBase {
    /* @Override
     public void onSelectItemsPrompt(WebView view, String mUrl, String[] ways, final Handler.Callback callback) {
         //super.onSelectItemsPrompt(view,mUrl,ways,callback); //这行应该注释或者删除掉
-        final AlertDialog mAlertDialog = new AlertDialog.Extra(mActivity)//
+        final AlertDialog mAlertDialog = new AlertDialog.Builder(mActivity)//
                 .setSingleChoiceItems(ways, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

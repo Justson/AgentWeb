@@ -459,7 +459,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
 		if (!mWaittingFinishSet.contains(url)) {
 			mWaittingFinishSet.add(url);
 		}
@@ -554,10 +553,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 
 	private void startActivity(String url) {
-
-
 		try {
-
 			if (mWeakReference.get() == null) {
 				return;
 			}
@@ -571,10 +567,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
-
 
 	@Override
 	public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
@@ -583,20 +576,15 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onScaleChanged(WebView view, float oldScale, float newScale) {
-
-
 		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onScaleChanged", ANDROID_WEBVIEWCLIENT_PATH + ".onScaleChanged", WebView.class, float.class, float.class)) {
 			super.onScaleChanged(view, oldScale, newScale);
 			return;
 		}
-
 		LogUtils.i(TAG, "onScaleChanged:" + oldScale + "   n:" + newScale);
 		if (newScale - oldScale > CONSTANTS_ABNORMAL_BIG) {
 			view.setInitialScale((int) (oldScale / newScale * 100));
 		}
-
 	}
-
 
 	private Handler.Callback getCallback(final String url) {
 		if (this.mCallback != null) {
