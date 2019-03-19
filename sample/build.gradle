@@ -59,7 +59,7 @@ dependencies {
     })
     compile "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
-    implementation 'com.github.Justson:Downloader:v4.0.3-beta'
+    implementation 'com.github.Justson:Downloader:v4.0.3'
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
     compile project(':agentweb-core')
