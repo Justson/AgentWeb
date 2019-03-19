@@ -43,7 +43,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    implementation 'com.github.Justson:Downloader:v4.0.3-beta'
+    implementation 'com.github.Justson:Downloader:v4.0.3'
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
