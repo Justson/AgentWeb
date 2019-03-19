@@ -100,7 +100,6 @@ public class AgentWebView extends WebView {
     }
 
     protected void addJavascriptInterfaceSupport(Object interfaceObj, String interfaceName) {
-
     }
 
     @Override
@@ -113,7 +112,6 @@ public class AgentWebView extends WebView {
     }
 
     protected final void setWebChromeClientSupport(WebChromeClient client) {
-
     }
 
     @Override
@@ -125,7 +123,6 @@ public class AgentWebView extends WebView {
     }
 
     public final void setWebViewClientSupport(WebViewClient client) {
-
     }
 
     @Override
@@ -142,7 +139,6 @@ public class AgentWebView extends WebView {
         releaseConfigCallback();
         if (mIsInited) {
             resetAccessibilityEnabled();
-//
             LogUtils.i(TAG, "destroy web");
             super.destroy();
         }
@@ -339,11 +335,8 @@ public class AgentWebView extends WebView {
             } else {
                 return super.onJsPrompt(view, url, message, defaultValue, result);
             }
-
         }
-
     }
-
 
     /**
      * 解决部分手机webView返回时不触发onReceivedTitle的问题（如：三星SM-G9008V 4.4.2）；
@@ -362,7 +355,6 @@ public class AgentWebView extends WebView {
 
         public void onPageFinished(WebView view) {
             if (!mIsOnReceivedTitle && mWebChromeClient != null) {
-
                 WebBackForwardList list = null;
                 try {
                     list = view.copyBackForwardList();
@@ -380,7 +372,6 @@ public class AgentWebView extends WebView {
                 }
             }
         }
-
         public void onReceivedTitle() {
             mIsOnReceivedTitle = true;
         }
@@ -459,7 +450,6 @@ public class AgentWebView extends WebView {
         }
     }
 
-
     @TargetApi(11)
     protected boolean removeSearchBoxJavaBridge() {
         try {
@@ -477,7 +467,6 @@ public class AgentWebView extends WebView {
         return false;
     }
 
-
     protected void fixedAccessibilityInjectorException() {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR1
                 && mIsAccessibilityEnabledOriginal == null
@@ -486,7 +475,6 @@ public class AgentWebView extends WebView {
             setAccessibilityEnabled(false);
         }
     }
-
 
     protected void fixedAccessibilityInjectorExceptionForOnPageFinished(String url) {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN
@@ -536,6 +524,4 @@ public class AgentWebView extends WebView {
             setAccessibilityEnabled(mIsAccessibilityEnabledOriginal);
         }
     }
-
-
 }

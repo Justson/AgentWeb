@@ -44,7 +44,6 @@ public class MiddlewareWebClientBase extends WebViewClientDelegate {
         return this.mMiddleWrareWebClientBase;
     }
 
-
     @Override
     final void setDelegate(WebViewClient delegate) {
         super.setDelegate(delegate);
@@ -56,6 +55,5 @@ public class MiddlewareWebClientBase extends WebViewClientDelegate {
         this.mMiddleWrareWebClientBase = middleWrareWebClientBase;
         return middleWrareWebClientBase;
     }
-
 
 }

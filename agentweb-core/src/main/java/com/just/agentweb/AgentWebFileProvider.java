@@ -16,6 +16,9 @@
 
 package com.just.agentweb;
 
+import android.content.Context;
+import android.content.pm.ProviderInfo;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 
 /**
@@ -23,4 +26,9 @@ import android.support.v4.content.FileProvider;
  * @author cenxiaozhong
  */
 public class AgentWebFileProvider extends FileProvider {
+
+    @Override
+    public void attachInfo(@NonNull Context context, @NonNull ProviderInfo info) {
+        super.attachInfo(context, info);
+    }
 }

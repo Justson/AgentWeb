@@ -19,8 +19,9 @@ import com.just.agentweb.sample.widget.CoolIndicatorLayout;
 public class CustomIndicatorFragment extends AgentWebFragment {
 	public static CustomIndicatorFragment getInstance(Bundle bundle) {
 		CustomIndicatorFragment mCustomIndicatorFragment = new CustomIndicatorFragment();
-		if (bundle != null)
+		if (bundle != null){
 			mCustomIndicatorFragment.setArguments(bundle);
+		}
 		return mCustomIndicatorFragment;
 	}
 

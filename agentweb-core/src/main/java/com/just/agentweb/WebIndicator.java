@@ -35,7 +35,6 @@ import android.view.animation.LinearInterpolator;
  * @since 1.0.0
  */
 public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec {
-
     /**
      * 进度条颜色
      */
@@ -52,7 +51,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
      * 控件的宽度
      */
     private int mTargetWidth = 0;
-
     /**
      * 默认匀速动画最大的时长
      */
@@ -82,11 +80,8 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     public static final int UN_START = 0;
     public static final int STARTED = 1;
     public static final int FINISH = 2;
-
     private float mTarget = 0f;
-
     private float mCurrentProgress = 0F;
-
     /**
      * 默认的高度
      */
@@ -102,23 +97,18 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
 
     public WebIndicator(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         init(context, attrs, defStyleAttr);
-
     }
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
-
         mPaint = new Paint();
         mColor = Color.parseColor("#1aad19");
         mPaint.setAntiAlias(true);
         mPaint.setColor(mColor);
         mPaint.setDither(true);
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
-
         mTargetWidth = context.getResources().getDisplayMetrics().widthPixels;
         WEB_INDICATOR_DEFAULT_HEIGHT = AgentWebUtils.dp2px(context, 3);
-
     }
 
     public void setColor(int color) {
@@ -132,10 +122,8 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
         int wMode = MeasureSpec.getMode(widthMeasureSpec);
         int w = MeasureSpec.getSize(widthMeasureSpec);
-
         int hMode = MeasureSpec.getMode(heightMeasureSpec);
         int h = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -146,13 +134,11 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             h = WEB_INDICATOR_DEFAULT_HEIGHT;
         }
         this.setMeasuredDimension(w, h);
-
     }
 
 
     @Override
     protected void onDraw(Canvas canvas) {
-
     }
 
     @Override
@@ -161,13 +147,11 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     }
     @Override
     public void show() {
-
         if (getVisibility() == View.GONE) {
             this.setVisibility(View.VISIBLE);
             mCurrentProgress = 0f;
             startAnim(false);
         }
-
     }
 
     @Override
@@ -183,9 +167,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             float rate = this.mTargetWidth / Float.valueOf(screenWidth);
             CURRENT_MAX_UNIFORM_SPEED_DURATION = (int) (MAX_UNIFORM_SPEED_DURATION * rate);
             CURRENT_MAX_DECELERATE_SPEED_DURATION = (int) (MAX_DECELERATE_SPEED_DURATION * rate);
-
         }
-
         LogUtils.i("WebProgress", "CURRENT_MAX_UNIFORM_SPEED_DURATION" + CURRENT_MAX_UNIFORM_SPEED_DURATION);
     }
 
@@ -206,16 +188,11 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     }
 
     private void startAnim(boolean isFinished) {
-
-
         float v = isFinished ? 100 : 95;
-
-
         if (mAnimator != null && mAnimator.isStarted()) {
             mAnimator.cancel();
         }
         mCurrentProgress = mCurrentProgress == 0f ? 0.00000001f : mCurrentProgress;
-
         LogUtils.i("WebIndicator", "mCurrentProgress:" + mCurrentProgress + " v:" + v + "  :" + (1f - mCurrentProgress));
         if (!isFinished) {
             ValueAnimator mAnimator = ValueAnimator.ofFloat(mCurrentProgress, v);
@@ -226,7 +203,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             mAnimator.start();
             this.mAnimator = mAnimator;
         } else {
-
             ValueAnimator segment95Animator = null;
             if (mCurrentProgress < 95f) {
                 segment95Animator = ValueAnimator.ofFloat(mCurrentProgress, 95);
@@ -236,17 +212,13 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
                 segment95Animator.setInterpolator(new DecelerateInterpolator());
                 segment95Animator.addUpdateListener(mAnimatorUpdateListener);
             }
-
-
             ObjectAnimator mObjectAnimator = ObjectAnimator.ofFloat(this, "alpha", 1f, 0f);
             mObjectAnimator.setDuration(DO_END_ANIMATION_DURATION);
             ValueAnimator mValueAnimatorEnd = ValueAnimator.ofFloat(95f, 100f);
             mValueAnimatorEnd.setDuration(DO_END_ANIMATION_DURATION);
             mValueAnimatorEnd.addUpdateListener(mAnimatorUpdateListener);
-
             AnimatorSet mAnimatorSet = new AnimatorSet();
             mAnimatorSet.playTogether(mObjectAnimator, mValueAnimatorEnd);
-
             if (segment95Animator != null) {
                 AnimatorSet mAnimatorSet1 = new AnimatorSet();
                 mAnimatorSet1.play(mAnimatorSet).after(segment95Animator);
@@ -256,10 +228,8 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             mAnimatorSet.start();
             mAnimator = mAnimatorSet;
         }
-
         TAG = STARTED;
         mTarget = v;
-
     }
 
     private ValueAnimator.AnimatorUpdateListener mAnimatorUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
@@ -268,7 +238,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             float t = (float) animation.getAnimatedValue();
             WebIndicator.this.mCurrentProgress = t;
             WebIndicator.this.invalidate();
-
         }
     };
 
@@ -282,7 +251,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
         /**
          * animator cause leak , if not cancel;
          */
@@ -312,7 +280,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     @Override
     public void setProgress(int newProgress) {
         setProgress(Float.valueOf(newProgress));
-
     }
 
 

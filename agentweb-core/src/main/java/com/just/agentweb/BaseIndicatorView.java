@@ -42,22 +42,17 @@ public abstract class BaseIndicatorView extends FrameLayout implements BaseIndic
 
     @Override
     public void reset() {
-
     }
 
     @Override
     public void setProgress(int newProgress) {
-
     }
 
     @Override
     public void show() {
-
     }
 
     @Override
     public void hide() {
-
     }
-
 }

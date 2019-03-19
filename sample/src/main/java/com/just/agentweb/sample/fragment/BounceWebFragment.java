@@ -26,9 +26,9 @@ public class BounceWebFragment extends AgentWebFragment {
 	public static BounceWebFragment getInstance(Bundle bundle) {
 
 		BounceWebFragment mBounceWebFragment = new BounceWebFragment();
-		if (mBounceWebFragment != null)
+		if (mBounceWebFragment != null){
 			mBounceWebFragment.setArguments(bundle);
-
+		}
 		return mBounceWebFragment;
 	}
 

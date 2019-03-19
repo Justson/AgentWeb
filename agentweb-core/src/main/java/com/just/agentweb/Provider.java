@@ -22,7 +22,5 @@ package com.just.agentweb;
  * @since 1.0.0
  */
 public interface Provider<T> {
-
-
    T provide();
 }
