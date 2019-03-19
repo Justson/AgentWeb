@@ -27,10 +27,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.download.library.DownloadException;
 import com.download.library.DownloadImpl;
 import com.download.library.DownloadListenerAdapter;
 import com.download.library.DownloadTask;
-import com.download.library.DownloadingListener;
+import com.download.library.Downloader;
 import com.download.library.Extra;
 import com.just.agentweb.sample.R;
 import com.lcodecore.tkrefreshlayout.utils.DensityUtil;
@@ -145,7 +146,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
             Picasso.get().load(downloadBean.imageUrl)
                     .resize(100, 100)
                     .centerCrop().
-                    transform(new RoundTransform(NativeDownloadActivity.this))
+                    transform(new RoundTransform(NativeDownloadActivity.this.getApplicationContext()))
                     .into(nativeDownloadViewHolder.mIconIv);
             if (downloadBean.getStatus() == DownloadTask.STATUS_NEW) {
                 nativeDownloadViewHolder.mStatusButton.setText("开始");
@@ -176,15 +177,22 @@ public class NativeDownloadActivity extends AppCompatActivity {
             downloadBean.setDownloadListenerAdapter(new DownloadListenerAdapter() {
                 @Override
                 public void onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+                    nativeDownloadViewHolder.mStatusButton.setText("暂停");
+                    nativeDownloadViewHolder.mStatusButton.setEnabled(true);
                 }
 
-                @DownloadingListener.MainThread //回调到主线程，添加该注释
+                @MainThread //回调到主线程，添加该注释
                 @Override
                 public void onProgress(String url, long downloaded, long length, long usedTime) {
                     int mProgress = (int) ((downloaded) / Float.valueOf(length) * 100);
                     Log.i(TAG, "onProgress:" + mProgress + " url:" + url + " Thread:" + Thread.currentThread().getName());
                     nativeDownloadViewHolder.mProgressBar.setProgress(mProgress);
-                    nativeDownloadViewHolder.mCurrentProgress.setText("当前进度" + byte2FitMemorySize(downloaded) + "/" + byte2FitMemorySize(length) + " 耗时:" + ((downloadBean.getUsedTime()) / 1000) + "s");
+                    if (length <= 0) {
+                        nativeDownloadViewHolder.mCurrentProgress.setText("当前进度,已下载:" + byte2FitMemorySize(downloaded) + " 耗时:" + ((downloadBean.getUsedTime()) / 1000) + "s");
+                    } else {
+                        nativeDownloadViewHolder.mCurrentProgress.setText("当前进度" + byte2FitMemorySize(downloaded) + "/" + byte2FitMemorySize(length) + " 耗时:" + ((downloadBean.getUsedTime()) / 1000) + "s");
+
+                    }
                 }
 
                 @Override
@@ -193,12 +201,19 @@ public class NativeDownloadActivity extends AppCompatActivity {
                     nativeDownloadViewHolder.mStatusButton.setEnabled(false);
                     if (throwable == null) {
                         nativeDownloadViewHolder.mStatusButton.setText("已完成");
-                    } else {
-                        nativeDownloadViewHolder.mStatusButton.setText("出错");
+                    } else if (throwable instanceof DownloadException) {
+                        DownloadException downloadException = (DownloadException) throwable;
+                        if (downloadException.getCode() == Downloader.ERROR_USER_PAUSE) {
+                            nativeDownloadViewHolder.mStatusButton.setText("继续");
+                            nativeDownloadViewHolder.mStatusButton.setEnabled(true);
+                        } else {
+                            nativeDownloadViewHolder.mStatusButton.setText("出错");
+                        }
                     }
                     return super.onResult(throwable, uri, url, extra);
                 }
             });
+
         }
 
         @Override
