@@ -48,7 +48,7 @@ import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
  */
 public class DefaultChromeClient extends MiddlewareWebChromeBase {
 	/**
-	 * Activity 的虚引用
+	 * Activity
 	 */
 	private WeakReference<Activity> mActivityWeakReference = null;
 	/**
@@ -64,7 +64,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 	 */
 	private WebChromeClient mWebChromeClient;
 	/**
-	 * 是否被包装过
+	 * 包装Flag
 	 */
 	private boolean mIsWrapper = false;
 	/**

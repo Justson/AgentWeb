@@ -102,7 +102,6 @@ public class AgentWebUtils {
 		return (int) (dipValue * scale + 0.5f);
 	}
 
-
 	static final void clearWebView(WebView m) {
 		if (m == null) {
 			return;
@@ -756,7 +755,6 @@ public class AgentWebUtils {
 		}
 		List<String> deniedPermissions = new ArrayList<>();
 		for (int i = 0; i < permissions.length; i++) {
-
 			if (!hasPermission(activity, permissions[i])) {
 				deniedPermissions.add(permissions[i]);
 			}
