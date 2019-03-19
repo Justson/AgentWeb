@@ -33,10 +33,8 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 	private AgentWeb.SecurityType mSecurityType;
 
 	static JsInterfaceHolderImpl getJsInterfaceHolder(WebView webView, AgentWeb.SecurityType securityType) {
-
 		return new JsInterfaceHolderImpl(webView, securityType);
 	}
-
 
 	JsInterfaceHolderImpl(WebView webView, AgentWeb.SecurityType securityType) {
 		super(securityType);
@@ -46,16 +44,12 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 
 	@Override
 	public JsInterfaceHolder addJavaObjects(Map<String, Object> maps) {
-
-
 		if (!checkSecurity()) {
 			LogUtils.e(TAG, "The injected object is not safe, give up injection");
 			return this;
 		}
-
 		Set<Map.Entry<String, Object>> sets = maps.entrySet();
 		for (Map.Entry<String, Object> mEntry : sets) {
-
 			Object v = mEntry.getValue();
 			boolean t = checkObject(v);
 			if (!t) {
@@ -64,13 +58,11 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 				addJavaObjectDirect(mEntry.getKey(), v);
 			}
 		}
-
 		return this;
 	}
 
 	@Override
 	public JsInterfaceHolder addJavaObject(String k, Object v) {
-
 		if (!checkSecurity()) {
 			return this;
 		}
@@ -88,6 +80,5 @@ public class JsInterfaceHolderImpl extends JsBaseInterfaceHolder {
 		this.mWebView.addJavascriptInterface(v, k);
 		return this;
 	}
-
 
 }

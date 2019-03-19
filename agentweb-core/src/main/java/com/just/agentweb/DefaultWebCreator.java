@@ -32,7 +32,6 @@ import android.widget.FrameLayout;
  * @since 1.0.0
  */
 public class DefaultWebCreator implements WebCreator {
-
     private Activity mActivity;
     private ViewGroup mViewGroup;
     private boolean mIsNeedDefaultProgress;
@@ -142,8 +141,6 @@ public class DefaultWebCreator implements WebCreator {
 
     @Override
     public DefaultWebCreator create() {
-
-
         if (mIsCreated) {
             return this;
         }
@@ -171,7 +168,6 @@ public class DefaultWebCreator implements WebCreator {
     public FrameLayout getWebParentLayout() {
         return mFrameLayout;
     }
-
 
     private ViewGroup createLayout() {
         Activity mActivity = this.mActivity;
@@ -208,7 +204,6 @@ public class DefaultWebCreator implements WebCreator {
             mProgressView.setVisibility(View.GONE);
         }
         return mFrameLayout;
-
     }
 
 
@@ -218,17 +213,14 @@ public class DefaultWebCreator implements WebCreator {
             mWebView = createWebView();
             mIWebLayout.getLayout().addView(mWebView, -1, -1);
             LogUtils.i(TAG, "add webview");
-
         } else {
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_CUSTOM_TYPE;
         }
         this.mWebView = mWebView;
         return mIWebLayout.getLayout();
-
     }
 
     private WebView createWebView() {
-
         WebView mWebView = null;
         if (this.mWebView != null) {
             mWebView = this.mWebView;
@@ -240,7 +232,6 @@ public class DefaultWebCreator implements WebCreator {
             mWebView = new WebView(mActivity);
             AgentWebConfig.WEBVIEW_TYPE = AgentWebConfig.WEBVIEW_DEFAULT_TYPE;
         }
-
         return mWebView;
     }
 

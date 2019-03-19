@@ -61,7 +61,6 @@ public class WebChromeClientDelegate extends WebChromeClient {
             this.mDelegate.onProgressChanged(view, newProgress);
             return;
         }
-
     }
 
     @Override
@@ -80,7 +79,6 @@ public class WebChromeClientDelegate extends WebChromeClient {
             return;
         }
         super.onReceivedIcon(view, icon);
-
     }
 
     @Override
@@ -356,8 +354,5 @@ public class WebChromeClientDelegate extends WebChromeClient {
                 ignore.printStackTrace();
             }
         }
-
     }
-
-
 }

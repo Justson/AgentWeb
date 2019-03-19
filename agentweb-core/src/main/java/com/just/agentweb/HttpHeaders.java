@@ -17,6 +17,7 @@
 package com.just.agentweb;
 
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 
 import java.util.Map;
 
@@ -26,36 +27,82 @@ import java.util.Map;
  * @date 2017/7/5
  * @since 2.0.0
  */
-@Deprecated
 public class HttpHeaders {
-
-
     public static HttpHeaders create() {
         return new HttpHeaders();
     }
 
-    private Map<String, String> mHeaders = null;
+    private Map<String, Map<String, String>> mHeaders = null;
 
     HttpHeaders() {
-        mHeaders = new ArrayMap<>();
+        mHeaders = new ArrayMap<String, Map<String, String>>();
     }
 
-    public Map<String, String> getHeaders() {
-        return mHeaders;
+    public Map<String, String> getHeaders(String url) {
+        if (null == mHeaders || null == mHeaders.get(url)) {
+            return new ArrayMap<>();
+        }
+        if (mHeaders.get(url) == null) {
+            Map<String, String> headers = new ArrayMap<>();
+            mHeaders.put(url, headers);
+            return headers;
+        }
+        return mHeaders.get(url);
     }
 
-    public void additionalHttpHeader(String k, String v) {
-        mHeaders.put(k, v);
+    public void additionalHttpHeader(String url, String k, String v) {
+        url = subBaseUrl(url);
+        Map<String, Map<String, String>> mHeaders = getHeaders();
+        Map<String, String> headersMap = mHeaders.get(url);
+        if (null == headersMap) {
+            headersMap = new ArrayMap<>();
+        }
+        headersMap.put(k, v);
+        mHeaders.put(url, headersMap);
     }
 
-    public void removeHttpHeader(String k) {
-        mHeaders.remove(k);
+
+    public void additionalHttpHeaders(String url, Map<String, String> headers) {
+        url = subBaseUrl(url);
+        Map<String, Map<String, String>> mHeaders = getHeaders();
+        Map<String, String> headersMap = headers;
+        if (null == headersMap) {
+            headersMap = new ArrayMap<>();
+        }
+        mHeaders.put(url, headersMap);
     }
 
-    public boolean isEmptyHeaders() {
+    public void removeHttpHeader(String url, String k) {
+        url = subBaseUrl(url);
+        Map<String, Map<String, String>> mHeaders = getHeaders();
+        Map<String, String> headersMap = mHeaders.get(url);
+        if (null != headersMap) {
+            headersMap.remove(k);
+        }
+    }
+
+    public boolean isEmptyHeaders(String url) {
+        url = subBaseUrl(url);
         return mHeaders == null || mHeaders.isEmpty();
     }
 
+    public Map<String, Map<String, String>> getHeaders() {
+        if (null != mHeaders) {
+            return this.mHeaders;
+        }
+        return new ArrayMap<String, Map<String, String>>();
+    }
+
+    private String subBaseUrl(String originUrl) {
+        if (TextUtils.isEmpty(originUrl)) {
+            return originUrl;
+        }
+        int index = originUrl.indexOf("?");
+        if (index <= 0) {
+            return originUrl;
+        }
+        return originUrl.substring(index, originUrl.length());
+    }
 
     @Override
     public String toString() {

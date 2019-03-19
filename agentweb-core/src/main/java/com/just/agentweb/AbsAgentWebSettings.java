@@ -32,7 +32,6 @@ import android.webkit.WebViewClient;
  */
 
 public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListenerManager {
-
 	private WebSettings mWebSettings;
 	private static final String TAG = AbsAgentWebSettings.class.getSimpleName();
 	public static final String USERAGENT_UC = " UCBrowser/11.6.4.950 ";
@@ -40,20 +39,16 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 	public static final String USERAGENT_AGENTWEB = AgentWebConfig.AGENTWEB_VERSION;
 	protected AgentWeb mAgentWeb;
 
-
 	public static AbsAgentWebSettings getInstance() {
 		return new AgentWebSettingsImpl();
 	}
 
-
 	public AbsAgentWebSettings() {
-
 	}
 
 	final void bindAgentWeb(AgentWeb agentWeb) {
 		this.mAgentWeb = agentWeb;
 		this.bindAgentWebSupport(agentWeb);
-
 	}
 
 	protected abstract void bindAgentWebSupport(AgentWeb agentWeb);
@@ -65,8 +60,6 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 	}
 
 	private void settings(WebView webView) {
-
-
 		mWebSettings = webView.getSettings();
 		mWebSettings.setJavaScriptEnabled(true);
 		mWebSettings.setSupportZoom(true);
@@ -79,7 +72,6 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 			//没网，则从本地获取，即离线加载
 			mWebSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 		}
-
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 			//适配5.0不允许http和https混合使用情况
 			mWebSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -89,7 +81,6 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 		} else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
 			webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 		}
-
 		mWebSettings.setTextZoom(100);
 		mWebSettings.setDatabaseEnabled(true);
 		mWebSettings.setAppCacheEnabled(true);
@@ -120,28 +111,20 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 		mWebSettings.setDefaultFontSize(16);
 		mWebSettings.setMinimumFontSize(12);//设置 WebView 支持的最小字体大小，默认为 8
 		mWebSettings.setGeolocationEnabled(true);
-		//
 		String dir = AgentWebConfig.getCachePath(webView.getContext());
-
 		LogUtils.i(TAG, "dir:" + dir + "   appcache:" + AgentWebConfig.getCachePath(webView.getContext()));
 		//设置数据库路径  api19 已经废弃,这里只针对 webkit 起作用
 		mWebSettings.setGeolocationDatabasePath(dir);
 		mWebSettings.setDatabasePath(dir);
 		mWebSettings.setAppCachePath(dir);
-
 		//缓存文件最大值
 		mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
-
 		mWebSettings.setUserAgentString(getWebSettings()
 				.getUserAgentString()
 				.concat(USERAGENT_AGENTWEB)
 				.concat(USERAGENT_UC)
 		);
-
-
 		LogUtils.i(TAG, "UserAgentString : " + mWebSettings.getUserAgentString());
-
-
 	}
 
 	@Override
@@ -152,7 +135,6 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 	@Override
 	public WebListenerManager setWebChromeClient(WebView webview, WebChromeClient webChromeClient) {
 		webview.setWebChromeClient(webChromeClient);
-
 		return this;
 	}
 
@@ -167,6 +149,5 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 		webView.setDownloadListener(downloadListener);
 		return this;
 	}
-
 
 }

@@ -52,7 +52,6 @@ import java.util.Set;
  * @since 3.0.0
  */
 public class DefaultWebClient extends MiddlewareWebClientBase {
-
 	/**
 	 * Activity's WeakReference
 	 */
@@ -162,7 +161,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			tag = false;
 		}
 		HAS_ALIPAY_LIB = tag;
-
 		LogUtils.i(TAG, "HAS_ALIPAY_LIB:" + HAS_ALIPAY_LIB);
 	}
 
@@ -175,7 +173,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		this.webClientHelper = builder.mWebClientHelper;
 		mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(builder.mWebView));
 		mIsInterceptUnkownUrl = builder.mIsInterceptUnkownScheme;
-
 		if (builder.mUrlHandleWays <= 0) {
 			mUrlHandleWays = ASK_USER_OPEN_OTHER_PAGE;
 		} else {
@@ -276,18 +273,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
-
 		int tag = -1;
-
 		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", ANDROID_WEBVIEWCLIENT_PATH + ".shouldOverrideUrlLoading", WebView.class, String.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, url))) {
 			return true;
 		}
-
 		if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
 			return (webClientHelper && HAS_ALIPAY_LIB && isAlipay(view, url));
 		}
-
 		if (!webClientHelper) {
 			return false;
 		}
@@ -319,17 +311,14 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			LogUtils.i(TAG, "intercept InterceptUnkownScheme : " + url);
 			return true;
 		}
-
 		if (tag > 0) {
 			return false;
 		}
-
 		return super.shouldOverrideUrlLoading(view, url);
 	}
 
 
 	private int queryActiviesNumber(String url) {
-
 		try {
 			if (mWeakReference.get() == null) {
 				return 0;
@@ -348,12 +337,10 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	private void handleIntentUrl(String intentUrl) {
 		try {
-
 			Intent intent = null;
 			if (TextUtils.isEmpty(intentUrl) || !intentUrl.startsWith(INTENT_SCHEME)) {
 				return;
 			}
-
 			if (lookup(intentUrl)) {
 				return;
 			}
@@ -362,8 +349,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
 
 	private boolean lookup(String url) {
@@ -386,14 +371,11 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				ignore.printStackTrace();
 			}
 		}
-
 		return false;
 	}
 
 	private boolean isAlipay(final WebView view, String url) {
-
 		try {
-
 			Activity mActivity = null;
 			if ((mActivity = mWeakReference.get()) == null) {
 				return false;
@@ -459,7 +441,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
 		if (!mWaittingFinishSet.contains(url)) {
 			mWaittingFinishSet.add(url);
 		}
@@ -478,7 +459,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	@Override
 	public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-
 		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", ANDROID_WEBVIEWCLIENT_PATH + ".onReceivedError", WebView.class, int.class, String.class, String.class)) {
 			super.onReceivedError(view, errorCode, description, failingUrl);
 //            return;
@@ -490,7 +470,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-
 		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", ANDROID_WEBVIEWCLIENT_PATH + ".onReceivedError", WebView.class, WebResourceRequest.class, WebResourceError.class)) {
 			super.onReceivedError(view, request, error);
 //            return;
@@ -528,7 +507,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onPageFinished(WebView view, String url) {
-
 		if (!mErrorUrlsSet.contains(url) && mWaittingFinishSet.contains(url)) {
 			if (mAgentWebUIController.get() != null) {
 				mAgentWebUIController.get().onShowMainFrame();
@@ -543,7 +521,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			mErrorUrlsSet.clear();
 		}
 		super.onPageFinished(view, url);
-
 	}
 
 
@@ -554,10 +531,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 
 	private void startActivity(String url) {
-
-
 		try {
-
 			if (mWeakReference.get() == null) {
 				return;
 			}
@@ -571,10 +545,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				e.printStackTrace();
 			}
 		}
-
-
 	}
-
 
 	@Override
 	public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
@@ -583,20 +554,15 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onScaleChanged(WebView view, float oldScale, float newScale) {
-
-
 		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onScaleChanged", ANDROID_WEBVIEWCLIENT_PATH + ".onScaleChanged", WebView.class, float.class, float.class)) {
 			super.onScaleChanged(view, oldScale, newScale);
 			return;
 		}
-
 		LogUtils.i(TAG, "onScaleChanged:" + oldScale + "   n:" + newScale);
 		if (newScale - oldScale > CONSTANTS_ABNORMAL_BIG) {
 			view.setInitialScale((int) (oldScale / newScale * 100));
 		}
-
 	}
-
 
 	private Handler.Callback getCallback(final String url) {
 		if (this.mCallback != null) {
@@ -623,7 +589,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	}
 
 	public static class Builder {
-
 		private Activity mActivity;
 		private WebViewClient mClient;
 		private boolean mWebClientHelper;

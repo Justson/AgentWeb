@@ -70,7 +70,6 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 	}
 
 	void showPageMainFrameError() {
-
 		View container = this.mErrorLayout;
 		if (container != null) {
 			container.setVisibility(View.VISIBLE);
@@ -87,7 +86,6 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 	}
 
 	private void createErrorLayout() {
-
 		final FrameLayout mFrameLayout = new FrameLayout(getContext());
 		mFrameLayout.setBackgroundColor(Color.WHITE);
 		mFrameLayout.setId(R.id.mainframe_error_container_id);
@@ -98,7 +96,6 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 		} else {
 			mFrameLayout.addView(mErrorView);
 		}
-
 		ViewStub mViewStub = (ViewStub) this.findViewById(R.id.mainframe_error_viewsub_id);
 		final int index = this.indexOfChild(mViewStub);
 		this.removeViewInLayout(mViewStub);
@@ -108,7 +105,6 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 		} else {
 			this.addView(this.mErrorLayout = mFrameLayout, index);
 		}
-
 		mFrameLayout.setVisibility(View.VISIBLE);
 		if (mClickId != -1) {
 			final View clickView = mFrameLayout.findViewById(mClickId);
@@ -124,14 +120,11 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 				});
 				return;
 			} else {
-
 				if (LogUtils.isDebug()) {
 					LogUtils.e(TAG, "ClickView is null , cannot bind accurate view to refresh or reload .");
 				}
 			}
-
 		}
-
 		mFrameLayout.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -139,7 +132,6 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 					mFrameLayout.setClickable(false);
 					getWebView().reload();
 				}
-
 			}
 		});
 	}
@@ -181,6 +173,5 @@ public class WebParentLayout extends FrameLayout implements Provider<AbsAgentWeb
 	WebView getWebView() {
 		return this.mWebView;
 	}
-
 
 }
