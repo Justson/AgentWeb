@@ -52,15 +52,11 @@ dependencies {
     provided "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     compile project(':agentweb-core')
 }
-task javadoc(type: Javadoc) {
-    options.encoding = "utf-8"
-}
 publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'download'
-    version = '4.0.2'
-    description = 'very easy to build you web page'
+    publishVersion = '4.0.3-alpha'
+    desc = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
-
 }
