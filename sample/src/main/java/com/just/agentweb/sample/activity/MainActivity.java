@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR:
                 startActivity(new Intent(this, AutoHidenToolbarActivity.class));
+                break;
             case FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD:
                 startActivity(new Intent(this, NativeDownloadActivity.class));
                 break;
