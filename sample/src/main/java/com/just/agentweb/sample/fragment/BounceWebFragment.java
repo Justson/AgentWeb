@@ -64,7 +64,6 @@ public class BounceWebFragment extends AgentWebFragment {
 		return new WebLayout(getActivity());
 	}
 
-
 	protected void addBGChild(FrameLayout frameLayout) {
 
 		TextView mTextView = new TextView(frameLayout.getContext());
