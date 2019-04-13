@@ -22,18 +22,6 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
     api 'com.just.agentweb:download:4.0.3-alpha@aar' // (可选)
     api 'com.github.Justson:Downloader:v4.0.3'// (可选)
    ```
-   
-* Maven
-	
-	```
-	<dependency>
- 	  <groupId>com.just.agentweb</groupId>
- 	  <artifactId>agentweb</artifactId>
-	  <version>4.0.2</version>
-	  <type>pom</type>
-	</dependency>
-	
-	```
 
 ## 相关
 * [AgentWebX5](https://github.com/Justson/AgentWebX5)
