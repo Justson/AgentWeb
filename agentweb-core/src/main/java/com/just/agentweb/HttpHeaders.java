@@ -101,7 +101,7 @@ public class HttpHeaders {
 		if (index <= 0) {
 			return originUrl;
 		}
-		return originUrl.substring(index);
+		return originUrl.substring(0, index);
 	}
 
 	@Override

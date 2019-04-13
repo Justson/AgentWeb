@@ -1,8 +1,9 @@
 package com.just.agentweb.sample.common;
 
 import android.util.Log;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import com.just.agentweb.WebChromeClient;
 
 /**
  * @author cenxiaozhong

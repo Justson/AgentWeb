@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
@@ -19,12 +21,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,6 +40,7 @@ import com.just.agentweb.LogUtils;
 import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
+import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebListenerManager;
 import com.just.agentweb.download.DefaultDownloadImpl;
 import com.just.agentweb.download.DownloadListener;
@@ -269,7 +270,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         return target;
     }
 
-    protected WebChromeClient mWebChromeClient = new WebChromeClient() {
+    protected com.just.agentweb.WebChromeClient mWebChromeClient = new WebChromeClient() {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             //  super.onProgressChanged(view, newProgress);
@@ -288,7 +289,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         }
     };
 
-    protected WebViewClient mWebViewClient = new WebViewClient() {
+    protected com.just.agentweb.WebViewClient mWebViewClient = new com.just.agentweb.WebViewClient() {
 
         private HashMap<String, Long> timer = new HashMap<>();
 
@@ -297,9 +298,10 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             super.onReceivedError(view, request, error);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            return shouldOverrideUrlLoading(view, request.getUrl() + "");
+            return shouldOverrideUrlLoading(view, request.getUrl().toString());
         }
 
         @Nullable
@@ -314,8 +316,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
             Log.i(TAG, "view:" + new Gson().toJson(view.getHitTestResult()));
             Log.i(TAG, "mWebViewClient shouldOverrideUrlLoading:" + url);
-            //intent:// scheme的处理 如果返回false ， 则交给 DefaultWebClient 处理 ， 默认会打开该Activity  ， 如果Activity不存在则跳到应用市场上去.  true 表示拦截
-            //例如优酷视频播放 ，intent://play?...package=com.youku.phone;end;
             //优酷想唤起自己应用播放该视频 ， 下面拦截地址返回 true  则会在应用内 H5 播放 ，禁止优酷唤起播放该视频， 如果返回 false ， DefaultWebClient  会根据intent 协议处理 该地址 ， 首先匹配该应用存不存在 ，如果存在 ， 唤起该应用播放 ， 如果不存在 ， 则跳到应用市场下载该应用 .
             if (url.startsWith("intent://") && url.contains("com.youku.phone")) {
                 return true;

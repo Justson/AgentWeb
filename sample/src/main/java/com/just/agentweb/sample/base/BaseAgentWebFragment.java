@@ -9,9 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.DownloadListener;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebSettingsImpl;
@@ -22,6 +20,8 @@ import com.just.agentweb.IWebLayout;
 import com.just.agentweb.MiddlewareWebChromeBase;
 import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
+import com.just.agentweb.WebChromeClient;
+import com.just.agentweb.WebViewClient;
 
 /**
  * Created by cenxiaozhong on 2017/7/22.
@@ -39,8 +39,6 @@ public abstract class BaseAgentWebFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-
         ErrorLayoutEntity mErrorLayoutEntity = getErrorLayoutEntity();
         mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent(getAgentWebParent(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -61,8 +59,6 @@ public abstract class BaseAgentWebFragment extends Fragment {
                 .createAgentWeb()//
                 .ready()//
                 .go(getUrl());
-
-
     }
 
 
