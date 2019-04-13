@@ -58,7 +58,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 		LogUtils.i(TAG, "onOpenPagePrompt");
 		if (mAskOpenOtherAppDialog == null) {
 			mAskOpenOtherAppDialog = new AlertDialog
-					.Builder(mActivity)//
+					.Builder(mActivity)
 					.setMessage(mResources.getString(R.string.agentweb_leave_app_and_go_other_page,
 							AgentWebUtils.getApplicationName(mActivity)))//
 					.setTitle(mResources.getString(R.string.agentweb_tips))
@@ -131,7 +131,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	}
 
 	private void showChooserInternal(String[] ways, final Handler.Callback callback) {
-		mAlertDialog = new AlertDialog.Builder(mActivity)//
+		mAlertDialog = new AlertDialog.Builder(mActivity)
 				.setSingleChoiceItems(ways, -1, new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
@@ -165,8 +165,8 @@ public class DefaultUIController extends AbsAgentWebUIController {
 		}
 
 		if (mConfirmDialog == null) {
-			mConfirmDialog = new AlertDialog.Builder(mActivity)//
-					.setMessage(message)//
+			mConfirmDialog = new AlertDialog.Builder(mActivity)
+					.setMessage(message)
 					.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -210,8 +210,8 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 			final EditText et = new EditText(mActivity);
 			et.setText(defaultValue);
-			mPromptDialog = new AlertDialog.Builder(mActivity)//
-					.setView(et)//
+			mPromptDialog = new AlertDialog.Builder(mActivity)
+					.setView(et)
 					.setTitle(message)
 					.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 						@Override
@@ -280,11 +280,9 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 	@Override
 	public void onCancelLoading() {
-
 		if (mProgressDialog != null && mProgressDialog.isShowing()) {
 			mProgressDialog.dismiss();
 		}
-
 		mProgressDialog = null;
 	}
 

@@ -483,8 +483,8 @@ public final class AgentWeb {
 		/*默认进度条是显示的*/
 		private boolean mEnableIndicator = true;
 		private ViewGroup.LayoutParams mLayoutParams = null;
-		private WebViewClient mWebViewClient;
-		private WebChromeClient mWebChromeClient;
+		private com.just.agentweb.WebViewClient mWebViewClient;
+		private com.just.agentweb.WebChromeClient mWebChromeClient;
 		private int mIndicatorColor = -1;
 		private IAgentWebSettings mAgentWebSettings;
 		private WebCreator mWebCreator;
@@ -624,12 +624,12 @@ public final class AgentWeb {
 			return this;
 		}
 
-		public CommonBuilder setWebChromeClient(@Nullable WebChromeClient webChromeClient) {
+		public CommonBuilder setWebChromeClient(@Nullable com.just.agentweb.WebChromeClient webChromeClient) {
 			this.mAgentBuilder.mWebChromeClient = webChromeClient;
 			return this;
 		}
 
-		public CommonBuilder setWebViewClient(@Nullable WebViewClient webChromeClient) {
+		public CommonBuilder setWebViewClient(@Nullable com.just.agentweb.WebViewClient webChromeClient) {
 			this.mAgentBuilder.mWebViewClient = webChromeClient;
 			return this;
 		}
