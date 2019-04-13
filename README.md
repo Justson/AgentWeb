@@ -341,10 +341,14 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 
 ## 更新日志
 
+* v_4.0.3 更新
+	* 部分手机下载过程中～声音一直响 [#523](https://github.com/Justson/AgentWeb/issues/523)
+	* 抽离[Downloader](https://github.com/Justson/Downloader)
+	* 放弃反射回调WebViewClient#methods，使用洋葱模型的Middleware代替
+
 * v_4.0.2 更新
 	* 修复断点续传时进度计算错误
 	* 修复无法通过`Extra`关闭进度通知
-	* 修复`setopenbreakPointdownload` 命名不规范
 
 * v_4.0.0 更新
 	* `AgentWeb` 拆分出 `AgentWeb-Download` 、 `AgentWeb-FileChooser` 、`AgentWeb-core` 三个库，用户可以按需选择
