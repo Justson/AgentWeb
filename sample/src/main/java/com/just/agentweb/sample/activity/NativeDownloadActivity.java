@@ -304,6 +304,12 @@ public class NativeDownloadActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DownloadImpl.getInstance().cancelAll();
+    }
+
     public void createDatasource() {
         DownloadBean downloadBean = new DownloadBean("QQ", "http://p18.qhimg.com/dr/72__/t0111cb71dabfd83b21.png", "http://shouji.360tpcdn.com/170918/a01da193400dd5ffd42811db28effd53/com.tencent.mobileqq_730.apk");
         downloadBean.setContext(this.getApplicationContext());
