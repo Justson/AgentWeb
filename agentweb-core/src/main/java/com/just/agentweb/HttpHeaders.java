@@ -39,21 +39,25 @@ public class HttpHeaders {
 	}
 
 	public Map<String, String> getHeaders(String url) {
-		if (null == mHeaders || null == mHeaders.get(url)) {
+		if (null == mHeaders) {
 			return new ArrayMap<>();
 		}
-		if (mHeaders.get(url) == null) {
+		String subUrl = subBaseUrl(url);
+		if (mHeaders.get(subUrl) == null) {
 			Map<String, String> headers = new ArrayMap<>();
-			mHeaders.put(url, headers);
+			mHeaders.put(subUrl, headers);
 			return headers;
 		}
-		return mHeaders.get(url);
+		return mHeaders.get(subUrl);
 	}
 
 	public void additionalHttpHeader(String url, String k, String v) {
+		if (null == url) {
+			return;
+		}
 		url = subBaseUrl(url);
 		Map<String, Map<String, String>> mHeaders = getHeaders();
-		Map<String, String> headersMap = mHeaders.get(url);
+		Map<String, String> headersMap = mHeaders.get(subBaseUrl(url));
 		if (null == headersMap) {
 			headersMap = new ArrayMap<>();
 		}
@@ -63,19 +67,25 @@ public class HttpHeaders {
 
 
 	public void additionalHttpHeaders(String url, Map<String, String> headers) {
-		url = subBaseUrl(url);
+		if (null == url) {
+			return;
+		}
+		String subUrl = subBaseUrl(url);
 		Map<String, Map<String, String>> mHeaders = getHeaders();
 		Map<String, String> headersMap = headers;
 		if (null == headersMap) {
 			headersMap = new ArrayMap<>();
 		}
-		mHeaders.put(url, headersMap);
+		mHeaders.put(subUrl, headersMap);
 	}
 
 	public void removeHttpHeader(String url, String k) {
-		url = subBaseUrl(url);
+		if (null == url) {
+			return;
+		}
+		String subUrl = subBaseUrl(url);
 		Map<String, Map<String, String>> mHeaders = getHeaders();
-		Map<String, String> headersMap = mHeaders.get(url);
+		Map<String, String> headersMap = mHeaders.get(subUrl);
 		if (null != headersMap) {
 			headersMap.remove(k);
 		}
@@ -83,7 +93,8 @@ public class HttpHeaders {
 
 	public boolean isEmptyHeaders(String url) {
 		url = subBaseUrl(url);
-		return mHeaders == null || mHeaders.isEmpty();
+		Map<String, String> heads = getHeaders(url);
+		return heads == null || heads.isEmpty();
 	}
 
 	public Map<String, Map<String, String>> getHeaders() {
