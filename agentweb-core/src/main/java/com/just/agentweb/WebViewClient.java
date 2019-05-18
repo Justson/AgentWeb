@@ -5,8 +5,7 @@ package com.just.agentweb;
  * @date 2019/4/13
  * @since 1.0.0
  */
-public class WebViewClient extends WebViewClientDelegate {
+public class WebViewClient extends MiddlewareWebClientBase {
 	public WebViewClient() {
-		super(null);
 	}
 }

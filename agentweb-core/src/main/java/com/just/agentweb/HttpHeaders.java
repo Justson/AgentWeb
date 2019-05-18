@@ -32,16 +32,13 @@ public class HttpHeaders {
 		return new HttpHeaders();
 	}
 
-	private Map<String, Map<String, String>> mHeaders = null;
+	private final Map<String, Map<String, String>> mHeaders;
 
 	HttpHeaders() {
 		mHeaders = new ArrayMap<String, Map<String, String>>();
 	}
 
 	public Map<String, String> getHeaders(String url) {
-		if (null == mHeaders) {
-			return new ArrayMap<>();
-		}
 		String subUrl = subBaseUrl(url);
 		if (mHeaders.get(subUrl) == null) {
 			Map<String, String> headers = new ArrayMap<>();
@@ -98,10 +95,7 @@ public class HttpHeaders {
 	}
 
 	public Map<String, Map<String, String>> getHeaders() {
-		if (null != mHeaders) {
-			return this.mHeaders;
-		}
-		return this.mHeaders = new ArrayMap<String, Map<String, String>>();
+		return this.mHeaders;
 	}
 
 	private String subBaseUrl(String originUrl) {
