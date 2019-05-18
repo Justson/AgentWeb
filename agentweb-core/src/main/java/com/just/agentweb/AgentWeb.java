@@ -72,11 +72,11 @@ public final class AgentWeb {
 	/**
 	 * WebChromeClient
 	 */
-	private WebChromeClient mWebChromeClient;
+	private com.just.agentweb.WebChromeClient mWebChromeClient;
 	/**
 	 * WebViewClient
 	 */
-	private WebViewClient mWebViewClient;
+	private com.just.agentweb.WebViewClient mWebViewClient;
 	/**
 	 * is show indicator
 	 */
@@ -386,14 +386,13 @@ public final class AgentWeb {
 		DefaultWebClient mDefaultWebClient = DefaultWebClient
 				.createBuilder()
 				.setActivity(this.mActivity)
-				.setClient(this.mWebViewClient)
 				.setWebClientHelper(this.mWebClientHelper)
 				.setPermissionInterceptor(this.mPermissionInterceptor)
 				.setWebView(this.mWebCreator.getWebView())
 				.setInterceptUnkownUrl(this.mIsInterceptUnkownUrl)
 				.setUrlHandleWays(this.mUrlHandleWays)
 				.build();
-		MiddlewareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
+		MiddlewareWebClientBase header = this.mWebViewClient;
 		if (header != null) {
 			MiddlewareWebClientBase tail = header;
 			int count = 1;
@@ -447,11 +446,11 @@ public final class AgentWeb {
 		DefaultChromeClient mDefaultChromeClient =
 				new DefaultChromeClient(this.mActivity,
 						this.mIndicatorController = mIndicatorController,
-						this.mWebChromeClient, this.mIVideo = getIVideo(),
+						null, this.mIVideo = getIVideo(),
 						this.mPermissionInterceptor, mWebCreator.getWebView());
 
 		LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
-		MiddlewareWebChromeBase header = this.mMiddlewareWebChromeBaseHeader;
+		MiddlewareWebChromeBase header = this.mWebChromeClient;
 		if (header != null) {
 			MiddlewareWebChromeBase tail = header;
 			int count = 1;
