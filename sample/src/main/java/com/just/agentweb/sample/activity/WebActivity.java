@@ -15,7 +15,6 @@ public class WebActivity extends BaseWebActivity {
 
     @Override
     protected void onStart() {
-
         super.onStart();
     }
 

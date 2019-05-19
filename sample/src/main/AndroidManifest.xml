@@ -56,6 +56,18 @@
             android:name=".activity.NativeDownloadActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"></activity>
+
+        <activity android:name=".activity.ExternalActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!--BROWSABLE指定该Activity能被浏览器安全调用-->
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="sample.just.com"
+                    android:scheme="agentweb" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

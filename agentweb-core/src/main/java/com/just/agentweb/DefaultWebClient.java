@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -71,10 +72,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 * mWebClientHelper
 	 */
 	private boolean webClientHelper = true;
-	/**
-	 * Android  WebViewClient ' path 用于反射，判断用户是否重写了WebViewClient的某一个方法
-	 */
-	private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
 	/**
 	 * intent ' s scheme
 	 */
@@ -217,7 +214,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return true;
 		}
 		if (mIsInterceptUnkownUrl) {
-			LogUtils.i(TAG, "intercept mIsInterceptUnkownUrl :" + request.getUrl());
+			LogUtils.i(TAG, "intercept UnkownUrl :" + request.getUrl());
 			return true;
 		}
 		return super.shouldOverrideUrlLoading(view, request);
@@ -241,6 +238,21 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				return true;
 			// 咨询用户是否打开其他App
 			case ASK_USER_OPEN_OTHER_PAGE:
+				Activity mActivity = null;
+				if ((mActivity = mWeakReference.get()) == null) {
+					return false;
+				}
+				ResolveInfo resolveInfo = lookupResolveInfo(url);
+				if (null == resolveInfo) {
+					return false;
+				}
+				ActivityInfo activityInfo = resolveInfo.activityInfo;
+				LogUtils.e(TAG, "resolve package:" + resolveInfo.activityInfo.packageName + " app package:" + mActivity.getPackageName());
+				if (activityInfo != null
+						&& !TextUtils.isEmpty(activityInfo.packageName)
+						&& activityInfo.packageName.equals(mActivity.getPackageName())) {
+					return lookup(url);
+				}
 				if (mAgentWebUIController.get() != null) {
 					mAgentWebUIController.get()
 							.onOpenPagePrompt(this.mWebView,
@@ -330,6 +342,26 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				e.printStackTrace();
 			}
 		}
+	}
+
+
+	private ResolveInfo lookupResolveInfo(String url) {
+		try {
+			Intent intent;
+			Activity mActivity = null;
+			if ((mActivity = mWeakReference.get()) == null) {
+				return null;
+			}
+			PackageManager packageManager = mActivity.getPackageManager();
+			intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+			ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+			return info;
+		} catch (Throwable ignore) {
+			if (LogUtils.isDebug()) {
+				ignore.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	private boolean lookup(String url) {
@@ -454,7 +486,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 					error.getErrorCode(), error.getDescription().toString(),
 					request.getUrl().toString());
 		}
-		LogUtils.i(TAG, "onReceivedError:" + error.toString());
+		LogUtils.i(TAG, "onReceivedError:" + error.getDescription() + " code:" + error.getErrorCode());
 	}
 
 	private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {

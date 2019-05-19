@@ -23,9 +23,7 @@ package com.just.agentweb;
  * @since 1.0.0
  */
 public interface BaseIndicatorSpec {
-    /**
-     * indicator
-     */
+
     void show();
 
     void hide();

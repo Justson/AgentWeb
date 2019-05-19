@@ -104,12 +104,6 @@ public class BaseWebActivity extends AppCompatActivity {
     };
     private com.just.agentweb.WebChromeClient mWebChromeClient = new WebChromeClient() {
         @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            //do you work
-//            Log.i("Info","onProgress:"+newProgress);
-        }
-
-        @Override
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
             if (mTitleTextView != null) {
@@ -119,7 +113,6 @@ public class BaseWebActivity extends AppCompatActivity {
     };
 
     public String getUrl() {
-
         return "https://m.jd.com/";
     }
 
