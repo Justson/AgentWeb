@@ -111,6 +111,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				.setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
 				.setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
 				.useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
+				.additionalHttpHeader(getUrl(),"cookie","41bc7ddf04a26b91803f6b11817a5a1c")
 				.useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
 				.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)//打开其他页面时，弹窗质询用户前往其他应用 AgentWeb 3.0.0 加入。
 				.interceptUnkownUrl() //拦截找不到相关页面的Url AgentWeb 3.0.0 加入。
@@ -313,11 +314,13 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			if (url.startsWith("intent://") && url.contains("com.youku.phone")) {
 				return true;
 			}
+			mAgentWeb.getUrlLoader().loadUrl(url);
+			return true;
 			/*else if (isAlipay(view, mUrl))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
 			    return true;*/
 
 
-			return super.shouldOverrideUrlLoading(view, url);
+//			return super.shouldOverrideUrlLoading(view, url);
 		}
 
 		@Override
