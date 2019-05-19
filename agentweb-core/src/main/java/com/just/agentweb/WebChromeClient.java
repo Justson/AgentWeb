@@ -7,6 +7,5 @@ package com.just.agentweb;
  */
 public class WebChromeClient extends MiddlewareWebChromeBase{
 	public WebChromeClient() {
-		super(null);
 	}
 }

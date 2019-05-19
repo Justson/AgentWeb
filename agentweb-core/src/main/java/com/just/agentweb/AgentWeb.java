@@ -392,7 +392,11 @@ public final class AgentWeb {
 				.setInterceptUnkownUrl(this.mIsInterceptUnkownUrl)
 				.setUrlHandleWays(this.mUrlHandleWays)
 				.build();
-		MiddlewareWebClientBase header = this.mWebViewClient;
+		MiddlewareWebClientBase header = this.mMiddleWrareWebClientBaseHeader;
+		if (this.mWebViewClient != null) {
+			this.mWebViewClient.enq(this.mMiddleWrareWebClientBaseHeader);
+			header = this.mWebViewClient;
+		}
 		if (header != null) {
 			MiddlewareWebClientBase tail = header;
 			int count = 1;
@@ -450,7 +454,11 @@ public final class AgentWeb {
 						this.mPermissionInterceptor, mWebCreator.getWebView());
 
 		LogUtils.i(TAG, "WebChromeClient:" + this.mWebChromeClient);
-		MiddlewareWebChromeBase header = this.mWebChromeClient;
+		MiddlewareWebChromeBase header = this.mMiddlewareWebChromeBaseHeader;
+		if (this.mWebChromeClient != null) {
+			this.mWebChromeClient.enq(header);
+			header = this.mWebChromeClient;
+		}
 		if (header != null) {
 			MiddlewareWebChromeBase tail = header;
 			int count = 1;
