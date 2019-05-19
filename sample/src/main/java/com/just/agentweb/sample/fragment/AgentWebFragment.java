@@ -314,13 +314,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			if (url.startsWith("intent://") && url.contains("com.youku.phone")) {
 				return true;
 			}
-			mAgentWeb.getUrlLoader().loadUrl(url);
-			return true;
 			/*else if (isAlipay(view, mUrl))   //1.2.5开始不用调用该方法了 ，只要引入支付宝sdk即可 ， DefaultWebClient 默认会处理相应url调起支付宝
 			    return true;*/
 
 
-//			return super.shouldOverrideUrlLoading(view, url);
+			return super.shouldOverrideUrlLoading(view, url);
 		}
 
 		@Override
