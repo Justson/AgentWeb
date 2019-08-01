@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?android:actionBarSize"
@@ -24,7 +24,7 @@
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="14sp"/>
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
 
     <ListView

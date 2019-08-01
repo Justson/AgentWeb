@@ -17,7 +17,7 @@
 package com.just.agentweb.download;
 
 import android.net.Uri;
-import android.support.annotation.MainThread;
+import androidx.annotation.MainThread;
 
 
 /**

@@ -17,7 +17,7 @@
 package com.just.agentweb;
 
 import android.os.Build;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 import android.webkit.WebView;
 
 

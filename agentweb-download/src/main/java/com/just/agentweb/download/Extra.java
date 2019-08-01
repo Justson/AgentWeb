@@ -17,7 +17,7 @@
 package com.just.agentweb.download;
 
 import android.app.Activity;
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 import android.webkit.WebView;
 
 import com.download.library.DownloadTask;
