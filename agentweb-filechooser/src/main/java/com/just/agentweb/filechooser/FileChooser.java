@@ -531,7 +531,7 @@ public class FileChooser {
 
 		if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
 			if (mAgentWebUIController.get() != null) {
-				mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), TAG.concat("|convertFileAndCallback"));
+				mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
 			}
 			mJsChannelCallback.call(null);
 			return;
