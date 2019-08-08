@@ -62,12 +62,12 @@ dependencies {
     implementation 'com.github.Justson:Downloader:v4.0.3'
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
-//    compile project(':agentweb-core')
+    compile project(':agentweb-core')
 //    compile project(':agentweb-download')
-//    compile project(':agentweb-filechooser')
-    api 'com.just.agentweb:agentweb:4.0.3-beta'
-    api 'com.just.agentweb:filechooser:4.0.3-beta'
-    api 'com.just.agentweb:download:4.0.3-beta'
+    compile project(':agentweb-filechooser')
+//    api 'com.just.agentweb:agentweb:4.0.3-beta'
+//    api 'com.just.agentweb:filechooser:4.0.3-beta'
+//    api 'com.just.agentweb:download:4.0.3-beta'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'

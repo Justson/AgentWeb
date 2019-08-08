@@ -30,10 +30,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.download.library.Extra;
 import com.google.gson.Gson;
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
+import com.just.agentweb.DefaultDownloadImpl;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.IAgentWebSettings;
 import com.just.agentweb.LogUtils;
@@ -42,9 +44,6 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebListenerManager;
-import com.just.agentweb.download.DefaultDownloadImpl;
-import com.just.agentweb.download.DownloadListener;
-import com.just.agentweb.download.Extra;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
@@ -150,13 +149,17 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		}
 	};
 
+/*
 
-	/**
+	*/
+/**
 	 * 更新于 AgentWeb  4.0.0
-	 */
+	 *//*
+
 	protected DownloadListener mSimpleDownloadListener = new DownloadListener() {
 
-		/**
+		*/
+/**
 		 *
 		 * @param url                下载链接
 		 * @param userAgent          UserAgent
@@ -165,7 +168,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		 * @param contentLength      文件长度
 		 * @param extra              下载配置 ， 用户可以通过 Extra 修改下载icon ， 关闭进度条 ， 是否强制下载。
 		 * @return true 表示用户处理了该下载事件 ， false 交给 AgentWeb 下载
-		 */
+		 *//*
+
 		@Override
 		public boolean onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
 			LogUtils.i(TAG, "onStart:" + url);
@@ -182,14 +186,16 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		}
 
 
-		/**
+		*/
+/**
 		 *
 		 * @param url  下载链接
 		 * @param loaded  已经下载的长度
 		 * @param length    文件的总大小
 		 * @param usedTime   耗时 ，单位ms
 		 * 注意该方法回调在子线程 ，线程名 AsyncTask #XX 或者 AgentWeb # XX
-		 */
+		 *//*
+
 		@Override
 		public void onProgress(String url, long loaded, long length, long usedTime) {
 			int mProgress = (int) ((loaded) / Float.valueOf(length) * 100);
@@ -197,13 +203,15 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			super.onProgress(url, loaded, length, usedTime);
 		}
 
-		/**
+		*/
+/**
 		 *
 		 * @param path 文件的绝对路径
 		 * @param url  下载地址
 		 * @param throwable    如果异常，返回给用户异常
 		 * @return true 表示用户处理了下载完成后续的事件 ，false 默认交给AgentWeb 处理
-		 */
+		 *//*
+
 		@Override
 		public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
 			if (null == throwable) { //下载成功
@@ -214,6 +222,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			return false; // true  不会发出下载完成的通知 , 或者打开文件
 		}
 	};
+*/
 
 	/**
 	 * @return IAgentWebSettings
@@ -242,7 +251,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 						DefaultDownloadImpl
 								.create((Activity) webView.getContext(),
 										webView,
-										mSimpleDownloadListener,
 										this.mAgentWeb.getPermissionInterceptor()));
 			}
 		};
