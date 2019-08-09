@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.download.library.DownloadException;
 import com.download.library.DownloadImpl;
@@ -33,11 +34,11 @@ import com.download.library.DownloadListenerAdapter;
 import com.download.library.DownloadTask;
 import com.download.library.Downloader;
 import com.download.library.Extra;
+import com.download.library.Runtime;
 import com.just.agentweb.sample.R;
-import com.lcodecore.tkrefreshlayout.utils.DensityUtil;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -130,6 +131,44 @@ public class NativeDownloadActivity extends AppCompatActivity {
                     }
                 });*/
 
+        DownloadImpl.getInstance()
+                .with(getApplicationContext())
+                .target(new File(Runtime.getInstance().getDir(this, true).getAbsolutePath() + "/" + "com.ss.android.article.news_636.apk"), this.getPackageName() + ".DownloadFileProvider")//自定义路径需指定目录和authority(FileContentProvide),需要相对应匹配才能启动通知，和自动打开文件
+                .setUniquePath(false)//是否唯一路径
+                .setForceDownload(true)//不管网络类型
+                .setRetry(4)//下载异常，自动重试,最多重试4次
+                .setBlockMaxTime(60000L) //以8KB位单位，默认60s ，如果60s内无法从网络流中读满8KB数据，则抛出异常 。
+                .setConnectTimeOut(10000L)//连接10超时
+                .addHeader("xx","cookie")//添加请求头
+                .setDownloadTimeOut(Long.MAX_VALUE)//下载最大时长
+                .setOpenBreakPointDownload(true)//打开断点续传
+                .setParallelDownload(true)//打开多线程下载
+                .autoOpenWithMD5("93d1695d87df5a0c0002058afc0361f1")//校验md5通过后自动打开该文件,校验失败会回调异常
+//                .autoOpenIgnoreMD5()
+//                .closeAutoOpen()
+                .quickProgress()//快速连续回调进度，默认1.2s回调一次
+                .url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk")
+                .enqueue(new DownloadListenerAdapter() {
+                    @Override
+                    public void onStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength, Extra extra) {
+                        super.onStart(url, userAgent, contentDisposition, mimetype, contentLength, extra);
+                    }
+
+                    @MainThread //加上该注解，自动回调到主线程
+                    @Override
+                    public void onProgress(String url, long downloaded, long length, long usedTime) {
+                        super.onProgress(url, downloaded, length, usedTime);
+                        Log.i(TAG, " progress:" + downloaded + " url:" + url);
+                    }
+
+                    @Override
+                    public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
+                        String md5 = Runtime.getInstance().md5(new File(path.getPath()));
+                        Log.i(TAG, " path:" + path + " url:" + url + " length:" + new File(path.getPath()).length() + " md5:" + md5 + " extra.getFileMD5:" + extra.getFileMD5());
+                        return super.onResult(throwable, path, url, extra);
+                    }
+                });
+
     }
 
     private class NativeDownloadAdapter extends RecyclerView.Adapter<NativeDownloadViewHolder> {
@@ -209,6 +248,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                         } else {
                             nativeDownloadViewHolder.mStatusButton.setText("出错");
                         }
+                        Toast.makeText(NativeDownloadActivity.this, downloadException.getMsg(), Toast.LENGTH_LONG).show();
                     }
                     return super.onResult(throwable, uri, url, extra);
                 }
@@ -224,7 +264,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
 
     private static String byte2FitMemorySize(final long byteNum) {
         if (byteNum < 0) {
-            return "shouldn't be less than zero!";
+            return "";
         } else if (byteNum < 1024) {
             return String.format(Locale.getDefault(), "%.1fB", (double) byteNum);
         } else if (byteNum < 1048576) {
@@ -255,16 +295,50 @@ public class NativeDownloadActivity extends AppCompatActivity {
     public static class DownloadBean extends DownloadTask {
         public String title;
         public String imageUrl;
-        public long usedTime;
 
         public DownloadBean(String title, String imageUrl, String url) {
             this.title = title;
             this.imageUrl = imageUrl;
             this.mUrl = url;
         }
+
+        @Override
+        protected DownloadBean setDownloadListenerAdapter(DownloadListenerAdapter downloadListenerAdapter) {
+            return (DownloadBean) super.setDownloadListenerAdapter(downloadListenerAdapter);
+        }
+
+        @Override
+        public DownloadBean setUrl(String url) {
+            return (DownloadBean) super.setUrl(url);
+        }
+
+        @Override
+        public DownloadBean setContext(Context context) {
+            return (DownloadBean) super.setContext(context);
+        }
+
+        @Override
+        public DownloadBean setEnableIndicator(boolean enableIndicator) {
+            return (DownloadBean) super.setEnableIndicator(enableIndicator);
+        }
+
+        @Override
+        public DownloadBean setRetry(int retry) {
+            return (DownloadBean) super.setRetry(retry);
+        }
+
+        @Override
+        public DownloadBean setQuickProgress(boolean quickProgress) {
+            return (DownloadBean) super.setQuickProgress(quickProgress);
+        }
+
+        @Override
+        public DownloadBean autoOpenIgnoreMD5() {
+            return (DownloadBean) super.autoOpenIgnoreMD5();
+        }
     }
 
-    public static class RoundTransform implements Transformation {
+    public static class RoundTransform implements com.squareup.picasso.Transformation {
 
         private Context mContext;
 
@@ -277,7 +351,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
 
             int widthLight = source.getWidth();
             int heightLight = source.getHeight();
-            int radius = DensityUtil.dp2px(mContext, 8); // 圆角半径
+            int radius = dp2px(mContext, 8); // 圆角半径
 
             Bitmap output = Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
 
@@ -304,34 +378,74 @@ public class NativeDownloadActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        DownloadImpl.getInstance().cancelAll();
-    }
-
     public void createDatasource() {
-        DownloadBean downloadBean = new DownloadBean("QQ", "http://p18.qhimg.com/dr/72__/t0111cb71dabfd83b21.png", "http://shouji.360tpcdn.com/170918/a01da193400dd5ffd42811db28effd53/com.tencent.mobileqq_730.apk");
+
+        DownloadBean downloadBean = new DownloadBean("头条", "http://p15.qhimg.com/dr/72__/t013d31024ae54d9c35.png", "http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk");
+        downloadBean.setContext(this.getApplicationContext());
+        downloadBean.setEnableIndicator(false);
+        downloadBean.setQuickProgress(true);
+        downloadBean.autoOpenIgnoreMD5();
+        mDownloadTasks.add(downloadBean);
+
+
+        downloadBean = new DownloadBean("QQ", "http://p18.qhimg.com/dr/72__/t0111cb71dabfd83b21.png", "https://d71329e5c0be6cdc2b46d0df2b4bd841.dd.cdntips.com/imtt.dd.qq.com/16891/apk/06AB1F5B0A51BEFD859B2B0D6B9ED9D9.apk?mkey=5d47b9f223f7bc0d&f=1806&fsname=com.tencent.mobileqq_8.1.0_1232.apk&csr=1bbd&cip=35.247.154.248&proto=https");
+        downloadBean.setQuickProgress(true);
+        downloadBean.setRetry(4);
+        downloadBean.autoOpenIgnoreMD5();
         downloadBean.setContext(this.getApplicationContext());
         mDownloadTasks.add(downloadBean);
+
+
+        downloadBean = new DownloadBean("个人所得税", "https://pp.myapp.com/ma_icon/0/icon_52774371_1564430421/96", "https://55b4320ab5f8ffb31461803d649d4c7c.dd.cdntips.com/imtt.dd.qq.com/16891/apk/1D7CA151BDE5F37CA28BF06B63109D61.apk?mkey=5d4d3a0323f7bc0d&f=184b&fsname=cn.gov.tax.its_1.1.15_10115.apk&csr=1bbd&cip=35.247.154.248&proto=https");
+        downloadBean.setContext(this.getApplicationContext());
+        downloadBean.setQuickProgress(true);
+        downloadBean.setRetry(4);
+        downloadBean.autoOpenIgnoreMD5();
+        mDownloadTasks.add(downloadBean);
+
         downloadBean = new DownloadBean("支付宝", "http://p18.qhimg.com/dr/72__/t01a16bcd9acd07d029.png", "http://shouji.360tpcdn.com/170919/e7f5386759129f378731520a4c953213/com.eg.android.AlipayGphone_115.apk");
         downloadBean.setContext(this.getApplicationContext());
+        downloadBean.setQuickProgress(true);
         mDownloadTasks.add(downloadBean);
 
         downloadBean = new DownloadBean("UC", "http://p19.qhimg.com/dr/72__/t01195d02b486ef8ebe.png", "http://shouji.360tpcdn.com/170919/9f1c0f93a445d7d788519f38fdb3de77/com.UCMobile_704.apk");
         downloadBean.setContext(this.getApplicationContext());
+        downloadBean.setQuickProgress(true);
         mDownloadTasks.add(downloadBean);
 
         downloadBean = new DownloadBean("腾讯视频", "http://p18.qhimg.com/dr/72__/t01ed14e0ab1a768377.png", "http://shouji.360tpcdn.com/170918/f7aa8587561e4031553316ada312ab38/com.tencent.qqlive_13049.apk");
         downloadBean.setContext(this.getApplicationContext());
         mDownloadTasks.add(downloadBean);
 
-        downloadBean = new DownloadBean("头条", "http://p15.qhimg.com/dr/72__/t013d31024ae54d9c35.png", "http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk");
-        downloadBean.setContext(this.getApplicationContext());
-        mDownloadTasks.add(downloadBean);
 
         downloadBean = new DownloadBean("淘宝", "http://p15.qhimg.com/dr/72__/t011cd515c7c9390202.png", "http://shouji.360tpcdn.com/170901/ec1eaad9d0108b30d8bd602da9954bb7/com.taobao.taobao_161.apk");
         downloadBean.setContext(this.getApplicationContext());
         mDownloadTasks.add(downloadBean);
+
+        //http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx?0.04400023248109086
+
+        downloadBean = new DownloadBean("分块传输，图片", "http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx?0.04400023248109086", "http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx?0.04400023248109086");
+        downloadBean.setContext(this.getApplicationContext());
+        downloadBean.autoOpenIgnoreMD5();
+        mDownloadTasks.add(downloadBean);
+
+
+        downloadBean = new DownloadBean("天天跑酷", "http://www.httpwatch.com/httpgallery/chunked/chunkedimage.aspx?0.04400023248109086", "http://183.232.175.155/imtt.dd.qq.com/16891/83B450E67953CC7C4A3ECFBF70BC276D.apk?mkey=5c69a52c78e505fd&f=1026&fsname=com.tencent.pao_1.0.62.0_162.apk&csr=97c2&cip=120.229.35.8&proto=http");
+        downloadBean.setContext(this.getApplicationContext());
+        downloadBean.autoOpenIgnoreMD5();
+        mDownloadTasks.add(downloadBean);
+
+
+        downloadBean = new DownloadBean("夜爱直播", "https://pp.myapp.com/ma_icon/0/icon_10472625_1555686747/96", "https://a46fefcd092f5f917ed1ee349b85d3b7.dd.cdntips.com/wxz.myapp.com/16891/F9B7FA7EC195FC453AE9082F826E6B28.apk?mkey=5d4c6bdc78e5058d&f=1806&fsname=com.tiange.hz.paopao8_4.4.1_441.apk&hsr=4d5s&cip=120.229.35.120&proto=https");
+        downloadBean.setContext(this.getApplicationContext());
+        downloadBean.autoOpenIgnoreMD5().setQuickProgress(true);
+        mDownloadTasks.add(downloadBean);
+
+        //
+    }
+
+    public static int dp2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 }
