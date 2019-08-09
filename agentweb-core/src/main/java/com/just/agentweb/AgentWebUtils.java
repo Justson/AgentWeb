@@ -882,7 +882,6 @@ public class AgentWebUtils {
             if (valueCallback != null) {
                 valueCallback.onReceiveValue(null);
             }
-            LogUtils.e(TAG, "api 'com.just.agentweb:filechooser:xxx'");
         }
         return true;
     }
