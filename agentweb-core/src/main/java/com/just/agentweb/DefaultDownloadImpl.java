@@ -70,7 +70,6 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 
     protected DefaultDownloadImpl(Activity activity, WebView webView, PermissionInterceptor permissionInterceptor) {
-        DownloadImpl.getInstance().with(activity.getApplication());
         this.mContext = activity.getApplicationContext();
         this.mActivityWeakReference = new WeakReference<Activity>(activity);
         this.mPermissionListener = permissionInterceptor;
@@ -197,7 +196,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                 return;
             }
             ResourceRequest downloadTask = mDownloadTasks.get(url);
-            downloadTask.addHeader("Cookie", AgentWebConfig.getCookiesByUrl(url.toString()));
+            downloadTask.addHeader("Cookie", AgentWebConfig.getCookiesByUrl(url));
             downloadTask.enqueue(new DownloadListenerAdapter() {
                 @Override
                 public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
@@ -215,6 +214,15 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     public static DefaultDownloadImpl create(@NonNull Activity activity,
                                              @NonNull WebView webView,
                                              @Nullable PermissionInterceptor permissionInterceptor) {
+        try {
+            DownloadImpl.getInstance().with(activity.getApplication());
+        } catch (Throwable throwable) {
+            LogUtils.e(TAG, "implementation 'com.github.Justson:Downloader:v4.1.1'");
+            if (LogUtils.isDebug()) {
+                throwable.printStackTrace();
+            }
+        }
+
         return new DefaultDownloadImpl(activity, webView, permissionInterceptor);
     }
 }
