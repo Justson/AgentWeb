@@ -210,11 +210,18 @@ public class FileChooser {
 			    mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }*/
 //			mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+			if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT&&mIntent.getAction().equals(Intent.ACTION_GET_CONTENT)){
+			mIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+			}
 			return mIntent;
 		}
 
 		Intent i = new Intent();
-		i.setAction(Intent.ACTION_GET_CONTENT);
+		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+			i.setAction(Intent.ACTION_OPEN_DOCUMENT);
+		}else {
+			i.setAction(Intent.ACTION_GET_CONTENT);
+		}
 		i.addCategory(Intent.CATEGORY_OPENABLE);
 		if (TextUtils.isEmpty(this.mAcceptType)) {
 			i.setType("*/*");
