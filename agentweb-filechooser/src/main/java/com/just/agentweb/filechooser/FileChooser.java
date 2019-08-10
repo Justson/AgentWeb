@@ -119,6 +119,10 @@ public class FileChooser {
 	 */
 	private boolean mCameraState = false;
 	/**
+	 * 是否调用摄像头后  调用的是摄像模式  默认是拍照
+	 */
+	private boolean mVideoState = false;
+	/**
 	 * 权限拦截
 	 */
 	private PermissionInterceptor mPermissionInterceptor;
@@ -234,8 +238,8 @@ public class FileChooser {
 
 
 	private void openFileChooserInternal() {
-
-
+		boolean needVideo = false;
+		// 在此支持视频拍摄
 		// 是否直接打开文件选择器
 		if (this.mIsAboveLollipop && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
 			boolean needCamera = false;
@@ -246,12 +250,17 @@ public class FileChooser {
 				if (TextUtils.isEmpty(typeTmp)) {
 					continue;
 				}
-				if (typeTmp.contains("*/") || typeTmp.contains("image/")) {
+				if (typeTmp.contains("*/") || typeTmp.contains("image/")) {  //这是拍照模式
 					needCamera = true;
 					break;
 				}
+
+				if (typeTmp.contains("video/")){  //调用摄像机拍摄  这是录像模式
+					needCamera = true;
+					mVideoState = true;
+				}
 			}
-			if (!needCamera) {
+			if (!needCamera && !needVideo) {
 				touchOffFileChooserAction();
 				return;
 			}
@@ -282,7 +291,6 @@ public class FileChooser {
 					case 0:
 						mCameraState = true;
 						onCameraAction();
-
 						break;
 					case 1:
 						mCameraState = false;
@@ -341,7 +349,11 @@ public class FileChooser {
 
 	private void openCameraAction() {
 		Action mAction = new Action();
-		mAction.setAction(Action.ACTION_CAMERA);
+		if(mVideoState){  //调用摄像
+			mAction.setAction(Action.ACTION_VIDEO);
+		}else{
+			mAction.setAction(Action.ACTION_CAMERA);
+		}
 		ActionActivity.setChooserListener(this.getChooserListener());
 		ActionActivity.start(mActivity, mAction);
 	}
