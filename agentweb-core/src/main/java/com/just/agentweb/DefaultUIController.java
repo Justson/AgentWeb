@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -56,11 +57,20 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	@Override
 	public void onOpenPagePrompt(WebView view, String url, final Handler.Callback callback) {
 		LogUtils.i(TAG, "onOpenPagePrompt");
+		Activity mActivity;
+		if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
+			return;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			if (mActivity.isDestroyed()) {
+				return;
+			}
+		}
 		if (mAskOpenOtherAppDialog == null) {
 			mAskOpenOtherAppDialog = new AlertDialog
 					.Builder(mActivity)
 					.setMessage(mResources.getString(R.string.agentweb_leave_app_and_go_other_page,
-							AgentWebUtils.getApplicationName(mActivity)))//
+							AgentWebUtils.getApplicationName(mActivity)))
 					.setTitle(mResources.getString(R.string.agentweb_tips))
 					.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 						@Override
@@ -103,6 +113,11 @@ public class DefaultUIController extends AbsAgentWebUIController {
 		if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
 			return;
 		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			if (mActivity.isDestroyed()) {
+				return;
+			}
+		}
 		AlertDialog mAlertDialog = null;
 		mAlertDialog = new AlertDialog.Builder(mActivity)
 				.setTitle(mResources.getString(R.string.agentweb_tips))
@@ -131,6 +146,15 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	}
 
 	private void showChooserInternal(String[] ways, final Handler.Callback callback) {
+		Activity mActivity;
+		if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
+			return;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			if (mActivity.isDestroyed()) {
+				return;
+			}
+		}
 		mAlertDialog = new AlertDialog.Builder(mActivity)
 				.setSingleChoiceItems(ways, -1, new DialogInterface.OnClickListener() {
 					@Override
@@ -162,6 +186,12 @@ public class DefaultUIController extends AbsAgentWebUIController {
 		if (mActivity == null || mActivity.isFinishing()) {
 			toCancelJsresult(jsResult);
 			return;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			if (mActivity.isDestroyed()) {
+				toCancelJsresult(jsResult);
+				return;
+			}
 		}
 
 		if (mConfirmDialog == null) {
@@ -206,8 +236,13 @@ public class DefaultUIController extends AbsAgentWebUIController {
 			jsPromptResult.cancel();
 			return;
 		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			if (mActivity.isDestroyed()) {
+				jsPromptResult.cancel();
+				return;
+			}
+		}
 		if (mPromptDialog == null) {
-
 			final EditText et = new EditText(mActivity);
 			et.setText(defaultValue);
 			mPromptDialog = new AlertDialog.Builder(mActivity)
@@ -267,7 +302,15 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 	@Override
 	public void onLoading(String msg) {
-
+		Activity mActivity;
+		if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
+			return;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			if (mActivity.isDestroyed()) {
+				return;
+			}
+		}
 		if (mProgressDialog == null) {
 			mProgressDialog = new ProgressDialog(mActivity);
 		}
@@ -280,6 +323,15 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 	@Override
 	public void onCancelLoading() {
+		Activity mActivity;
+		if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
+			return;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			if (mActivity.isDestroyed()) {
+				return;
+			}
+		}
 		if (mProgressDialog != null && mProgressDialog.isShowing()) {
 			mProgressDialog.dismiss();
 		}
