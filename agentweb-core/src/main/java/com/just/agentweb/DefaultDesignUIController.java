@@ -19,6 +19,7 @@ package com.just.agentweb;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.BottomSheetDialog;
@@ -58,6 +59,11 @@ public class DefaultDesignUIController extends DefaultUIController {
         if (mActivity == null || mActivity.isFinishing()) {
             return;
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (mActivity.isDestroyed()) {
+                return;
+            }
+        }
         try {
             AgentWebUtils.show(view,
                     message,
@@ -90,6 +96,15 @@ public class DefaultDesignUIController extends DefaultUIController {
     }
 
     private void showChooserInternal(WebView view, String url, final String[] ways, final Handler.Callback callback) {
+        Activity mActivity;
+        if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (mActivity.isDestroyed()) {
+                return;
+            }
+        }
         LogUtils.i(TAG, "url:" + url + "  ways:" + ways[0]);
         RecyclerView mRecyclerView;
         if (mBottomSheetDialog == null) {
@@ -169,6 +184,15 @@ public class DefaultDesignUIController extends DefaultUIController {
 
     @Override
     public void onShowMessage(String message, String from) {
+        Activity mActivity;
+        if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if (mActivity.isDestroyed()) {
+                return;
+            }
+        }
         if (!TextUtils.isEmpty(from) && from.contains("performDownload")) {
             return;
         }
