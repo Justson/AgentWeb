@@ -234,14 +234,11 @@ public class FileChooser {
 
 
 	private void openFileChooserInternal() {
-
-
 		// 是否直接打开文件选择器
 		if (this.mIsAboveLollipop && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
 			boolean needCamera = false;
 			String[] types = this.mFileChooserParams.getAcceptTypes();
 			for (String typeTmp : types) {
-
 				LogUtils.i(TAG, "typeTmp:" + typeTmp);
 				if (TextUtils.isEmpty(typeTmp)) {
 					continue;
@@ -282,7 +279,6 @@ public class FileChooser {
 					case 0:
 						mCameraState = true;
 						onCameraAction();
-
 						break;
 					case 1:
 						mCameraState = false;

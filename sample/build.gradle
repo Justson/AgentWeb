@@ -5,7 +5,7 @@ android {
     buildToolsVersion BUILD_TOOL_VERSION
     defaultConfig {
         applicationId "com.just.agentweb.sample"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode 4
         versionName "4.0.3-alpha"
