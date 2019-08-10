@@ -29,7 +29,7 @@ public class EasyWebFragment extends BaseAgentWebFragment {
 
 	public static EasyWebFragment getInstance(Bundle bundle) {
 		EasyWebFragment mEasyWebFragment = new EasyWebFragment();
-		if (bundle == null) {
+		if (bundle != null) {
 			mEasyWebFragment.setArguments(bundle);
 		}
 		return mEasyWebFragment;
