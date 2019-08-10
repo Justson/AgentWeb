@@ -32,10 +32,6 @@ android {
 //   defaultPublishConfig "debug"
 
 }
-
-task javadoc(type: Javadoc) {
-    options.encoding = "utf-8"
-}
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -50,8 +46,8 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'agentweb'
-    version = '4.0.2'
-    description = 'very easy to build you web page'
+    publishVersion = '4.0.3-beta'
+    desc = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 
 }

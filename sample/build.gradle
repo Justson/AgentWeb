@@ -8,7 +8,7 @@ android {
         minSdkVersion 16
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode 4
-        versionName "4.0.2"
+        versionName "4.0.3-alpha"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -59,15 +59,15 @@ dependencies {
     })
     compile "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
-    implementation 'com.github.Justson:Downloader:v4.0.3-beta'
+    implementation 'com.github.Justson:Downloader:v4.0.3'
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
-    compile project(':agentweb-core')
-    compile project(':agentweb-download')
-    compile project(':agentweb-filechooser')
-    //    compile 'com.just.agentweb:agentweb:4.0.2'
-    //    compile 'com.just.agentweb:download:4.0.2'
-    //    compile 'com.just.agentweb:filechooser:4.0.2'
+//    compile project(':agentweb-core')
+//    compile project(':agentweb-download')
+//    compile project(':agentweb-filechooser')
+    api 'com.just.agentweb:agentweb:4.0.3-beta'
+    api 'com.just.agentweb:filechooser:4.0.3-beta'
+    api 'com.just.agentweb:download:4.0.3-beta'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'

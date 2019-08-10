@@ -12,15 +12,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.DefaultWebClient;
+import com.just.agentweb.WebChromeClient;
+import com.just.agentweb.WebViewClient;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.widget.WebLayout;
 
@@ -90,7 +90,7 @@ public class BaseWebActivity extends AppCompatActivity {
 
     }
 
-    private WebViewClient mWebViewClient = new WebViewClient() {
+    private com.just.agentweb.WebViewClient mWebViewClient = new WebViewClient() {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             return super.shouldOverrideUrlLoading(view, request);
@@ -102,13 +102,7 @@ public class BaseWebActivity extends AppCompatActivity {
             Log.i("Info", "BaseWebActivity onPageStarted");
         }
     };
-    private WebChromeClient mWebChromeClient = new WebChromeClient() {
-        @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            //do you work
-//            Log.i("Info","onProgress:"+newProgress);
-        }
-
+    private com.just.agentweb.WebChromeClient mWebChromeClient = new WebChromeClient() {
         @Override
         public void onReceivedTitle(WebView view, String title) {
             super.onReceivedTitle(view, title);
@@ -119,7 +113,6 @@ public class BaseWebActivity extends AppCompatActivity {
     };
 
     public String getUrl() {
-
         return "https://m.jd.com/";
     }
 

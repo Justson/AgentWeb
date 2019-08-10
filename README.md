@@ -17,26 +17,16 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
 * Gradle 
    
    ```
-    compile 'com.just.agentweb:agentweb:4.0.2' // (必选)
-    compile 'com.just.agentweb:download:4.0.2' // (可选)
-    compile 'com.just.agentweb:filechooser:4.0.2'// (可选) 
+    api 'com.just.agentweb:agentweb:4.0.3-beta' // (必选)
+    api 'com.just.agentweb:filechooser:4.0.3-beta'// (可选)
+    api 'com.just.agentweb:download:4.0.3-beta' // (可选)
+    api 'com.github.Justson:Downloader:v4.0.3'// (可选)
    ```
-   
-* Maven
-	
-	```
-	<dependency>
- 	  <groupId>com.just.agentweb</groupId>
- 	  <artifactId>agentweb</artifactId>
-	  <version>4.0.2</version>
-	  <type>pom</type>
-	</dependency>
-	
-	```
 
 ## 相关
 * [AgentWebX5](https://github.com/Justson/AgentWebX5)
 * [一个炫酷的 WebView 进度条](https://github.com/Justson/CoolIndicator)
+* [Downloader 一个轻量的文件下载器](https://github.com/Justson/Downloader)
 
 	
 
@@ -339,10 +329,14 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 
 ## 更新日志
 
+* v_4.0.3 更新
+	* 部分手机下载过程中～声音一直响 [#523](https://github.com/Justson/AgentWeb/issues/523)
+	* 抽离[Downloader](https://github.com/Justson/Downloader)
+	* 放弃反射回调WebViewClient#methods，使用洋葱模型的Middleware代替
+
 * v_4.0.2 更新
 	* 修复断点续传时进度计算错误
 	* 修复无法通过`Extra`关闭进度通知
-	* 修复`setopenbreakPointdownload` 命名不规范
 
 * v_4.0.0 更新
 	* `AgentWeb` 拆分出 `AgentWeb-Download` 、 `AgentWeb-FileChooser` 、`AgentWeb-core` 三个库，用户可以按需选择

@@ -1,8 +1,9 @@
 package com.just.agentweb.sample.common;
 
 import android.util.Log;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import com.just.agentweb.WebChromeClient;
 
 /**
  * @author cenxiaozhong
@@ -12,7 +13,7 @@ import android.webkit.WebView;
 public class CommonWebChromeClient extends WebChromeClient {
 	@Override
 	public void onProgressChanged(WebView view, int newProgress) {
-		//  super.onProgressChanged(view, newProgress);
+		  super.onProgressChanged(view, newProgress);
 		Log.i("CommonWebChromeClient", "onProgressChanged:" + newProgress + "  view:" + view);
 	}
 }

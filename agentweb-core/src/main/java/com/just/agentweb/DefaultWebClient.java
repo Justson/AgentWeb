@@ -16,15 +16,19 @@
 
 package com.just.agentweb;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -68,10 +72,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 * mWebClientHelper
 	 */
 	private boolean webClientHelper = true;
-	/**
-	 * Android  WebViewClient ' path 用于反射，判断用户是否重写了WebViewClient的某一个方法
-	 */
-	private static final String ANDROID_WEBVIEWCLIENT_PATH = "android.webkit.WebViewClient";
 	/**
 	 * intent ' s scheme
 	 */
@@ -180,27 +180,19 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		}
 	}
 
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-		int tag = -1;
-
-		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", ANDROID_WEBVIEWCLIENT_PATH + ".shouldOverrideUrlLoading", WebView.class, WebResourceRequest.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, request))) {
-			return true;
-		}
-
 		String url = request.getUrl().toString();
-
 		if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
 			return (webClientHelper && HAS_ALIPAY_LIB && isAlipay(view, url));
 		}
-
 		if (!webClientHelper) {
-			return false;
+			return super.shouldOverrideUrlLoading(view, request);
 		}
 		if (handleCommonLink(url)) {
 			return true;
 		}
-
 		// intent
 		if (url.startsWith(INTENT_SCHEME)) {
 			handleIntentUrl(url);
@@ -213,23 +205,17 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			startActivity(url);
 			return true;
 		}
-
 		if (url.startsWith(ALIPAYS_SCHEME) && lookup(url)) {
 			LogUtils.i(TAG, "alipays url lookup alipay ~~ ");
 			return true;
 		}
-
 		if (queryActiviesNumber(url) > 0 && deepLink(url)) {
 			LogUtils.i(TAG, "intercept url:" + url);
 			return true;
 		}
 		if (mIsInterceptUnkownUrl) {
-			LogUtils.i(TAG, "intercept mIsInterceptUnkownUrl :" + request.getUrl());
+			LogUtils.i(TAG, "intercept UnkownUrl :" + request.getUrl());
 			return true;
-		}
-
-		if (tag > 0) {
-			return false;
 		}
 		return super.shouldOverrideUrlLoading(view, request);
 	}
@@ -245,7 +231,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	}
 
 	private boolean deepLink(String url) {
-
 		switch (mUrlHandleWays) {
 			// 直接打开其他App
 			case DERECT_OPEN_OTHER_PAGE:
@@ -253,6 +238,21 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				return true;
 			// 咨询用户是否打开其他App
 			case ASK_USER_OPEN_OTHER_PAGE:
+				Activity mActivity = null;
+				if ((mActivity = mWeakReference.get()) == null) {
+					return false;
+				}
+				ResolveInfo resolveInfo = lookupResolveInfo(url);
+				if (null == resolveInfo) {
+					return false;
+				}
+				ActivityInfo activityInfo = resolveInfo.activityInfo;
+				LogUtils.e(TAG, "resolve package:" + resolveInfo.activityInfo.packageName + " app package:" + mActivity.getPackageName());
+				if (activityInfo != null
+						&& !TextUtils.isEmpty(activityInfo.packageName)
+						&& activityInfo.packageName.equals(mActivity.getPackageName())) {
+					return lookup(url);
+				}
 				if (mAgentWebUIController.get() != null) {
 					mAgentWebUIController.get()
 							.onOpenPagePrompt(this.mWebView,
@@ -273,10 +273,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		int tag = -1;
-		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "shouldOverrideUrlLoading", ANDROID_WEBVIEWCLIENT_PATH + ".shouldOverrideUrlLoading", WebView.class, String.class) && (((tag = 1) > 0) && super.shouldOverrideUrlLoading(view, url))) {
-			return true;
-		}
 		if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
 			return (webClientHelper && HAS_ALIPAY_LIB && isAlipay(view, url));
 		}
@@ -310,9 +306,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		if (mIsInterceptUnkownUrl) {
 			LogUtils.i(TAG, "intercept InterceptUnkownScheme : " + url);
 			return true;
-		}
-		if (tag > 0) {
-			return false;
 		}
 		return super.shouldOverrideUrlLoading(view, url);
 	}
@@ -349,6 +342,26 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 				e.printStackTrace();
 			}
 		}
+	}
+
+
+	private ResolveInfo lookupResolveInfo(String url) {
+		try {
+			Intent intent;
+			Activity mActivity = null;
+			if ((mActivity = mWeakReference.get()) == null) {
+				return null;
+			}
+			PackageManager packageManager = mActivity.getPackageManager();
+			intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+			ResolveInfo info = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+			return info;
+		} catch (Throwable ignore) {
+			if (LogUtils.isDebug()) {
+				ignore.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	private boolean lookup(String url) {
@@ -459,27 +472,21 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	@Override
 	public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", ANDROID_WEBVIEWCLIENT_PATH + ".onReceivedError", WebView.class, int.class, String.class, String.class)) {
-			super.onReceivedError(view, errorCode, description, failingUrl);
-//            return;
-		}
 		LogUtils.i(TAG, "onReceivedError：" + description + "  CODE:" + errorCode);
 		onMainFrameError(view, errorCode, description, failingUrl);
 	}
 
 
+	@TargetApi(Build.VERSION_CODES.M)
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onReceivedError", ANDROID_WEBVIEWCLIENT_PATH + ".onReceivedError", WebView.class, WebResourceRequest.class, WebResourceError.class)) {
-			super.onReceivedError(view, request, error);
-//            return;
-		}
 		if (request.isForMainFrame()) {
 			onMainFrameError(view,
 					error.getErrorCode(), error.getDescription().toString(),
 					request.getUrl().toString());
 		}
-		LogUtils.i(TAG, "onReceivedError:" + error.toString());
+		LogUtils.i(TAG, "onReceivedError:" + error.getDescription() + " code:" + error.getErrorCode());
 	}
 
 	private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
@@ -554,10 +561,6 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onScaleChanged(WebView view, float oldScale, float newScale) {
-		if (AgentWebUtils.isOverriedMethod(mWebViewClient, "onScaleChanged", ANDROID_WEBVIEWCLIENT_PATH + ".onScaleChanged", WebView.class, float.class, float.class)) {
-			super.onScaleChanged(view, oldScale, newScale);
-			return;
-		}
 		LogUtils.i(TAG, "onScaleChanged:" + oldScale + "   n:" + newScale);
 		if (newScale - oldScale > CONSTANTS_ABNORMAL_BIG) {
 			view.setInitialScale((int) (oldScale / newScale * 100));
@@ -638,7 +641,18 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	}
 
 	public static enum OpenOtherPageWays {
-		DERECT(DefaultWebClient.DERECT_OPEN_OTHER_PAGE), ASK(DefaultWebClient.ASK_USER_OPEN_OTHER_PAGE), DISALLOW(DefaultWebClient.DISALLOW_OPEN_OTHER_APP);
+		/**
+		 * 直接打开跳转页
+		 */
+		DERECT(DefaultWebClient.DERECT_OPEN_OTHER_PAGE),
+		/**
+		 * 咨询用户是否打开
+		 */
+		ASK(DefaultWebClient.ASK_USER_OPEN_OTHER_PAGE),
+		/**
+		 * 禁止打开其他页面
+		 */
+		DISALLOW(DefaultWebClient.DISALLOW_OPEN_OTHER_APP);
 		int code;
 
 		OpenOtherPageWays(int code) {

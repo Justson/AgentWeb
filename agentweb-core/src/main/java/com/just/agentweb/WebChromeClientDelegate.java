@@ -241,7 +241,6 @@ public class WebChromeClientDelegate extends WebChromeClient {
     @Override
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void onPermissionRequest(PermissionRequest request) {
-//        request.deny();
         if (this.mDelegate != null) {
             this.mDelegate.onPermissionRequest(request);
             return;
@@ -325,17 +324,29 @@ public class WebChromeClientDelegate extends WebChromeClient {
     }
 
 
-    // Android  >= 4.1
+    /**
+     * Android  >= 4.1
+     * @param uploadFile
+     * @param acceptType
+     * @param capture
+     */
     public void openFileChooser(ValueCallback<Uri> uploadFile, String acceptType, String capture) {
         commonRefect(this.mDelegate, "openFileChooser", new Object[]{uploadFile, acceptType, capture}, ValueCallback.class, String.class, String.class);
     }
 
-    //  Android < 3.0
+    /**
+     * Android < 3.0
+     * @param valueCallback
+     */
     public void openFileChooser(ValueCallback<Uri> valueCallback) {
         commonRefect(this.mDelegate, "openFileChooser", new Object[]{valueCallback}, ValueCallback.class);
     }
 
-    //  Android  >= 3.0
+    /**
+     * Android  >= 3.0
+     * @param valueCallback
+     * @param acceptType
+     */
     public void openFileChooser(ValueCallback valueCallback, String acceptType) {
         commonRefect(this.mDelegate, "openFileChooser", new Object[]{valueCallback, acceptType}, ValueCallback.class, String.class);
     }

@@ -25,7 +25,7 @@ import android.util.Log;
  */
 public class LogUtils {
 
-    private static final String PREFIX = " agentweb - "; //
+    private static final String PREFIX = " agentweb - ";
 
     public static boolean isDebug() {
         return AgentWebConfig.DEBUG;
