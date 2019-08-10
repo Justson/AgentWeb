@@ -18,25 +18,12 @@ AgentWeb Sample shows AgentWeb library powerful features, detailed link, please 
 
 
 * Gradle 
-   
+  
    ```
-    api 'com.just.agentweb:agentweb:4.0.3-beta' // (Required)
-    api 'com.just.agentweb:filechooser:4.0.3-beta'// (optional)
-    api 'com.just.agentweb:download:4.0.3-beta' // (optional)
-    api 'com.github.Justson:Downloader:v4.0.3'// (optional)
+    api 'com.just.agentweb:agentweb:4.1.1' // (Required)
+    api 'com.just.agentweb:filechooser:4.1.1'// (optional)
+    api 'com.github.Justson:Downloader:v4.1.1'// (optional)
    ```
-* Maven
-	
-	```
-	<dependency>
- 	  <groupId>com.just.agentweb</groupId>
- 	  <artifactId>agentweb</artifactId>
-	  <version>4.0.2</version>
-	  <type>pom</type>
-	</dependency>
-	
-	```
-	
 	
 	
 ## use
@@ -115,15 +102,6 @@ Window.android.callAndroid () / / call the Java layer AndroidInterface class cal
         MAgentWeb.getWebLifeCycle (). OnResume ();
         Super.onResume ();
     }
-```
-
-* #### <del>File upload processing</del>
-```java
-    @Override
-    Protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-        MAgentWeb.uploadFileResult (requestCode, resultCode, data);
-        Super.onActivityResult (requestCode, resultCode, data);
- }
 ```
 
 * #### full screen video playback
@@ -242,38 +220,6 @@ Java injection class do not proguard, such as sample inside the AndroidInterface
 ```
 -keepclassmembers class com.just.library.agentweb.AndroidInterface {*;}
 ```
-
-## update log
-* v_3.0.0 update
-	* Add MiddlewareWebChromeBase middleware, support multiple WebChromeClient.
-	* Add `MiddleWareWebClientBase` middleware, support multiple` WebViewClient`.
-	* Added the default onResult page, and supports custom onResult page.
-	* Join `AgentWebUIController`, unified control UI.
-	* Support for blocking unknown pages.
-	* Support to tune other applications.
-* v_2.0.1 update
-	* Support for parallel download, repair # 114 # 109.
-* v_2.0.0 update
-	* Join dynamic rights.
-	* Take pictures.
-* v_1.2.6 update
-	* Fixed Android 4.4 following layout disordered.
-* v_1.2.5 Prompt message support configuration.
-	* Prompt message support configuration.
-* v_1.2.4 update
-	* Support incoming IWebLayout, support pull-down rebound, pull-down refresh effect.
-* v_1.2.3 update
-	* Added download onResult callback.
-* v_1.2.2 update
-	* Fixed known bug.
-* v_1.2.1 update
-	* Support tune Alipay, WeChat payment.
-* v_1.2.0 update
-	* Full support for full screen video.
-* v_1.1.2 update
-	* Improve the function .
-
-
 
 ## Thank you
 

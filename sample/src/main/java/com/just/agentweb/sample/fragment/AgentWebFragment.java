@@ -185,7 +185,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 							@Override
 							protected ResourceRequest createResourceRequest(String url) {
 								return DownloadImpl.getInstance()
-										.with(url)
+										.with(getActivity().getApplicationContext())
+										.url(url)
 										.quickProgress()
 										.addHeader("", "")
 										.setEnableIndicator(true)
@@ -255,7 +256,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	};
 	/**
 	 * 注意，重写WebViewClient的方法,super.xxx()请务必正确调用， 如果没有调用super.xxx(),则无法执行DefaultWebClient的方法
-	 * 可能会影响到AgentWeb自带提供的可能,尽可能调用super.xxx()来完成洋葱模型
+	 * 可能会影响到AgentWeb自带提供的功能,尽可能调用super.xxx()来完成洋葱模型
 	 */
 	protected com.just.agentweb.WebViewClient mWebViewClient = new com.just.agentweb.WebViewClient() {
 
