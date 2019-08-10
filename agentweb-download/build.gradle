@@ -43,7 +43,7 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    implementation 'com.github.Justson:Downloader:v4.0.3'
+    compile 'com.github.Justson:Downloader:v4.0.3'
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -52,15 +52,11 @@ dependencies {
     provided "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     compile project(':agentweb-core')
 }
-task javadoc(type: Javadoc) {
-    options.encoding = "utf-8"
-}
 publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'download'
-    version = '4.0.2'
-    description = 'very easy to build you web page'
+    publishVersion = '4.0.3-beta'
+    desc = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
-
 }

@@ -34,7 +34,7 @@ import android.webkit.WebView;
 import com.download.library.DownloadImpl;
 import com.download.library.DownloadListenerAdapter;
 import com.download.library.DownloadTask;
-import com.download.library.Rumtime;
+import com.download.library.Runtime;
 import com.just.agentweb.AbsAgentWebUIController;
 import com.just.agentweb.Action;
 import com.just.agentweb.ActionActivity;
@@ -60,12 +60,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 	 * Application Context
 	 */
 	private Context mContext;
-	/**
-	 * 下载监听，DownloadListener#onStart 下载的时候触发，DownloadListener#result下载结束的时候触发
-	 * 4.0.0 每一次下载都会触发这两个方法，4.0.0以下只有触发下载才会回调这两个方法。
-	 */
 	private ConcurrentHashMap<String, com.just.agentweb.download.DownloadListener> mDownloadListeners = new ConcurrentHashMap<>();
-
 	private ConcurrentHashMap<String, Extra> mExtraServiceImpls = new ConcurrentHashMap<>();
 	/**
 	 * Activity
@@ -203,7 +198,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 						extraService)) {
 			return;
 		}
-		File file = Rumtime.getInstance().uniqueFile(extraService.getDownloadTask(), new File(AgentWebUtils.getAgentWebFilePath(mContext)));
+		File file = Runtime.getInstance().uniqueFile(extraService.getDownloadTask(), new File(AgentWebUtils.getAgentWebFilePath(mContext)));
 		// File 创建文件失败
 		if (null == file) {
 			LogUtils.e(TAG, "新建文件失败");

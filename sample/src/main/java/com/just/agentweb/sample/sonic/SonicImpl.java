@@ -29,7 +29,6 @@ public class SonicImpl {
      */
     public void onCreateSession() {
 
-
         SonicSessionConfig.Builder sessionConfigBuilder = new SonicSessionConfig.Builder();
         sessionConfigBuilder.setSupportLocalServer(true);
         SonicEngine.createInstance(new DefaultSonicRuntimeImpl(mContext.getApplicationContext()), new SonicConfig.Builder().build());
@@ -41,7 +40,6 @@ public class SonicImpl {
             // throw new UnknownError("create session fail!");
 //            Toast.makeText(this, "create sonic session fail!", Toast.LENGTH_LONG).show();
         }
-
     }
 
     public SonicSessionClientImpl getSonicSessionClient(){
