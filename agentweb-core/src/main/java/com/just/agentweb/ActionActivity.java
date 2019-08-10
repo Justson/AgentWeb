@@ -88,6 +88,8 @@ public final class ActionActivity extends Activity {
             permission(mAction);
         } else if (mAction.getAction() == Action.ACTION_CAMERA) {
             realOpenCamera();
+        } else if (mAction.getAction() == Action.ACTION_VIDEO){
+            realOpenVideo();
         } else {
             fetchFile(mAction);
         }
@@ -176,6 +178,33 @@ public final class ActionActivity extends Activity {
                 finish();
             }
             Intent intent = AgentWebUtils.getIntentCaptureCompat(this, mFile);
+            // 指定开启系统相机的Action
+            mUri = intent.getParcelableExtra(EXTRA_OUTPUT);
+            this.startActivityForResult(intent, REQUEST_CODE);
+        } catch (Throwable ignore) {
+            LogUtils.e(TAG, "找不到系统相机");
+            if (mChooserListener != null) {
+                mChooserListener.onChoiceResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+            }
+            mChooserListener = null;
+            if (LogUtils.isDebug()){
+                ignore.printStackTrace();
+            }
+        }
+    }
+
+    private void realOpenVideo(){
+        try {
+            if (mChooserListener == null){
+                finish();
+            }
+            File mFile = AgentWebUtils.createVideoFile(this);
+            if (mFile == null) {
+                mChooserListener.onChoiceResult(REQUEST_CODE, Activity.RESULT_CANCELED, null);
+                mChooserListener = null;
+                finish();
+            }
+            Intent intent = AgentWebUtils.getIntentVideoCompat(this, mFile);
             // 指定开启系统相机的Action
             mUri = intent.getParcelableExtra(EXTRA_OUTPUT);
             this.startActivityForResult(intent, REQUEST_CODE);
