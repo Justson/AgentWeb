@@ -210,16 +210,16 @@ public class FileChooser {
 			    mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             }*/
 //			mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-			if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT&&mIntent.getAction().equals(Intent.ACTION_GET_CONTENT)){
-			mIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mIntent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+				mIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
 			}
 			return mIntent;
 		}
 
 		Intent i = new Intent();
-		if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.KITKAT){
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 			i.setAction(Intent.ACTION_OPEN_DOCUMENT);
-		}else {
+		} else {
 			i.setAction(Intent.ACTION_GET_CONTENT);
 		}
 		i.addCategory(Intent.CATEGORY_OPENABLE);
@@ -261,7 +261,7 @@ public class FileChooser {
 					break;
 				}
 
-				if (typeTmp.contains("video/")){  //调用摄像机拍摄  这是录像模式
+				if (typeTmp.contains("video/")) {  //调用摄像机拍摄  这是录像模式
 					needCamera = true;
 					mVideoState = true;
 				}
@@ -355,9 +355,9 @@ public class FileChooser {
 
 	private void openCameraAction() {
 		Action mAction = new Action();
-		if(mVideoState){  //调用摄像
+		if (mVideoState) {  //调用摄像
 			mAction.setAction(Action.ACTION_VIDEO);
-		}else{
+		} else {
 			mAction.setAction(Action.ACTION_CAMERA);
 		}
 		ActionActivity.setChooserListener(this.getChooserListener());
