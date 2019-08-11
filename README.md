@@ -19,7 +19,7 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
    ```
     api 'com.just.agentweb:agentweb:4.1.1' // (必选)
     api 'com.just.agentweb:filechooser:4.1.1'// (可选)
-    api 'com.github.Justson:Downloader:v4.1.1'// (可选)
+    api 'com.download.library:Downloader:4.1.1'// (可选)
    ```
 
 ## 相关
