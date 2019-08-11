@@ -148,7 +148,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
 	protected void preDownload(String url) {
 		// 移动数据
-		if (!isForceRequest() &&
+		if (!isForceRequest(url) &&
 				AgentWebUtils.checkNetworkType(mContext) > 1) {
 			showDialog(url);
 			return;
@@ -156,13 +156,17 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		performDownload(url);
 	}
 
-	protected boolean isForceRequest() {
+	protected boolean isForceRequest(String url) {
+		ResourceRequest resourceRequest = mDownloadTasks.get(url);
+		if (null != resourceRequest) {
+			return resourceRequest.getDownloadTask().isForceDownload();
+		}
 		return false;
 	}
 
 	protected void forceDownload(final String url) {
-		ResourceRequest downloadTask = mDownloadTasks.get(url);
-		downloadTask.setForceDownload(true);
+		ResourceRequest resourceRequest = mDownloadTasks.get(url);
+		resourceRequest.setForceDownload(true);
 		performDownload(url);
 	}
 
@@ -225,7 +229,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 		try {
 			DownloadImpl.getInstance().with(activity.getApplication());
 		} catch (Throwable throwable) {
-			LogUtils.e(TAG, "implementation 'com.github.Justson:Downloader:x.x.x'");
+			LogUtils.e(TAG, "implementation 'com.download.library:Downloader:x.x.x'");
 			if (LogUtils.isDebug()) {
 				throwable.printStackTrace();
 			}
