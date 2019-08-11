@@ -45,11 +45,6 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-    repositories {
-        flatDir {
-            dirs '../agentweb-download/libs'; dirs 'libs'
-        }
-    }
 }
 
 dependencies {
@@ -61,22 +56,22 @@ dependencies {
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
-    compile project(':agentweb-core')
+//    compile project(':agentweb-core')
 //    compile project(':agentweb-filechooser')
-    compile'com.download.library:Downloader:4.1.1'
-//    api 'com.just.agentweb:agentweb:4.1.1'
-//    api 'com.just.agentweb:filechooser:4.1.1'
+    implementation'com.download.library:Downloader:4.1.2'
+    implementation 'com.just.agentweb:agentweb:4.1.2'
+    implementation 'com.just.agentweb:filechooser:4.1.2'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 //    compile files('libs/alipaysdk-20170922.jar')
-    compile 'us.feras.mdv:markdownview:1.1.0'
-    compile 'com.lcodecorex:tkrefreshlayout:1.0.7'
-    compile 'com.github.lzyzsd:jsbridge:1.0.4'
-    compile 'com.google.code.gson:gson:2.3.1'
-    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
-    compile 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
-    compile 'com.tencent.sonic:sdk:2.0.0'
-    compile 'com.coolindicator.sdk:coolindicator:1.0.0-beta'
+    implementation 'us.feras.mdv:markdownview:1.1.0'
+    implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
+    implementation 'com.github.lzyzsd:jsbridge:1.0.4'
+    implementation 'com.google.code.gson:gson:2.3.1'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.3'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.3'
+    implementation 'com.tencent.sonic:sdk:2.0.0'
+    implementation 'com.coolindicator.sdk:coolindicator:1.0.0-beta'
     implementation 'com.squareup.picasso:picasso:2.71828'
 }
