@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.DownloadListener;
 import android.webkit.WebView;
 
 import com.just.agentweb.AgentWeb;
@@ -141,11 +140,6 @@ public abstract class BaseAgentWebFragment extends Fragment {
     }
 
     protected @Nullable
-    DownloadListener getDownloadListener() {
-        return null;
-    }
-
-    protected @Nullable
     WebChromeClient getWebChromeClient() {
         return null;
     }
@@ -185,6 +179,11 @@ public abstract class BaseAgentWebFragment extends Fragment {
     protected @NonNull
     MiddlewareWebChromeBase getMiddleWareWebChrome() {
         return this.mMiddleWareWebChrome = new MiddlewareWebChromeBase() {
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                setTitle(view, title);
+            }
         };
     }
 
