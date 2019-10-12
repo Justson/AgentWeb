@@ -17,6 +17,7 @@
 package com.just.agentweb;
 
 
+import android.content.Context;
 import android.os.Build;
 import android.view.View;
 import android.webkit.DownloadListener;
@@ -125,6 +126,15 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
 				.concat(USERAGENT_UC)
 		);
 		LogUtils.i(TAG, "UserAgentString : " + mWebSettings.getUserAgentString());
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+			// 安卓9.0后不允许多进程使用同一个数据目录，需设置前缀来区分
+			// 参阅 https://blog.csdn.net/lvshuchangyin/article/details/89446629
+			Context context = webView.getContext();
+			String processName = ProcessUtils.getCurrentProcessName(context);
+			if (!context.getApplicationContext().getPackageName().equals(processName)) {
+				WebView.setDataDirectorySuffix(processName);
+			}
+		}
 	}
 
 	@Override
