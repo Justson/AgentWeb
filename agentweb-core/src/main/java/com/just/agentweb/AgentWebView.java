@@ -48,7 +48,7 @@ import java.util.Map;
  * @author cenxiaozhong
  * @since 1.0.0
  */
-public class AgentWebView extends WebView {
+public class AgentWebView extends LollipopFixedWebView {
     private static final String TAG = AgentWebView.class.getSimpleName();
     private Map<String, JsCallJava> mJsCallJavas;
     private Map<String, String> mInjectJavaScripts;

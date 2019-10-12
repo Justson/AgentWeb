@@ -440,7 +440,7 @@ public class AgentWebUtils {
 
 		try {
 
-			clearWebViewAllCache(context, new WebView(context.getApplicationContext()));
+			clearWebViewAllCache(context, new LollipopFixedWebView(context.getApplicationContext()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
