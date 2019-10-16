@@ -17,6 +17,8 @@
 package com.just.agentweb;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
 
@@ -26,17 +28,36 @@ import android.webkit.WebView;
  * @since 1.0.0
  */
 public class AgentWebSettingsImpl extends AbsAgentWebSettings {
-	private AgentWeb mAgentWeb;
+    private AgentWeb mAgentWeb;
 
-	@Override
-	protected void bindAgentWebSupport(AgentWeb agentWeb) {
-		this.mAgentWeb = agentWeb;
-	}
+    @Override
+    protected void bindAgentWebSupport(AgentWeb agentWeb) {
+        this.mAgentWeb = agentWeb;
+    }
 
-	@Override
-	public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
-		return super.setDownloader(webView, downloadListener == null ?
-				DefaultDownloadImpl.create((Activity) webView.getContext(), webView, mAgentWeb.getPermissionInterceptor()) :
-				downloadListener);
-	}
+    @Override
+    public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
+        // Fix Android 5.1 crashing:
+        // ClassCastException: android.app.ContextImpl cannot be cast to android.app.Activity
+        if (downloadListener == null) {
+            Activity activity = getActivityByContext(webView.getContext());
+            downloadListener = DefaultDownloadImpl.create(activity, webView, mAgentWeb.getPermissionInterceptor());
+        }
+        return super.setDownloader(webView, downloadListener);
+    }
+
+    /**
+     * Copy from com.blankj.utilcode.util.ActivityUtils#getActivityByView
+     */
+    private Activity getActivityByContext(Context context) {
+        if (context instanceof Activity) return (Activity) context;
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
+    }
+
 }
