@@ -3,7 +3,7 @@
       <img src="./img/logo.png"></img>
 </div>
 
-## AgentWeb 介绍  [English](./README-ENGLISH.md)
+## AgentWeb 介绍
 
 AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库，提供了 Android WebView 一系列的问题解决方案 ，并且轻量和极度灵活，体验请下载的 
 [agentweb.apk](https://github.com/Justson/AgentWeb/raw/master/agentweb.apk)，
@@ -192,23 +192,7 @@ protected PermissionInterceptor mPermissionInterceptor = new PermissionIntercept
 
 * #### AgentWeb 完整用法
 ```java
-        mAgentWeb = AgentWeb.with(this)
-                .setAgentWebParent((LinearLayout) view, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-                .useDefaultIndicator(-1, 3)
-                .setAgentWebWebSettings(getSettings())
-                .setWebViewClient(mWebViewClient)
-                .setWebChromeClient(mWebChromeClient)
-                .setPermissionInterceptor(mPermissionInterceptor) 
-                .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) 
-                .setAgentWebUIController(new UIController(getActivity())) 
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1)
-                .useMiddlewareWebChrome(getMiddlewareWebChrome())
-                .useMiddlewareWebClient(getMiddlewareWebClient()) 
-                .setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)
-                .interceptUnkownUrl() 
-                .createAgentWeb()
-                .ready()
-                .go(getUrl()); 
+ //略，请查看 Sample
 ```
 
 * #### AgentWeb 所需要的权限(在你工程中根据需求选择加入权限)

@@ -43,6 +43,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
+//import com.download.library.DownloadException;
+//import com.download.library.DownloadImpl;
+//import com.download.library.DownloadListenerAdapter;
+//import com.download.library.DownloadTask;
+//import com.download.library.Downloader;
+//import com.download.library.Extra;
+//import com.download.library.Runtime;
+
 /**
  * @author ringle-android
  * @date 19-2-12

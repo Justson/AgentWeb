@@ -83,8 +83,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             if (LogUtils.isDebug()) {
                 throwable.printStackTrace();
             }
+            isInstallDownloader = false;
         }
-        isInstallDownloader = false;
     }
 
 
