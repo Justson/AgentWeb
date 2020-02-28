@@ -178,7 +178,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 			@Override
 			public WebListenerManager setDownloader(WebView webView, android.webkit.DownloadListener downloadListener) {
 				return super.setDownloader(webView,
-						new DefaultDownloadImpl((Activity) webView.getContext(),
+						new DefaultDownloadImpl(getActivity(),
 								webView,
 								this.mAgentWeb.getPermissionInterceptor()) {
 
