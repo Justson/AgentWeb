@@ -23,30 +23,30 @@ import android.util.Log;
  * @date 2017/5/28
  * @since 1.0.0
  */
-public class LogUtils {
+class LogUtils {
 
-    private static final String PREFIX = " agentweb - ";
+    private static final String PREFIX = "agentweb-";
 
-    public static boolean isDebug() {
+    static boolean isDebug() {
         return AgentWebConfig.DEBUG;
     }
 
-    public static void i(String tag, String message) {
+    static void i(String tag, String message) {
 
-        if (isDebug()){
+        if (isDebug()) {
             Log.i(PREFIX.concat(tag), message);
         }
     }
 
-    public static void v(String tag, String message) {
+    static void v(String tag, String message) {
 
-        if (isDebug()){
+        if (isDebug()) {
             Log.v(PREFIX.concat(tag), message);
         }
 
     }
 
-    public static void safeCheckCrash(String tag, String msg, Throwable tr) {
+    static void safeCheckCrash(String tag, String msg, Throwable tr) {
         if (isDebug()) {
             throw new RuntimeException(PREFIX.concat(tag) + " " + msg, tr);
         } else {
@@ -54,13 +54,13 @@ public class LogUtils {
         }
     }
 
-    public static void e(String tag, String msg, Throwable tr) {
+    static void e(String tag, String msg, Throwable tr) {
         Log.e(tag, msg, tr);
     }
 
-    public static void e(String tag, String message) {
+    static void e(String tag, String message) {
 
-        if (isDebug()){
+        if (isDebug()) {
             Log.e(PREFIX.concat(tag), message);
         }
     }

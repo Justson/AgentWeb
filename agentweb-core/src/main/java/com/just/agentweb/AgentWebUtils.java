@@ -397,9 +397,9 @@ public class AgentWebUtils {
 			mMethod.setAccessible(true);
 			return mMethod;
 		} catch (Throwable ignore) {
-			if (LogUtils.isDebug()) {
-				ignore.printStackTrace();
-			}
+//			if (LogUtils.isDebug()) {
+//				ignore.printStackTrace();
+//			}
 		}
 		return null;
 

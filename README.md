@@ -15,11 +15,11 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
 
 
 * Gradle 
-   
+  
    ```
-    api 'com.just.agentweb:agentweb:4.1.2' // (必选)
-    api 'com.just.agentweb:filechooser:4.1.2'// (可选)
-    api 'com.download.library:Downloader:4.1.2'// (可选)
+    api 'com.just.agentweb:agentweb:4.1.1' // (必选)
+    api 'com.just.agentweb:filechooser:4.1.1'// (可选)
+    api 'com.github.Justson:Downloader:v4.1.1'// (可选)
    ```
 
 ## 相关
@@ -271,7 +271,7 @@ Java 注入类不要混淆 ， 例如 sample 里面的 AndroidInterface 类 ， 
 * [Wiki](https://github.com/Justson/AgentWeb/wiki)(不全)
 * `Sample`(推荐，详细) 
 
-#### [更新日志](./releasenote.md)
+## [更新日志](./releasenote.md)
 
 ## 致谢
 * [SafeWebView](https://github.com/seven456/SafeWebView)
@@ -320,11 +320,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-	
-	
 
-	  
+​	
+
+​	  
 
 
-   
+
 
