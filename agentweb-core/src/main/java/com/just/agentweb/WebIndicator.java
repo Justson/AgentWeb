@@ -83,7 +83,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     public static final int UN_START = 0;
     public static final int STARTED = 1;
     public static final int FINISH = 2;
-    private float mTarget = 0F;
     private float mCurrentProgress = 0F;
     /**
      * 默认的高度
