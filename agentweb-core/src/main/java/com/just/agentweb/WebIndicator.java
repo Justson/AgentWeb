@@ -76,12 +76,10 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
      * 结束动画时长
      */
     private int mCurrentDoEndAnimationDuration = DO_END_ANIMATION_DURATION;
-
-
     /**
-     * 标志当前进度条的状态
+     * 当前进度条的状态
      */
-    private int TAG = 0;
+    private int indicatorStatus = 0;
     public static final int UN_START = 0;
     public static final int STARTED = 1;
     public static final int FINISH = 2;
@@ -187,14 +185,14 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         if (progress < 95f) {
             return;
         }
-        if (TAG != FINISH) {
+        if (indicatorStatus != FINISH) {
             startAnim(true);
         }
     }
 
     @Override
     public void hide() {
-        TAG = FINISH;
+        indicatorStatus = FINISH;
     }
 
     private void startAnim(boolean isFinished) {
@@ -249,7 +247,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             animatorSet.start();
             mAnimator = animatorSet;
         }
-        TAG = STARTED;
+        indicatorStatus = STARTED;
         mTarget = v;
     }
 
@@ -282,12 +280,12 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     }
 
     private void doEnd() {
-        if (TAG == FINISH && mCurrentProgress == 100f) {
+        if (indicatorStatus == FINISH && mCurrentProgress == 100f) {
             setVisibility(GONE);
             mCurrentProgress = 0f;
             this.setAlpha(1f);
         }
-        TAG = UN_START;
+        indicatorStatus = UN_START;
     }
 
     @Override
