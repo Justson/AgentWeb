@@ -140,7 +140,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                     }
                 });*/
 
-        DownloadImpl.getInstance()
+       /* DownloadImpl.getInstance()
                 .with(getApplicationContext())
                 .target(new File(Runtime.getInstance().getDir(this, true).getAbsolutePath() + "/" + "com.ss.android.article.news_636.apk"), this.getPackageName() + ".DownloadFileProvider")//自定义路径需指定目录和authority(FileContentProvide),需要相对应匹配才能启动通知，和自动打开文件
                 .setUniquePath(false)//是否唯一路径
@@ -176,7 +176,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                         Log.i(TAG, " path:" + path + " url:" + url + " length:" + new File(path.getPath()).length() + " md5:" + md5 + " extra.getFileMD5:" + extra.getFileMD5());
                         return super.onResult(throwable, path, url, extra);
                     }
-                });
+                });*/
 
     }
 
