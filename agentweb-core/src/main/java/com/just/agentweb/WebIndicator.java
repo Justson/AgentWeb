@@ -247,7 +247,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             mAnimator = animatorSet;
         }
         indicatorStatus = STARTED;
-        mTarget = v;
     }
 
     private ValueAnimator.AnimatorUpdateListener mAnimatorUpdateListener = new ValueAnimator.AnimatorUpdateListener() {
