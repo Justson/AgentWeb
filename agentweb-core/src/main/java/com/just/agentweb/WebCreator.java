@@ -28,4 +28,6 @@ public interface WebCreator extends IWebIndicator {
     WebView getWebView();
 
     FrameLayout getWebParentLayout();
+
+    int getWebViewType();
 }

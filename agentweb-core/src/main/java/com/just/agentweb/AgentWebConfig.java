@@ -62,7 +62,6 @@ public class AgentWebConfig {
      * 自定义 WebView
      */
     public static final int WEBVIEW_CUSTOM_TYPE = 3;
-    static int WEBVIEW_TYPE = WEBVIEW_DEFAULT_TYPE;
     private static volatile boolean IS_INITIALIZED = false;
     private static final String TAG = AgentWebConfig.class.getSimpleName();
     public static final String AGENTWEB_NAME = "AgentWeb";

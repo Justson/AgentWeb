@@ -24,6 +24,6 @@ public class CustomSettingsFragment extends AgentWebFragment {
 
     @Override
     public IAgentWebSettings getSettings() {
-        return new CustomSettings();
+        return new CustomSettings(getActivity());
     }
 }
