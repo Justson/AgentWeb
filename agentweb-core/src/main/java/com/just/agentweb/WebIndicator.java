@@ -90,7 +90,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
     /**
      * 默认的高度
      */
-    public static int WEB_INDICATOR_DEFAULT_HEIGHT = 3;
+    public int mWebIndicatorDefaultHeight = 3;
 
     public WebIndicator(Context context) {
         this(context, null);
@@ -113,7 +113,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
         mPaint.setDither(true);
         mPaint.setStrokeCap(Paint.Cap.SQUARE);
         mTargetWidth = context.getResources().getDisplayMetrics().widthPixels;
-        WEB_INDICATOR_DEFAULT_HEIGHT = AgentWebUtils.dp2px(context, 3);
+        mWebIndicatorDefaultHeight = AgentWebUtils.dp2px(context, 3);
     }
 
     public void setColor(int color) {
@@ -136,7 +136,7 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
             w = w <= getContext().getResources().getDisplayMetrics().widthPixels ? w : getContext().getResources().getDisplayMetrics().widthPixels;
         }
         if (hMode == MeasureSpec.AT_MOST) {
-            h = WEB_INDICATOR_DEFAULT_HEIGHT;
+            h = mWebIndicatorDefaultHeight;
         }
         this.setMeasuredDimension(w, h);
     }
@@ -306,6 +306,6 @@ public class WebIndicator extends BaseIndicatorView implements BaseIndicatorSpec
 
     @Override
     public LayoutParams offerLayoutParams() {
-        return new LayoutParams(-1, WEB_INDICATOR_DEFAULT_HEIGHT);
+        return new LayoutParams(-1, mWebIndicatorDefaultHeight);
     }
 }
