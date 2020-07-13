@@ -76,6 +76,7 @@ public class UrlLoaderImpl implements IUrlLoader {
 					loadUrl(url, headers);
 				}
 			});
+			return;
 		}
 		LogUtils.i(TAG, "loadUrl:" + url + " headers:" + headers);
 		if (headers == null || headers.isEmpty()) {
