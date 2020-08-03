@@ -583,6 +583,13 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				Log.e(TAG, "MiddlewareWebClientBase#shouldOverrideUrlLoading request url:" + request.getUrl().toString());
 				return super.shouldOverrideUrlLoading(view, request);
 			}
+
+			@Override
+			public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+				if (request.isForMainFrame() && error.getErrorCode() != -1) {
+					super.onReceivedError(view, request, error);
+				}
+			}
 		};
 	}
 

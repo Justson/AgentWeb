@@ -481,7 +481,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-		if (request.isForMainFrame()) {
+		if (request.isForMainFrame() && error.getErrorCode() != -1) {
 			onMainFrameError(view,
 					error.getErrorCode(), error.getDescription().toString(),
 					request.getUrl().toString());

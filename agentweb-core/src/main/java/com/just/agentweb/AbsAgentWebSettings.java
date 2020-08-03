@@ -132,7 +132,11 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
             Context context = webView.getContext();
             String processName = ProcessUtils.getCurrentProcessName(context);
             if (!context.getApplicationContext().getPackageName().equals(processName)) {
-                WebView.setDataDirectorySuffix(processName);
+                try {
+                    WebView.setDataDirectorySuffix(processName);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             }
         }
     }
