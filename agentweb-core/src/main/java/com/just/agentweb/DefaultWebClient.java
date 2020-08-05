@@ -461,6 +461,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	}
 
+	@Override
+	public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+		if (!mWaittingFinishSet.contains(url)) {
+			mWaittingFinishSet.add(url);
+		}
+		super.doUpdateVisitedHistory(view, url, isReload);
+	}
 
 	/**
 	 * MainFrame Error
