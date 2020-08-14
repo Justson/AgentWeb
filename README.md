@@ -23,8 +23,9 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
    ```
 
 ## 相关
+* [flying-pigeon跨进程IPC组件](https://github.com/Justson/flying-pigeon)
 * [AgentWebX5](https://github.com/Justson/AgentWebX5)
-* [一个炫酷的 WebView 进度条](https://github.com/Justson/CoolIndicator)
+* [WebView 进度条](https://github.com/Justson/CoolIndicator)
 * [Downloader 一个轻量的文件下载器](https://github.com/Justson/Downloader)
 
 	
