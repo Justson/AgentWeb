@@ -17,7 +17,9 @@
 package com.just.agentweb;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
@@ -149,6 +151,19 @@ public class DefaultWebCreator implements WebCreator {
     public DefaultWebCreator create() {
         if (mIsCreated) {
             return this;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 安卓9.0后不允许多进程使用同一个数据目录，需设置前缀来区分
+            // 参阅 https://blog.csdn.net/lvshuchangyin/article/details/89446629
+            Context context = mActivity;
+            String processName = ProcessUtils.getCurrentProcessName(context);
+            if (!context.getApplicationContext().getPackageName().equals(processName)) {
+                try {
+                    WebView.setDataDirectorySuffix(processName);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            }
         }
         mIsCreated = true;
         ViewGroup mViewGroup = this.mViewGroup;
