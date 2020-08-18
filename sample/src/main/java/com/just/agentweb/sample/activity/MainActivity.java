@@ -15,8 +15,11 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.flyingpigeon.library.ServiceManager;
+import com.flyingpigeon.library.annotations.thread.MainThread;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.sample.R;
+import com.just.agentweb.sample.api.Api;
 import com.just.agentweb.sample.common.GuideItemEntity;
 import com.just.agentweb.sample.fragment.AgentWebFragment;
 
@@ -32,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private TextView mTitleTextView;
-
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final int FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY = 0x01;
     public static final int FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT = FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY << 1;
@@ -125,8 +128,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         AgentWebConfig.debug();
+        ServiceManager.getInstance().publish(mApi);
     }
 
+    private Api mApi = new Api() {
+
+        @MainThread // default callback on the bind Thread , if you wanna it callback on mainThread , may be you should add MainThread annotation
+        @Override
+        public void onReady() {
+            Log.e(TAG, "web process onReady, i am runing on main process , received web procecss onready signal.");
+        }
+    };
 
     private void doClick(int position) {
 
@@ -225,6 +237,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ServiceManager.getInstance().unpublish(mApi);
+    }
 
     public class MainAdapter extends BaseAdapter {
 
