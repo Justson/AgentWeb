@@ -46,10 +46,18 @@ public class RemoteWebViewlActivity extends WebActivity {
         return url;
     }
 
+    /**
+     * follow this , you could invoke this method anywhere
+     * Pigeon pigeon = Pigeon.newBuilder(this.getApplicationContext()).setAuthority("WebServiceProvider.class").build();
+     * pigeon.route("hello/kit","http://baidu.com").resquestLarge().fly();
+     *
+     * @param url
+     */
     @Route("hello/kit")
     @MainThread
     public void loadNewUrl(String url) {
         mAgentWeb.getUrlLoader().loadUrl(url);
+
     }
 
 
