@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.flyingpigeon.library.Pigeon;
 import com.flyingpigeon.library.ServiceManager;
-import com.flyingpigeon.library.annotations.thread.MainThread;
 import com.flyingpigeon.library.annotations.Route;
+import com.flyingpigeon.library.annotations.thread.MainThread;
+import com.just.agentweb.sample.api.Api;
+import com.just.agentweb.sample.provider.ServiceProvider;
+import com.queue.library.GlobalQueue;
 
 
 /**
@@ -21,6 +25,18 @@ public class RemoteWebViewlActivity extends WebActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ServiceManager.getInstance().publish(this);
+        GlobalQueue.getMainQueue().postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                sayYes();
+            }
+        }, 500);
+    }
+
+    private void sayYes() {
+        Pigeon pigeon = Pigeon.newBuilder(this.getApplicationContext()).setAuthority(ServiceProvider.class).build();
+        Api api = pigeon.create(Api.class);
+        api.onReady();
     }
 
     @Override
@@ -32,8 +48,8 @@ public class RemoteWebViewlActivity extends WebActivity {
 
     @Route("hello/kit")
     @MainThread
-    public void load() {
-
+    public void loadNewUrl(String url) {
+        mAgentWeb.getUrlLoader().loadUrl(url);
     }
 
 

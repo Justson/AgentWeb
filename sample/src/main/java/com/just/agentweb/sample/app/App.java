@@ -34,6 +34,7 @@ public class App extends Application {
         LeakCanary.install(this);
         // Normal app init code...
 
+        //implementation 'com.github.Justson:dispatch-queue:v1.0.5'
         GlobalQueue.getMainQueue().postRunnableInIdleRunning(new Runnable() {
             @Override
             public void run() {
