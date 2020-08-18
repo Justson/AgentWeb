@@ -152,7 +152,10 @@ public final class AgentWeb {
     /**
      * 是否拦截未知的Url， @link{DefaultWebClient}
      */
-    private boolean mIsInterceptUnkownUrl = false;
+    private boolean mIsInterceptUnkownUrl = true;
+    /**
+     * Url处理方式，是直接跳转还是弹窗让用户去选择
+     */
     private int mUrlHandleWays = -1;
     /**
      * MiddlewareWebClientBase WebViewClient 中间件
@@ -506,7 +509,7 @@ public final class AgentWeb {
         private PermissionInterceptor mPermissionInterceptor = null;
         private AbsAgentWebUIController mAgentWebUIController;
         private DefaultWebClient.OpenOtherPageWays mOpenOtherPage = null;
-        private boolean mIsInterceptUnkownUrl = false;
+        private boolean mIsInterceptUnkownUrl = true;
         private MiddlewareWebClientBase mMiddlewareWebClientBaseHeader;
         private MiddlewareWebClientBase mMiddlewareWebClientBaseTail;
         private MiddlewareWebChromeBase mChromeMiddleWareHeader = null;
