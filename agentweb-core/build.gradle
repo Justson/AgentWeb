@@ -12,7 +12,7 @@ android {
         versionCode 2
         versionName "4.1.3"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
     }
     buildTypes {
@@ -34,13 +34,13 @@ android {
 }
 dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
     compileOnly 'com.download.library:Downloader:4.1.2'
-    compileOnly "com.android.support:design:${SUPPORT_LIB_VERSION}"
-    compileOnly "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
+    compileOnly 'com.google.android.material:material:1.0.0'
+    compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'
     compileOnly fileTree(include: ['*.jar'], dir: 'providedLibs')
 }
 publish {

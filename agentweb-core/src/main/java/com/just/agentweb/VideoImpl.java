@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
