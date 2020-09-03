@@ -22,6 +22,15 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
    implementation 'com.download.library:Downloader:4.1.4'// (可选)
    ```
 
+* androidx
+
+   ```
+   implementation 'com.just.agentweb:agentweb-androidx:4.1.4' // (必选)
+   implementation 'com.just.agentweb:filechooser-androidx:4.1.4'// (可选)
+   implementation 'com.download.library:downloader-androidx:4.1.4'// (可选)
+   ```
+
+
 ## 相关
 * [flying-pigeon跨进程IPC组件](https://github.com/Justson/flying-pigeon)
 * [AgentWebX5](https://github.com/Justson/AgentWebX5)
