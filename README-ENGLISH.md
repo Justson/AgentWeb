@@ -20,9 +20,9 @@ AgentWeb Sample shows AgentWeb library powerful features, detailed link, please 
 * Gradle 
   
    ```
-    api 'com.just.agentweb:agentweb:4.1.2' // (Required)
-    api 'com.just.agentweb:filechooser:4.1.2'// (optional)
-    api 'com.download.library:Downloader:4.1.2'// (optional)
+    api 'com.just.agentweb:agentweb:4.1.4' // (Required)
+    api 'com.just.agentweb:filechooser:4.1.4'// (optional)
+    api 'com.download.library:Downloader:4.1.4'// (optional)
    ```
 	
 	
@@ -52,151 +52,6 @@ mAgentWeb = AgentWeb.with(this)//传入Activity or Fragment
 <a href="img/jd.png"><img src="img/jd.png" width="30%"/></a> <a href="img/wechat pay.png"><img src="img/wechat pay.png" width="30%"/></a> <a href="img/alipay.png"><img src="img/alipay.png" width="30%"/></a>
 
 <a href="img/js.png"><img src="img/js.png" width="30%"/></a> <a href="img/custom setting.png"><img src="img/custom setting.png" width="30%"/></a> <a href="img/video.png"><img src="img/video.png" width="30%"/></a>
-
-
-
-* #### call Javascript method stitching too much trouble? Please see.
-```
-// Javascript method
-Function callByAndroid () {
-      Console.log ("callByAndroid")
-  }
-// Android end
-MAgentWeb.getJsEntraceAccess (). QuickCallJs ("callByAndroid");
-//onResult
-ConsoleMessage: callByAndroid lineNumber: 27
-```
-
-* #### Javascript call Java
-```
-// Android side, AndroidInterface is an injection class, which has a no parameter method: callAndroid
-AddjavaObject ("android", new AndroidInterface (mAgentWeb, this));
-/ / In Js will be able to pass
-Window.android.callAndroid () / / call the Java layer AndroidInterface class callAndroid method
-```
-
-
-* #### event handling
-```
-@Override
-		Public boolean onKeyDown (int keyCode, KeyEvent event) {
-        If (mAgentWeb.handleKeyEvent (keyCode, event)) {
-            Return true;
-        }
-        Return super.onKeyDown (keyCode, event);
-    }	
-```
-
-* #### Follow the Activity Or Fragment life cycle, the release of CPU more power.
-
-```
-	@Override
-    Protected void onPause () {
-        MAgentWeb.getWebLifeCycle (). OnPause ();
-        Super.onPause ();
-
-    }
-
-    @Override
-    Protected void onResume () {
-        MAgentWeb.getWebLifeCycle (). OnResume ();
-        Super.onResume ();
-    }
-```
-
-* #### full screen video playback
-```
-<! - If your application needs to use the video, then please use the AgentWeb Activity corresponding to the list file to add the following configuration ->
-Android: hardwareAccelerated = "true"
-Android: configChanges = "orientation | screenSize"
-```
-
-* #### positioning
-```
-<! - AgentWeb is the default boot location, please add the following permissions in your AndroidManifest file. ->
-    <Uses-permission android: name = "android.permission.ACCESS_FINE_LOCATION" />
-    <Uses-permission android: name = "android.permission.ACCESS_COARSE_LOCATION" />
-```
-
-* #### WebChromeClient Or WebViewClient handles business logic
-```
-// AgentWeb maintains the use of WebView,
-MAgentWeb = AgentWeb.with (this) //
-                .setAgentWebParent (mLinearLayout, new LinearLayout.LayoutParams (-1, -1)) //
-                .useDefaultIndicator () //
-                .defaultProgressBarColor ()
-                .setReceivedTitleCallback (mCallback)
-                .setWebChromeClient (mWebChromeClient)
-                .setWebViewClient (mWebViewClient)
-                .setSecutityType (AgentWeb.SecurityType.strict)
-                .createAgentWeb () //
-                .ready ()
-                .go (getUrl ());
-// WebViewClient
-Private WebViewClient mWebViewClient = new WebViewClient () {
-        @Override
-        Public void onPageStarted (WebView view, String url, Bitmap favicon) {
-           // do you work
-        }
-    };
-    // WebChromeClient
-    Private WebChromeClient mWebChromeClient = new WebChromeClient () {
-        @Override
-        Public void onProgressChanged (WebView view, int newProgress) {
-            // do you work
-        }
-    };
-```
-
-* #### Get WebView
-```
- WebView mWebView = mAgentWeb.getWebCreator (). Get ();
-```
-
-* #### Sync cookies
-```
-AgentWebConfig.syncCookies ("http://www.jd.com", "ID = XXXX")
-```
-
-* #### MiddleWareWebChromeBase supports multiple WebChromeClients
-```java
-// Slightly, please see Sample
-```
-* #### MiddleWareWebClientBase supports multiple WebViewClient
-```java
-// Slightly, please see Sample
-```
-
-* #### View Cookies
-```
-String cookies = AgentWebConfig.getCookiesByUrl (targetUrl);
-```
-
-
-* #### AgentWeb Complete use
-```java
-mAgentWeb = AgentWeb.with (this) //
-                .setAgentWebParent ((LinearLayout) view, new LinearLayout.LayoutParams (-1, -1)) // The AgentWeb parent passed in.
-                .setIndicatorColorWithHeight (-1, 2) / / Set the color and height of the onProgress bar, -1 is the default value, the height is 2, the unit is dp.
-                .setAgentWebWebSettings (getSettings ()) // Set AgentWebSettings.
-                .setWebViewClient (mWebViewClient) // WebViewClient, same as WebView, but do not get WebView calling setWebViewClient (xx) method, which will override AgentWeb DefaultWebClient and the corresponding middleware will also fail.
-                .setWebChromeClient (mWebChromeClient) // WebChromeClient
-                .setPermissionInterceptor (mPermissionInterceptor) / / permission to intercept 2.0.0 join.
-                .setReceivedTitleCallback (mCallback) // Title callback.
-                . SetSecurityType (AgentWeb.SecurityType.strict) / / strict mode Android 4.2.2 The following will give up the injection of the object, use AgentWebView did not affect.
-                .addDownLoadResultListener (mDownloadListener) // Download callback
-                .setAgentWebUIController (new UIController (getActivity ())) // Custom UI AgentWeb3.0.0 join.
-                .setMainFrameErrorView (R.layout.agentweb_error_page, -1) / / Parameter 1 is the layout of the onResult display, parameter 2 Click refresh control ID -1 Click to refresh the entire layout Click AgentWeb 3.0.0 to join.
-                .useMiddleWareWebChrome (getMiddleWareWebChrome ()) // Set up WebChromeClient middleware, support multiple WebChromeClient, AgentWeb 3.0.0 join.
-                .useMiddleWareWebClient (getMiddleWareWebClient ()) / / Set WebViewClient middleware, support multiple WebViewClient, AgentWeb 3.0.0 join.
-                . OpenParallelDownload () / / open parallel download, the default serial download.
-                .setNotifyIcon (R.mipmap.download) // Download notification icon.
-                .setOpenOtherPageWays (DefaultWebClient.OpenOtherPageWays.ASK) / / open other pages, the pop-up query users to other applications AgentWeb 3.0.0 to join.
-                .interceptUnkownScheme () / / Interception Scheme AgentWeb 3.0.0 can not find the relevant page to join.
-                .createAgentWeb () // Create AgentWeb.
-                .ready () / / Set WebSettings.
-                .go (getUrl ()); // WebView Load and display the URL page.
-```
 
 ## Precautions
 * Alipay need to use the introduction of Alipay SDK, and dependent on the project, WeChat payment do not need to do any operation.
