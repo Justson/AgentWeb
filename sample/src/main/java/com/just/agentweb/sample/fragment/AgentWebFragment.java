@@ -183,7 +183,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 							@Override
 							protected ResourceRequest createResourceRequest(String url) {
-								return DownloadImpl.getInstance()
+								return DownloadImpl.getInstance(getActivity())
 										.with(getActivity().getApplicationContext())
 										.url(url)
 										.quickProgress()

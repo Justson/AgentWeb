@@ -41,7 +41,7 @@ dependencies {
 publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
-    artifactId = 'filechooser'
+    artifactId = 'filechooser-androidx'
     publishVersion = '4.1.4'
     desc = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
