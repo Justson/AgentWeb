@@ -15,9 +15,13 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.flyingpigeon.library.ServiceManager;
+import com.flyingpigeon.library.annotations.thread.MainThread;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.sample.R;
+import com.just.agentweb.sample.api.Api;
 import com.just.agentweb.sample.common.GuideItemEntity;
+import com.just.agentweb.sample.fragment.AgentWebFragment;
 
 import static com.just.agentweb.sample.sonic.SonicJavaScriptInterface.PARAM_CLICK_TIME;
 
@@ -31,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private TextView mTitleTextView;
-
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final int FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY = 0x01;
     public static final int FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT = FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY << 1;
@@ -53,6 +57,9 @@ public class MainActivity extends AppCompatActivity {
     public static final int FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW = FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR << 1;
     public static final int FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE = FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW << 1;
     public static final int FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD = FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE << 1;
+    public static final int FLAG_GUIDE_DICTIONARY_IPC = FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD << 1;
+
+
     public static final GuideItemEntity[] datas = new GuideItemEntity[]{
             new GuideItemEntity("Activity 使用 AgentWeb", FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY),
             new GuideItemEntity("Fragment 使用 AgentWeb ", FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT),
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             new GuideItemEntity("VasSonic 首屏秒开", FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE),
             new GuideItemEntity("与ToolBar联动", FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR),
             new GuideItemEntity("原生文件下载", FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD),
+            new GuideItemEntity("IPC WebView独立进程", FLAG_GUIDE_DICTIONARY_IPC),
     };
 
 
@@ -120,8 +128,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         AgentWebConfig.debug();
+        ServiceManager.getInstance().publish(mApi);
     }
 
+    private Api mApi = new Api() {
+
+        @MainThread // default callback on the bind Thread , if you wanna it callback on mainThread , may be you should add MainThread annotation
+        @Override
+        public void onReady() {
+            Log.e(TAG, "web process onReady, i am runing on main process , received web procecss onready signal.");
+        }
+    };
 
     private void doClick(int position) {
 
@@ -209,6 +226,9 @@ public class MainActivity extends AppCompatActivity {
             case FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD:
                 startActivity(new Intent(this, NativeDownloadActivity.class));
                 break;
+            case FLAG_GUIDE_DICTIONARY_IPC:
+                startActivity(new Intent(this, RemoteWebViewlActivity.class).putExtra(AgentWebFragment.URL_KEY, "https://m.vip.com/?source=www&jump_https=1"));
+                break;
             default:
                 break;
 
@@ -217,6 +237,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ServiceManager.getInstance().unpublish(mApi);
+    }
 
     public class MainAdapter extends BaseAdapter {
 

@@ -1,7 +1,10 @@
 package com.just.agentweb.sample.app;
 
 import android.app.Application;
+import android.content.Intent;
 
+import com.just.agentweb.sample.service.WebService;
+import com.queue.library.GlobalQueue;
 import com.squareup.leakcanary.LeakCanary;
 
 /**
@@ -31,5 +34,12 @@ public class App extends Application {
         LeakCanary.install(this);
         // Normal app init code...
 
+        //implementation 'com.github.Justson:dispatch-queue:v1.0.5'
+        GlobalQueue.getMainQueue().postRunnableInIdleRunning(new Runnable() {
+            @Override
+            public void run() {
+                startService(new Intent(App.this, WebService.class));
+            }
+        });
     }
 }
