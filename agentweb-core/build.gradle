@@ -47,7 +47,7 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'agentweb'
-    publishVersion = '4.1.3'
+    publishVersion = '4.1.4'
     desc = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 
