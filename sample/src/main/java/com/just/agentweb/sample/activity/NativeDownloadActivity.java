@@ -40,6 +40,7 @@ import com.download.library.Runtime;
 import com.just.agentweb.sample.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -140,6 +141,24 @@ public class NativeDownloadActivity extends AppCompatActivity {
                     }
                 });*/
 
+
+//        DownloadImpl.getInstance()
+//                .with(getApplicationContext())
+//                .target(getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES))
+//                .url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk")
+//                .enqueue(new DownloadListenerAdapter() {
+//                    @Override
+//                    public void onProgress(String url, long downloaded, long length, long usedTime) {
+//                        super.onProgress(url, downloaded, length, usedTime);
+//                        Log.i(TAG, " progress:" + downloaded + " url:" + url);
+//                    }
+//
+//                    @Override
+//                    public boolean onResult(Throwable throwable, Uri path, String url, Extra extra) {
+//                        Log.i(TAG, " path:" + path + " url:" + url + " length:" + new File(path.getPath()).length());
+//                        return super.onResult(throwable, path, url, extra);
+//                    }
+//                });
        /* DownloadImpl.getInstance()
                 .with(getApplicationContext())
                 .target(new File(Runtime.getInstance().getDir(this, true).getAbsolutePath() + "/" + "com.ss.android.article.news_636.apk"), this.getPackageName() + ".DownloadFileProvider")//自定义路径需指定目录和authority(FileContentProvide),需要相对应匹配才能启动通知，和自动打开文件
@@ -420,6 +439,11 @@ public class NativeDownloadActivity extends AppCompatActivity {
         @Override
         protected DownloadBean setDownloadListenerAdapter(DownloadListenerAdapter downloadListenerAdapter) {
             return (DownloadBean) super.setDownloadListenerAdapter(downloadListenerAdapter);
+        }
+
+        @Override
+        protected DownloadTask setFile(@NonNull File file, @NonNull String authority) {
+            return super.setFile(file, authority);
         }
 
         @Override

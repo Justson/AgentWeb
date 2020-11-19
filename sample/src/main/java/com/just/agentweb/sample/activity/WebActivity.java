@@ -22,8 +22,6 @@ public class WebActivity extends BaseWebActivity {
     protected void onResume() {
         super.onResume();
 
-
-
         //测试Cookies
         /*try {
 
@@ -43,7 +41,7 @@ public class WebActivity extends BaseWebActivity {
             Log.i("Info","tag:"+tag);
             AgentWebConfig.removeSessionCookies();
             Log.i("Info","removeSessionCookies:"+AgentWebConfig.getCookiesByUrl(targetUrl));
-        }catch (Exception e){
+        }  catch (Exception e){
             e.printStackTrace();
         }*/
 
