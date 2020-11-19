@@ -33,6 +33,7 @@ public class SonicWebViewClient extends MiddlewareWebClientBase {
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
         return shouldInterceptRequest(view, request.getUrl().toString());
     }
+
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         if (sonicSession != null) {
