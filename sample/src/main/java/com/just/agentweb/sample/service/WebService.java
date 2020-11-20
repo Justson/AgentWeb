@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.webkit.WebView;
 
 /**
  * @author xiaozhongcen
@@ -20,6 +21,7 @@ public class WebService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.e(TAG, "init process");
+        new WebView(this.getApplicationContext());
     }
 
     @Nullable
