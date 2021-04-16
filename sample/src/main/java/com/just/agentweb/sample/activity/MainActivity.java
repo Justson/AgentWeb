@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public static final GuideItemEntity[] datas = new GuideItemEntity[]{
             new GuideItemEntity("Activity 使用 AgentWeb", FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY),
             new GuideItemEntity("Fragment 使用 AgentWeb ", FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT),
+            new GuideItemEntity("IPC WebView独立进程", FLAG_GUIDE_DICTIONARY_IPC),
             new GuideItemEntity("H5文件下载", FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD),
             new GuideItemEntity("input标签文件上传", FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM),
             new GuideItemEntity("Js 通信文件上传,兼用Android 4.4Kitkat", FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE),
@@ -81,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             new GuideItemEntity("VasSonic 首屏秒开", FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE),
             new GuideItemEntity("与ToolBar联动", FLAG_GUIDE_DICTIONARY_LINKAGE_WITH_TOOLBAR),
             new GuideItemEntity("原生文件下载", FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD),
-            new GuideItemEntity("IPC WebView独立进程", FLAG_GUIDE_DICTIONARY_IPC),
     };
 
 

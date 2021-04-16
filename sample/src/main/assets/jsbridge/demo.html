@@ -7,36 +7,43 @@
     </head>
     
     <body>
+
         <p>
             <xmp id="show">
             </xmp>
         </p>
+
         <p>
-            <xmp id="init">
-            </xmp>
+            <xmp id="init"></xmp>
         </p>
+
         <p>
             <input type="text" id="text1" value="用户名(username)" />
         </p>
+
         <p>
-            <input type="text" id="text2" value="password" />
+           <input type="text" id="text2" value="password" />
         </p>
+
         <p>
-            <input type="button" id="enter" value="发消息给Native" onclick="testClick();"
-            />
+            <input type="button" id="enter" value="发消息给Native" onclick="testClick();"/>
         </p>
+
         <p>
-            <input type="button" id="enter1" value="调用Native方法" onclick="testClick1();"
-            />
+          <input type="button" id="enter1" value="调用Native方法" onclick="testClick1();"/>
         </p>
+
         <p>
             <input type="button" id="enter2" value="显示html" onclick="testDiv();" />
         </p>
+
         <p>
             <input type="file" value="打开文件" />
         </p>
+
     </body>
     <script>
+
         function testDiv() {
             document.getElementById("show").innerHTML = document.getElementsByTagName("html")[0].innerHTML;
         }

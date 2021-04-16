@@ -18,6 +18,7 @@ package com.just.agentweb.filechooser;
 
 import android.app.Activity;
 import android.content.ClipData;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -49,6 +50,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -197,8 +200,15 @@ public class FileChooser {
         Action mAction = new Action();
         mAction.setAction(Action.ACTION_FILE);
         ActionActivity.setChooserListener(getChooserListener());
-        mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction)
-                .putExtra(KEY_FILE_CHOOSER_INTENT, getFileChooserIntent()));
+        try {
+            mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction)
+                    .putExtra(KEY_FILE_CHOOSER_INTENT, getFileChooserIntent()));
+        } catch (Throwable throwable) {
+            if (AgentWebConfig.DEBUG) {
+                throwable.printStackTrace();
+            }
+        }
+
     }
 
     private Intent getFileChooserIntent() {
@@ -371,8 +381,8 @@ public class FileChooser {
         }
     };
 
-    private void permissionResult(boolean grant, int from_intention) {
-        if (from_intention == FROM_INTENTION_CODE >> 2) {
+    private void permissionResult(boolean grant, int fromIntention) {
+        if (fromIntention == FROM_INTENTION_CODE >> 2) {
             if (grant) {
                 touchOffFileChooserAction();
             } else {
@@ -387,7 +397,7 @@ public class FileChooser {
                                     "Open file chooser");
                 }
             }
-        } else if (from_intention == FROM_INTENTION_CODE >> 3) {
+        } else if (fromIntention == FROM_INTENTION_CODE >> 3) {
             if (grant) {
                 openCameraAction();
             } else {
@@ -560,6 +570,20 @@ public class FileChooser {
     private void aboveLollipopCheckFilesAndCallback(final Uri[] datas, boolean isCamera) {
         if (mUriValueCallbacks == null) {
             return;
+        }
+        if (null != datas && datas.length > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ContentResolver contentResolver = mActivity.getContentResolver();
+            final int takeFlags = (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            for (int i = 0; i < datas.length; i++) {
+                try {
+                    contentResolver.takePersistableUriPermission(datas[i], takeFlags);
+                } catch (Throwable throwable) {
+                    if (AgentWebConfig.DEBUG) {
+                        throwable.printStackTrace();
+                    }
+                }
+            }
         }
         if (!isCamera) {
             mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);

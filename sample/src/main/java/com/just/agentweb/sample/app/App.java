@@ -38,7 +38,11 @@ public class App extends Application {
         GlobalQueue.getMainQueue().postRunnableInIdleRunning(new Runnable() {
             @Override
             public void run() {
-                startService(new Intent(App.this, WebService.class));
+                try {
+                    startService(new Intent(App.this, WebService.class));
+                } catch (Throwable throwable) {
+
+                }
             }
         });
     }

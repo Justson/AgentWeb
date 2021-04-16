@@ -103,7 +103,16 @@ public class HttpHeaders {
         if (TextUtils.isEmpty(originUrl)) {
             return originUrl;
         }
-        Uri originUri = Uri.parse(originUrl);
+        Uri originUri = null;
+        try {
+            originUri = Uri.parse(originUrl);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+            return "";
+        }
+        if (TextUtils.isEmpty(originUri.getScheme()) || TextUtils.isEmpty(originUri.getAuthority())) {
+            return "";
+        }
         return originUri.getScheme() + "://" + originUri.getAuthority();
     }
 
