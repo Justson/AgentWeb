@@ -21,7 +21,11 @@ public class WebService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.e(TAG, "init process");
-        new WebView(this.getApplicationContext());
+        try {
+            new WebView(this.getApplicationContext());
+        }catch (Throwable throwable){
+            throwable.printStackTrace();
+        }
     }
 
     @Nullable
