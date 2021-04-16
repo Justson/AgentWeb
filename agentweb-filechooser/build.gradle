@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode 2
-        versionName "4.1.4"
+        versionName "4.1.5"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -42,7 +42,7 @@ publish {
     userOrg = 'just'
     groupId = 'com.just.agentweb'
     artifactId = 'filechooser'
-    publishVersion = '4.1.4'
+    publishVersion = '4.1.5'
     desc = 'very easy to build you web page'
     website = "https://github.com/Justson/AgentWeb"
 
