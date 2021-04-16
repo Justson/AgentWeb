@@ -740,6 +740,11 @@ public final class AgentWeb {
             this.mAgentBuilder.mIsInterceptUnkownUrl = true;
             return this;
         }
+
+        public CommonBuilder isInterceptUnkownUrl(boolean isInterceptUnkownUrl) {
+            this.mAgentBuilder.mIsInterceptUnkownUrl = isInterceptUnkownUrl;
+            return this;
+        }
     }
 
     Activity getActivity() {
