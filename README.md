@@ -25,9 +25,10 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
 * androidx
 
    ```
-   implementation 'com.just.agentweb:agentweb-androidx:4.1.9' // (必选)
-   implementation 'com.just.agentweb:filechooser-androidx:4.1.9'// (可选)
-   implementation 'com.download.library:downloader-androidx:4.1.9'// (可选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9-androidx' // (必选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9-androidx' // (可选)
+    implementation 'com.github.Justson:Downloader:v4.1.9-androidx' // (可选)
+
    ```
 
 
