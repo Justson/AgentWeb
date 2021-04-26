@@ -17,17 +17,17 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
 * Gradle 
   
    ```
-   implementation 'com.github.Justson.AgentWeb:agentweb:v4.1.8' // (必选)
-   implementation 'com.github.Justson.AgentWeb:filechooser:v4.1.8' // (可选)
-   implementation 'com.github.Justson:Downloader:v4.1.8' // (可选)
+   implementation 'com.github.Justson.AgentWeb:agentweb:v4.1.9' // (必选)
+   implementation 'com.github.Justson.AgentWeb:filechooser:v4.1.9' // (可选)
+   implementation 'com.github.Justson:Downloader:v4.1.9' // (可选)
    ```
 
 * androidx
 
    ```
-   implementation 'com.just.agentweb:agentweb-androidx:4.1.5' // (必选)
-   implementation 'com.just.agentweb:filechooser-androidx:4.1.5'// (可选)
-   implementation 'com.download.library:downloader-androidx:4.1.5'// (可选)
+   implementation 'com.just.agentweb:agentweb-androidx:4.1.9' // (必选)
+   implementation 'com.just.agentweb:filechooser-androidx:4.1.9'// (可选)
+   implementation 'com.download.library:downloader-androidx:4.1.9'// (可选)
    ```
 
 
