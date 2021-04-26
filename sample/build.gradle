@@ -8,7 +8,7 @@ android {
         minSdkVersion 19
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode 4
-        versionName "4.1.5"
+        versionName "4.1.9"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     signingConfigs {
@@ -58,11 +58,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':agentweb-core')
     compile project(':agentweb-filechooser')
-        implementation 'com.download.library:downloader-androidx:4.1.4'
-//    implementation 'com.github.Justson:Downloader:v4.1.4'
-//    implementation'com.download.library:Downloader:4.1.5'
-//    implementation 'com.just.agentweb:agentweb:4.1.5'
-//    implementation 'com.just.agentweb:filechooser:4.1.5'
+    implementation 'com.download.library:downloader-androidx:4.1.4'
+    api project(':agentweb-core')
+    api project(':agentweb-filechooser')
+//    implementation 'com.github.Justson:Downloader:v4.1.9'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'

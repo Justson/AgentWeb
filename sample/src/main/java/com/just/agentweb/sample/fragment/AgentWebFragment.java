@@ -198,7 +198,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 							@Override
 							protected ResourceRequest createResourceRequest(String url) {
 								return DownloadImpl.getInstance(getActivity())
-										.with(getActivity().getApplicationContext())
 										.url(url)
 										.quickProgress()
 										.addHeader("", "")
@@ -252,7 +251,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	protected com.just.agentweb.WebChromeClient mWebChromeClient = new WebChromeClient() {
 		@Override
 		public void onProgressChanged(WebView view, int newProgress) {
-			  super.onProgressChanged(view, newProgress);
+			super.onProgressChanged(view, newProgress);
 			Log.i(TAG, "onProgressChanged:" + newProgress + "  view:" + view);
 		}
 

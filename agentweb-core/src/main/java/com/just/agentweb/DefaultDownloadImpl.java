@@ -211,7 +211,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         try {
             LogUtils.e(TAG, "performDownload:" + url + " exist:" + DownloadImpl.getInstance(this.mContext).exist(url));
             // 该链接是否正在下载
-            if (DownloadImpl.getInstance(this.mContext).exist(url)) {
+            if (DownloadImpl.getInstance(mContext).exist(url)) {
                 if (null != mAgentWebUIController.get()) {
                     mAgentWebUIController.get().onShowMessage(
                             mActivityWeakReference.get()
