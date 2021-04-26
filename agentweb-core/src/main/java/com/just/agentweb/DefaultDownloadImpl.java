@@ -76,7 +76,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         this.mPermissionListener = permissionInterceptor;
         this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(webView));
         try {
-            DownloadImpl.getInstance().with(this.mContext);
+            DownloadImpl.getInstance(mContext);
             isInstallDownloader = true;
         } catch (Throwable throwable) {
             LogUtils.e(TAG, "implementation 'com.download.library:Downloader:x.x.x'");
@@ -128,7 +128,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
     }
 
     protected ResourceRequest createResourceRequest(String url) {
-        return DownloadImpl.getInstance().with(url).setEnableIndicator(true).autoOpenIgnoreMD5();
+        return DownloadImpl.getInstance(mContext).with(url).setEnableIndicator(true).autoOpenIgnoreMD5();
     }
 
     protected ActionActivity.PermissionListener getPermissionListener(final String url) {
@@ -208,9 +208,9 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
 
     protected void performDownload(String url) {
         try {
-            LogUtils.e(TAG, "performDownload:" + url + " exist:" + DownloadImpl.getInstance().exist(url));
+            LogUtils.e(TAG, "performDownload:" + url + " exist:" + DownloadImpl.getInstance(mContext).exist(url));
             // 该链接是否正在下载
-            if (DownloadImpl.getInstance().exist(url)) {
+            if (DownloadImpl.getInstance(mContext).exist(url)) {
                 if (null != mAgentWebUIController.get()) {
                     mAgentWebUIController.get().onShowMessage(
                             mActivityWeakReference.get()

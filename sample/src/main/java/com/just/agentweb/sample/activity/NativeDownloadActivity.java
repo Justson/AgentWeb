@@ -82,7 +82,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
        /*new Thread(new Runnable() {
             @Override
             public void run() {
-                File file = DownloadImpl.getInstance().with(getApplicationContext()).url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk").setDownloadingListener(new DownloadListenerAdapter() {
+                File file = DownloadImpl.getInstance(NativeDownloadActivity.this).with(getApplicationContext()).url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk").setDownloadingListener(new DownloadListenerAdapter() {
                     @Override
                     public void onProgress(String url, long downloaded, long length, long usedTime) {
                         super.onProgress(url, downloaded, length, usedTime);
@@ -99,7 +99,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                 Log.i(TAG, " download success:" + ((File) file).length());
             }
         }).start();*/
-        /*DownloadImpl.getInstance()
+        /*DownloadImpl.getInstance(NativeDownloadActivity.this)
                 .with(getApplicationContext())
                 .setEnableIndicator(true)
                 .url("http://shouji.360tpcdn.com/170918/f7aa8587561e4031553316ada312ab38/com.tencent.qqlive_13049.apk")
@@ -123,7 +123,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DownloadImpl.getInstance()
+        DownloadImpl.getInstance(NativeDownloadActivity.this)
                 .with(getApplicationContext())
                 .target(file)
                 .url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk")
@@ -142,7 +142,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                 });*/
 
 
-//        DownloadImpl.getInstance()
+//        DownloadImpl.getInstance(NativeDownloadActivity.this)
 //                .with(getApplicationContext())
 //                .target(getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES))
 //                .url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk")
@@ -159,7 +159,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
 //                        return super.onResult(throwable, path, url, extra);
 //                    }
 //                });
-       /* DownloadImpl.getInstance()
+       /* DownloadImpl.getInstance(NativeDownloadActivity.this)
                 .with(getApplicationContext())
                 .target(new File(Runtime.getInstance().getDir(this, true).getAbsolutePath() + "/" + "com.ss.android.article.news_636.apk"), this.getPackageName() + ".DownloadFileProvider")//自定义路径需指定目录和authority(FileContentProvide),需要相对应匹配才能启动通知，和自动打开文件
                 .setUniquePath(false)//是否唯一路径
@@ -263,7 +263,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                     if (downloadBean.getStatus() == DownloadTask.STATUS_NEW) {
                         nativeDownloadViewHolder.mStatusButton.setText("等待中...");
                         nativeDownloadViewHolder.mStatusButton.setEnabled(false);
-                        boolean isStarted = DownloadImpl.getInstance().enqueue(downloadBean);
+                        boolean isStarted = DownloadImpl.getInstance(NativeDownloadActivity.this).enqueue(downloadBean);
                         if (!isStarted) {
                             bindViewHolder(nativeDownloadViewHolder, i);
                         }
@@ -274,14 +274,14 @@ public class NativeDownloadActivity extends AppCompatActivity {
                             nativeDownloadViewHolder.mStatusButton.setEnabled(false);
                             return;
                         }
-                        DownloadTask downloadTask = DownloadImpl.getInstance().pause(downloadBean.getUrl());
+                        DownloadTask downloadTask = DownloadImpl.getInstance(NativeDownloadActivity.this).pause(downloadBean.getUrl());
                         if (downloadTask != null) {
                             nativeDownloadViewHolder.mStatusButton.setText("继续");
                         } else {
                             bindViewHolder(nativeDownloadViewHolder, i);
                         }
                     } else if (downloadBean.getStatus() == DownloadTask.STATUS_PAUSED) {
-                        boolean isStarted = DownloadImpl.getInstance().resume(downloadBean.getUrl());
+                        boolean isStarted = DownloadImpl.getInstance(NativeDownloadActivity.this).resume(downloadBean.getUrl());
                         nativeDownloadViewHolder.mStatusButton.setText("等待中...");
                         nativeDownloadViewHolder.mStatusButton.setEnabled(false);
                         if (!isStarted) {
@@ -303,7 +303,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                     }
 //                    nativeDownloadViewHolder.mStatusButton.setText("暂停");
 //                    nativeDownloadViewHolder.mStatusButton.setEnabled(true);
-                    Log.i(TAG, " isRunning:" + DownloadImpl.getInstance().isRunning(url));
+                    Log.i(TAG, " isRunning:" + DownloadImpl.getInstance(NativeDownloadActivity.this).isRunning(url));
                 }
 
                 @MainThread //回调到主线程，添加该注释
@@ -330,7 +330,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                         Log.e(TAG, "item recycle");
                         return super.onResult(throwable, uri, url, extra);
                     }
-                    Log.i(TAG, "onResult isSuccess:" + (throwable == null) + " url:" + url + " Thread:" + Thread.currentThread().getName() + " uri:" + uri.toString() + " isPaused:" + DownloadImpl.getInstance().isPaused(url));
+                    Log.i(TAG, "onResult isSuccess:" + (throwable == null) + " url:" + url + " Thread:" + Thread.currentThread().getName() + " uri:" + uri.toString() + " isPaused:" + DownloadImpl.getInstance(NativeDownloadActivity.this).isPaused(url));
                     nativeDownloadViewHolder.mStatusButton.setEnabled(false);
                     if (throwable == null) {
                         nativeDownloadViewHolder.mStatusButton.setText("已完成");
@@ -662,6 +662,6 @@ public class NativeDownloadActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DownloadImpl.getInstance().cancelAll();
+        DownloadImpl.getInstance(NativeDownloadActivity.this).cancelAll();
     }
 }
