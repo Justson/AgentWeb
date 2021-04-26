@@ -44,13 +44,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 
-//import com.download.library.DownloadException;
-//import com.download.library.DownloadImpl;
-//import com.download.library.DownloadListenerAdapter;
-//import com.download.library.DownloadTask;
-//import com.download.library.Downloader;
-//import com.download.library.Extra;
-//import com.download.library.Runtime;
 
 /**
  * @author ringle-android
@@ -82,7 +75,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
        /*new Thread(new Runnable() {
             @Override
             public void run() {
-                File file = DownloadImpl.getInstance(NativeDownloadActivity.this).with(getApplicationContext()).url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk").setDownloadingListener(new DownloadListenerAdapter() {
+                File file = DownloadImpl.getInstance().with(getApplicationContext()).url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk").setDownloadingListener(new DownloadListenerAdapter() {
                     @Override
                     public void onProgress(String url, long downloaded, long length, long usedTime) {
                         super.onProgress(url, downloaded, length, usedTime);
@@ -99,7 +92,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                 Log.i(TAG, " download success:" + ((File) file).length());
             }
         }).start();*/
-        /*DownloadImpl.getInstance(NativeDownloadActivity.this)
+        /*DownloadImpl.getInstance()
                 .with(getApplicationContext())
                 .setEnableIndicator(true)
                 .url("http://shouji.360tpcdn.com/170918/f7aa8587561e4031553316ada312ab38/com.tencent.qqlive_13049.apk")
@@ -123,7 +116,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        DownloadImpl.getInstance(NativeDownloadActivity.this)
+        DownloadImpl.getInstance()
                 .with(getApplicationContext())
                 .target(file)
                 .url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk")
@@ -142,7 +135,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                 });*/
 
 
-//        DownloadImpl.getInstance(NativeDownloadActivity.this)
+//        DownloadImpl.getInstance()
 //                .with(getApplicationContext())
 //                .target(getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES))
 //                .url("http://shouji.360tpcdn.com/170918/93d1695d87df5a0c0002058afc0361f1/com.ss.android.article.news_636.apk")
@@ -159,7 +152,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
 //                        return super.onResult(throwable, path, url, extra);
 //                    }
 //                });
-       /* DownloadImpl.getInstance(NativeDownloadActivity.this)
+       /* DownloadImpl.getInstance()
                 .with(getApplicationContext())
                 .target(new File(Runtime.getInstance().getDir(this, true).getAbsolutePath() + "/" + "com.ss.android.article.news_636.apk"), this.getPackageName() + ".DownloadFileProvider")//自定义路径需指定目录和authority(FileContentProvide),需要相对应匹配才能启动通知，和自动打开文件
                 .setUniquePath(false)//是否唯一路径
@@ -343,7 +336,7 @@ public class NativeDownloadActivity extends AppCompatActivity {
                             nativeDownloadViewHolder.mStatusButton.setText("出错");
                             nativeDownloadViewHolder.mStatusButton.setEnabled(false);
                         }
-                        Toast.makeText(NativeDownloadActivity.this, downloadException.getMsg(), 1).show();
+                        Toast.makeText(NativeDownloadActivity.this, downloadException.getMsg(), Toast.LENGTH_SHORT).show();
                     }
                     return super.onResult(throwable, uri, url, extra);
                 }
