@@ -56,11 +56,11 @@ dependencies {
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
-//    compile project(':agentweb-core')
-//    compile project(':agentweb-filechooser')
-    implementation 'com.download.library:Downloader:4.1.4'
-    implementation 'com.github.Justson:AgentWeb:v4.1.7'
-//    implementation 'com.just.agentweb:filechooser:v4.1.5'
+    compile project(':agentweb-core')
+    api project(':agentweb-filechooser')
+    implementation 'com.github.Justson:Downloader:v4.1.8'
+//    implementation 'com.github.Justson.AgentWeb:agentweb:v4.1.8'
+//    implementation 'com.github.Justson.AgentWeb:filechooser:v4.1.8'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
