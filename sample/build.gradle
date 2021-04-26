@@ -58,7 +58,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':agentweb-core')
     compile project(':agentweb-filechooser')
-    implementation 'com.download.library:downloader-androidx:4.1.4'
+    implementation 'com.github.Justson:Downloader:v4.1.9'
     api project(':agentweb-core')
     api project(':agentweb-filechooser')
 //    implementation 'com.github.Justson:Downloader:v4.1.9'
