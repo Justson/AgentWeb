@@ -20,7 +20,6 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
-import androidx.core.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -28,7 +27,7 @@ import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
-
+import androidx.core.util.Pair;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +43,7 @@ public class VideoImpl implements IVideo, EventInterceptor {
     private View mMoiveView = null;
     private ViewGroup mMoiveParentView = null;
     private WebChromeClient.CustomViewCallback mCallback;
+    private int mOriginalOrientation;
 
     public VideoImpl(Activity mActivity, WebView webView) {
         this.mActivity = mActivity;
@@ -57,18 +57,23 @@ public class VideoImpl implements IVideo, EventInterceptor {
         if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
             return;
         }
+        mOriginalOrientation = mActivity.getRequestedOrientation();
         mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         Window mWindow = mActivity.getWindow();
         Pair<Integer, Integer> mPair = null;
         // 保存当前屏幕的状态
         if ((mWindow.getAttributes().flags & WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON) == 0) {
             mPair = new Pair<>(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, 0);
-            mWindow.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            mWindow.setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON,
+                    WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             mFlags.add(mPair);
         }
-        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) && (mWindow.getAttributes().flags & WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED) == 0) {
+        if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                && (mWindow.getAttributes().flags
+                & WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED) == 0) {
             mPair = new Pair<>(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, 0);
-            mWindow.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED, WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
+            mWindow.setFlags(WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                    WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED);
             mFlags.add(mPair);
         }
         if (mMoiveView != null) {
@@ -79,10 +84,10 @@ public class VideoImpl implements IVideo, EventInterceptor {
             mWebView.setVisibility(View.GONE);
         }
         if (mMoiveParentView == null) {
-            FrameLayout mDecorView = (FrameLayout) mActivity.getWindow().getDecorView();
+            FrameLayout mContentView = mActivity.findViewById(android.R.id.content);
             mMoiveParentView = new FrameLayout(mActivity);
             mMoiveParentView.setBackgroundColor(Color.BLACK);
-            mDecorView.addView(mMoiveParentView);
+            mContentView.addView(mMoiveParentView);
         }
         this.mCallback = callback;
         mMoiveParentView.addView(this.mMoiveView = view);
@@ -94,8 +99,8 @@ public class VideoImpl implements IVideo, EventInterceptor {
         if (mMoiveView == null) {
             return;
         }
-        if (mActivity != null && mActivity.getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (mActivity != null) {
+            mActivity.setRequestedOrientation(mOriginalOrientation);
         }
         if (!mFlags.isEmpty()) {
             for (Pair<Integer, Integer> mPair : mFlags) {
@@ -106,7 +111,6 @@ public class VideoImpl implements IVideo, EventInterceptor {
         mMoiveView.setVisibility(View.GONE);
         if (mMoiveParentView != null && mMoiveView != null) {
             mMoiveParentView.removeView(mMoiveView);
-
         }
         if (mMoiveParentView != null) {
             mMoiveParentView.setVisibility(View.GONE);
@@ -127,7 +131,6 @@ public class VideoImpl implements IVideo, EventInterceptor {
 
     @Override
     public boolean event() {
-
         if (isVideoState()) {
             onHideCustomView();
             return true;
