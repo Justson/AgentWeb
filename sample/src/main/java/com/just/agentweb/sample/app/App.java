@@ -1,9 +1,13 @@
 package com.just.agentweb.sample.app;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.webkit.WebView;
 
 import com.just.agentweb.sample.service.WebService;
+import com.just.agentweb.sample.utils.ProcessUtils;
 import com.queue.library.GlobalQueue;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -46,4 +50,21 @@ public class App extends Application {
             }
         });
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 安卓9.0后不允许多进程使用同一个数据目录
+            String processName = ProcessUtils.getCurrentProcessName(base);
+            if (!base.getApplicationContext().getPackageName().equals(processName)) {
+                try {
+                    WebView.setDataDirectorySuffix(processName);
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
