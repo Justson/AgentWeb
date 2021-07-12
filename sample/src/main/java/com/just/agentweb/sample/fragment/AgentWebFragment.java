@@ -1,7 +1,6 @@
 package com.just.agentweb.sample.fragment;
 
 
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -11,6 +10,7 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -35,9 +35,7 @@ import android.widget.Toast;
 import com.download.library.DownloadImpl;
 import com.download.library.DownloadListenerAdapter;
 import com.download.library.Extra;
-import com.download.library.FileComparator;
 import com.download.library.ResourceRequest;
-import com.download.library.Runtime;
 import com.google.gson.Gson;
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
@@ -57,7 +55,6 @@ import com.just.agentweb.sample.common.CommonWebChromeClient;
 import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.common.UIController;
 
-import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -242,7 +239,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 		String target = "";
 
 		if (TextUtils.isEmpty(target = this.getArguments().getString(URL_KEY))) {
-			target = "http://www.jd.com/";
+			target = "http://www.gzyunjuchuang.com/";
 		}
 
 //		return "http://ggzy.sqzwfw.gov.cn/WebBuilderDS/WebbuilderMIS/attach/downloadZtbAttach.jspx?attachGuid=af982055-3d76-4b00-b5ab-36dee1f90b11&appUrlFlag=sqztb&siteGuid=7eb5f7f1-9041-43ad-8e13-8fcb82ea831a";
