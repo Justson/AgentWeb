@@ -73,12 +73,12 @@ public final class ActionActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        mAction = intent.getParcelableExtra(KEY_ACTION);
         if (savedInstanceState != null) {
             LogUtils.i(TAG, "savedInstanceState:" + savedInstanceState);
             return;
         }
-        Intent intent = getIntent();
-        mAction = intent.getParcelableExtra(KEY_ACTION);
         if (mAction == null) {
             cancelAction();
             this.finish();
