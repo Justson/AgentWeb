@@ -473,6 +473,15 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     @Override
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         LogUtils.i(TAG, "onReceivedError：" + description + "  CODE:" + errorCode);
+        if (failingUrl == null && errorCode != -12) {
+            return;
+        }
+        if (errorCode == -1) {
+            return;
+        }
+        if ((failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
+            return;
+        }
         onMainFrameError(view, errorCode, description, failingUrl);
     }
 
@@ -481,11 +490,20 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-        if (request.isForMainFrame() && error.getErrorCode() != -1) {
-            onMainFrameError(view,
-                    error.getErrorCode(), error.getDescription().toString(),
-                    request.getUrl().toString());
+        String failingUrl = request.getUrl().toString();
+        int errorCode = error.getErrorCode();
+        if (failingUrl == null && errorCode != -12) {
+            return;
         }
+        if (errorCode == -1) {
+            return;
+        }
+        if ((failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
+            return;
+        }
+        onMainFrameError(view,
+                error.getErrorCode(), error.getDescription().toString(),
+                request.getUrl().toString());
         LogUtils.i(TAG, "onReceivedError:" + error.getDescription() + " code:" + error.getErrorCode());
     }
 
