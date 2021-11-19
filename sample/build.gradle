@@ -48,7 +48,6 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':agentweb-core')
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -57,11 +56,11 @@ dependencies {
     compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testCompile 'junit:junit:4.12'
-//    api project(':agentweb-core')
-//    api project(':agentweb-filechooser')
+    api project(':agentweb-core')
+    api project(':agentweb-filechooser')
     implementation 'com.github.Justson:Downloader:v4.1.9'
-    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9'
-    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
