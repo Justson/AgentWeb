@@ -13,7 +13,7 @@
                 android:resource="@xml/web_files_public"/>
         </provider>
         <activity
-            android:name="com.just.agentweb.ActionActivity"
+            android:name="com.just.agentweb.AgentActionFragment"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:launchMode="standard"

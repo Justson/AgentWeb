@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +34,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.HttpAuthHandler;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -422,7 +424,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
             return isIntercepted;
         } catch (Throwable ignore) {
             if (AgentWebConfig.DEBUG) {
-                ignore.printStackTrace();
+//                ignore.printStackTrace();
             }
         }
         return false;
@@ -461,6 +463,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
     }
 
+    @Override
+    public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+        if (mAgentWebUIController.get() != null) {
+            mAgentWebUIController.get().onShowSslCertificateErrorDialog(view, handler, error);
+        }
+    }
+
 
     /**
      * MainFrame Error
@@ -479,7 +488,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
         if (errorCode == -1) {
             return;
         }
-        if ((failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
+        if (errorCode != ERROR_HOST_LOOKUP && (failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
             return;
         }
         onMainFrameError(view, errorCode, description, failingUrl);
@@ -492,19 +501,24 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
         String failingUrl = request.getUrl().toString();
         int errorCode = error.getErrorCode();
-        if (failingUrl == null && errorCode != -12) {
+        if (!request.isForMainFrame()) {
             return;
         }
-        if (errorCode == -1) {
+        if (failingUrl == null && errorCode != ERROR_BAD_URL) {
             return;
         }
-        if ((failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
+        if (errorCode == ERROR_UNKNOWN) {
+            return;
+        }
+        LogUtils.i(TAG, "onReceivedError:" + error.getDescription() + " code:" + error.getErrorCode() + " failingUrl:" + failingUrl + " getUrl:" + view.getUrl() + " getOriginalUrl:" + view.getOriginalUrl());
+        if (errorCode != ERROR_HOST_LOOKUP &&
+                (failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
             return;
         }
         onMainFrameError(view,
                 error.getErrorCode(), error.getDescription().toString(),
                 request.getUrl().toString());
-        LogUtils.i(TAG, "onReceivedError:" + error.getDescription() + " code:" + error.getErrorCode());
+
     }
 
     private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
@@ -576,6 +590,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
     public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
         super.onReceivedHttpError(view, request, errorResponse);
     }
+
 
     @Override
     public void onScaleChanged(WebView view, float oldScale, float newScale) {
