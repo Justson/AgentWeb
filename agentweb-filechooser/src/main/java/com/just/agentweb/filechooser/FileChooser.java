@@ -36,7 +36,7 @@ import android.webkit.WebView;
 
 import com.just.agentweb.AbsAgentWebUIController;
 import com.just.agentweb.Action;
-import com.just.agentweb.ActionActivity;
+import com.just.agentweb.AgentActionFragment;
 import com.just.agentweb.AgentWebConfig;
 import com.just.agentweb.AgentWebPermissions;
 import com.just.agentweb.AgentWebUtils;
@@ -50,8 +50,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -64,11 +62,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import static com.just.agentweb.ActionActivity.KEY_ACTION;
-import static com.just.agentweb.ActionActivity.KEY_FILE_CHOOSER_INTENT;
-import static com.just.agentweb.ActionActivity.KEY_FROM_INTENTION;
-import static com.just.agentweb.ActionActivity.KEY_URI;
-import static com.just.agentweb.ActionActivity.start;
+import static com.just.agentweb.AgentActionFragment.KEY_FROM_INTENTION;
+import static com.just.agentweb.AgentActionFragment.KEY_URI;
+import static com.just.agentweb.AgentActionFragment.start;
 
 /**
  * @author cenxiaozhong
@@ -189,8 +185,8 @@ public class FileChooser {
         } else {
             Action mAction = Action.createPermissionsAction(AgentWebPermissions.STORAGE);
             mAction.setFromIntention(FROM_INTENTION_CODE >> 2);
-            ActionActivity.setPermissionListener(mPermissionListener);
-            ActionActivity.start(mActivity, mAction);
+            mAction.setPermissionListener(mPermissionListener);
+            AgentActionFragment.start(mActivity, mAction);
         }
 
 
@@ -199,10 +195,10 @@ public class FileChooser {
     private void touchOffFileChooserAction() {
         Action mAction = new Action();
         mAction.setAction(Action.ACTION_FILE);
-        ActionActivity.setChooserListener(getChooserListener());
+        mAction.setChooserListener(getChooserListener());
         try {
-            mActivity.startActivity(new Intent(mActivity, ActionActivity.class).putExtra(KEY_ACTION, mAction)
-                    .putExtra(KEY_FILE_CHOOSER_INTENT, getFileChooserIntent()));
+            mAction.setIntent(getFileChooserIntent());
+            AgentActionFragment.start(mActivity, mAction);
         } catch (Throwable throwable) {
             if (AgentWebConfig.DEBUG) {
                 throwable.printStackTrace();
@@ -241,8 +237,8 @@ public class FileChooser {
         return mIntent = Intent.createChooser(i, "");
     }
 
-    private ActionActivity.ChooserListener getChooserListener() {
-        return new ActionActivity.ChooserListener() {
+    private AgentActionFragment.ChooserListener getChooserListener() {
+        return new AgentActionFragment.ChooserListener() {
             @Override
             public void onChoiceResult(int requestCode, int resultCode, Intent data) {
 
@@ -337,7 +333,7 @@ public class FileChooser {
             mAction.setAction(Action.ACTION_PERMISSION);
             mAction.setPermissions(deniedPermissions.toArray(new String[]{}));
             mAction.setFromIntention(FROM_INTENTION_CODE >> 3);
-            ActionActivity.setPermissionListener(this.mPermissionListener);
+            mAction.setPermissionListener(this.mPermissionListener);
             start(mActivity, mAction);
         } else {
             openCameraAction();
@@ -365,11 +361,11 @@ public class FileChooser {
         } else {
             mAction.setAction(Action.ACTION_CAMERA);
         }
-        ActionActivity.setChooserListener(this.getChooserListener());
-        ActionActivity.start(mActivity, mAction);
+        mAction.setChooserListener(this.getChooserListener());
+        AgentActionFragment.start(mActivity, mAction);
     }
 
-    private ActionActivity.PermissionListener mPermissionListener = new ActionActivity.PermissionListener() {
+    private AgentActionFragment.PermissionListener mPermissionListener = new AgentActionFragment.PermissionListener() {
 
         @Override
         public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {

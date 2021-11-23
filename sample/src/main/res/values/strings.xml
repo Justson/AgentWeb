@@ -1,3 +1,3 @@
 <resources>
-    <string name="app_name">AgentWeb</string>
+    <string name="app_name" translatable="false">AgentWeb</string>
 </resources>

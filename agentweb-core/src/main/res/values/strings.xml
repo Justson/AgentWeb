@@ -18,4 +18,12 @@
     <string name="agentweb_leave">Go away</string>
     <string name="agentweb_max_file_length_limit">The selected file can not be larger than %s MB</string>
     <string name="agentweb_default_page_error">error~</string>
+    <string name="agentweb_message_show_ssl_untrusted">The certificate authority is not trusted.</string>
+    <string name="agentweb_message_show_ssl_expired">The certificate has expired.</string>
+    <string name="agentweb_message_show_ssl_hostname_mismatch">The certificate Hostname mismatch.</string>
+    <string name="agentweb_message_show_ssl_not_yet_valid">The certificate is not yet valid.</string>
+    <string name="agentweb_message_show_ssl_error">SSL Certificate error.</string>
+    <string name="agentweb_message_show_continue">Do you want to continue anyway?</string>
+    <string name="agentweb_title_ssl_error">SSL Certificate Error</string>
+    <string name="agentweb_continue">Continue</string>
 </resources>

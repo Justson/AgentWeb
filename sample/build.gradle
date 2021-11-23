@@ -10,6 +10,7 @@ android {
         versionCode 4
         versionName "4.1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     signingConfigs {
         release {
@@ -45,6 +46,10 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -76,4 +81,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.Justson:flying-pigeon:v1.0.7'
     implementation 'com.github.Justson:dispatch-queue:v1.0.5'
+    implementation('com.github.Ferfalk:SimpleSearchView:0.1.3', {
+        exclude group: 'com.android.support'
+    })
 }

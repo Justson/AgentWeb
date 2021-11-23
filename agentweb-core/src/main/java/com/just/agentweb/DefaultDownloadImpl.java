@@ -119,8 +119,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
                 preDownload(url);
             } else {
                 Action mAction = Action.createPermissionsAction(mList.toArray(new String[]{}));
-                ActionActivity.setPermissionListener(getPermissionListener(url));
-                ActionActivity.start(mActivityWeakReference.get(), mAction);
+                mAction.setPermissionListener(getPermissionListener(url));
+                AgentActionFragment.start(mActivityWeakReference.get(), mAction);
             }
         } else {
             preDownload(url);
@@ -131,8 +131,8 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         return DownloadImpl.getInstance(mContext).with(url).setEnableIndicator(true).autoOpenIgnoreMD5();
     }
 
-    protected ActionActivity.PermissionListener getPermissionListener(final String url) {
-        return new ActionActivity.PermissionListener() {
+    protected AgentActionFragment.PermissionListener getPermissionListener(final String url) {
+        return new AgentActionFragment.PermissionListener() {
             @Override
             public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
                 if (checkNeedPermission().isEmpty()) {
