@@ -76,4 +76,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.Justson:flying-pigeon:v1.0.7'
     implementation 'com.github.Justson:dispatch-queue:v1.0.5'
+    implementation('com.github.Ferfalk:SimpleSearchView:0.2.0', {
+        exclude group: 'com.android.support'
+    })
 }

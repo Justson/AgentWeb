@@ -18,9 +18,12 @@ package com.just.agentweb;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.net.http.SslError;
 import android.os.Handler;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.PermissionRequest;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 
 
@@ -178,5 +181,17 @@ public abstract class AbsAgentWebUIController {
      */
     public abstract void onPermissionsDeny(String[] permissions, String permissionType, String action);
 
+	/**
+	 *
+	 * @param view
+	 * @param handler
+	 * @param error
+	 */
+	public abstract void onShowSslCertificateErrorDialog(WebView view, SslErrorHandler handler, SslError error);
 
+	/**
+	 * 权限请求
+	 * @param request
+	 */
+	public abstract void onPermissionRequest(PermissionRequest request);
 }

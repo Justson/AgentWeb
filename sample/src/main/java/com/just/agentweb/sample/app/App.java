@@ -1,8 +1,10 @@
 package com.just.agentweb.sample.app;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 
+import com.just.agentweb.AgentWebCompat;
 import com.just.agentweb.sample.service.WebService;
 import com.queue.library.GlobalQueue;
 import com.squareup.leakcanary.LeakCanary;
@@ -46,4 +48,12 @@ public class App extends Application {
             }
         });
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        AgentWebCompat.setDataDirectorySuffix(base);
+    }
+
+
 }

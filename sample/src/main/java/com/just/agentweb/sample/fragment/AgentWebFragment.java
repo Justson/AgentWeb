@@ -1,6 +1,7 @@
 package com.just.agentweb.sample.fragment;
 
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -10,10 +11,10 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.PopupMenu;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -197,7 +198,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
 							@Override
 							protected ResourceRequest createResourceRequest(String url) {
-								return DownloadImpl.getInstance(getActivity())
+								return DownloadImpl.getInstance(getContext())
 										.url(url)
 										.quickProgress()
 										.addHeader("", "")
@@ -240,9 +241,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	public String getUrl() {
 		String target = "";
 
-		if (TextUtils.isEmpty(target = this.getArguments().getString(URL_KEY))) {
-			target = "http://www.jd.com/";
-		}
+        if (TextUtils.isEmpty(target = this.getArguments().getString(URL_KEY))) {
+            target = "http://cw.gzyunjuchuang.com/";
+        }
 
 //		return "http://ggzy.sqzwfw.gov.cn/WebBuilderDS/WebbuilderMIS/attach/downloadZtbAttach.jspx?attachGuid=af982055-3d76-4b00-b5ab-36dee1f90b11&appUrlFlag=sqztb&siteGuid=7eb5f7f1-9041-43ad-8e13-8fcb82ea831a";
 		return target;
@@ -251,7 +252,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 	protected com.just.agentweb.WebChromeClient mWebChromeClient = new WebChromeClient() {
 		@Override
 		public void onProgressChanged(WebView view, int newProgress) {
-			super.onProgressChanged(view, newProgress);
+			  super.onProgressChanged(view, newProgress);
 			Log.i(TAG, "onProgressChanged:" + newProgress + "  view:" + view);
 		}
 
@@ -369,17 +370,52 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 //        mAgentWeb.uploadFileResult(requestCode, resultCode, data);
 	}
 
-	protected void initView(View view) {
-		mBackImageView = (ImageView) view.findViewById(R.id.iv_back);
-		mLineView = view.findViewById(R.id.view_line);
-		mFinishImageView = (ImageView) view.findViewById(R.id.iv_finish);
-		mTitleTextView = (TextView) view.findViewById(R.id.toolbar_title);
-		mBackImageView.setOnClickListener(mOnClickListener);
-		mFinishImageView.setOnClickListener(mOnClickListener);
-		mMoreImageView = (ImageView) view.findViewById(R.id.iv_more);
-		mMoreImageView.setOnClickListener(mOnClickListener);
-		pageNavigator(View.GONE);
-	}
+    private SimpleSearchView mSimpleSearchView;
+    private ImageView mSearchImageView;
+
+    protected void initView(View view) {
+        mBackImageView = (ImageView) view.findViewById(R.id.iv_back);
+        mLineView = view.findViewById(R.id.view_line);
+        mFinishImageView = (ImageView) view.findViewById(R.id.iv_finish);
+        mTitleTextView = (TextView) view.findViewById(R.id.toolbar_title);
+        mBackImageView.setOnClickListener(mOnClickListener);
+        mFinishImageView.setOnClickListener(mOnClickListener);
+        mMoreImageView = (ImageView) view.findViewById(R.id.iv_more);
+        mMoreImageView.setOnClickListener(mOnClickListener);
+        mSearchImageView = view.findViewById(R.id.iv_search);
+        mSearchImageView.setOnClickListener(mOnClickListener);
+        mSimpleSearchView = view.findViewById(R.id.search_view);
+        pageNavigator(View.GONE);
+
+//        mSimpleSearchView.setSearchBackground(new ColorDrawable(getColorPrimary()));
+        mSimpleSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                String completeUrl = s;
+                if (!completeUrl.startsWith("http")) {
+                    completeUrl = "http://" + s;
+                }
+                mAgentWeb.getUrlLoader().loadUrl(completeUrl);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextCleared() {
+                return false;
+            }
+        });
+    }
+
+    public int getColorPrimary(){
+        TypedValue typedValue = new TypedValue();
+        getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        return typedValue.data;
+    }
 
 
 	private void pageNavigator(int tag) {
@@ -406,6 +442,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 				case R.id.iv_more:
 					showPoPup(v);
 					break;
+                case R.id.iv_search:
+                    mSimpleSearchView.showSearch();
+                    break;
 				default:
 					break;
 

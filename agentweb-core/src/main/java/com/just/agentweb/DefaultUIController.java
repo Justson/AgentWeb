@@ -16,19 +16,34 @@
 
 package com.just.agentweb;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.net.http.SslError;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import androidx.appcompat.app.AlertDialog;
+
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.PermissionRequest;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -349,6 +364,87 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	@Override
 	public void onPermissionsDeny(String[] permissions, String permissionType, String action) {
 //		AgentWebUtils.toastShowShort(mActivity.getApplicationContext(), "权限被冻结");
+	}
+
+	@Override
+	public void onShowSslCertificateErrorDialog(final WebView view, final SslErrorHandler handler, final SslError error) {
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
+		String sslErrorMessage;
+		switch (error.getPrimaryError()) {
+			case SslError.SSL_UNTRUSTED:
+				sslErrorMessage = mActivity.getString(R.string.agentweb_message_show_ssl_untrusted);
+				break;
+			case SslError.SSL_EXPIRED:
+				sslErrorMessage = mActivity.getString(R.string.agentweb_message_show_ssl_expired);
+				break;
+			case SslError.SSL_IDMISMATCH:
+				sslErrorMessage = mActivity.getString(R.string.agentweb_message_show_ssl_hostname_mismatch);
+				break;
+			case SslError.SSL_NOTYETVALID:
+				sslErrorMessage = mActivity.getString(R.string.agentweb_message_show_ssl_not_yet_valid);
+				break;
+			default:
+				sslErrorMessage = mActivity.getString(R.string.agentweb_message_show_ssl_error);
+		}
+		sslErrorMessage += mActivity.getString(R.string.agentweb_message_show_continue);
+		alertDialog.setTitle(mActivity.getString(R.string.agentweb_title_ssl_error));
+		alertDialog.setMessage(sslErrorMessage);
+		alertDialog.setPositiveButton(R.string.agentweb_continue, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// Ignore SSL certificate errors
+				handler.proceed();
+			}
+		});
+
+		alertDialog.setNegativeButton(R.string.agentweb_cancel, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				handler.cancel();
+			}
+		});
+		alertDialog.show();
+
+
+	}
+
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+	@Override
+	public void onPermissionRequest(final PermissionRequest request) {
+		final String[] resources = request.getResources();
+		Set<String> resourcesSet = new HashSet<>(Arrays.asList(resources));
+		ArrayList<String> permissions = new ArrayList<>(resourcesSet.size());
+		if (resourcesSet.contains(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+			permissions.add(Manifest.permission.CAMERA);
+		}
+		if (resourcesSet.contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+			permissions.add(Manifest.permission.RECORD_AUDIO);
+		}
+		if(permissions.isEmpty()){
+			request.grant(resources);
+			return;
+		}
+
+		final List<String> denyPermission = AgentWebUtils.getDeniedPermissions(mActivity, permissions.toArray(new String[]{}));
+		if (denyPermission.isEmpty()) {
+			request.grant(resources);
+		} else {
+			Action action = Action.createPermissionsAction(denyPermission.toArray(new String[]{}));
+			action.setPermissionListener(new AgentActionFragment.PermissionListener() {
+				@Override
+				public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
+					List<String> deny = AgentWebUtils.getDeniedPermissions(mActivity, denyPermission.toArray(new String[]{}));
+					if (deny.isEmpty()) {
+						request.grant(resources);
+					} else {
+						request.deny();
+					}
+
+				}
+			});
+			AgentActionFragment.start(mActivity, action);
+		}
+
 	}
 
 	private void toCancelJsresult(JsResult result) {

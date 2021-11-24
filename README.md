@@ -5,29 +5,36 @@
 
 ## AgentWeb 介绍
 
-AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库，提供了 Android WebView 一系列的问题解决方案 ，并且轻量和极度灵活，体验请下载的 
-[agentweb.apk](https://github.com/Justson/AgentWeb/raw/master/agentweb.apk)，
-或者你也可以到 Google Play 里面下载 [AgentWeb](https://play.google.com/store/apps/details?id=com.just.agentweb.sample) ，
-详细使用请参照上面的 Sample 。
+AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强大的库，提供了 Android WebView 一系列的问题解决方案 ，并且轻量和极度灵活，详细使用请参照上面的 Sample 。
 	
 
-## 引入
+## Gradle 引入
+
+```groovy
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
 
 
-* Gradle 
-  
-   ```
-   implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9' // (必选)
-   implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9' // (可选)
-   implementation 'com.github.Justson:Downloader:v4.1.9' // (可选)
-   ```
+* Support
 
-* androidx
+   ```groovy
+	implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9' // (必选)
+	implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9' // (可选)
+	implementation 'com.github.Justson:Downloader:v4.1.9' // (可选)
+	```
+	
+* Androidx
 
-   ```
-   implementation 'com.just.agentweb:agentweb-androidx:4.1.9' // (必选)
-   implementation 'com.just.agentweb:filechooser-androidx:4.1.9'// (可选)
-   implementation 'com.download.library:downloader-androidx:4.1.9'// (可选)
+   ```groovy
+    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9-androidx' // (必选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9-androidx' // (可选)
+    implementation 'com.github.Justson:Downloader:v4.1.9-androidx' // (可选)
+
    ```
 
 
@@ -65,7 +72,7 @@ mAgentWeb = AgentWeb.with(this)
 
 
 * #### 调用 Javascript 方法拼接太麻烦 ？ 请看 。
-```javascript
+```java
 function callByAndroid(){
       console.log("callByAndroid")
   }

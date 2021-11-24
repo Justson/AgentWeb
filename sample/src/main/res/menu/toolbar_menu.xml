@@ -9,6 +9,8 @@
         android:title="刷新网页"
         android:visible="true"
         app:showAsAction="never"/>
+
+
     <item
         android:id="@+id/copy"
         android:title="复制链接"
@@ -26,6 +28,8 @@
         android:title="显示错误页"
         android:visible="true"
         app:showAsAction="never"/>
+
+
     <item
         android:id="@+id/default_browser"
         android:title="在浏览器打开"

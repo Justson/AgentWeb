@@ -769,7 +769,7 @@ public class AgentWebUtils {
 		if (permissions == null || permissions.length == 0) {
 			return null;
 		}
-		List<String> deniedPermissions = new ArrayList<>();
+		List<String> deniedPermissions = new ArrayList<>(permissions.length);
 		for (int i = 0; i < permissions.length; i++) {
 			if (!hasPermission(activity, permissions[i])) {
 				deniedPermissions.add(permissions[i]);
