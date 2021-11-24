@@ -17,11 +17,10 @@
 package com.just.agentweb;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;

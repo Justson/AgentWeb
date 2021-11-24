@@ -1,4 +1,7 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
@@ -34,10 +37,15 @@ android {
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
     lintOptions {
         abortOnError false
+        checkReleaseBuilds false
     }
 
     lintOptions {
         abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     sourceSets {
@@ -47,20 +55,23 @@ android {
     }
 }
 
+
+
+
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('androidx.test.espresso:espresso-core:3.1.0', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     api 'androidx.appcompat:appcompat:1.0.0'
     api 'com.google.android.material:material:1.0.0'
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     testImplementation 'junit:junit:4.12'
-//    api project(':agentweb-core')
-//    api project(':agentweb-filechooser')
+    api project(':agentweb-core')
+    api project(':agentweb-filechooser')
     implementation 'com.github.Justson:Downloader:v4.1.9-androidx'
-    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9-androidx'
-    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9-androidx'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9-androidx'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9-androidx'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
