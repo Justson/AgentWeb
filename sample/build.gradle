@@ -53,22 +53,22 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
-    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
+    implementation "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
+    implementation "com.android.support:design:${SUPPORT_LIB_VERSION}"
     //    compile "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
     api project(':agentweb-core')
     api project(':agentweb-filechooser')
     implementation 'com.github.Justson:Downloader:v4.1.9'
 //    implementation 'com.github.Justson.AgentWeb:agentweb-core:v4.1.9'
 //    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v4.1.9'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 //    compile files('libs/alipaysdk-20170922.jar')
     implementation 'us.feras.mdv:markdownview:1.1.0'
     implementation 'com.lcodecorex:tkrefreshlayout:1.0.7'
