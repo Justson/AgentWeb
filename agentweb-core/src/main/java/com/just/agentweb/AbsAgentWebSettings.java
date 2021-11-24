@@ -65,7 +65,7 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
         mWebSettings.setSupportZoom(true);
         mWebSettings.setBuiltInZoomControls(false);
         mWebSettings.setSavePassword(false);
-        if (AgentWebUtils.checkNetwork(webView.getContext())) {
+        if (AgentWebUtils.checkNetwork(webView.getContext().getApplicationContext())) {
             //根据cache-control获取数据。
             mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         } else {
