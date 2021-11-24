@@ -606,6 +606,9 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public boolean onFragmentKeyDown(int keyCode, KeyEvent event) {
+        if(mSimpleSearchView.onBackPressed()){
+            return true;
+        }
         return mAgentWeb.handleKeyEvent(keyCode, event);
     }
 
