@@ -58,12 +58,14 @@ public class MainActivity extends AppCompatActivity {
     public static final int FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE = FLAG_GUIDE_DICTIONARY_CUTSTOM_WEBVIEW << 1;
     public static final int FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD = FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE << 1;
     public static final int FLAG_GUIDE_DICTIONARY_IPC = FLAG_GUIDE_DICTIONARY_COMMON_FILE_DOWNLOAD << 1;
+    public static final int FLAG_GUIDE_DICTIONARY_WEBRTC = FLAG_GUIDE_DICTIONARY_IPC << 1;
 
 
     public static final GuideItemEntity[] datas = new GuideItemEntity[]{
             new GuideItemEntity("Activity 使用 AgentWeb", FLAG_GUIDE_DICTIONARY_USE_IN_ACTIVITY),
             new GuideItemEntity("Fragment 使用 AgentWeb ", FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT),
             new GuideItemEntity("IPC WebView独立进程", FLAG_GUIDE_DICTIONARY_IPC),
+            new GuideItemEntity("WebRTC 使用", FLAG_GUIDE_DICTIONARY_WEBRTC),
             new GuideItemEntity("H5文件下载", FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD),
             new GuideItemEntity("input标签文件上传", FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM),
             new GuideItemEntity("Js 通信文件上传,兼用Android 4.4Kitkat", FLAG_GUIDE_DICTIONARY_JS_JAVA_COMUNICATION_UPLOAD_FILE),
@@ -133,7 +135,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Api mApi = new Api() {
 
-        @MainThread // default callback on the bind Thread , if you wanna it callback on mainThread , may be you should add MainThread annotation
+        @MainThread
+        // default callback on the bind Thread , if you wanna it callback on mainThread , may be you should add MainThread annotation
         @Override
         public void onReady() {
             Log.e(TAG, "web process onReady, i am runing on main process , received web procecss onready signal.");
@@ -157,6 +160,10 @@ public class MainActivity extends AppCompatActivity {
             case FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD:
                 startActivity(new Intent(this, CommonActivity.class)
                         .putExtra(CommonActivity.TYPE_KEY, FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD));
+                break;
+            case FLAG_GUIDE_DICTIONARY_WEBRTC:
+                startActivity(new Intent(this, CommonActivity.class)
+                        .putExtra(CommonActivity.TYPE_KEY, FLAG_GUIDE_DICTIONARY_WEBRTC));
                 break;
             case FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM:
                 startActivity(new Intent(this, CommonActivity.class)

@@ -27,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -248,7 +249,6 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
             target = "http://cw.gzyunjuchuang.com/";
         }
 
-//		return "http://ggzy.sqzwfw.gov.cn/WebBuilderDS/WebbuilderMIS/attach/downloadZtbAttach.jspx?attachGuid=af982055-3d76-4b00-b5ab-36dee1f90b11&appUrlFlag=sqztb&siteGuid=7eb5f7f1-9041-43ad-8e13-8fcb82ea831a";
         return target;
     }
 
@@ -390,6 +390,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mSimpleSearchView = view.findViewById(R.id.search_view);
         pageNavigator(View.GONE);
 
+        mSimpleSearchView.setHint("请输入网址");
+        mSimpleSearchView.getSearchEditText().setImeOptions(EditorInfo.IME_ACTION_GO);
 //        mSimpleSearchView.setSearchBackground(new ColorDrawable(getColorPrimary()));
         mSimpleSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
             @Override
