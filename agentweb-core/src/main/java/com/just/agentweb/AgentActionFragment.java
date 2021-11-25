@@ -42,10 +42,8 @@ import static android.provider.MediaStore.EXTRA_OUTPUT;
  */
 public final class AgentActionFragment extends Fragment {
 
-    public static final String KEY_ACTION = "KEY_ACTION";
     public static final String KEY_URI = "KEY_URI";
     public static final String KEY_FROM_INTENTION = "KEY_FROM_INTENTION";
-    public static final String KEY_FILE_CHOOSER_INTENT = "KEY_FILE_CHOOSER_INTENT";
     private static final String TAG = AgentActionFragment.class.getSimpleName();
     private Action mAction;
     public static final int REQUEST_CODE = 0x254;
