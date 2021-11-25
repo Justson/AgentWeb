@@ -37,7 +37,6 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.just.agentweb.AgentActionFragment.KEY_FROM_INTENTION;
@@ -274,7 +273,7 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> valueCallbacks, FileChooserParams fileChooserParams) {
-        LogUtils.i(TAG, "fileChooserParams:" + fileChooserParams.getAcceptTypes() + "  getTitle:" + fileChooserParams.getTitle() + " accept:" + Arrays.toString(fileChooserParams.getAcceptTypes()) + " length:" + fileChooserParams.getAcceptTypes().length + "  isCaptureEnabled:" + fileChooserParams.isCaptureEnabled() + "  " + fileChooserParams.getFilenameHint() + "  intent:" + fileChooserParams.createIntent().toString() + "   mode:" + fileChooserParams.getMode());
+//        LogUtils.i(TAG, "fileChooserParams:" + fileChooserParams.getAcceptTypes() + "  getTitle:" + fileChooserParams.getTitle() + " accept:" + Arrays.toString(fileChooserParams.getAcceptTypes()) + " length:" + fileChooserParams.getAcceptTypes().length + "  isCaptureEnabled:" + fileChooserParams.isCaptureEnabled() + "  " + fileChooserParams.getFilenameHint() + "  intent:" + fileChooserParams.createIntent().toString() + "   mode:" + fileChooserParams.getMode());
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             return false;
