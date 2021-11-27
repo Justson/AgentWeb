@@ -538,7 +538,7 @@ public class FileChooser {
             mJsChannelCallback.call(null);
             return;
         }
-        FileCompressor.getInstance().fileCompress(uris, new ValueCallback<Uri[]>() {
+        FileCompressor.getInstance().fileCompress("customize",uris, new ValueCallback<Uri[]>() {
             @Override
             public void onReceiveValue(Uri[] value) {
                 String[] compressFilePath = AgentWebUtils.uriToPath(mActivity, value);

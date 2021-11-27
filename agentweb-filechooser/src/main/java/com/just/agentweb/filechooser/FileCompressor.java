@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class FileCompressor implements Serializable {
 
     private static FileCompressor sInstance = null;
-    private FileCompressListener mFileCompressor;
+    private FileCompressEngine mFileCompressEngine;
 
     FileCompressor() {
     }
@@ -30,24 +30,24 @@ public class FileCompressor implements Serializable {
     }
 
 
-    public void registerFileCompressListener(FileCompressListener valueCallback) {
-        this.mFileCompressor = valueCallback;
+    public void registerFileCompressEngine(FileCompressEngine valueCallback) {
+        this.mFileCompressEngine = valueCallback;
     }
 
-    public void unregisterFileCompressListener(FileCompressListener valueCallback) {
-        this.mFileCompressor = null;
+    public void unregisterFileCompressEngine(FileCompressEngine valueCallback) {
+        this.mFileCompressEngine = null;
     }
 
-    void fileCompress(Uri[] uri, ValueCallback<Uri[]> callback) {
-        if (mFileCompressor == null) {
+    void fileCompress(String type, Uri[] uri, ValueCallback<Uri[]> callback) {
+        if (mFileCompressEngine == null) {
             callback.onReceiveValue(uri);
         } else {
-            mFileCompressor.compressFile(uri, callback);
+            mFileCompressEngine.compressFile(type, uri, callback);
         }
     }
 
-    public interface FileCompressListener {
-        void compressFile(Uri[] uri, ValueCallback<Uri[]> callback);
+    public interface FileCompressEngine {
+        void compressFile(String type, Uri[] uri, ValueCallback<Uri[]> callback);
     }
 
 

@@ -43,7 +43,6 @@ import com.download.library.DownloadImpl;
 import com.download.library.DownloadListenerAdapter;
 import com.download.library.Extra;
 import com.download.library.ResourceRequest;
-import com.download.library.Runtime;
 import com.ferfalk.simplesearchview.SimpleSearchView;
 import com.google.gson.Gson;
 import com.just.agentweb.AbsAgentWebSettings;
@@ -71,7 +70,6 @@ import com.just.agentweb.sample.utils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -83,7 +81,7 @@ import top.zibin.luban.Luban;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileCompressor.FileCompressListener {
+public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileCompressor.FileCompressEngine {
 
     private ImageView mBackImageView;
     private View mLineView;
@@ -429,7 +427,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
             }
         });
 
-        FileCompressor.getInstance().registerFileCompressListener(this);
+        FileCompressor.getInstance().registerFileCompressEngine(this);
     }
 
     public int getColorPrimary() {
@@ -633,7 +631,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
     @Override
     public void onDestroyView() {
         mAgentWeb.getWebLifeCycle().onDestroy();
-        FileCompressor.getInstance().unregisterFileCompressListener(this);
+        FileCompressor.getInstance().unregisterFileCompressEngine(this);
         super.onDestroyView();
     }
 
@@ -688,9 +686,26 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
         };
     }
 
-
+    /**
+     * 选择文件后回调该方法， 这里可以做文件压缩
+     *
+     * @param type     customize/system  ， customize 表示通过js方式获取文件， 把文件
+     *                 转成base64的方式返回给js，这种方式兼容性高，但是存在文件过大转成base64时
+     *                 字符串长度过长，导致与js通信失败问题，所以很有必要压缩文件， 尽量控制字符串长度在512kb以内。
+     *                 <p>
+     *                 system 这种方式，是由input/file 标签触发的文件选择，这种方式缺点是在Android 4.4 不回调
+     *                 fileChooser，存在兼容性问题，但是经过升级，基本可以忽略了，api 的兼容性越来越好了， 回调
+     *                 返回是于uri形式，所以不存在文件大小问题，作图片预览也很快。(推荐这种方式)
+     * @param uri      文件的uri
+     * @param callback
+     */
     @Override
-    public void compressFile(Uri[] uri, ValueCallback<Uri[]> callback) {
+    public void compressFile(String type, Uri[] uri, ValueCallback<Uri[]> callback) {
+        if ("system".equals(type)) { // input/file 标签触发的文件选择，这种方式不存在性能问题，可压缩也可以不压缩，具体看自己业务要求
+            callback.onReceiveValue(uri);
+            return;
+        }
+        // customize.equals(type)  这种强烈方式建议压缩
         if (uri == null || uri.length == 0) {
             callback.onReceiveValue(uri);
         } else {
