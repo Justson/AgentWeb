@@ -456,7 +456,8 @@ public class FileChooser {
         }
 
         if (mCameraState) {
-            mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
+//            mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
+            fileCompressAndValuesCallback((Uri) data.getParcelableExtra(KEY_URI), mUriValueCallback);
         } else {
             belowLollipopUriCallback(data);
         }
@@ -501,7 +502,8 @@ public class FileChooser {
         }
         Uri mUri = data.getData();
         if (mUriValueCallback != null) {
-            mUriValueCallback.onReceiveValue(mUri);
+//            mUriValueCallback.onReceiveValue(mUri);
+            fileCompressAndValuesCallback(mUri, mUriValueCallback);
         }
 
     }
@@ -538,7 +540,7 @@ public class FileChooser {
             mJsChannelCallback.call(null);
             return;
         }
-        FileCompressor.getInstance().fileCompress("customize",uris, new ValueCallback<Uri[]>() {
+        FileCompressor.getInstance().fileCompress("customize", uris, new ValueCallback<Uri[]>() {
             @Override
             public void onReceiveValue(Uri[] value) {
                 String[] compressFilePath = AgentWebUtils.uriToPath(mActivity, value);
@@ -573,6 +575,34 @@ public class FileChooser {
 
     }
 
+    private static void fileCompressAndValuesCallback(final Uri[] datas, final ValueCallback<Uri[]> valueCallback) {
+        FileCompressor.getInstance().fileCompress("system", datas, new ValueCallback<Uri[]>() {
+
+            @Override
+            public void onReceiveValue(Uri[] value) {
+                if (valueCallback != null) {
+                    valueCallback.onReceiveValue(value);
+                }
+            }
+        });
+    }
+
+    private static void fileCompressAndValuesCallback(final Uri datas, final ValueCallback<Uri> valueCallback) {
+        FileCompressor.getInstance().fileCompress("system", new Uri[]{datas}, new ValueCallback<Uri[]>() {
+
+            @Override
+            public void onReceiveValue(Uri[] value) {
+                if (valueCallback != null) {
+                    if (value != null && value.length > 0) {
+                        valueCallback.onReceiveValue(value[0]);
+                    } else {
+                        valueCallback.onReceiveValue(Uri.EMPTY);
+                    }
+                }
+            }
+        });
+    }
+
     /**
      * 经过多次的测试，在小米 MIUI ， 华为 ，多部分为 Android 6.0 左右系统相机获取到的文件
      * length为0 ，导致前端 ，获取到的文件， 作预览的时候不正常 ，等待5S左右文件又正常了 ， 所以这里做了阻塞等待处理，
@@ -599,7 +629,8 @@ public class FileChooser {
             }
         }
         if (!isCamera) {
-            mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
+            fileCompressAndValuesCallback(datas == null ? new Uri[]{} : datas, mUriValueCallbacks);
+//            mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
             return;
         }
 
@@ -643,7 +674,8 @@ public class FileChooser {
 
         private void safeHandleMessage(Message msg) {
             if (mValueCallback != null) {
-                mValueCallback.onReceiveValue(mUris);
+                fileCompressAndValuesCallback(mUris, mValueCallback);
+//                mValueCallback.onReceiveValue(mUris);
             }
             if (controller != null && controller.get() != null) {
                 controller.get().onCancelLoading();
@@ -752,7 +784,7 @@ public class FileChooser {
             ByteArrayOutputStream os = null;
             try {
                 File mFile = new File(filePath);
-                Log.e(TAG, "AgentWebFragment encode file:" + mFile.length());
+                Log.e(TAG, "encode file:" + mFile.length());
                 if (mFile.exists()) {
 
                     is = new FileInputStream(mFile);

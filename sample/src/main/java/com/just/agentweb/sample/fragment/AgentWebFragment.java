@@ -700,7 +700,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
      * @param callback
      */
     @Override
-    public void compressFile(String type, Uri[] uri, ValueCallback<Uri[]> callback) {
+    public void compressFile(String type, final Uri[] uri, ValueCallback<Uri[]> callback) {
+        Log.e(TAG, "compressFile type:" + type);
         if ("system".equals(type)) { // input/file 标签触发的文件选择，这种方式不存在性能问题，可压缩也可以不压缩，具体看自己业务要求
             callback.onReceiveValue(uri);
             return;
@@ -717,28 +718,24 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
 
             AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
                 try {
-                    List<File> compressFiles = new ArrayList<>(paths.length);
+                    Uri[] result = new Uri[paths.length];
                     for (int i = 0; i < paths.length; i++) {
                         String filePath = paths[i];
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileUtils.getExtensionByFilePath(filePath));
                         if (TextUtils.isEmpty(mimeType) || !mimeType.startsWith("image")) {
-                            compressFiles.add(new File(filePath));
+                            result[i] = uri[i];
                         } else {
                             File origin = new File(filePath);
                             File file = Luban.with(App.mContext).ignoreBy(100).setTargetDir(AgentWebUtils.getAgentWebFilePath(App.mContext)).get(filePath);
-                            compressFiles.add(file);
                             Log.e(TAG, "原文件大小：" + byte2FitMemorySize(origin.length()));
                             Log.e(TAG, "压缩后文件大小：" + byte2FitMemorySize(file.length()));
 
+                            Uri fileUri = AgentWebUtils.getUriFromFile(App.mContext, file);
+                            result[i] = fileUri;
+
                         }
                     }
-                    Uri[] uris = new Uri[compressFiles.size()];
-                    for (int i = 0; i < compressFiles.size(); i++) {
-                        File file = compressFiles.get(i);
-                        Uri fileUri = AgentWebUtils.getUriFromFile(App.mContext, file);
-                        uris[i] = fileUri;
-                    }
-                    AgentWebUtils.runInUiThread(() -> callback.onReceiveValue(uris));
+                    AgentWebUtils.runInUiThread(() -> callback.onReceiveValue(result));
                 } catch (IOException e) {
                     e.printStackTrace();
                     AgentWebUtils.runInUiThread(() -> callback.onReceiveValue(uri));
