@@ -687,7 +687,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
     }
 
     /**
-     * 选择文件后回调该方法， 这里可以做文件压缩
+     * 选择文件后回调该方法， 这里可以做文件压缩 / 也可以做图片的方向调整
      *
      * @param type     customize/system  ， customize 表示通过js方式获取文件， 把文件
      *                 转成base64的方式返回给js，这种方式兼容性高，但是存在文件过大转成base64时
@@ -706,7 +706,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
             callback.onReceiveValue(uri);
             return;
         }
-        // customize.equals(type)  这种强烈方式建议压缩
+        // customize.equals(type)  这种方式强烈建议文件压缩
         if (uri == null || uri.length == 0) {
             callback.onReceiveValue(uri);
         } else {
