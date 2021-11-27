@@ -214,7 +214,7 @@ public class AgentWebUtils {
 	}
 
 
-	static Uri getUriFromFile(Context context, File file) {
+	public static Uri getUriFromFile(Context context, File file) {
 		Uri uri = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 			uri = getUriFromFileForN(context, file);
@@ -517,7 +517,7 @@ public class AgentWebUtils {
 		return filePath;
 	}
 
-	static File createImageFile(Context context) {
+	public static File createImageFile(Context context) {
 		File mFile = null;
 		try {
 			String timeStamp =
@@ -832,7 +832,7 @@ public class AgentWebUtils {
 		mHandler.post(runnable);
 	}
 
-	static boolean showFileChooserCompat(Activity activity,
+	public static boolean showFileChooserCompat(Activity activity,
 	                                     WebView webView,
 	                                     ValueCallback<Uri[]> valueCallbacks,
 	                                     WebChromeClient.FileChooserParams fileChooserParams,

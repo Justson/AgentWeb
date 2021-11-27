@@ -6,15 +6,14 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,7 +27,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -42,11 +43,13 @@ import com.download.library.DownloadImpl;
 import com.download.library.DownloadListenerAdapter;
 import com.download.library.Extra;
 import com.download.library.ResourceRequest;
+import com.download.library.Runtime;
 import com.ferfalk.simplesearchview.SimpleSearchView;
 import com.google.gson.Gson;
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
+import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.DefaultDownloadImpl;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.IAgentWebSettings;
@@ -55,21 +58,32 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebListenerManager;
+import com.just.agentweb.filechooser.FileCompressor;
 import com.just.agentweb.sample.R;
+import com.just.agentweb.sample.app.App;
 import com.just.agentweb.sample.client.MiddlewareChromeClient;
 import com.just.agentweb.sample.client.MiddlewareWebViewClient;
 import com.just.agentweb.sample.common.CommonWebChromeClient;
 import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.common.UIController;
+import com.just.agentweb.sample.utils.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import top.zibin.luban.Luban;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class AgentWebFragment extends Fragment implements FragmentKeyDown {
+public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileCompressor.FileCompressListener {
 
     private ImageView mBackImageView;
     private View mLineView;
@@ -414,9 +428,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 return false;
             }
         });
+
+        FileCompressor.getInstance().registerFileCompressListener(this);
     }
 
-    public int getColorPrimary(){
+    public int getColorPrimary() {
         TypedValue typedValue = new TypedValue();
         getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         return typedValue.data;
@@ -608,7 +624,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public boolean onFragmentKeyDown(int keyCode, KeyEvent event) {
-        if(mSimpleSearchView.onBackPressed()){
+        if (mSimpleSearchView.onBackPressed()) {
             return true;
         }
         return mAgentWeb.handleKeyEvent(keyCode, event);
@@ -617,6 +633,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     @Override
     public void onDestroyView() {
         mAgentWeb.getWebLifeCycle().onDestroy();
+        FileCompressor.getInstance().unregisterFileCompressListener(this);
         super.onDestroyView();
     }
 
@@ -669,5 +686,65 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     protected MiddlewareWebChromeBase getMiddlewareWebChrome() {
         return this.mMiddleWareWebChrome = new MiddlewareChromeClient() {
         };
+    }
+
+
+    @Override
+    public void compressFile(Uri[] uri, ValueCallback<Uri[]> callback) {
+        if (uri == null || uri.length == 0) {
+            callback.onReceiveValue(uri);
+        } else {
+            final String[] paths = AgentWebUtils.uriToPath(getActivity(), uri);
+            if (paths == null || paths.length == 0) {
+                callback.onReceiveValue(uri);
+                return;
+            }
+
+            AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
+                try {
+                    List<File> compressFiles = new ArrayList<>(paths.length);
+                    for (int i = 0; i < paths.length; i++) {
+                        String filePath = paths[i];
+                        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileUtils.getExtensionByFilePath(filePath));
+                        if (TextUtils.isEmpty(mimeType) || !mimeType.startsWith("image")) {
+                            compressFiles.add(new File(filePath));
+                        } else {
+                            File origin = new File(filePath);
+                            File file = Luban.with(App.mContext).ignoreBy(100).setTargetDir(AgentWebUtils.getAgentWebFilePath(App.mContext)).get(filePath);
+                            compressFiles.add(file);
+                            Log.e(TAG, "原文件大小：" + byte2FitMemorySize(origin.length()));
+                            Log.e(TAG, "压缩后文件大小：" + byte2FitMemorySize(file.length()));
+
+                        }
+                    }
+                    Uri[] uris = new Uri[compressFiles.size()];
+                    for (int i = 0; i < compressFiles.size(); i++) {
+                        File file = compressFiles.get(i);
+                        Uri fileUri = AgentWebUtils.getUriFromFile(App.mContext, file);
+                        uris[i] = fileUri;
+                    }
+                    AgentWebUtils.runInUiThread(() -> callback.onReceiveValue(uris));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    AgentWebUtils.runInUiThread(() -> callback.onReceiveValue(uri));
+                }
+            });
+
+        }
+
+    }
+
+    private static String byte2FitMemorySize(final long byteNum) {
+        if (byteNum < 0) {
+            return "shouldn't be less than zero!";
+        } else if (byteNum < 1024) {
+            return String.format(Locale.getDefault(), "%.1fB", (double) byteNum);
+        } else if (byteNum < 1048576) {
+            return String.format(Locale.getDefault(), "%.1fKB", (double) byteNum / 1024);
+        } else if (byteNum < 1073741824) {
+            return String.format(Locale.getDefault(), "%.1fMB", (double) byteNum / 1048576);
+        } else {
+            return String.format(Locale.getDefault(), "%.1fGB", (double) byteNum / 1073741824);
+        }
     }
 }

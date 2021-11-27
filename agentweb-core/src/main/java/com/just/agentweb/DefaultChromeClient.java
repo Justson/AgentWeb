@@ -16,6 +16,7 @@
 
 package com.just.agentweb;
 
+import android.Manifest;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -37,7 +38,11 @@ import android.webkit.WebStorage;
 import android.webkit.WebView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.just.agentweb.AgentActionFragment.KEY_FROM_INTENTION;
 
@@ -243,6 +248,28 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onPermissionRequest(PermissionRequest request) {
+        if (request == null) {
+            return;
+        }
+        final String[] resources = request.getResources();
+        if (resources == null || resources.length <= 0) {
+            request.deny();
+            return;
+        }
+        Set<String> resourcesSet = new HashSet<>(Arrays.asList(resources));
+        ArrayList<String> permissions = new ArrayList<>(resourcesSet.size());
+        if (resourcesSet.contains(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+            permissions.add(Manifest.permission.CAMERA);
+        }
+        if (resourcesSet.contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+            permissions.add(Manifest.permission.RECORD_AUDIO);
+        }
+        if (mPermissionInterceptor != null) {
+            boolean intercept = mPermissionInterceptor.intercept(mWebView.getUrl(), permissions.toArray(new String[]{}), "onPermissionRequest");
+            if (intercept) {
+                return;
+            }
+        }
         if (mAgentWebUIController.get() != null) {
             mAgentWebUIController.get().onPermissionRequest(request);
         }
@@ -274,6 +301,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private boolean openFileChooserAboveL(WebView webView, ValueCallback<Uri[]> valueCallbacks, FileChooserParams fileChooserParams) {
 //        LogUtils.i(TAG, "fileChooserParams:" + fileChooserParams.getAcceptTypes() + "  getTitle:" + fileChooserParams.getTitle() + " accept:" + Arrays.toString(fileChooserParams.getAcceptTypes()) + " length:" + fileChooserParams.getAcceptTypes().length + "  isCaptureEnabled:" + fileChooserParams.isCaptureEnabled() + "  " + fileChooserParams.getFilenameHint() + "  intent:" + fileChooserParams.createIntent().toString() + "   mode:" + fileChooserParams.getMode());
+        if (valueCallbacks == null) {
+            return false;
+        }
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             return false;
@@ -319,6 +349,9 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
 
 
     private void createAndOpenCommonFileChooser(ValueCallback valueCallback, String mimeType) {
+        if (valueCallback == null) {
+            return;
+        }
         Activity mActivity = this.mActivityWeakReference.get();
         if (mActivity == null || mActivity.isFinishing()) {
             valueCallback.onReceiveValue(new Object());

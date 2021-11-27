@@ -30,6 +30,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -537,28 +538,38 @@ public class FileChooser {
             mJsChannelCallback.call(null);
             return;
         }
+        FileCompressor.getInstance().fileCompress(uris, new ValueCallback<Uri[]>() {
+            @Override
+            public void onReceiveValue(Uri[] value) {
+                String[] compressFilePath = AgentWebUtils.uriToPath(mActivity, value);
+                if (compressFilePath == null || compressFilePath.length == 0) {
+                    mJsChannelCallback.call(null);
+                    return;
+                }
+                int sum = 0;
+                for (String path : compressFilePath) {
+                    if (TextUtils.isEmpty(path)) {
+                        continue;
+                    }
+                    File mFile = new File(path);
+                    if (!mFile.exists()) {
+                        continue;
+                    }
+                    sum += mFile.length();
+                }
 
-        int sum = 0;
-        for (String path : paths) {
-            if (TextUtils.isEmpty(path)) {
-                continue;
-            }
-            File mFile = new File(path);
-            if (!mFile.exists()) {
-                continue;
-            }
-            sum += mFile.length();
-        }
+                if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
+                    if (mAgentWebUIController.get() != null) {
+                        mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
+                    }
+                    mJsChannelCallback.call(null);
+                    return;
+                }
 
-        if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
-            if (mAgentWebUIController.get() != null) {
-                mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new CovertFileThread(mJsChannelCallback, compressFilePath));
             }
-            mJsChannelCallback.call(null);
-            return;
-        }
+        });
 
-        new CovertFileThread(this.mJsChannelCallback, paths).start();
 
     }
 
@@ -741,6 +752,7 @@ public class FileChooser {
             ByteArrayOutputStream os = null;
             try {
                 File mFile = new File(filePath);
+                Log.e(TAG, "AgentWebFragment encode file:" + mFile.length());
                 if (mFile.exists()) {
 
                     is = new FileInputStream(mFile);
@@ -791,13 +803,12 @@ public class FileChooser {
         return mJSONArray + "";
     }
 
-    static class CovertFileThread extends Thread {
+    static class CovertFileThread implements Runnable {
 
         private WeakReference<JsChannelCallback> mJsChannelCallback;
         private String[] paths;
 
         private CovertFileThread(JsChannelCallback JsChannelCallback, String[] paths) {
-            super("agentweb-thread");
             this.mJsChannelCallback = new WeakReference<JsChannelCallback>(JsChannelCallback);
             this.paths = paths;
         }
@@ -805,7 +816,8 @@ public class FileChooser {
         @Override
         public void run() {
 
-
+            String name = Thread.currentThread().getName();
+            Thread.currentThread().setName("agentweb-thread");
             try {
                 Queue<FileParcel> mQueue = convertFile(paths);
                 String result = convertFileParcelObjectsToJson(mQueue);
@@ -815,6 +827,8 @@ public class FileChooser {
 
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                Thread.currentThread().setName(name);
             }
         }
     }
