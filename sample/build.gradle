@@ -63,7 +63,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 //    api project(':agentweb-core')
 //    api project(':agentweb-filechooser')
-    implementation 'com.github.Justson:Downloader:v4.1.9'
+    implementation 'com.github.Justson:Downloader:v5.0.0'
     implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha'
     implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
