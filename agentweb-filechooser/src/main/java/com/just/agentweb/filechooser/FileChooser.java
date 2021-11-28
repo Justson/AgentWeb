@@ -27,9 +27,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -55,12 +55,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import androidx.annotation.NonNull;
 
 import static com.just.agentweb.AgentActionFragment.KEY_FROM_INTENTION;
 import static com.just.agentweb.AgentActionFragment.KEY_URI;
@@ -75,27 +78,23 @@ public class FileChooser {
     /**
      * Activity
      */
-    private Activity mActivity;
+    private final Activity mActivity;
     /**
      * ValueCallback
      */
-    private ValueCallback<Uri> mUriValueCallback;
+    private final ValueCallback<Uri> mUriValueCallback;
     /**
      * ValueCallback<Uri[]> After LOLLIPOP
      */
-    private ValueCallback<Uri[]> mUriValueCallbacks;
+    private final ValueCallback<Uri[]> mUriValueCallbacks;
     /**
      * Activity Request Code
      */
     public static final int REQUEST_CODE = 0x254;
     /**
-     * 当前系统是否高于 Android 5.0 ；
-     */
-    private boolean mIsAboveLollipop = false;
-    /**
      * WebChromeClient.FileChooserParams 封装了 Intent ，mAcceptType  等参数
      */
-    private WebChromeClient.FileChooserParams mFileChooserParams;
+    private final WebChromeClient.FileChooserParams mFileChooserParams;
     /**
      * 如果是通过 JavaScript 打开文件选择器 ，那么 mJsChannelCallback 不能为空
      */
@@ -111,7 +110,7 @@ public class FileChooser {
     /**
      * 当前 WebView
      */
-    private WebView mWebView;
+    private final WebView mWebView;
     /**
      * 是否为 Camera State
      */
@@ -123,11 +122,11 @@ public class FileChooser {
     /**
      * 权限拦截
      */
-    private PermissionInterceptor mPermissionInterceptor;
+    private final PermissionInterceptor mPermissionInterceptor;
     /**
      * FROM_INTENTION_CODE 用于表示当前Action
      */
-    private int FROM_INTENTION_CODE = 21;
+    private final int FROM_INTENTION_CODE = 21;
     /**
      * 当前 AbsAgentWebUIController
      */
@@ -141,14 +140,12 @@ public class FileChooser {
      */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
-    private Handler.Callback mJsChannelHandler$Callback;
 
     public FileChooser(Builder builder) {
 
         this.mActivity = builder.mActivity;
         this.mUriValueCallback = builder.mUriValueCallback;
         this.mUriValueCallbacks = builder.mUriValueCallbacks;
-        this.mIsAboveLollipop = builder.mIsAboveLollipop;
         this.mJsChannel = builder.mJsChannel;
         this.mFileChooserParams = builder.mFileChooserParams;
         if (this.mJsChannel) {
@@ -158,7 +155,6 @@ public class FileChooser {
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
         this.mAcceptType = builder.mAcceptType;
         this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
-        this.mJsChannelHandler$Callback = builder.mJsChannelCallback;
 
     }
 
@@ -209,13 +205,17 @@ public class FileChooser {
 
     private Intent getFileChooserIntent() {
         Intent mIntent = null;
-        if (mIsAboveLollipop && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mFileChooserParams != null && (mIntent = mFileChooserParams.createIntent()) != null) {
             // 多选
-			/*if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
-			    mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-            }*/
-//			mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && mIntent.getAction().equals(Intent.ACTION_GET_CONTENT)) {
+            if (mFileChooserParams.getMode() == WebChromeClient.FileChooserParams.MODE_OPEN_MULTIPLE) {
+                mIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+}
+            //			mIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+            if (mFileChooserParams.getAcceptTypes() != null && mFileChooserParams.getAcceptTypes().length > 1) {
+                mIntent.putExtra(Intent.EXTRA_MIME_TYPES, mFileChooserParams.getAcceptTypes());
+            }
+            if (Objects.equals(mIntent.getAction(), Intent.ACTION_GET_CONTENT)) {
                 mIntent.setAction(Intent.ACTION_OPEN_DOCUMENT);
             }
             return mIntent;
@@ -252,7 +252,7 @@ public class FileChooser {
         boolean needVideo = false;
         // 在此支持视频拍摄
         // 是否直接打开文件选择器
-        if (this.mIsAboveLollipop && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && this.mFileChooserParams != null && this.mFileChooserParams.getAcceptTypes() != null) {
             boolean needCamera = false;
             String[] types = this.mFileChooserParams.getAcceptTypes();
             for (String typeTmp : types) {
@@ -436,7 +436,7 @@ public class FileChooser {
         }
 
         //5.0以上系统通过input标签获取文件
-        if (mIsAboveLollipop) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             aboveLollipopCheckFilesAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data), mCameraState);
             return;
         }
@@ -449,12 +449,13 @@ public class FileChooser {
         }
 
         if (mCameraState) {
-            mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
+//            mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
+            fileCompressAndValuesCallback((Uri) data.getParcelableExtra(KEY_URI), mUriValueCallback);
         } else {
             belowLollipopUriCallback(data);
         }
 
-        /*if (mIsAboveLollipop)
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             aboveLollipopCheckFilesAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
         else if (mJsChannel)
             convertFileAndCallback(mCameraState ? new Uri[]{data.getParcelableExtra(KEY_URI)} : processData(data));
@@ -494,7 +495,8 @@ public class FileChooser {
         }
         Uri mUri = data.getData();
         if (mUriValueCallback != null) {
-            mUriValueCallback.onReceiveValue(mUri);
+//            mUriValueCallback.onReceiveValue(mUri);
+            fileCompressAndValuesCallback(mUri, mUriValueCallback);
         }
 
     }
@@ -509,7 +511,10 @@ public class FileChooser {
         if (!TextUtils.isEmpty(target)) {
             return datas = new Uri[]{Uri.parse(target)};
         }
-        ClipData mClipData = data.getClipData();
+        ClipData mClipData = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            mClipData = data.getClipData();
+        }
         if (mClipData != null && mClipData.getItemCount() > 0) {
             datas = new Uri[mClipData.getItemCount()];
             for (int i = 0; i < mClipData.getItemCount(); i++) {
@@ -531,29 +536,67 @@ public class FileChooser {
             mJsChannelCallback.call(null);
             return;
         }
+        FileCompressor.getInstance().fileCompress("customize", uris, new ValueCallback<Uri[]>() {
+            @Override
+            public void onReceiveValue(Uri[] value) {
+                String[] compressFilePath = AgentWebUtils.uriToPath(mActivity, value);
+                if (compressFilePath == null || compressFilePath.length == 0) {
+                    mJsChannelCallback.call(null);
+                    return;
+                }
+                int sum = 0;
+                for (String path : compressFilePath) {
+                    if (TextUtils.isEmpty(path)) {
+                        continue;
+                    }
+                    File mFile = new File(path);
+                    if (!mFile.exists()) {
+                        continue;
+                    }
+                    sum += mFile.length();
+                }
 
-        int sum = 0;
-        for (String path : paths) {
-            if (TextUtils.isEmpty(path)) {
-                continue;
+                if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
+                    if (mAgentWebUIController.get() != null) {
+                        mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
+                    }
+                    mJsChannelCallback.call(null);
+                    return;
+                }
+
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new CovertFileThread(mJsChannelCallback, compressFilePath));
             }
-            File mFile = new File(path);
-            if (!mFile.exists()) {
-                continue;
+        });
+
+
+    }
+
+    private static void fileCompressAndValuesCallback(final Uri[] datas, final ValueCallback<Uri[]> valueCallback) {
+        FileCompressor.getInstance().fileCompress("system", datas, new ValueCallback<Uri[]>() {
+
+            @Override
+            public void onReceiveValue(Uri[] value) {
+                if (valueCallback != null) {
+                    valueCallback.onReceiveValue(value);
+                }
             }
-            sum += mFile.length();
-        }
+        });
+    }
 
-        if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
-            if (mAgentWebUIController.get() != null) {
-                mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
+    private static void fileCompressAndValuesCallback(final Uri datas, final ValueCallback<Uri> valueCallback) {
+        FileCompressor.getInstance().fileCompress("system", new Uri[]{datas}, new ValueCallback<Uri[]>() {
+
+            @Override
+            public void onReceiveValue(Uri[] value) {
+                if (valueCallback != null) {
+                    if (value != null && value.length > 0) {
+                        valueCallback.onReceiveValue(value[0]);
+                    } else {
+                        valueCallback.onReceiveValue(Uri.EMPTY);
+                    }
+                }
             }
-            mJsChannelCallback.call(null);
-            return;
-        }
-
-        new CovertFileThread(this.mJsChannelCallback, paths).start();
-
+        });
     }
 
     /**
@@ -582,7 +625,8 @@ public class FileChooser {
             }
         }
         if (!isCamera) {
-            mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
+            fileCompressAndValuesCallback(datas == null ? new Uri[]{} : datas, mUriValueCallbacks);
+//            mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
             return;
         }
 
@@ -626,7 +670,8 @@ public class FileChooser {
 
         private void safeHandleMessage(Message msg) {
             if (mValueCallback != null) {
-                mValueCallback.onReceiveValue(mUris);
+                fileCompressAndValuesCallback(mUris, mValueCallback);
+//                mValueCallback.onReceiveValue(mUris);
             }
             if (controller != null && controller.get() != null) {
                 controller.get().onCancelLoading();
@@ -735,6 +780,7 @@ public class FileChooser {
             ByteArrayOutputStream os = null;
             try {
                 File mFile = new File(filePath);
+                Log.e(TAG, "encode file:" + mFile.length());
                 if (mFile.exists()) {
 
                     is = new FileInputStream(mFile);
@@ -785,13 +831,12 @@ public class FileChooser {
         return mJSONArray + "";
     }
 
-    static class CovertFileThread extends Thread {
+    static class CovertFileThread implements Runnable {
 
         private WeakReference<JsChannelCallback> mJsChannelCallback;
         private String[] paths;
 
         private CovertFileThread(JsChannelCallback JsChannelCallback, String[] paths) {
-            super("agentweb-thread");
             this.mJsChannelCallback = new WeakReference<JsChannelCallback>(JsChannelCallback);
             this.paths = paths;
         }
@@ -799,7 +844,8 @@ public class FileChooser {
         @Override
         public void run() {
 
-
+            String name = Thread.currentThread().getName();
+            Thread.currentThread().setName("agentweb-thread");
             try {
                 Queue<FileParcel> mQueue = convertFile(paths);
                 String result = convertFileParcelObjectsToJson(mQueue);
@@ -809,6 +855,8 @@ public class FileChooser {
 
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                Thread.currentThread().setName(name);
             }
         }
     }
@@ -840,7 +888,6 @@ public class FileChooser {
         private Activity mActivity;
         private ValueCallback<Uri> mUriValueCallback;
         private ValueCallback<Uri[]> mUriValueCallbacks;
-        private boolean mIsAboveLollipop = false;
         private WebChromeClient.FileChooserParams mFileChooserParams;
         private boolean mJsChannel = false;
         private WebView mWebView;
@@ -865,7 +912,6 @@ public class FileChooser {
 
         public Builder setUriValueCallback(ValueCallback<Uri> uriValueCallback) {
             mUriValueCallback = uriValueCallback;
-            mIsAboveLollipop = false;
             mJsChannel = false;
             mUriValueCallbacks = null;
             return this;
@@ -873,7 +919,6 @@ public class FileChooser {
 
         public Builder setUriValueCallbacks(ValueCallback<Uri[]> uriValueCallbacks) {
             mUriValueCallbacks = uriValueCallbacks;
-            mIsAboveLollipop = true;
             mUriValueCallback = null;
             mJsChannel = false;
             return this;

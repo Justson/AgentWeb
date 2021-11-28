@@ -36,6 +36,7 @@ import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONA
 import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT;
 import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_VASSONIC_SAMPLE;
 import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN;
+import static com.just.agentweb.sample.activity.MainActivity.FLAG_GUIDE_DICTIONARY_WEBRTC;
 import static com.just.agentweb.sample.sonic.SonicJavaScriptInterface.PARAM_CLICK_TIME;
 
 /**
@@ -98,7 +99,11 @@ public class CommonActivity extends AppCompatActivity {
 				ft.add(R.id.container_framelayout, mAgentWebFragment = JsAgentWebFragment.getInstance(mBundle = new Bundle()), JsAgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/js_interaction/hello.html");
 				break;
-
+			/*webrtc*/
+			case FLAG_GUIDE_DICTIONARY_WEBRTC:
+				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
+				mBundle.putString(AgentWebFragment.URL_KEY, "https://jeromeetienne.github.io/AR.js/three.js/examples/mobile-performance.html");
+				break;
             /*优酷全屏播放视屏*/
 			case FLAG_GUIDE_DICTIONARY_VIDEO_FULL_SCREEN:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());

@@ -10,8 +10,8 @@ android {
         applicationId "com.just.agentweb.sample"
         minSdkVersion 19
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
-        versionCode 4
-        versionName "4.1.9"
+        versionCode 5
+        versionName "5.0.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     signingConfigs {
@@ -90,4 +90,5 @@ dependencies {
     implementation('com.github.Ferfalk:SimpleSearchView:0.2.0', {
         exclude group: 'com.android.support'
     })
+    implementation 'top.zibin:Luban:1.1.8'
 }

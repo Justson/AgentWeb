@@ -27,7 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.AsyncTask;
 import com.download.library.DownloadImpl;
 import com.download.library.DownloadListenerAdapter;
 import com.download.library.Extra;
@@ -51,20 +51,40 @@ import com.just.agentweb.sample.client.MiddlewareWebViewClient;
 import com.just.agentweb.sample.common.CommonWebChromeClient;
 import com.just.agentweb.sample.common.FragmentKeyDown;
 import com.just.agentweb.sample.common.UIController;
-
+import android.view.inputmethod.EditorInfo;
+import android.webkit.MimeTypeMap;
 import java.util.HashMap;
-
+import android.webkit.ValueCallback;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
+import com.just.agentweb.filechooser.FileCompressor;
+import com.just.agentweb.filechooser.FileCompressor;
+import com.just.agentweb.sample.R;
+import com.just.agentweb.sample.app.App;
+import com.just.agentweb.sample.client.MiddlewareChromeClient;
+import com.just.agentweb.sample.client.MiddlewareWebViewClient;
+import com.just.agentweb.sample.common.CommonWebChromeClient;
+import com.just.agentweb.sample.common.FragmentKeyDown;
+import com.just.agentweb.sample.common.UIController;
+import com.just.agentweb.sample.utils.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import top.zibin.luban.Luban;
 
 /**
  * Created by cenxiaozhong on 2017/5/15.
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class AgentWebFragment extends Fragment implements FragmentKeyDown {
+public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileCompressor.FileCompressEngine  {
 
     private ImageView mBackImageView;
     private View mLineView;
@@ -385,7 +405,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
         mSearchImageView.setOnClickListener(mOnClickListener);
         mSimpleSearchView = view.findViewById(R.id.search_view);
         pageNavigator(View.GONE);
-
+        mSimpleSearchView.setHint("请输入网址");
+        mSimpleSearchView.getSearchEditText().setImeOptions(EditorInfo.IME_ACTION_GO);
 //        mSimpleSearchView.setSearchBackground(new ColorDrawable(getColorPrimary()));
         mSimpleSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
             @Override
@@ -408,6 +429,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
                 return false;
             }
         });
+        FileCompressor.getInstance().registerFileCompressEngine(this);
+
     }
 
     public int getColorPrimary(){
@@ -588,7 +611,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
 
     @Override
     public boolean onFragmentKeyDown(int keyCode, KeyEvent event) {
-        if(mSimpleSearchView.onBackPressed()){
+        if (mSimpleSearchView.onBackPressed()) {
             return true;
         }
         return mAgentWeb.handleKeyEvent(keyCode, event);
@@ -597,6 +620,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     @Override
     public void onDestroyView() {
         mAgentWeb.getWebLifeCycle().onDestroy();
+        FileCompressor.getInstance().unregisterFileCompressEngine(this);
         super.onDestroyView();
     }
 
@@ -649,5 +673,79 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown {
     protected MiddlewareWebChromeBase getMiddlewareWebChrome() {
         return this.mMiddleWareWebChrome = new MiddlewareChromeClient() {
         };
+    }
+
+    /**
+     * 选择文件后回调该方法， 这里可以做文件压缩 / 也可以做图片的方向调整
+     *
+     * @param type     customize/system  ， customize 表示通过js方式获取文件， 把文件
+     *                 转成base64的方式返回给js，这种方式兼容性高，但是存在文件过大转成base64时
+     *                 字符串长度过长，导致与js通信失败问题，所以很有必要压缩文件， 尽量控制字符串长度在512kb以内。
+     *                 <p>
+     *                 system 这种方式，是由input/file 标签触发的文件选择，这种方式缺点是在Android 4.4 不回调
+     *                 fileChooser，存在兼容性问题，但是经过升级，基本可以忽略了，api 的兼容性越来越好了， 回调
+     *                 返回是于uri形式，所以不存在文件大小问题，作图片预览也很快。(推荐这种方式)
+     * @param uri      文件的uri
+     * @param callback
+     */
+    @Override
+    public void compressFile(String type, final Uri[] uri, ValueCallback<Uri[]> callback) {
+        Log.e(TAG, "compressFile type:" + type);
+        if ("system".equals(type)) { // input/file 标签触发的文件选择，这种方式不存在性能问题，可压缩也可以不压缩，具体看自己业务要求
+            callback.onReceiveValue(uri);
+            return;
+        }
+        // customize.equals(type)  这种方式强烈建议文件压缩
+        if (uri == null || uri.length == 0) {
+            callback.onReceiveValue(uri);
+        } else {
+            final String[] paths = AgentWebUtils.uriToPath(getActivity(), uri);
+            if (paths == null || paths.length == 0) {
+                callback.onReceiveValue(uri);
+                return;
+            }
+
+            AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> {
+                try {
+                    Uri[] result = new Uri[paths.length];
+                    for (int i = 0; i < paths.length; i++) {
+                        String filePath = paths[i];
+                        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileUtils.getExtensionByFilePath(filePath));
+                        if (TextUtils.isEmpty(mimeType) || !mimeType.startsWith("image")) {
+                            result[i] = uri[i];
+                        } else {
+                            File origin = new File(filePath);
+                            File file = Luban.with(App.mContext).ignoreBy(100).setTargetDir(AgentWebUtils.getAgentWebFilePath(App.mContext)).get(filePath);
+                            Log.e(TAG, "原文件大小：" + byte2FitMemorySize(origin.length()));
+                            Log.e(TAG, "压缩后文件大小：" + byte2FitMemorySize(file.length()));
+
+                            Uri fileUri = AgentWebUtils.getUriFromFile(App.mContext, file);
+                            result[i] = fileUri;
+
+                        }
+                    }
+                    AgentWebUtils.runInUiThread(() -> callback.onReceiveValue(result));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    AgentWebUtils.runInUiThread(() -> callback.onReceiveValue(uri));
+                }
+            });
+
+        }
+
+    }
+
+    private static String byte2FitMemorySize(final long byteNum) {
+        if (byteNum < 0) {
+            return "shouldn't be less than zero!";
+        } else if (byteNum < 1024) {
+            return String.format(Locale.getDefault(), "%.1fB", (double) byteNum);
+        } else if (byteNum < 1048576) {
+            return String.format(Locale.getDefault(), "%.1fKB", (double) byteNum / 1024);
+        } else if (byteNum < 1073741824) {
+            return String.format(Locale.getDefault(), "%.1fMB", (double) byteNum / 1048576);
+        } else {
+            return String.format(Locale.getDefault(), "%.1fGB", (double) byteNum / 1073741824);
+        }
     }
 }

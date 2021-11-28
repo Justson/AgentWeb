@@ -49,9 +49,12 @@ public class App extends Application {
         });
     }
 
+    public static Context mContext;
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+        mContext = base;
         AgentWebCompat.setDataDirectorySuffix(base);
     }
 
