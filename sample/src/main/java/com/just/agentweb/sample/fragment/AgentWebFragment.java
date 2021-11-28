@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,16 +19,20 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.webkit.MimeTypeMap;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.AsyncTask;
+
 import com.download.library.DownloadImpl;
 import com.download.library.DownloadListenerAdapter;
 import com.download.library.Extra;
@@ -37,6 +42,7 @@ import com.google.gson.Gson;
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
 import com.just.agentweb.AgentWebConfig;
+import com.just.agentweb.AgentWebUtils;
 import com.just.agentweb.DefaultDownloadImpl;
 import com.just.agentweb.DefaultWebClient;
 import com.just.agentweb.IAgentWebSettings;
@@ -45,21 +51,6 @@ import com.just.agentweb.MiddlewareWebClientBase;
 import com.just.agentweb.PermissionInterceptor;
 import com.just.agentweb.WebChromeClient;
 import com.just.agentweb.WebListenerManager;
-import com.just.agentweb.sample.R;
-import com.just.agentweb.sample.client.MiddlewareChromeClient;
-import com.just.agentweb.sample.client.MiddlewareWebViewClient;
-import com.just.agentweb.sample.common.CommonWebChromeClient;
-import com.just.agentweb.sample.common.FragmentKeyDown;
-import com.just.agentweb.sample.common.UIController;
-import android.view.inputmethod.EditorInfo;
-import android.webkit.MimeTypeMap;
-import java.util.HashMap;
-import android.webkit.ValueCallback;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.fragment.app.Fragment;
-import com.just.agentweb.filechooser.FileCompressor;
 import com.just.agentweb.filechooser.FileCompressor;
 import com.just.agentweb.sample.R;
 import com.just.agentweb.sample.app.App;
@@ -72,11 +63,13 @@ import com.just.agentweb.sample.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.Fragment;
 import top.zibin.luban.Luban;
 
 /**
@@ -84,7 +77,7 @@ import top.zibin.luban.Luban;
  * source code  https://github.com/Justson/AgentWeb
  */
 
-public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileCompressor.FileCompressEngine  {
+public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileCompressor.FileCompressEngine {
 
     private ImageView mBackImageView;
     private View mLineView;
@@ -406,7 +399,8 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
         mSimpleSearchView = view.findViewById(R.id.search_view);
         pageNavigator(View.GONE);
         mSimpleSearchView.setHint("请输入网址");
-        mSimpleSearchView.getSearchEditText().setImeOptions(EditorInfo.IME_ACTION_GO);
+        EditText editText = mSimpleSearchView.findViewById(R.id.searchEditText);
+        editText.setImeOptions(EditorInfo.IME_ACTION_GO);
 //        mSimpleSearchView.setSearchBackground(new ColorDrawable(getColorPrimary()));
         mSimpleSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
             @Override
@@ -433,7 +427,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
 
     }
 
-    public int getColorPrimary(){
+    public int getColorPrimary() {
         TypedValue typedValue = new TypedValue();
         getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
         return typedValue.data;
