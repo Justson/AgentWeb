@@ -34,7 +34,7 @@ allprojects {
     implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx' // (必选)
     implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha.1-androidx' // (可选)
     implementation 'com.github.Justson:Downloader:v5.0.0-androidx' // (可选)
-
+   
    ```
 
 
@@ -83,8 +83,8 @@ allprojects {
 
  
 
-
 [![License][licensesvg]][license]
+
 ## License 
 ```
 Copyright (C)  Justson(https://github.com/Justson/AgentWeb)
@@ -105,7 +105,6 @@ limitations under the License.
 ​	
 
 ​	  
-
 
 
 
