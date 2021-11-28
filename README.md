@@ -60,13 +60,8 @@ allprojects {
 ## 文档帮助
 * [Wiki](https://github.com/Justson/AgentWeb/wiki)(不全)
 * `Sample`(推荐，详细) 
+* [更新日志](./releasenote.md)
 
-## [更新日志](./releasenote.md)
-
-## 致谢
-* [SafeWebView](https://github.com/seven456/SafeWebView)
-
-* [WebView 参考文献](https://juejin.im/post/58a037df86b599006b3fade4)
 
 
 ## 有问题或者有更好的建议
@@ -74,11 +69,8 @@ allprojects {
 * 欢迎提 [Issues](https://github.com/Justson/AgentWeb/issues)
 
 
-## 关于我
-一个位于深圳的 Android 开发者 ， 如果你有问题 ， 请联系 Email : xiaozhongcen@gmail.com
-
 ## 赞赏
-如果你喜欢了 `AgentWeb` 的设计 ， 你也可以请作者喝一杯咖啡。
+开源不易，你的支持是我更新的动力。
 
 <a href="img/alipay.jpg"><img src="img/alipay.jpg" width="30%"/></a> <a href="img/wechat_pay.jpg"><img src="img/wechat_pay.jpg" width="30%"/></a> <a href="img/alipay.jpg"><img src="img/alipay.jpg" width="30%"/></a>
 
@@ -89,8 +81,7 @@ allprojects {
 [qq0groupsvg]: https://img.shields.io/badge/QQ群-599471474-fba7f9.svg
 [qq0group]: http://qm.qq.com/cgi-bin/qm/qr?k=KpyfInzI2nr-Lh4StG0oh68GpbcD0vMG
 
-
-###  [AgentWeb](https://github.com/Justson/AgentWeb)  
+ 
 
 
 [![License][licensesvg]][license]
