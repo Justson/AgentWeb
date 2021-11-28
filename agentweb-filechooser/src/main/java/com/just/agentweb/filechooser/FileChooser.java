@@ -77,15 +77,15 @@ public class FileChooser {
     /**
      * Activity
      */
-    private Activity mActivity;
+    private final Activity mActivity;
     /**
      * ValueCallback
      */
-    private ValueCallback<Uri> mUriValueCallback;
+    private final ValueCallback<Uri> mUriValueCallback;
     /**
      * ValueCallback<Uri[]> After LOLLIPOP
      */
-    private ValueCallback<Uri[]> mUriValueCallbacks;
+    private final ValueCallback<Uri[]> mUriValueCallbacks;
     /**
      * Activity Request Code
      */
@@ -93,7 +93,7 @@ public class FileChooser {
     /**
      * WebChromeClient.FileChooserParams 封装了 Intent ，mAcceptType  等参数
      */
-    private WebChromeClient.FileChooserParams mFileChooserParams;
+    private final WebChromeClient.FileChooserParams mFileChooserParams;
     /**
      * 如果是通过 JavaScript 打开文件选择器 ，那么 mJsChannelCallback 不能为空
      */
@@ -109,7 +109,7 @@ public class FileChooser {
     /**
      * 当前 WebView
      */
-    private WebView mWebView;
+    private final WebView mWebView;
     /**
      * 是否为 Camera State
      */
@@ -121,11 +121,11 @@ public class FileChooser {
     /**
      * 权限拦截
      */
-    private PermissionInterceptor mPermissionInterceptor;
+    private final PermissionInterceptor mPermissionInterceptor;
     /**
      * FROM_INTENTION_CODE 用于表示当前Action
      */
-    private int FROM_INTENTION_CODE = 21;
+    private final int FROM_INTENTION_CODE = 21;
     /**
      * 当前 AbsAgentWebUIController
      */
@@ -139,7 +139,6 @@ public class FileChooser {
      */
     public static int MAX_WAIT_PHOTO_MS = 8 * 1000;
 
-    private Handler.Callback mJsChannelHandler$Callback;
 
     public FileChooser(Builder builder) {
 
@@ -155,7 +154,6 @@ public class FileChooser {
         this.mPermissionInterceptor = builder.mPermissionInterceptor;
         this.mAcceptType = builder.mAcceptType;
         this.mAgentWebUIController = new WeakReference<AbsAgentWebUIController>(AgentWebUtils.getAgentWebUIControllerByWebView(this.mWebView));
-        this.mJsChannelHandler$Callback = builder.mJsChannelCallback;
 
     }
 
