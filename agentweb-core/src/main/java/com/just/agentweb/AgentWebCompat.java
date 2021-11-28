@@ -22,6 +22,7 @@ public class AgentWebCompat {
 
     /**
      * 来之 https://github.com/Justson/AgentWeb/issues/934 建议
+     * https://juejin.cn/post/6950091477192015902
      * fix Using WebView from more than one process
      * @param context
      */
