@@ -1,3 +1,13 @@
+* v_5.0.0 更新
+	* ActionActivity 重构， 使用Fragment 替代 Activity，解决多进程使用问题
+	* 新增 WebRTC Sample
+	* 新增 FileCompressor ，允许选择文件后对文件进行操作，如文件压缩，图片方向调整等
+	* DefaultWebClient#onReceivedSslError 添加默认处理
+	* 文件选择器开放多选
+	* fix #777 ，FileChooserParams.createIntent() 导致AcceptTypes丢失问题
+	* androidx Grade version upgrade to 7.0.2
+	* 新增 AgentWebCompat.setDataDirectorySuffix(context) 修复 Using WebView from more than one process 崩溃
+
 * v_4.1.1 更新
     * [#587](https://github.com/Justson/AgentWeb/pull/587) input 支持视屏拍摄
     * [#614](https://github.com/Justson/AgentWeb/pull/614)修复上传文件选择的兼容性bug
