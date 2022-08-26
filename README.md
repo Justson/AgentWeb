@@ -17,16 +17,6 @@ allprojects {
 		maven { url 'https://jitpack.io' }
 	}
 }
-```
-
-
-* Support
-
-   ```groovy
-	implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha' // (必选)
-	implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha' // (可选)
-	implementation 'com.github.Justson:Downloader:v5.0.0' // (可选)
-	```
 	
 * Androidx
 
