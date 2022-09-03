@@ -17,15 +17,14 @@
 
 package com.just.agentweb;
 
+import static android.provider.MediaStore.EXTRA_OUTPUT;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-
-import java.io.File;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,7 +33,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-import static android.provider.MediaStore.EXTRA_OUTPUT;
+import java.io.File;
+import java.util.List;
 
 
 /**
@@ -141,6 +141,9 @@ public final class AgentActionFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (mAction == null) {
+            return;
+        }
         if (requestCode == REQUEST_CODE) {
             if (mAction.getUri() != null) {
                 chooserActionCallback(resultCode, new Intent().putExtra(KEY_URI, mAction.getUri()));

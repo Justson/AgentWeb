@@ -16,6 +16,10 @@
 
 package com.just.agentweb.filechooser;
 
+import static com.just.agentweb.AgentActionFragment.KEY_FROM_INTENTION;
+import static com.just.agentweb.AgentActionFragment.KEY_URI;
+import static com.just.agentweb.AgentActionFragment.start;
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ContentResolver;
@@ -33,6 +37,8 @@ import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import androidx.annotation.NonNull;
 
 import com.just.agentweb.AbsAgentWebUIController;
 import com.just.agentweb.Action;
@@ -63,12 +69,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import androidx.annotation.NonNull;
-
-import static com.just.agentweb.AgentActionFragment.KEY_FROM_INTENTION;
-import static com.just.agentweb.AgentActionFragment.KEY_URI;
-import static com.just.agentweb.AgentActionFragment.start;
-
 /**
  * @author cenxiaozhong
  * @date 2017/5/22
@@ -82,11 +82,11 @@ public class FileChooser {
     /**
      * ValueCallback
      */
-    private final ValueCallback<Uri> mUriValueCallback;
+    private ValueCallback<Uri> mUriValueCallback;
     /**
      * ValueCallback<Uri[]> After LOLLIPOP
      */
-    private final ValueCallback<Uri[]> mUriValueCallbacks;
+    private ValueCallback<Uri[]> mUriValueCallbacks;
     /**
      * Activity Request Code
      */
@@ -451,6 +451,7 @@ public class FileChooser {
         if (mCameraState) {
 //            mUriValueCallback.onReceiveValue((Uri) data.getParcelableExtra(KEY_URI));
             fileCompressAndValuesCallback((Uri) data.getParcelableExtra(KEY_URI), mUriValueCallback);
+            mUriValueCallback = null;
         } else {
             belowLollipopUriCallback(data);
         }
@@ -475,10 +476,25 @@ public class FileChooser {
             return;
         }
         if (mUriValueCallback != null) {
-            mUriValueCallback.onReceiveValue(null);
+            try {
+                mUriValueCallback.onReceiveValue(null);
+                mUriValueCallback = null;
+            } catch (Throwable ignored) {
+                if (AgentWebConfig.DEBUG) {
+                    ignored.printStackTrace();
+                }
+            }
         }
         if (mUriValueCallbacks != null) {
-            mUriValueCallbacks.onReceiveValue(null);
+            try {
+                mUriValueCallbacks.onReceiveValue(null);
+                mUriValueCallbacks = null;
+            } catch (Throwable ignored) {
+                if (AgentWebConfig.DEBUG) {
+                    ignored.printStackTrace();
+                }
+            }
+
         }
         return;
     }
@@ -490,6 +506,7 @@ public class FileChooser {
         if (data == null) {
             if (mUriValueCallback != null) {
                 mUriValueCallback.onReceiveValue(Uri.EMPTY);
+                mUriValueCallback = null;
             }
             return;
         }
@@ -497,6 +514,7 @@ public class FileChooser {
         if (mUriValueCallback != null) {
 //            mUriValueCallback.onReceiveValue(mUri);
             fileCompressAndValuesCallback(mUri, mUriValueCallback);
+            mUriValueCallback = null;
         }
 
     }
@@ -627,21 +645,25 @@ public class FileChooser {
         if (!isCamera) {
             fileCompressAndValuesCallback(datas == null ? new Uri[]{} : datas, mUriValueCallbacks);
 //            mUriValueCallbacks.onReceiveValue(datas == null ? new Uri[]{} : datas);
+            mUriValueCallbacks = null;
             return;
         }
 
         if (mAgentWebUIController.get() == null) {
             mUriValueCallbacks.onReceiveValue(null);
+            mUriValueCallbacks = null;
             return;
         }
         String[] paths = AgentWebUtils.uriToPath(mActivity, datas);
         if (paths == null || paths.length == 0) {
             mUriValueCallbacks.onReceiveValue(null);
+            mUriValueCallbacks = null;
             return;
         }
         final String path = paths[0];
         mAgentWebUIController.get().onLoading(mActivity.getString(R.string.agentweb_loading));
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas, mAgentWebUIController)));
+        mUriValueCallbacks = null;
 
     }
 
