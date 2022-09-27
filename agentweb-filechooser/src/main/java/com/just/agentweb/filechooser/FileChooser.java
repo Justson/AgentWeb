@@ -347,9 +347,6 @@ public class FileChooser {
         if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.CAMERA)) {
             deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
         }
-        if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.STORAGE)) {
-            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
-        }
         return deniedPermissions;
     }
 
