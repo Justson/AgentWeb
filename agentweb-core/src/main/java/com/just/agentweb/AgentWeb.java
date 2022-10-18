@@ -302,6 +302,10 @@ public final class AgentWeb {
 
     public void destroy() {
         this.mWebLifeCycle.onDestroy();
+        if (mPermissionInterceptor != null && mPermissionInterceptor instanceof PermissionInterceptorWrapper){
+            ((PermissionInterceptorWrapper) mPermissionInterceptor).mWeakReference = null;
+            mPermissionInterceptor = null;
+        }
     }
 
     public static class PreAgentWeb {
@@ -753,18 +757,18 @@ public final class AgentWeb {
 
     private static final class PermissionInterceptorWrapper implements PermissionInterceptor {
 
-        private WeakReference<PermissionInterceptor> mWeakReference;
+        private PermissionInterceptor mWeakReference;
 
         private PermissionInterceptorWrapper(PermissionInterceptor permissionInterceptor) {
-            this.mWeakReference = new WeakReference<PermissionInterceptor>(permissionInterceptor);
+            this.mWeakReference = permissionInterceptor;
         }
 
         @Override
         public boolean intercept(String url, String[] permissions, String a) {
-            if (this.mWeakReference.get() == null) {
+            if (this.mWeakReference == null){
                 return false;
             }
-            return mWeakReference.get().intercept(url, permissions, a);
+            return mWeakReference.intercept(url, permissions, a);
         }
     }
 }
