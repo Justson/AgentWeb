@@ -37,4 +37,5 @@ dependencies {
     compileOnly "com.android.support:design:${SUPPORT_LIB_VERSION}"
     compileOnly "com.android.support:support-v4:${SUPPORT_LIB_VERSION}"
     api project(':agentweb-core')
+    compileOnly 'com.tencent.tbs:tbssdk:44286'
 }

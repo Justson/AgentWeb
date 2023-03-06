@@ -4,7 +4,7 @@
 
     <application>
         <provider
-            android:name="com.just.agentweb.AgentWebFileProvider"
+            android:name="com.just.agentwebX5.AgentWebFileProvider"
             android:authorities="${applicationId}.AgentWebFileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -13,7 +13,7 @@
                 android:resource="@xml/web_files_public"/>
         </provider>
         <activity
-            android:name="com.just.agentweb.AgentActionFragment"
+            android:name="com.just.agentwebX5.AgentActionFragment"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:launchMode="standard"

@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.http.SslError;
+import com.tencent.smtt.export.external.interfaces.SslError;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
