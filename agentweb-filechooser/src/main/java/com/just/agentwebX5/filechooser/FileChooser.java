@@ -35,7 +35,7 @@ import com.tencent.smtt.sdk.ValueCallback;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebView;
 
-import com.just.agentweb.filechooser.R;
+import com.just.agentweb.filechooserX5.R;
 import com.just.agentwebX5.AbsAgentWebUIController;
 import com.just.agentwebX5.Action;
 import com.just.agentwebX5.AgentActionFragment;

@@ -36,7 +36,7 @@ import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.sdk.WebView;
 import android.widget.TextView;
 
-import com.just.agentweb.R;
+import com.just.agentwebX5.R;
 
 /**
  * @author cenxiaozhong

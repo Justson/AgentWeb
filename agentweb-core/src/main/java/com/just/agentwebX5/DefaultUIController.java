@@ -37,7 +37,7 @@ import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.tencent.smtt.sdk.WebView;
 import android.widget.EditText;
 
-import com.just.agentweb.R;
+import com.just.agentwebX5.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;

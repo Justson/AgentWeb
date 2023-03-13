@@ -27,7 +27,7 @@ import android.view.ViewStub;
 import com.tencent.smtt.sdk.WebView;
 import android.widget.FrameLayout;
 
-import com.just.agentweb.R;
+import com.just.agentwebX5.R;
 
 /**
  * @author cenxiaozhong
