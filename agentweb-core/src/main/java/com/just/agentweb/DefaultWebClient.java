@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -33,6 +34,7 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.HttpAuthHandler;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -422,7 +424,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return isIntercepted;
 		} catch (Throwable ignore) {
 			if (AgentWebConfig.DEBUG) {
-				ignore.printStackTrace();
+//                ignore.printStackTrace();
 			}
 		}
 		return false;
@@ -461,6 +463,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	}
 
+	@Override
+	public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+		if (mAgentWebUIController.get() != null) {
+			mAgentWebUIController.get().onShowSslCertificateErrorDialog(view, handler, error);
+		}
+	}
+
 
 	/**
 	 * MainFrame Error
@@ -473,20 +482,50 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	@Override
 	public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
 		LogUtils.i(TAG, "onReceivedError：" + description + "  CODE:" + errorCode);
+		if (failingUrl == null && errorCode != -12) {
+			return;
+		}
+		if (errorCode == -1) {
+			return;
+		}
+		if (errorCode != ERROR_HOST_LOOKUP && (failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
+			return;
+		}
 		onMainFrameError(view, errorCode, description, failingUrl);
 	}
 
+	@Override
+	public void doUpdateVisitedHistory(WebView view, String url, boolean isReload) {
+		if (!mWaittingFinishSet.contains(url)) {
+			mWaittingFinishSet.add(url);
+		}
+		super.doUpdateVisitedHistory(view, url, isReload);
+	}
 
 	@TargetApi(Build.VERSION_CODES.M)
 	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 	@Override
 	public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-		if (request.isForMainFrame()) {
-			onMainFrameError(view,
-					error.getErrorCode(), error.getDescription().toString(),
-					request.getUrl().toString());
+		String failingUrl = request.getUrl().toString();
+		int errorCode = error.getErrorCode();
+		if (!request.isForMainFrame()) {
+			return;
 		}
-		LogUtils.i(TAG, "onReceivedError:" + error.getDescription() + " code:" + error.getErrorCode());
+		if (failingUrl == null && errorCode != ERROR_BAD_URL) {
+			return;
+		}
+		if (errorCode == ERROR_UNKNOWN) {
+			return;
+		}
+		LogUtils.i(TAG, "onReceivedError:" + error.getDescription() + " code:" + error.getErrorCode() + " failingUrl:" + failingUrl + " getUrl:" + view.getUrl() + " getOriginalUrl:" + view.getOriginalUrl());
+		if (errorCode != ERROR_HOST_LOOKUP &&
+				(failingUrl != null && !failingUrl.equals(view.getUrl()) && !failingUrl.equals(view.getOriginalUrl()))) {
+			return;
+		}
+		onMainFrameError(view,
+				error.getErrorCode(), error.getDescription().toString(),
+				request.getUrl().toString());
+
 	}
 
 	private void onMainFrameError(WebView view, int errorCode, String description, String failingUrl) {
@@ -559,6 +598,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		super.onReceivedHttpError(view, request, errorResponse);
 	}
 
+
 	@Override
 	public void onScaleChanged(WebView view, float oldScale, float newScale) {
 		LogUtils.i(TAG, "onScaleChanged:" + oldScale + "   n:" + newScale);
@@ -597,7 +637,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		private boolean mWebClientHelper;
 		private PermissionInterceptor mPermissionInterceptor;
 		private WebView mWebView;
-		private boolean mIsInterceptUnkownScheme;
+		private boolean mIsInterceptUnkownScheme = true;
 		private int mUrlHandleWays;
 
 		public Builder setActivity(Activity activity) {

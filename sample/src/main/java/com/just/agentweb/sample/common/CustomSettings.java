@@ -7,23 +7,27 @@ import android.webkit.WebView;
 
 import com.just.agentweb.AbsAgentWebSettings;
 import com.just.agentweb.AgentWeb;
+import com.just.agentweb.DefaultDownloadImpl;
 import com.just.agentweb.IAgentWebSettings;
 import com.just.agentweb.WebListenerManager;
-import com.just.agentweb.download.DefaultDownloadImpl;
 
 /**
  * Created by cenxiaozhong on 2017/5/26.
  * source code  https://github.com/Justson/AgentWeb
  */
-//WebDefaultSettingsManager 重命名为 AbsAgentWebSettings 并且抽象出bindAgentWebSupport方法
 public class CustomSettings extends AbsAgentWebSettings {
-    public CustomSettings() {
+
+    public CustomSettings(Activity activity) {
         super();
+        this.mActivity = activity;
     }
+
+    private AgentWeb mAgentWeb;
+    private Activity mActivity;
 
     @Override
     protected void bindAgentWebSupport(AgentWeb agentWeb) {
-
+        this.mAgentWeb = agentWeb;
     }
 
 
@@ -49,8 +53,7 @@ public class CustomSettings extends AbsAgentWebSettings {
     @Override
     public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
         return super.setDownloader(webView,
-                DefaultDownloadImpl.create((Activity) webView.getContext()
-                        , webView, null,
-                         mAgentWeb.getPermissionInterceptor()));
+                DefaultDownloadImpl.create(this.mActivity
+                        , webView, mAgentWeb.getPermissionInterceptor()));
     }
 }

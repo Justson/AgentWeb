@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="./upload.css">
     <title>上传身份证</title>
     <script type="text/javascript" src="event.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../jquery/jquery-3.2.1.min.js"></script>
     <!--<script type="text/javascript" src="jquery.js"></script>-->
     <script language="javascript">
     /**
@@ -73,38 +73,68 @@
             //提交时把之前保存的旧元素替换回去
             $("#file_upload").replaceWith(file);
         });
+
+         $(form2).on("change", "#file_upload2", function() {
+            alert(this.value);
+            document.getElementById("preview_path").innerText=this.value;
+         }).submit(function() {
+            //提交时把之前保存的旧元素替换回去
+            $("#file_upload2").replaceWith(file);
+        });
     });
+
+
     </script>
 </head>
 
-<body style="width: 100%;height: 100%;margin: 0;padding: 0; position: relative;">
-    <div style="position: absolute; left: 0 ;right: 0 ; top: 0 ; margin:0 auto;max-width: 750px;height: 100%">
-        <div id="div_id" style="width: 100% ; height:100%;border: 1px ;background:#000000 ; margin: 0px;">
-            <!-- 头部nav -->
-            <div id="nav" style="width: 100%; height: 10%;background: #f9f9f9;padding-top: 0px ;position: absolute;padding: 0px">
-                <div style="width: 200px;height: 100px; position:relative;left: 50%;top: 50%;margin-left: -100px;margin-top: -50px;overflow: scroll;">
-                    <font color="#000">
-                        <h4 style="text-align:center;line-height: 50px;">请上传身份证</h4> </font>
-                </div>
-                <div style="width: 100%;height: 1px;background: #c6c6c6;position: relative;margin-top: -50px;top: 99%">
-                </div>
+<body style="width: 100%;height: 100%;margin: 0;padding: 0; position: relative;background: #ebebeb">
+<div style="position: absolute; left: 0 ;right: 0 ; top: 0 ; margin:0 auto;max-width: 750px;height: 100%">
+    <div id="div_id" style="width: 100% ; height:100%;border: 1px ; margin: 0px;">
+        <!-- 头部nav -->
+        <div id="nav"
+             style="width: 100%; height: 10%;background: #f9f9f9;padding-top: 0px ;position: absolute;padding: 0px">
+            <div style="width: 200px;height: 100px; position:relative;left: 50%;top: 50%;margin-left: -100px;margin-top: -50px;overflow: scroll;">
+                <font color="#000">
+                    <h4 style="text-align:center;line-height: 50px;">请上传身份证</h4></font>
             </div>
-            <!-- body -->
-            <div id="content" style="width: 100%; height: 90% ; background: #ebebeb ;position: absolute;top: 10%;">
-                <div style="margin: 0 auto;width: 80%;height: 80%;border:3px solid #41a0f2;margin-top: 50px;overflow: scroll;">
-                    <img id="preview" src="./id.png" style="display: block;margin: 0 auto;max-width: 60%;margin-top: 20px">
-                    </img>
-
-                    <p class="fontBlue ta-c mt5" style="text-align: center;">上传身份证</p>
-                    <a href="javascript:;" class="file" style="display: block;margin: 0 auto;width: 50%;height: 30px;text-align: center;line-height: 30px;margin-bottom: 20px">选择文件
-                        <form id="form">
-                         <input id="file_upload" type="file" name="" id=""  accept=*/*,"  capture="camera" multiple="multiple" >
-                         </form>
-                    </a>
-                </div>
+            <div style="width: 100%;height: 1px;background: #c6c6c6;position: relative;margin-top: -50px;top: 99%">
             </div>
         </div>
-    </div>ƒ
+        <!-- body -->
+        <div id="content" style="width: 100%; height: 90%;position: absolute;top: 10%;">
+            <div style="margin: 0 auto;width: 80%;height: 80%;border:3px solid #41a0f2;margin-top: 50px;overflow: scroll;">
+                <img id="preview" src="./id.png"
+                     style="display: block;margin: 0 auto;max-width: 60%;margin-top: 20px">
+                </img>
+
+                <p class="fontBlue ta-c mt5" style="text-align: center;">上传身份证</p>
+                <a href="javascript:;" class="file"
+                   style="display: block;margin: 0 auto;width: 50%;height: 30px;text-align: center;line-height: 30px;margin-bottom: 20px">选择文件
+                    <form id="form">
+                        <input id="file_upload" type="file" name="" id="" accept=*/*,"
+                               capture="camera" multiple="multiple">
+                    </form>
+                </a>
+            </div>
+            <div style="margin: 0 auto;width: 80%;height: 30%;border:3px solid #41a0f2;margin-top: 50px;overflow: scroll;">
+
+                <div id="preview_path" class="fontBlue ta-c mt5" style="text-align: center;color:#000000;">暂无视屏</div>
+                <p class="fontBlue ta-c mt5" style="text-align: center;">上传视频</p>
+                <a href="javascript:;" class="file"
+                   style="display: block;margin: 0 auto;width: 50%;height: 30px;text-align: center;line-height: 30px;margin-bottom: 20px">选择文件
+                    <form id="form2">
+                        <input id="file_upload2" type="file" name="" accept="video/*"
+                               capture="camera" multiple="multiple">
+                    </form>
+                </a>
+            </div>
+
+            <div style="margin: 0 auto;width: 80%;height: 10%;margin-top: 50px;overflow: scroll;">
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 </body>
 
 </html>

@@ -17,13 +17,15 @@
 package com.just.agentweb;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.webkit.DownloadListener;
 import android.webkit.WebView;
 
 
 /**
- * @since 1.0.0
  * @author cenxiaozhong
+ * @since 1.0.0
  */
 public class AgentWebSettingsImpl extends AbsAgentWebSettings {
     private AgentWeb mAgentWeb;
@@ -35,22 +37,24 @@ public class AgentWebSettingsImpl extends AbsAgentWebSettings {
 
     @Override
     public WebListenerManager setDownloader(WebView webView, DownloadListener downloadListener) {
-        Class<?> clazz = null;
-        Object mDefaultDownloadImpl$Extra = null;
-        try {
-            clazz = Class.forName("com.just.agentweb.download.DefaultDownloadImpl");
-            mDefaultDownloadImpl$Extra =
-                    clazz.getDeclaredMethod("create", Activity.class, WebView.class,
-                            Class.forName("com.just.agentweb.download.DownloadListener"),
-                            PermissionInterceptor.class)
-                            .invoke(mDefaultDownloadImpl$Extra, (Activity) webView.getContext()
-                                    , webView, null, mAgentWeb.getPermissionInterceptor());
-
-        } catch (Throwable ignore) {
-            if (LogUtils.isDebug()) {
-                ignore.printStackTrace();
-            }
+        if (downloadListener == null) {
+            downloadListener = DefaultDownloadImpl.create(mAgentWeb.getActivity(), webView, mAgentWeb.getPermissionInterceptor());
         }
-        return super.setDownloader(webView, mDefaultDownloadImpl$Extra == null ? downloadListener : (DownloadListener) mDefaultDownloadImpl$Extra);
+        return super.setDownloader(webView, downloadListener);
     }
+
+    /**
+     * Copy from com.blankj.utilcode.util.ActivityUtils#getActivityByView
+     */
+    private Activity getActivityByContext(Context context) {
+        if (context instanceof Activity) return (Activity) context;
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
+    }
+
 }

@@ -30,8 +30,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 /**
- * @update WrapperWebViewClient rename WebViewClientDelegate
  * @author cenxiaozhong
+ * @update WebViewClientDelegate
  * @date 2017/5/28
  */
 public class WebViewClientDelegate extends WebViewClient {

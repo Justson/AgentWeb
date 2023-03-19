@@ -214,7 +214,7 @@ public class AgentWebUtils {
 	}
 
 
-	static Uri getUriFromFile(Context context, File file) {
+	public static Uri getUriFromFile(Context context, File file) {
 		Uri uri = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 			uri = getUriFromFileForN(context, file);
@@ -387,7 +387,6 @@ public class AgentWebUtils {
 	}
 
 	static Method isExistMethod(Object o, String methodName, Class... clazzs) {
-
 		if (null == o) {
 			return null;
 		}
@@ -397,9 +396,9 @@ public class AgentWebUtils {
 			mMethod.setAccessible(true);
 			return mMethod;
 		} catch (Throwable ignore) {
-			if (LogUtils.isDebug()) {
-				ignore.printStackTrace();
-			}
+//			if (LogUtils.isDebug()) {
+//				ignore.printStackTrace();
+//			}
 		}
 		return null;
 
@@ -416,9 +415,7 @@ public class AgentWebUtils {
 	}
 
 	static void clearWebViewAllCache(Context context, WebView webView) {
-
 		try {
-
 			AgentWebConfig.removeAllCookies(null);
 			webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
 			context.deleteDatabase("webviewCache.db");
@@ -437,10 +434,8 @@ public class AgentWebUtils {
 	}
 
 	static void clearWebViewAllCache(Context context) {
-
 		try {
-
-			clearWebViewAllCache(context, new WebView(context.getApplicationContext()));
+			clearWebViewAllCache(context, new LollipopFixedWebView(context.getApplicationContext()));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -522,12 +517,25 @@ public class AgentWebUtils {
 		return filePath;
 	}
 
-	static File createImageFile(Context context) {
+	public static File createImageFile(Context context) {
 		File mFile = null;
 		try {
 			String timeStamp =
 					new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
 			String imageName = String.format("aw_%s.jpg", timeStamp);
+			mFile = createFileByName(context, imageName, true);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		return mFile;
+	}
+
+	static File createVideoFile(Context context){
+		File mFile = null;
+		try {
+			String timeStamp =
+					new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(new Date());
+			String imageName = String.format("aw_%s.mp4", timeStamp);  //默认生成mp4
 			mFile = createFileByName(context, imageName, true);
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -551,7 +559,7 @@ public class AgentWebUtils {
 		if (context == null || fileUri == null) {
 			return null;
 		}
-		LogUtils.i(TAG, "getAuthority:" + fileUri.getAuthority() + "  getHost:" + fileUri.getHost() + "   getPath:" + fileUri.getPath() + "  getScheme:" + fileUri.getScheme() + "  query:" + fileUri.getQuery());
+//		LogUtils.i(TAG, "getAuthority:" + fileUri.getAuthority() + "  getHost:" + fileUri.getHost() + "   getPath:" + fileUri.getPath() + "  getScheme:" + fileUri.getScheme() + "  query:" + fileUri.getQuery());
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, fileUri)) {
 			if (isExternalStorageDocument(fileUri)) {
 				String docId = DocumentsContract.getDocumentId(fileUri);
@@ -670,6 +678,14 @@ public class AgentWebUtils {
 		return mIntent;
 	}
 
+	static Intent getIntentVideoCompat(Context context, File file){
+		Intent mIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+		Uri mUri = getUriFromFile(context, file);
+		mIntent.addCategory(Intent.CATEGORY_DEFAULT);
+		mIntent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
+		return mIntent;
+	}
+
 
 	static boolean isJson(String target) {
 		if (TextUtils.isEmpty(target)) {
@@ -753,7 +769,7 @@ public class AgentWebUtils {
 		if (permissions == null || permissions.length == 0) {
 			return null;
 		}
-		List<String> deniedPermissions = new ArrayList<>();
+		List<String> deniedPermissions = new ArrayList<>(permissions.length);
 		for (int i = 0; i < permissions.length; i++) {
 			if (!hasPermission(activity, permissions[i])) {
 				deniedPermissions.add(permissions[i]);
@@ -816,7 +832,7 @@ public class AgentWebUtils {
 		mHandler.post(runnable);
 	}
 
-	static boolean showFileChooserCompat(Activity activity,
+	public static boolean showFileChooserCompat(Activity activity,
 	                                     WebView webView,
 	                                     ValueCallback<Uri[]> valueCallbacks,
 	                                     WebChromeClient.FileChooserParams fileChooserParams,

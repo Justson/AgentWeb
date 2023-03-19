@@ -98,7 +98,6 @@ public class JsAgentWebFragment extends AgentWebFragment {
 
         String result="";
         try {
-
             JSONObject mJSONObject=new JSONObject();
             mJSONObject.put("id",1);
             mJSONObject.put("name","Agentweb");

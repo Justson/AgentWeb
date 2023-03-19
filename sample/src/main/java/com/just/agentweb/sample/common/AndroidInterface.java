@@ -30,7 +30,6 @@ public class AndroidInterface {
     @JavascriptInterface
     public void callAndroid(final String msg) {
 
-
         deliver.post(new Runnable() {
             @Override
             public void run() {

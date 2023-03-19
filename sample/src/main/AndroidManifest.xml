@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.just.agentweb.sample">
+    package="com.just.agentweb.sample">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
-    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
     <application
         android:name="com.just.agentweb.sample.app.App"
@@ -24,38 +25,53 @@
         android:theme="@style/BaseAppTheme">
         <activity android:name="com.just.agentweb.sample.activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.just.agentweb.sample.activity.WebActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleTop" />
 
-            ></activity>
-        <!--android:process=":web"-->
+        <activity
+            android:name="com.just.agentweb.sample.activity.RemoteWebViewlActivity"
+            android:launchMode="singleTop"
+            android:process=":web" />
+
+        <service
+            android:name=".service.WebService"
+            android:process=":web" />
+
         <activity
             android:name="com.just.agentweb.sample.activity.CommonActivity"
             android:configChanges="orientation|screenSize"
             android:hardwareAccelerated="true"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
         <activity
             android:name="com.just.agentweb.sample.activity.EasyWebActivity"
             android:configChanges="orientation|screenSize"
-            android:launchMode="singleTop"
-            >
-        </activity>
+            android:launchMode="singleTop" />
 
         <activity
             android:name="com.just.agentweb.sample.activity.ContainerActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
-        <activity android:name=".activity.AutoHidenToolbarActivity"/>
+            android:screenOrientation="fullSensor" />
+        <activity android:name=".activity.AutoHidenToolbarActivity" />
+
         <activity
             android:name=".activity.NativeDownloadActivity"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="fullSensor" />
+
+        <provider
+            android:name=".provider.ServiceProvider"
+            android:authorities="com.just.agentweb.sample" />
+
+        <provider
+            android:name=".provider.WebServiceProvider"
+            android:authorities="com.just.agentweb.sample.web"
+            android:process=":web" />
 
         <activity android:name=".activity.ExternalActivity">
             <intent-filter>
