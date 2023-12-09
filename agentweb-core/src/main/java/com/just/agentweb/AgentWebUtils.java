@@ -75,6 +75,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -767,7 +768,7 @@ public class AgentWebUtils {
 
 	public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
 		if (permissions == null || permissions.length == 0) {
-			return null;
+			return Collections.EMPTY_LIST;
 		}
 		List<String> deniedPermissions = new ArrayList<>(permissions.length);
 		for (int i = 0; i < permissions.length; i++) {

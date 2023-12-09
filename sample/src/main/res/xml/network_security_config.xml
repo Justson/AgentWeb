@@ -3,7 +3,6 @@
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" overridePins="true" /> <!--信任系统证书-->
-            <certificates src="user" overridePins="true" /> <!--信任用户证书-->
         </trust-anchors>
     </base-config>
 </network-security-config>

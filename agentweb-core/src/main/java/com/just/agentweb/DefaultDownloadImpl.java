@@ -19,8 +19,6 @@ package com.just.agentweb;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -32,9 +30,6 @@ import com.download.library.Extra;
 import com.download.library.ResourceRequest;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import androidx.annotation.NonNull;
@@ -108,7 +103,7 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
             return;
         }
         if (null != this.mPermissionListener) {
-            if (this.mPermissionListener.intercept(url, AgentWebPermissions.STORAGE, "download")) {
+            if (this.mPermissionListener.intercept(url, new String[]{}, "download")) {
                 return;
             }
         }

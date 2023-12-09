@@ -76,15 +76,12 @@ public class CommonActivity extends AppCompatActivity {
 
             /*Fragment 使用AgenWeb*/
 			case FLAG_GUIDE_DICTIONARY_USE_IN_FRAGMENT: //项目中请使用常量代替0 ， 代码可读性更高
-				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
-				mBundle.putString(AgentWebFragment.URL_KEY, "http://cw.gzyunjuchuang.com/");
-				break;
-			/*下载文件*/
+				/*下载文件*/
 			case FLAG_GUIDE_DICTIONARY_FILE_DOWNLOAD:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "http://android.myapp.com/");
 				break;
-            /*input标签上传文件*/
+			/*input标签上传文件*/
 			case FLAG_GUIDE_DICTIONARY_INPUT_TAG_PROBLEM:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = AgentWebFragment.getInstance(mBundle = new Bundle()), AgentWebFragment.class.getName());
 				mBundle.putString(AgentWebFragment.URL_KEY, "file:///android_asset/upload_file/uploadfile.html");
@@ -118,7 +115,7 @@ public class CommonActivity extends AppCompatActivity {
             /*豌豆荚*/
 			case FLAG_GUIDE_DICTIONARY_CUSTOM_WEBVIEW_SETTINGS:
 				ft.add(R.id.container_framelayout, mAgentWebFragment = CustomSettingsFragment.getInstance(mBundle = new Bundle()), CustomSettingsFragment.class.getName());
-				mBundle.putString(AgentWebFragment.URL_KEY, "http://www.wandoujia.com/apps");
+				mBundle.putString(AgentWebFragment.URL_KEY, "https://m.wandoujia.com/");
 				break;
 
             /*短信*/

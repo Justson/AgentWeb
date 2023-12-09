@@ -176,10 +176,10 @@ public class FileChooser {
     private void fileChooser() {
 
         List<String> permission = null;
-        if (AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.STORAGE).isEmpty()) {
-            touchOffFileChooserAction();
+        if (AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.MEDIA).isEmpty()) {
+            chooserAction();
         } else {
-            Action mAction = Action.createPermissionsAction(AgentWebPermissions.STORAGE);
+            Action mAction = Action.createPermissionsAction(AgentWebPermissions.MEDIA);
             mAction.setFromIntention(FROM_INTENTION_CODE >> 2);
             mAction.setPermissionListener(mPermissionListener);
             AgentActionFragment.start(mActivity, mAction);
@@ -188,7 +188,7 @@ public class FileChooser {
 
     }
 
-    private void touchOffFileChooserAction() {
+    private void chooserAction() {
         Action mAction = new Action();
         mAction.setAction(Action.ACTION_FILE);
         mAction.setChooserListener(getChooserListener());
@@ -270,12 +270,12 @@ public class FileChooser {
                 }
             }
             if (!needCamera && !needVideo) {
-                touchOffFileChooserAction();
+                chooserAction();
                 return;
             }
         }
         if (!TextUtils.isEmpty(this.mAcceptType) && !this.mAcceptType.contains("*/") && !this.mAcceptType.contains("image/")) {
-            touchOffFileChooserAction();
+            chooserAction();
             return;
         }
 
@@ -314,7 +314,6 @@ public class FileChooser {
 
 
     private void onCameraAction() {
-
         if (mActivity == null) {
             return;
         }
@@ -324,9 +323,7 @@ public class FileChooser {
                 cancel();
                 return;
             }
-
         }
-
         Action mAction = new Action();
         List<String> deniedPermissions = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !(deniedPermissions = checkNeedPermission()).isEmpty()) {
@@ -348,8 +345,8 @@ public class FileChooser {
         if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.CAMERA)) {
             deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
         }
-        if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.STORAGE)) {
-            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
+        if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.MEDIA)) {
+            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.MEDIA));
         }
         return deniedPermissions;
     }
@@ -380,7 +377,7 @@ public class FileChooser {
     private void permissionResult(boolean grant, int fromIntention) {
         if (fromIntention == FROM_INTENTION_CODE >> 2) {
             if (grant) {
-                touchOffFileChooserAction();
+                chooserAction();
             } else {
                 cancel();
 
@@ -388,8 +385,8 @@ public class FileChooser {
                     mAgentWebUIController
                             .get()
                             .onPermissionsDeny(
-                                    AgentWebPermissions.STORAGE,
-                                    AgentWebPermissions.ACTION_STORAGE,
+                                    AgentWebPermissions.MEDIA,
+                                    AgentWebPermissions.ACTION_MEDIA,
                                     "Open file chooser");
                 }
             }
