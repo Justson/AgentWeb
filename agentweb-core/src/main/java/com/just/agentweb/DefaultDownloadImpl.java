@@ -114,53 +114,13 @@ public class DefaultDownloadImpl implements android.webkit.DownloadListener {
         }
         ResourceRequest resourceRequest = createResourceRequest(url);
         this.mDownloadTasks.put(url, resourceRequest);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            List<String> mList = null;
-            if ((mList = checkNeedPermission()).isEmpty()) {
-                preDownload(url);
-            } else {
-                Action mAction = Action.createPermissionsAction(mList.toArray(new String[]{}));
-                mAction.setPermissionListener(getPermissionListener(url));
-                AgentActionFragment.start(mActivityWeakReference.get(), mAction);
-            }
-        } else {
-            preDownload(url);
-        }
+        preDownload(url);
     }
 
     protected ResourceRequest createResourceRequest(String url) {
         return DownloadImpl.getInstance(this.mContext).with(url).setEnableIndicator(true).autoOpenIgnoreMD5();
     }
 
-    protected AgentActionFragment.PermissionListener getPermissionListener(final String url) {
-        return new AgentActionFragment.PermissionListener() {
-            @Override
-            public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
-                if (checkNeedPermission().isEmpty()) {
-                    preDownload(url);
-                } else {
-                    if (null != mAgentWebUIController.get()) {
-                        mAgentWebUIController
-                                .get()
-                                .onPermissionsDeny(
-                                        checkNeedPermission().
-                                                toArray(new String[]{}),
-                                        AgentWebPermissions.ACTION_STORAGE, "Download");
-                    }
-                    LogUtils.e(TAG, "储存权限获取失败~");
-                }
-
-            }
-        };
-    }
-
-    protected List<String> checkNeedPermission() {
-        List<String> deniedPermissions = new ArrayList<>();
-        if (!AgentWebUtils.hasPermission(mActivityWeakReference.get(), AgentWebPermissions.STORAGE)) {
-            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.STORAGE));
-        }
-        return deniedPermissions;
-    }
 
     protected void preDownload(String url) {
         // 移动数据

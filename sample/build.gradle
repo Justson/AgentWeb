@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    compileSdk 32
-    buildToolsVersion '32.0.0'
+    compileSdk 33
+    buildToolsVersion '33.0.0'
     defaultConfig {
         applicationId "com.just.agentweb.sample"
         minSdkVersion 19
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         multiDexEnabled true
         versionCode 5
-        versionName "5.0.0"
+        versionName "5.0.7"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     signingConfigs {
