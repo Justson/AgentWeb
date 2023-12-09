@@ -1,18 +1,18 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-}
+
+apply plugin: 'com.android.application'
 
 android {
-    compileSdk 33
-    buildToolsVersion '33.0.0'
+    compileSdk COMPILE_SDK_VERSION.toInteger()
+    buildToolsVersion BUILD_TOOL_VERSION
+
     defaultConfig {
         applicationId "com.just.agentweb.sample"
+        namespace 'com.just.agentweb.sample'
         minSdkVersion 19
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         multiDexEnabled true
         versionCode 5
-        versionName "5.0.7"
+        versionName VERSION_NAME
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     signingConfigs {

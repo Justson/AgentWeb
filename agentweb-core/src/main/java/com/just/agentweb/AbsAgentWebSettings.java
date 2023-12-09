@@ -83,7 +83,6 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
         }
         mWebSettings.setTextZoom(100);
         mWebSettings.setDatabaseEnabled(true);
-        mWebSettings.setAppCacheEnabled(true);
         mWebSettings.setLoadsImagesAutomatically(true);
         mWebSettings.setSupportMultipleWindows(false);
         // 是否阻塞加载网络图片  协议http or https
@@ -116,9 +115,6 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
         //设置数据库路径  api19 已经废弃,这里只针对 webkit 起作用
         mWebSettings.setGeolocationDatabasePath(dir);
         mWebSettings.setDatabasePath(dir);
-        mWebSettings.setAppCachePath(dir);
-        //缓存文件最大值
-        mWebSettings.setAppCacheMaxSize(Long.MAX_VALUE);
         mWebSettings.setUserAgentString(getWebSettings()
                 .getUserAgentString()
                 .concat(USERAGENT_AGENTWEB)

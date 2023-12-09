@@ -283,8 +283,8 @@ public class FileChooser {
             this.mAgentWebUIController
                     .get()
                     .onSelectItemsPrompt(this.mWebView, mWebView.getUrl(),
-                            new String[]{mActivity.getString(R.string.agentweb_camera),
-                                    mActivity.getString(R.string.agentweb_file_chooser)}, getCallBack());
+                            new String[]{mActivity.getString(com.just.agentweb.R.string.agentweb_camera),
+                                    mActivity.getString(com.just.agentweb.R.string.agentweb_file_chooser)}, getCallBack());
         }
 
     }
@@ -576,7 +576,7 @@ public class FileChooser {
 
                 if (sum > AgentWebConfig.MAX_FILE_LENGTH) {
                     if (mAgentWebUIController.get() != null) {
-                        mAgentWebUIController.get().onShowMessage(mActivity.getString(R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
+                        mAgentWebUIController.get().onShowMessage(mActivity.getString(com.just.agentweb.R.string.agentweb_max_file_length_limit, (AgentWebConfig.MAX_FILE_LENGTH / 1024 / 1024) + ""), "convertFileAndCallback");
                     }
                     mJsChannelCallback.call(null);
                     return;
@@ -661,7 +661,7 @@ public class FileChooser {
             return;
         }
         final String path = paths[0];
-        mAgentWebUIController.get().onLoading(mActivity.getString(R.string.agentweb_loading));
+        mAgentWebUIController.get().onLoading(mActivity.getString(com.just.agentweb.R.string.agentweb_loading));
         AsyncTask.THREAD_POOL_EXECUTOR.execute(new WaitPhotoRunnable(path, new AboveLCallback(mUriValueCallbacks, datas, mAgentWebUIController)));
         mUriValueCallbacks = null;
 

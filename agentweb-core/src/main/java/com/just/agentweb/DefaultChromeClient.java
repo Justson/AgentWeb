@@ -286,10 +286,6 @@ public class DefaultChromeClient extends MiddlewareWebChromeBase {
         quotaUpdater.updateQuota(totalQuota * 2);
     }
 
-    @Override
-    public void onReachedMaxAppCacheSize(long requiredStorage, long quota, WebStorage.QuotaUpdater quotaUpdater) {
-        quotaUpdater.updateQuota(requiredStorage * 2);
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override

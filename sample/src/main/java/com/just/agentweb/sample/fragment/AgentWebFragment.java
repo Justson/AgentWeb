@@ -1,6 +1,7 @@
 package com.just.agentweb.sample.fragment;
 
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -65,6 +66,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -127,7 +129,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
                 .setPermissionInterceptor(mPermissionInterceptor) //权限拦截 2.0.0 加入。
                 .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象 ，使用AgentWebView没影响。
                 .setAgentWebUIController(new UIController(getActivity())) //自定义UI  AgentWeb3.0.0 加入。
-                .setMainFrameErrorView(R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
+                .setMainFrameErrorView(com.just.agentweb.R.layout.agentweb_error_page, -1) //参数1是错误显示的布局，参数2点击刷新控件ID -1表示点击整个布局都刷新， AgentWeb 3.0.0 加入。
                 .useMiddlewareWebChrome(getMiddlewareWebChrome()) //设置WebChromeClient中间件，支持多个WebChromeClient，AgentWeb 3.0.0 加入。
                 .additionalHttpHeader(getUrl(), "cookie", "41bc7ddf04a26b91803f6b11817a5a1c")
                 .useMiddlewareWebClient(getMiddlewareWebClient()) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
@@ -399,7 +401,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
         mSimpleSearchView = view.findViewById(R.id.search_view);
         pageNavigator(View.GONE);
         mSimpleSearchView.setHint("请输入网址");
-        EditText editText = mSimpleSearchView.findViewById(R.id.searchEditText);
+        EditText editText = mSimpleSearchView.findViewById(com.ferfalk.simplesearchview.R.id.searchEditText);
         editText.setImeOptions(EditorInfo.IME_ACTION_GO);
 //        mSimpleSearchView.setSearchBackground(new ColorDrawable(getColorPrimary()));
         mSimpleSearchView.setOnQueryTextListener(new SimpleSearchView.OnQueryTextListener() {
@@ -427,11 +429,11 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
 
     }
 
-    public int getColorPrimary() {
-        TypedValue typedValue = new TypedValue();
-        getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
-        return typedValue.data;
-    }
+//    public int getColorPrimary() {
+//        TypedValue typedValue = new TypedValue();
+//        requireActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+//        return typedValue.data;
+//    }
 
 
     private void pageNavigator(int tag) {
@@ -505,6 +507,7 @@ public class AgentWebFragment extends Fragment implements FragmentKeyDown, FileC
      * 菜单事件
      */
     private PopupMenu.OnMenuItemClickListener mOnMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
+        @SuppressLint("NonConstantResourceId")
         @Override
         public boolean onMenuItemClick(MenuItem item) {
 

@@ -68,7 +68,7 @@ public class AgentWebConfig {
     /**
      * AgentWeb 的版本
      */
-    public static final String AGENTWEB_VERSION = AGENTWEB_NAME + "/" + BuildConfig.VERSION_NAME;
+    public static final String AGENTWEB_VERSION = AGENTWEB_NAME + "/" + "5.0.8";
     /**
      * 通过JS获取的文件大小， 这里限制最大为5MB ，太大会抛出 OutOfMemoryError
      */

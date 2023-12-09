@@ -17,6 +17,7 @@
 package com.just.agentweb;
 
 import android.Manifest;
+import android.os.Build;
 
 
 /**
@@ -36,8 +37,17 @@ public class AgentWebPermissions {
 		LOCATION = new String[]{
 				Manifest.permission.ACCESS_FINE_LOCATION,
 				Manifest.permission.ACCESS_COARSE_LOCATION};
-		STORAGE = new String[]{
-				Manifest.permission.READ_EXTERNAL_STORAGE,
-				Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+		if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+			STORAGE = new String[]{
+					Manifest.permission.READ_MEDIA_IMAGES,
+					Manifest.permission.READ_MEDIA_VIDEO,
+					Manifest.permission.READ_MEDIA_AUDIO,
+			};
+		} else {
+			STORAGE = new String[]{
+					Manifest.permission.READ_EXTERNAL_STORAGE,
+					Manifest.permission.WRITE_EXTERNAL_STORAGE};
+		}
 	}
 }

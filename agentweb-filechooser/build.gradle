@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION.toInteger()
-    buildToolsVersion "${BUILD_TOOL_VERSION}"
+    compileSdk COMPILE_SDK_VERSION.toInteger()
 
     defaultConfig {
         minSdkVersion 14
+        namespace 'com.just.agentweb.filechooser'
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode 2
-        versionName "5.0.0"
+        versionName VERSION_NAME
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 

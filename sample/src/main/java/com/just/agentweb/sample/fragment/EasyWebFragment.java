@@ -80,23 +80,15 @@ public class EasyWebFragment extends BaseAgentWebFragment {
         public void onClick(View v) {
 
 
-            switch (v.getId()) {
-                case R.id.iv_back:
-                    if (!mAgentWeb.back()) {
-                        EasyWebFragment.this.getActivity().finish();
-                    }
-                    break;
-                case R.id.iv_finish:
+            if (v.getId() == R.id.iv_back) {
+                if (!mAgentWeb.back()) {
                     EasyWebFragment.this.getActivity().finish();
-                    break;
-                default:
-                    break;
-
-
+                }
+            } else if (v.getId() == R.id.iv_finish) {
+                EasyWebFragment.this.getActivity().finish();
             }
+
         }
-
-
     };
 
     @Override

@@ -1,15 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion COMPILE_SDK_VERSION.toInteger()
-    buildToolsVersion "${BUILD_TOOL_VERSION}"
+    compileSdk COMPILE_SDK_VERSION.toInteger()
+
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
+        namespace 'com.just.agentweb'
         versionCode 3
-        versionName "5.0.0"
-
+        versionName VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
 
@@ -18,12 +18,6 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'VERSION_NAME', "\"" + "5.0.0" + "\""
-        }
-        debug {
-            buildConfigField 'String', 'VERSION_NAME', "\"" + "5.0.0" + "\""
-            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -48,7 +42,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
-    compileOnly 'com.github.Justson:Downloader:v4.1.9-androidx'
+    compileOnly 'com.github.Justson:Downloader:v5.0.4-androidx'
     compileOnly 'com.google.android.material:material:1.0.0'
     compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'
     compileOnly fileTree(include: ['*.jar'], dir: 'providedLibs')

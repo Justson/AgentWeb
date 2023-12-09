@@ -199,16 +199,6 @@ public class WebChromeClientDelegate extends WebChromeClient {
 
     }
 
-    @Override
-    @Deprecated
-    public void onReachedMaxAppCacheSize(long requiredStorage, long quota,
-                                         WebStorage.QuotaUpdater quotaUpdater) {
-        if (this.mDelegate != null) {
-            this.mDelegate.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
-            return;
-        }
-        super.onReachedMaxAppCacheSize(requiredStorage, quota, quotaUpdater);
-    }
 
     @Override
     public void onGeolocationPermissionsShowPrompt(String origin,

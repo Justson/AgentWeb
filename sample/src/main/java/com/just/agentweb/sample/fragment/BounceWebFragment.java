@@ -49,7 +49,7 @@ public class BounceWebFragment extends AgentWebFragment {
 				.setSecurityType(AgentWeb.SecurityType.STRICT_CHECK)
 				.interceptUnkownUrl()
 				.setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.ASK)
-				.setMainFrameErrorView(R.layout.agentweb_error_page, -1)
+				.setMainFrameErrorView(com.just.agentweb.R.layout.agentweb_error_page, -1)
 				.createAgentWeb()//
 				.ready()//
 				.go(getUrl());
