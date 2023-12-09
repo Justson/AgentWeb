@@ -6,6 +6,8 @@
 
     <color name="blue_color">#1B9AF7</color>
     <color name="blue_color_light">#58b2f2</color>
-
+    <color name="select_color">#2e2e32</color>
+    <color name="black">#000000</color>
+    <color name="white">#ffffff</color>
     <color name="colorPrimary_light_trsp" >#7b393a3f</color>
 </resources>
