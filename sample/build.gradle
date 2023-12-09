@@ -71,8 +71,8 @@ dependencies {
     api project(':agentweb-core')
     api project(':agentweb-filechooser')
     implementation 'com.github.Justson:Downloader:v5.0.4-androidx'
-//    implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.0.0-alpha.1-androidx'
-//    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.0.0-alpha.1-androidx'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.1.0-androidx'
+//    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.1.0-androidx'
 //    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
 //    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 //    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
