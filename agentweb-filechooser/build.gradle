@@ -49,7 +49,6 @@ afterEvaluate {
         publications {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
-                from components["release"]
                 groupId = 'com.github.Justson.AgentWeb'
                 artifactId = 'agentweb-filechooser'
                 version = 'v5.0.7-androidx'
