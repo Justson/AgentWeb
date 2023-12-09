@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 android {
     compileSdk COMPILE_SDK_VERSION.toInteger()
@@ -46,4 +47,17 @@ dependencies {
     compileOnly 'com.google.android.material:material:1.0.0'
     compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'
     compileOnly fileTree(include: ['*.jar'], dir: 'providedLibs')
+}
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components["release"]
+                groupId = 'com.github.Justson.AgentWeb'
+                artifactId = 'agentweb-core'
+                version = 'v5.0.7-androidx'
+            }
+        }
+    }
 }

@@ -23,6 +23,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Pair;
+import android.view.ActionMode;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -123,6 +124,11 @@ public class AgentWebView extends LollipopFixedWebView {
     }
 
     public final void setWebViewClientSupport(WebViewClient client) {
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        return super.startActionMode(callback);
     }
 
     @Override
