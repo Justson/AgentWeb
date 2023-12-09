@@ -13,8 +13,8 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
 ```groovy
 allprojects {
 	repositories {
-        mavenCentral()
-		maven { url 'https://jitpack.io' }
+       mavenCentral()
+		   maven { url 'https://jitpack.io' }
 	}
 }
 ```
