@@ -111,7 +111,7 @@ public class AgentWebUtils {
 			return;
 		}
 		m.loadUrl("about:blank");
-		m.stopLoading();
+		//移除 m.stopLoading(); 处理界面销毁的时候，异常警告日志：Application attempted to call on a destroyed WebView
 		if (m.getHandler() != null) {
 			m.getHandler().removeCallbacksAndMessages(null);
 		}
