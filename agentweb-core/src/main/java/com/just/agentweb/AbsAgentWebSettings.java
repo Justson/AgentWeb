@@ -65,6 +65,10 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
         mWebSettings.setSupportZoom(true);
         mWebSettings.setBuiltInZoomControls(false);
         mWebSettings.setSavePassword(false);
+        // Issue #339: HTMLMediaElement.play() throws "API can only be initiated by
+        // a user gesture" for embedded video players that auto-play. Allow
+        // programmatic playback so embedded players (e.g. share-page videos) work.
+        mWebSettings.setMediaPlaybackRequiresUserGesture(false);
         if (AgentWebUtils.checkNetwork(webView.getContext().getApplicationContext())) {
             //根据cache-control获取数据。
             mWebSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
