@@ -68,13 +68,43 @@ public class WebViewClientDelegate extends WebViewClient {
         return super.shouldOverrideUrlLoading(view, request);
     }
 
+    /**
+     * One-pixel transparent placeholder used in place of a null favicon when
+     * forwarding {@link #onPageStarted(WebView, String, Bitmap)} to a delegate
+     * whose Kotlin signature declares favicon as a non-null {@code Bitmap}.
+     * Allocated lazily so there is no cost when the platform supplies a real
+     * favicon. See issue #490.
+     */
+    private static volatile Bitmap sFaviconPlaceholder;
+
+    private static Bitmap faviconPlaceholder() {
+        Bitmap placeholder = sFaviconPlaceholder;
+        if (placeholder == null) {
+            synchronized (WebViewClientDelegate.class) {
+                placeholder = sFaviconPlaceholder;
+                if (placeholder == null) {
+                    placeholder = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+                    sFaviconPlaceholder = placeholder;
+                }
+            }
+        }
+        return placeholder;
+    }
+
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
+        // Issue #490: WebView may deliver a null favicon at page-start. Kotlin
+        // delegates whose signature declares favicon as non-null Bitmap will
+        // crash at the synthetic Intrinsics.checkParameterIsNotNull check.
+        // Substitute a tiny transparent placeholder so non-null Kotlin
+        // signatures keep working; nullable signatures see no observable
+        // change beyond receiving a non-null bitmap.
+        Bitmap safeFavicon = favicon != null ? favicon : faviconPlaceholder();
         if (mDelegate != null) {
-            mDelegate.onPageStarted(view, url, favicon);
+            mDelegate.onPageStarted(view, url, safeFavicon);
             return;
         }
-        super.onPageStarted(view, url, favicon);
+        super.onPageStarted(view, url, safeFavicon);
     }
 
     @Override
