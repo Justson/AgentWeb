@@ -367,6 +367,15 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 	@Override
 	public void onShowSslCertificateErrorDialog(final WebView view, final SslErrorHandler handler, final SslError error) {
+		// Issue #1065: Activity may already be finishing/destroyed by the time the
+		// WebView delivers the SSL error callback on the main thread. Showing a
+		// dialog against a stale window token throws WindowManager$BadTokenException.
+		// Fail safe by cancelling the request when we cannot present UI.
+		if (mActivity == null || mActivity.isFinishing()
+				|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed())) {
+			handler.cancel();
+			return;
+		}
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
 		String sslErrorMessage;
 		switch (error.getPrimaryError()) {
@@ -402,7 +411,18 @@ public class DefaultUIController extends AbsAgentWebUIController {
 				handler.cancel();
 			}
 		});
-		alertDialog.show();
+		// Re-check just before show in case the activity transitioned during string lookup.
+		if (mActivity.isFinishing()
+				|| (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && mActivity.isDestroyed())) {
+			handler.cancel();
+			return;
+		}
+		try {
+			alertDialog.show();
+		} catch (android.view.WindowManager.BadTokenException | IllegalStateException e) {
+			// Activity window went away between our check and show(); fail safe.
+			handler.cancel();
+		}
 
 
 	}
