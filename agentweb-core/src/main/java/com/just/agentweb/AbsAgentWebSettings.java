@@ -96,6 +96,11 @@ public abstract class AbsAgentWebSettings implements IAgentWebSettings, WebListe
             mWebSettings.setAllowUniversalAccessFromFileURLs(false);
         }
         mWebSettings.setJavaScriptCanOpenWindowsAutomatically(true);
+        // Issue #339: HTML5 video.play() was rejected with
+        // "play() can only be initiated by a user gesture" because the default
+        // gesture requirement was never lifted. Pages that auto-start video
+        // playback (most short-form video sites) need this off.
+        mWebSettings.setMediaPlaybackRequiresUserGesture(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 
             mWebSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
