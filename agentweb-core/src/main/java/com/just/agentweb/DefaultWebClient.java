@@ -456,6 +456,10 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 
 	@Override
 	public void onPageStarted(WebView view, String url, Bitmap favicon) {
+		// Issue #490: Some sites (notably Kotlin overrides) crashed because
+		// favicon arrived as null and downstream code dereferenced it. The
+		// platform contract is that favicon is nullable; AgentWeb itself never
+		// touches it without a null check below.
 		if (!mWaittingFinishSet.contains(url)) {
 			mWaittingFinishSet.add(url);
 		}
