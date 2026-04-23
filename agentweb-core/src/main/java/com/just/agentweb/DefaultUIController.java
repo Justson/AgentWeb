@@ -367,6 +367,14 @@ public class DefaultUIController extends AbsAgentWebUIController {
 
 	@Override
 	public void onShowSslCertificateErrorDialog(final WebView view, final SslErrorHandler handler, final SslError error) {
+		Activity mActivity;
+		if ((mActivity = this.mActivity) == null || mActivity.isFinishing()) {
+			// Issue #1065: Avoid BadTokenException when the host activity has
+			// already started finishing. Mirror the guard used by every other
+			// dialog method in this class (onLoading, onCancelLoading, ...).
+			handler.cancel();
+			return;
+		}
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
 		String sslErrorMessage;
 		switch (error.getPrimaryError()) {
