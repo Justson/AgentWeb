@@ -1,3 +1,8 @@
+* v_5.1.5 更新
+	* **修复发布产物中缺少 AAR 的问题**。此前 `publishing` 的 publication 没有 `from components.release`，
+	  发布出去的只有一个空壳 POM，不含任何库产物；现已补上，并按 AGP 要求声明 `singleVariant('release')`
+	* 发布渠道统一到 JitPack，坐标改为 `com.github.Justson.AgentWeb:*`，不再使用 `io.github.justson:*`
+
 * v_5.1.4 更新
 	* 修复 SSL 证书错误弹窗会叠加出多个的问题 [#1022](https://github.com/Justson/AgentWeb/issues/1022)
 	* 修复 `AgentActionFragment.onRequestPermissionsResult` 空指针崩溃 [#1062](https://github.com/Justson/AgentWeb/issues/1062)

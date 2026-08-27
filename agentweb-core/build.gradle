@@ -36,6 +36,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    // AGP 7.1+ 必须显式声明要发布的变体，否则不会生成 components.release 软件组件，
+    // publishing 里也就无从挂载 AAR。
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+        }
+    }
 //   defaultPublishConfig "debug"
 }
 
@@ -51,13 +58,18 @@ dependencies {
     compileOnly fileTree(include: ['*.jar'], dir: 'providedLibs')
 }
 
-publishing {
-    publications {
-        // Creates a Maven publication called "release".
-        release(MavenPublication) {
-            groupId = 'com.github.Justson.AgentWeb'
-            artifactId = 'agentweb-core'
-            version = 'v5.1.4-androidx'
+// 必须放在 afterEvaluate 中：components.release 由 AGP 在工程求值完成后才创建。
+// 此前这里缺少 from components.release，publish 只产出一个空壳 POM 而没有 AAR。
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.Justson.AgentWeb'
+                artifactId = 'agentweb-core'
+                version = 'v5.1.5-androidx'
+            }
         }
     }
 }

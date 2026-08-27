@@ -10,6 +10,8 @@ AgentWeb 是一个基于的 Android WebView ，极度容易使用以及功能强
 
 ## Gradle 引入
 
+AgentWeb 通过 [JitPack](https://jitpack.io/#Justson/AgentWeb) 分发，请先添加 JitPack 仓库：
+
 ```groovy
 allprojects {
   repositories {
@@ -19,13 +21,22 @@ allprojects {
 }
 ```
 
+Gradle 7+ 若使用 `settings.gradle` 集中管理仓库，则加在 `dependencyResolutionManagement` 中：
 
+```groovy
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
 
 * Androidx
 
    ```groovy
-    implementation 'io.github.justson:agentweb-core:v5.1.4-androidx' 
-    implementation 'io.github.justson:agentweb-filechooser:v5.1.4-androidx' // (可选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.1.5-androidx' // (必选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.1.5-androidx' // (可选)
     implementation 'com.github.Justson:Downloader:v5.0.6-androidx' // (可选)
    
    ```
