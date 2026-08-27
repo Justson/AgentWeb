@@ -35,11 +35,13 @@ dependencyResolutionManagement {
 * Androidx
 
    ```groovy
-    implementation 'com.github.Justson.AgentWeb:agentweb-core:v5.1.6-androidx' // (必选)
-    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:v5.1.6-androidx' // (可选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-core:5.1.6-androidx' // (必选)
+    implementation 'com.github.Justson.AgentWeb:agentweb-filechooser:5.1.6-androidx' // (可选)
     implementation 'com.github.Justson:Downloader:v5.0.6-androidx' // (可选)
    
    ```
+
+> 注意版本号**不带 `v` 前缀**：Git tag 是 `v5.1.6-androidx`，而 JitPack 在生成坐标时会去掉前导 `v`，因此依赖里应写 `5.1.6-androidx`。
 
 
 ## 相关
