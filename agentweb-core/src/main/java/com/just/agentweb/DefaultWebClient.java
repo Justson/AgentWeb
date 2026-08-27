@@ -147,6 +147,14 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	 */
 	public static final String SCHEME_SMS = "sms:";
 	/**
+	 * file scheme - locally bundled assets and on-device files.
+	 */
+	public static final String FILE_SCHEME = "file://";
+	/**
+	 * javascript: scheme - bookmarklet-style URLs the WebView itself evaluates.
+	 */
+	public static final String JAVASCRIPT_SCHEME = "javascript:";
+	/**
 	 * 缓存当前出现错误的页面
 	 */
 	private Set<String> mErrorUrlsSet = new HashSet<>();
@@ -188,6 +196,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		String url = request.getUrl().toString();
 		if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
 			return (webClientHelper && HAS_ALIPAY_LIB && isAlipay(view, url));
+		}
+		// Issue #762: navigations to file:// (e.g. links between bundled assets)
+		// and javascript: URLs must be handled by WebView itself. Letting them
+		// fall through into the unknown-URL branch below causes
+		// mIsInterceptUnkownUrl to silently drop the navigation.
+		if (url.startsWith(FILE_SCHEME) || url.startsWith(JAVASCRIPT_SCHEME)) {
+			return false;
 		}
 		if (!webClientHelper) {
 			return super.shouldOverrideUrlLoading(view, request);
@@ -277,6 +292,13 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	public boolean shouldOverrideUrlLoading(WebView view, String url) {
 		if (url.startsWith(HTTP_SCHEME) || url.startsWith(HTTPS_SCHEME)) {
 			return (webClientHelper && HAS_ALIPAY_LIB && isAlipay(view, url));
+		}
+		// Issue #762: navigations to file:// (e.g. links between bundled assets)
+		// and javascript: URLs must be handled by WebView itself. Letting them
+		// fall through into the unknown-URL branch below causes
+		// mIsInterceptUnkownUrl to silently drop the navigation.
+		if (url.startsWith(FILE_SCHEME) || url.startsWith(JAVASCRIPT_SCHEME)) {
+			return false;
 		}
 		if (!webClientHelper) {
 			return false;
