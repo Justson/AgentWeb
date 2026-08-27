@@ -40,7 +40,19 @@ public class AgentWebPermissions {
 				Manifest.permission.ACCESS_FINE_LOCATION,
 				Manifest.permission.ACCESS_COARSE_LOCATION};
 
-		if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+		if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+			// Issue #1077: Android 14 起用户可以只授予「选定的照片」，此时系统只授予
+			// READ_MEDIA_VISUAL_USER_SELECTED，READ_MEDIA_IMAGES / VIDEO 仍为 denied。
+			// 必须把它一并申请，系统才会给出「选择照片」这一档选项；
+			// 校验时须用 AgentWebUtils#hasAnyPermission（任一满足即可），
+			// 因为完整授权与部分授权授予的是不同的权限，不存在同时满足的情况。
+			MEDIA = new String[]{
+					Manifest.permission.READ_MEDIA_IMAGES,
+					Manifest.permission.READ_MEDIA_VIDEO,
+					Manifest.permission.READ_MEDIA_AUDIO,
+					Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED,
+			};
+		} else if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
 			MEDIA = new String[]{
 					Manifest.permission.READ_MEDIA_VIDEO,
 					Manifest.permission.READ_MEDIA_AUDIO,

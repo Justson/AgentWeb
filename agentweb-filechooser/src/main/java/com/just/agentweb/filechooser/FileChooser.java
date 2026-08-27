@@ -174,9 +174,11 @@ public class FileChooser {
     }
 
     private void fileChooser() {
-
-        List<String> permission = null;
-        if (AgentWebUtils.getDeniedPermissions(mActivity, AgentWebPermissions.MEDIA).isEmpty()) {
+        // Issue #1077: 选择器本身走 SAF（ACTION_OPEN_DOCUMENT），按 URI 逐个授权，
+        // 这里的媒体权限只是为了尽量让系统相册可读，拿到任意一项即可放行。
+        // Android 14 的「仅选定照片」只会授予 READ_MEDIA_VISUAL_USER_SELECTED，
+        // 原先按「全部授予」判断会把它当成完全拒绝，导致选完照片回来毫无反应。
+        if (AgentWebUtils.hasAnyPermission(mActivity, AgentWebPermissions.MEDIA)) {
             chooserAction();
         } else {
             Action mAction = Action.createPermissionsAction(AgentWebPermissions.MEDIA);
@@ -343,11 +345,12 @@ public class FileChooser {
         List<String> deniedPermissions = new ArrayList<>();
 
         if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.CAMERA)) {
-            deniedPermissions.add(AgentWebPermissions.CAMERA[0]);
+            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.CAMERA));
         }
-        if (!AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.MEDIA)) {
-            deniedPermissions.addAll(Arrays.asList(AgentWebPermissions.MEDIA));
-        }
+        // Issue #1077: 拍照结果写入 AgentWeb 自己的 external-cache 目录（agentweb-cache），
+        // 再经自家 FileProvider 交出，全程不触碰系统相册，因此不需要任何媒体权限。
+        // 此前连同 READ_MEDIA_* 一起索要，在 Android 14 上会多弹一次照片访问弹窗
+        // （用户会感知为「点相机却跳到相册」），且其结果还会把相机授权一并判为失败。
         return deniedPermissions;
     }
 
@@ -366,11 +369,16 @@ public class FileChooser {
 
         @Override
         public void onRequestPermissionsResult(@NonNull String[] permissions, @NonNull int[] grantResults, Bundle extras) {
-
-            boolean tag = true;
-            tag = AgentWebUtils.hasPermission(mActivity, Arrays.asList(permissions)) ? true : false;
-            permissionResult(tag, extras.getInt(KEY_FROM_INTENTION));
-
+            int fromIntention = extras.getInt(KEY_FROM_INTENTION);
+            boolean granted;
+            if (fromIntention == FROM_INTENTION_CODE >> 3) {
+                // 拍照只依赖 CAMERA，不受媒体权限影响
+                granted = AgentWebUtils.hasPermission(mActivity, AgentWebPermissions.CAMERA);
+            } else {
+                // Issue #1077: 媒体权限拿到任意一项即可，Android 14 的「仅选定照片」同样可用
+                granted = AgentWebUtils.hasAnyPermission(mActivity, AgentWebPermissions.MEDIA);
+            }
+            permissionResult(granted, fromIntention);
         }
     };
 

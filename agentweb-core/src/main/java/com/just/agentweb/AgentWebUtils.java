@@ -764,6 +764,32 @@ public class AgentWebUtils {
 		return true;
 	}
 
+	/**
+	 * 是否已获得给定权限中的<b>任意一项</b>，与 {@link #hasPermission(Context, List)} 的「全部满足」相对。
+	 * <p>
+	 * Issue #1077：Android 14 起用户可以只授予「选定的照片」，此时系统仅授予
+	 * {@code READ_MEDIA_VISUAL_USER_SELECTED}，而 {@code READ_MEDIA_IMAGES} /
+	 * {@code READ_MEDIA_VIDEO} 仍会被判为 denied。完整授权与部分授权授予的是不同的权限，
+	 * 二者不会同时满足，按「全部满足」判断必然把部分授权误判为完全拒绝。
+	 *
+	 * @return 权限列表为空时返回 true（表示无需任何权限）
+	 */
+	public static boolean hasAnyPermission(@NonNull Context context, @NonNull String... permissions) {
+		return hasAnyPermission(context, Arrays.asList(permissions));
+	}
+
+	public static boolean hasAnyPermission(@NonNull Context context, @NonNull List<String> permissions) {
+		if (permissions.isEmpty() || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+			return true;
+		}
+		for (String permission : permissions) {
+			if (hasPermission(context, permission)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static List<String> getDeniedPermissions(Activity activity, String[] permissions) {
 		if (permissions == null || permissions.length == 0) {
 			return Collections.EMPTY_LIST;
