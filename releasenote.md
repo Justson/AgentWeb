@@ -1,3 +1,8 @@
+* v_5.1.2 更新
+	* compileSdk / targetSdk 升级到 36 (Android 16)
+	* Android Gradle Plugin 升级到 8.13.2，Gradle Wrapper 升级到 8.13
+	* buildToolsVersion 升级到 36.1.0
+
 * v_5.0.0 更新
 	* ActionActivity 重构， 使用Fragment 替代 Activity，解决多进程使用问题
 	* 新增 WebRTC Sample

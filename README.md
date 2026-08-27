@@ -24,9 +24,9 @@ allprojects {
 * Androidx
 
    ```groovy
-    implementation 'io.github.justson:agentweb-core:v5.1.1-androidx' 
-    implementation 'io.github.justson:agentweb-filechooser:v5.1.1-androidx' // (可选)
-    implementation 'com.github.Justson:Downloader:v5.0.4-androidx' // (可选)
+    implementation 'io.github.justson:agentweb-core:v5.1.2-androidx' 
+    implementation 'io.github.justson:agentweb-filechooser:v5.1.2-androidx' // (可选)
+    implementation 'com.github.Justson:Downloader:v5.0.6-androidx' // (可选)
    
    ```
 
@@ -46,6 +46,7 @@ allprojects {
 * `setAgentWebParent` 不支持  `ConstraintLayout` 。
 * `mAgentWeb.getWebLifeCycle().onPause();`会暂停应用内所有`WebView` 。
 * `minSdkVersion` 低于等于16以下自定义`WebView`请注意与 `JS` 之间通信安全。
+* v5.1.2 起 `compileSdk` / `targetSdk` 升级到 36（Android 16），Android Gradle Plugin 升级到 8.13.2，请同步升级项目的 Gradle 与 AGP 版本。
 
 
 

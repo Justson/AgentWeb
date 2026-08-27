@@ -43,7 +43,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
-    compileOnly 'com.github.Justson:Downloader:v5.0.4-androidx'
+    compileOnly 'com.github.Justson:Downloader:v5.0.6-androidx'
     compileOnly 'com.google.android.material:material:1.0.0'
     compileOnly 'androidx.legacy:legacy-support-v4:1.0.0'
     compileOnly fileTree(include: ['*.jar'], dir: 'providedLibs')
@@ -55,7 +55,7 @@ publishing {
         release(MavenPublication) {
             groupId = 'com.github.Justson.AgentWeb'
             artifactId = 'agentweb-core'
-            version = 'v5.0.7-androidx'
+            version = 'v5.1.2-androidx'
         }
     }
 }
