@@ -1,4 +1,4 @@
-* v_5.1.5 更新
+* v_5.1.6 更新
 	* **修复发布产物中缺少 AAR 的问题**。此前 `publishing` 的 publication 没有 `from components.release`，
 	  发布出去的只有一个空壳 POM，不含任何库产物；现已补上，并按 AGP 要求声明 `singleVariant('release')`
 	* 发布渠道统一到 JitPack，坐标改为 `com.github.Justson.AgentWeb:*`，不再使用 `io.github.justson:*`

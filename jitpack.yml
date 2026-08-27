@@ -1,2 +1,11 @@
 jdk:
   - openjdk17
+
+# 只构建并发布两个库模块。
+#
+# 默认情况下 JitPack 会构建整个工程，其中包含 sample 模块——而 sample 依赖多个
+# 已随 JCenter 下线而无法解析的三方库（markdownview、tkrefreshlayout、
+# SmartRefreshLayout、sonic、coolindicator、Luban 等），会导致整次构建失败，
+# 进而使库本身也发布不出去。sample 仅供参考，不需要参与发布。
+install:
+  - ./gradlew :agentweb-core:publishToMavenLocal :agentweb-filechooser:publishToMavenLocal

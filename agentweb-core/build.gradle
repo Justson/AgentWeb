@@ -68,7 +68,7 @@ afterEvaluate {
                 from components.release
                 groupId = 'com.github.Justson.AgentWeb'
                 artifactId = 'agentweb-core'
-                version = 'v5.1.5-androidx'
+                version = 'v5.1.6-androidx'
             }
         }
     }
