@@ -161,7 +161,8 @@ public final class AgentActionFragment extends Fragment {
             resetAction();
             return;
         }
-        if (mAction.getRationaleListener() != null) {
+        // 统一使用传入的 action，避免与字段 mAction 混用（mAction 可能已被 resetAction 置空）。
+        if (action.getRationaleListener() != null) {
             boolean rationale = false;
             for (String permission : permissions) {
                 rationale = shouldShowRequestPermissionRationale(permission);
@@ -169,11 +170,11 @@ public final class AgentActionFragment extends Fragment {
                     break;
                 }
             }
-            mAction.getRationaleListener().onRationaleResult(rationale, new Bundle());
+            action.getRationaleListener().onRationaleResult(rationale, new Bundle());
             resetAction();
             return;
         }
-        if (mAction.getPermissionListener() != null) {
+        if (action.getPermissionListener() != null) {
             requestPermissions(permissions.toArray(new String[]{}), 1);
         }
     }
@@ -236,6 +237,12 @@ public final class AgentActionFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        // Issue #1062: 进程被系统回收后重建 Fragment 时 mAction 为 null，
+        // resetAction() 本身也会将其置空。与 runAction()、onActivityResult() 保持一致的守卫。
+        if (mAction == null) {
+            resetAction();
+            return;
+        }
         if (mAction.getPermissionListener() != null) {
             Bundle mBundle = new Bundle();
             mBundle.putInt(KEY_FROM_INTENTION, mAction.getFromIntention());

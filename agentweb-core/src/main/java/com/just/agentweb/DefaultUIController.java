@@ -60,6 +60,7 @@ public class DefaultUIController extends AbsAgentWebUIController {
 	private Activity mActivity;
 	private WebParentLayout mWebParentLayout;
 	private AlertDialog mAskOpenOtherAppDialog = null;
+	private AlertDialog mSslErrorDialog = null;
 	private ProgressDialog mProgressDialog;
 	private Resources mResources = null;
 
@@ -376,6 +377,13 @@ public class DefaultUIController extends AbsAgentWebUIController {
 			handler.cancel();
 			return;
 		}
+		// Issue #1022: 页面中每一个证书校验失败的资源都会各回调一次本方法，
+		// 不判重就会把弹窗一个个叠起来，用户得连点多次才能关完。
+		// 同一时刻只保留一个弹窗，用户的选择对本页后续的证书错误同样适用。
+		if (mSslErrorDialog != null && mSslErrorDialog.isShowing()) {
+			handler.cancel();
+			return;
+		}
 		AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
 		String sslErrorMessage;
 		switch (error.getPrimaryError()) {
@@ -418,9 +426,17 @@ public class DefaultUIController extends AbsAgentWebUIController {
 			return;
 		}
 		try {
-			alertDialog.show();
+			mSslErrorDialog = alertDialog.show();
+			// 关闭后立即释放引用，避免持有已消失的弹窗与其 Activity。
+			mSslErrorDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					mSslErrorDialog = null;
+				}
+			});
 		} catch (android.view.WindowManager.BadTokenException | IllegalStateException e) {
 			// Activity window went away between our check and show(); fail safe.
+			mSslErrorDialog = null;
 			handler.cancel();
 		}
 

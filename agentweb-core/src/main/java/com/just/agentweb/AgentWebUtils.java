@@ -659,11 +659,9 @@ public class AgentWebUtils {
 		return "com.google.android.apps.photos.content".equals(uri.getAuthority());
 	}
 
-	static Intent getInstallApkIntentCompat(Context context, File file) {
-		Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
-		setIntentDataAndType(context, mIntent, "application/vnd.android.package-archive", file, false);
-		return mIntent;
-	}
+	// Issue #969: 曾在此提供 getInstallApkIntentCompat()，构造 APK 安装 Intent。
+	// 自 4.0.0 下载能力拆分到独立的 Downloader 库后该方法已无任何调用点，
+	// 却仍被安全扫描列为「任意 APK 下载安装风险」，故移除。
 
 	public static Intent getCommonFileIntentCompat(Context context, File file) {
 		Intent mIntent = new Intent().setAction(Intent.ACTION_VIEW);
