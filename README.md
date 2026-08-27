@@ -24,8 +24,8 @@ allprojects {
 * Androidx
 
    ```groovy
-    implementation 'io.github.justson:agentweb-core:v5.1.3-androidx' 
-    implementation 'io.github.justson:agentweb-filechooser:v5.1.3-androidx' // (可选)
+    implementation 'io.github.justson:agentweb-core:v5.1.4-androidx' 
+    implementation 'io.github.justson:agentweb-filechooser:v5.1.4-androidx' // (可选)
     implementation 'com.github.Justson:Downloader:v5.0.6-androidx' // (可选)
    
    ```

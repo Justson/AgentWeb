@@ -1,3 +1,12 @@
+* v_5.1.4 更新
+	* 修复 SSL 证书错误弹窗会叠加出多个的问题 [#1022](https://github.com/Justson/AgentWeb/issues/1022)
+	* 修复 `AgentActionFragment.onRequestPermissionsResult` 空指针崩溃 [#1062](https://github.com/Justson/AgentWeb/issues/1062)
+	* 修复 Android 14 下选择「仅选定照片」后文件选择失效 [#1077](https://github.com/Justson/AgentWeb/issues/1077)
+	* 修复拍照流程多余索要媒体权限，导致 Android 14 多弹一次照片访问弹窗 [#1077](https://github.com/Justson/AgentWeb/issues/1077)
+	* 减少 `queryIntentActivities` 调用；`DISALLOW` 模式下不再调用 [#1078](https://github.com/Justson/AgentWeb/issues/1078)
+	* 移除无调用点的 `getInstallApkIntentCompat()`，消除安全扫描告警 [#969](https://github.com/Justson/AgentWeb/issues/969)
+	* README 补充 Client 覆盖、`OpenOtherPageWays` 与应用列表查询的说明
+
 * v_5.1.3 更新
 	* 修复 SSL 证书错误弹窗未校验 Activity 状态导致的 BadTokenException 崩溃 [#1065](https://github.com/Justson/AgentWeb/issues/1065)
 	* 修复 `file://` 本地页面互跳被 `interceptUnkownUrl` 静默拦截导致无响应 [#762](https://github.com/Justson/AgentWeb/issues/762)
