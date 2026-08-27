@@ -202,7 +202,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		// fall through into the unknown-URL branch below causes
 		// mIsInterceptUnkownUrl to silently drop the navigation.
 		if (url.startsWith(FILE_SCHEME) || url.startsWith(JAVASCRIPT_SCHEME)) {
-			return false;
+			// 交回中间件链，链尾回落到 WebViewClient 默认实现返回 false，由 WebView 自行加载。
+			return super.shouldOverrideUrlLoading(view, request);
 		}
 		if (!webClientHelper) {
 			return super.shouldOverrideUrlLoading(view, request);
@@ -298,7 +299,8 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 		// fall through into the unknown-URL branch below causes
 		// mIsInterceptUnkownUrl to silently drop the navigation.
 		if (url.startsWith(FILE_SCHEME) || url.startsWith(JAVASCRIPT_SCHEME)) {
-			return false;
+			// 交回中间件链，链尾回落到 WebViewClient 默认实现返回 false，由 WebView 自行加载。
+			return super.shouldOverrideUrlLoading(view, url);
 		}
 		if (!webClientHelper) {
 			return false;

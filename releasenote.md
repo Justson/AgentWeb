@@ -1,3 +1,9 @@
+* v_5.1.3 更新
+	* 修复 SSL 证书错误弹窗未校验 Activity 状态导致的 BadTokenException 崩溃 [#1065](https://github.com/Justson/AgentWeb/issues/1065)
+	* 修复 `file://` 本地页面互跳被 `interceptUnkownUrl` 静默拦截导致无响应 [#762](https://github.com/Justson/AgentWeb/issues/762)
+	* 随库下发 consumer proguard 规则，使用者无需再自行声明 `@JavascriptInterface` keep 规则 [#1072](https://github.com/Justson/AgentWeb/issues/1072)
+	* 感谢 [@jim-daf](https://github.com/jim-daf) 的贡献
+
 * v_5.1.2 更新
 	* compileSdk / targetSdk 升级到 36 (Android 16)
 	* Android Gradle Plugin 升级到 8.13.2，Gradle Wrapper 升级到 8.13
