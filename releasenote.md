@@ -1,27 +1,30 @@
-* v_5.1.6 更新
-	* **修复发布产物中缺少 AAR 的问题**。此前 `publishing` 的 publication 没有 `from components.release`，
-	  发布出去的只有一个空壳 POM，不含任何库产物；现已补上，并按 AGP 要求声明 `singleVariant('release')`
-	* 发布渠道统一到 JitPack，坐标改为 `com.github.Justson.AgentWeb:*`，不再使用 `io.github.justson:*`
+* v_5.1.6 更新（自 v5.1.1 起的累计更新）
 
-* v_5.1.4 更新
-	* 修复 SSL 证书错误弹窗会叠加出多个的问题 [#1022](https://github.com/Justson/AgentWeb/issues/1022)
-	* 修复 `AgentActionFragment.onRequestPermissionsResult` 空指针崩溃 [#1062](https://github.com/Justson/AgentWeb/issues/1062)
-	* 修复 Android 14 下选择「仅选定照片」后文件选择失效 [#1077](https://github.com/Justson/AgentWeb/issues/1077)
-	* 修复拍照流程多余索要媒体权限，导致 Android 14 多弹一次照片访问弹窗 [#1077](https://github.com/Justson/AgentWeb/issues/1077)
-	* 减少 `queryIntentActivities` 调用；`DISALLOW` 模式下不再调用 [#1078](https://github.com/Justson/AgentWeb/issues/1078)
-	* 移除无调用点的 `getInstallApkIntentCompat()`，消除安全扫描告警 [#969](https://github.com/Justson/AgentWeb/issues/969)
+	> 5.1.2 ~ 5.1.5 因发布链路存在问题（产物中缺少 AAR、JitPack 构建失败）未能实际发布，
+	> 其内容已全部并入本版本。
+
+	* **发布链路**
+		* 修复发布产物中缺少 AAR 的问题：此前 publication 未声明 `from components.release`，
+		  发布出去的只有一个空壳 POM，不含任何库产物
+		* 修复 JitPack 构建失败：其默认构建整个工程（含依赖已下线三方库的 `sample`），
+		  现由 `jitpack.yml` 限定只构建两个库模块
+		* 发布渠道统一到 JitPack，坐标改为 `com.github.Justson.AgentWeb:*`（**不带 `v` 前缀**），
+		  不再使用 `io.github.justson:*`
+	* **崩溃修复**
+		* SSL 证书错误弹窗未校验 Activity 状态导致的 BadTokenException [#1065](https://github.com/Justson/AgentWeb/issues/1065)
+		* SSL 证书错误弹窗会叠加出多个 [#1022](https://github.com/Justson/AgentWeb/issues/1022)
+		* `AgentActionFragment.onRequestPermissionsResult` 空指针崩溃 [#1062](https://github.com/Justson/AgentWeb/issues/1062)
+	* **功能修复**
+		* `file://` 本地页面互跳被 `interceptUnkownUrl` 静默拦截导致无响应 [#762](https://github.com/Justson/AgentWeb/issues/762)
+		* Android 14 下选择「仅选定照片」后文件选择失效 [#1077](https://github.com/Justson/AgentWeb/issues/1077)
+		* 拍照流程多余索要媒体权限，导致 Android 14 多弹一次照片访问弹窗 [#1077](https://github.com/Justson/AgentWeb/issues/1077)
+	* **构建与合规**
+		* compileSdk / targetSdk 升级到 36 (Android 16)，AGP 升级到 8.13.2，Gradle Wrapper 升级到 8.13
+		* 随库下发 consumer proguard 规则，使用者无需再自行声明 `@JavascriptInterface` keep 规则 [#1072](https://github.com/Justson/AgentWeb/issues/1072)
+		* 减少 `queryIntentActivities` 调用；`DISALLOW` 模式下不再调用 [#1078](https://github.com/Justson/AgentWeb/issues/1078)
+		* 移除无调用点的 `getInstallApkIntentCompat()`，消除安全扫描告警 [#969](https://github.com/Justson/AgentWeb/issues/969)
 	* README 补充 Client 覆盖、`OpenOtherPageWays` 与应用列表查询的说明
-
-* v_5.1.3 更新
-	* 修复 SSL 证书错误弹窗未校验 Activity 状态导致的 BadTokenException 崩溃 [#1065](https://github.com/Justson/AgentWeb/issues/1065)
-	* 修复 `file://` 本地页面互跳被 `interceptUnkownUrl` 静默拦截导致无响应 [#762](https://github.com/Justson/AgentWeb/issues/762)
-	* 随库下发 consumer proguard 规则，使用者无需再自行声明 `@JavascriptInterface` keep 规则 [#1072](https://github.com/Justson/AgentWeb/issues/1072)
 	* 感谢 [@jim-daf](https://github.com/jim-daf) 的贡献
-
-* v_5.1.2 更新
-	* compileSdk / targetSdk 升级到 36 (Android 16)
-	* Android Gradle Plugin 升级到 8.13.2，Gradle Wrapper 升级到 8.13
-	* buildToolsVersion 升级到 36.1.0
 
 * v_5.0.0 更新
 	* ActionActivity 重构， 使用Fragment 替代 Activity，解决多进程使用问题
