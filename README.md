@@ -48,6 +48,9 @@ allprojects {
 * `minSdkVersion` 低于等于16以下自定义`WebView`请注意与 `JS` 之间通信安全。
 * v5.1.2 起 `compileSdk` / `targetSdk` 升级到 36（Android 16），Android Gradle Plugin 升级到 8.13.2，请同步升级项目的 Gradle 与 AGP 版本。
 * v5.1.3 起库已随包下发 `@JavascriptInterface` 的 keep 规则，接入方**无需**再在自己的 `proguard-rules.pro` 中重复声明。
+* **不要直接对 WebView 调用 `setWebViewClient()` / `setWebChromeClient()`**。这会整体替换掉 AgentWeb 内部的实现，进度条、错误页、文件选择等功能都会随之失效。正确做法是使用 `AgentWeb.with(...)` 的 `setWebViewClient()` / `setWebChromeClient()`，或用 `MiddlewareWebClientBase` / `MiddlewareWebChromeBase` 中间件叠加。
+* `setOpenOtherPageWays(ASK)` 只在**目标 App 已安装**时才会弹窗询问。未安装时系统中没有任何组件能处理该 scheme，不会弹窗，属预期行为。
+* AgentWeb 在处理非 `http/https` 的 scheme 跳转时会调用 `queryIntentActivities` 判断能否唤起其他 App，应用市场的隐私检测可能将其识别为「读取已安装应用列表」。若无需唤起外部 App，设置 `setOpenOtherPageWays(DefaultWebClient.OpenOtherPageWays.DISALLOW)` 即可完全不触发该调用。
 
 
 

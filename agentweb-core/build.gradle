@@ -11,7 +11,6 @@ android {
         namespace 'com.just.agentweb'
         versionCode 3
         versionName VERSION_NAME
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         // Issue #1072: ship Proguard/R8 rules so consumer apps do not have to
         // re-declare the @JavascriptInterface keep rule themselves.

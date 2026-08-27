@@ -227,7 +227,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			LogUtils.i(TAG, "alipays url lookup alipay ~~ ");
 			return true;
 		}
-		if (queryActiviesNumber(url) > 0 && deepLink(url)) {
+		if (handleDeepLink(url)) {
 			LogUtils.i(TAG, "intercept url:" + url);
 			return true;
 		}
@@ -246,6 +246,27 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 	@Override
 	public void onReceivedHttpAuthRequest(WebView view, HttpAuthHandler handler, String host, String realm) {
 		super.onReceivedHttpAuthRequest(view, handler, host, realm);
+	}
+
+	/**
+	 * Issue #1078：{@code queryIntentActivities} 会被应用市场的合规检测判定为「读取已安装应用列表」，
+	 * 因此只在查询结果确实会被用到时才发起查询。
+	 * <ul>
+	 *     <li>{@link #DISALLOW_OPEN_OTHER_APP}：{@link #deepLink(String)} 恒返回 false，查询结果用不上，直接跳过；</li>
+	 *     <li>{@link #ASK_USER_OPEN_OTHER_PAGE}（默认）：{@code deepLink()} 内部的 {@code lookupResolveInfo()}
+	 *     已经解析过一次，外层再查一次是重复的，解析不到时同样返回 false；</li>
+	 *     <li>{@link #DERECT_OPEN_OTHER_PAGE}：{@code deepLink()} 无条件返回 true，仍需外层先确认确实有 App 能处理，
+	 *     否则会把无人接管的 scheme 也当成已拦截。</li>
+	 * </ul>
+	 */
+	private boolean handleDeepLink(String url) {
+		if (mUrlHandleWays == DISALLOW_OPEN_OTHER_APP) {
+			return false;
+		}
+		if (mUrlHandleWays == DERECT_OPEN_OTHER_PAGE && queryActiviesNumber(url) <= 0) {
+			return false;
+		}
+		return deepLink(url);
 	}
 
 	private boolean deepLink(String url) {
@@ -324,7 +345,7 @@ public class DefaultWebClient extends MiddlewareWebClientBase {
 			return true;
 		}
 		//打开url 相对应的页面
-		if (queryActiviesNumber(url) > 0 && deepLink(url)) {
+		if (handleDeepLink(url)) {
 			LogUtils.i(TAG, "intercept OtherAppScheme");
 			return true;
 		}
